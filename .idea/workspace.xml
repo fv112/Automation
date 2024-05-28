@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="d16153e1-5b12-4734-a6f3-14148c7d886c" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/Automation.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AppAutomation.kv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AppAutomation.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Automation/configs/Notepad_Theme_Log_Automation.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Automation/configs/Settings.bcpkg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Automation/configs/dictionary-en.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Automation/configs/dictionary-es.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Automation/configs/dictionary-pt.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Automation/drivers/Chrome32Bits.exe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Automation/drivers/Firefox64Bits.exe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Automation/drivers/IE32bits.exe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Automation/drivers/MSEdge64Bits.exe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Automation/drivers/MSEdgeLegacy-v16.exe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Automation/evidence/ETS - en_US.docx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Automation/evidence/ETS - es.docx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Automation/evidence/ETS - pt_BR.docx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Automation/images/Robot.ico" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Automation/images/Robot.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Automation/images/Unavailable.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Automation/requirements/requirements.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AutomationQA_CMD.spec" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AutomationQA_Interface.spec" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SandBox/AutomacaoDocker.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SandBox/IconsList.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/exec/Debug/AutomationQA.cmd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/exec/Debug/AutomationQA.lnk" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/exec/Debug/AutomationQA_EXE.cmd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/exec/Debug/AutomationQA_EXE.lnk" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/exec/Debug/Robot.ico" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/exec/Generate_EXE/GenerateEXE.bat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/exec/Generate_EXE/GenerateEXE.lnk" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/exec/Install.bat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/exec/TestEnvironment/componentes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/exec/TestEnvironment/criandoTeste.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/exec/TestEnvironment/iframe.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/exec/TestEnvironment/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/exec/TestEnvironment/testeElemento.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/geckodriver.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules/automaticCompareFiles.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules/automationAux.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules/automationFunc.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules/automatizationCore_Azure.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules/azureConnection.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules/generateManualEvidence.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/.venv/Lib/site-packages/kivy/lang/builder.py" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 5
+}]]></component>
+  <component name="ProjectId" id="2h66yFl1wLANlt2TBCPCwjyS8CK" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "Python.AppAutomation.executor": "Debug",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "master",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration name="AppAutomation" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Automation" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/AppAutomation.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.AppAutomation" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-babbdf50b680-746f403e7f0c-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-241.15989.155" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="d16153e1-5b12-4734-a6f3-14148c7d886c" name="Changes" comment="" />
+      <created>1716902432993</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1716902432993</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/modules/azureConnection.py</url>
+          <line>135</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

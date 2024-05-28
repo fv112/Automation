@@ -1,0 +1,729 @@
+<Manager>:
+    id: screen_manager
+    screen_main: screen_main
+    screen_running: screen_running
+
+    ScreenMain:
+        id: screen_main
+        name: 'ScreenMain'
+        manager: screen_manager
+
+    ScreenRunning:
+        id: screen_running
+        name: 'Running'
+        manager: screen_manager
+
+<ScreenRunning>:
+    # Console screen.
+    BoxLayout:
+        orientation: 'vertical'
+        padding: '15dp'
+        canvas:
+            Color:
+                rgb: 0.31, 0.31, 0.31, 1
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        canvas.before:
+            Color:
+                rgba: .5, .5, .5, 1
+            Line:
+                width: 2
+                rectangle: self.x, self.y, self.width, self.height
+        Label:
+            text: 'Console'
+            font_size: '21dp'
+            size_hint_y: None
+            height: '30dp'
+
+        Label:
+            text: ''
+            size_hint_y: None
+            height: '10dp'
+
+        ScrollView:
+            id: console_scroll
+            do_scroll_x: True
+            do_scroll_y: 1
+            bar_color: 'black'
+            scroll_type: ['bars', 'content']
+            bar_width: 10
+
+            BoxLayout
+                orientation: 'vertical'
+                padding: '70dp'
+                size_hint_y: None
+                height: self.minimum_height
+                canvas:
+                    Color:
+                        rgb: 0.31, 0.31, 0.31, 1
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos
+                Label:
+                    id: console_output
+                    multiline: True
+                    markup: True
+                    size_hint: None, None
+                    size: self.texture_size
+                    font_size: '19dp'
+                    color: 0, 0, 0, 1
+
+        BoxLayout:
+            size_hint: (None, None)
+            padding: 10
+            spacing: 5
+
+            MDButtonText:
+                id: go_screen_main
+                text: ''
+                icon: 'arrow-left'
+                text_color: 1, 1, 1, 1
+                md_bg_color: 0.4, 0, 0.922, 1
+                font_size: '17dp'
+                on_press:
+                    #root.manager.transition.direction = 'right'
+                    #root.manager.current = 'ScreenMain'
+
+            MDButtonText:
+                id: clear_console
+                text: ''
+                icon: 'eraser'
+                text_color: 1, 1, 1, 1
+                md_bg_color: 0.4, 0, 0.922, 1
+                font_size: '17dp'
+                #on_press:
+                #    root.manager.get_screen('Running').clear_console()
+
+            MDButtonText:
+                id: execute_button_log
+                text: ''
+                icon: 'engine-outline'
+                text_color: 1, 1, 1, 1
+                md_bg_color: 0.4, 0, 0.922, 1
+                font_size: '16dp'
+                #on_press:
+                #    root.manager.get_screen('ScreenMain').change_screen_execute()
+
+            MDButtonText:
+                id: evidence_button_log
+                text: ''
+                font_size: '17dp'
+                icon: 'camera'
+                text_color: 1, 1, 1, 1
+                md_bg_color: 0.4, 0, 0.922, 1
+                #on_press:
+                #    root.manager.get_screen('ScreenMain').change_screen_evidence()
+
+<ScreenMain>:
+    on_pre_enter: root.load_projects_pre_enter()
+
+    BoxLayout:
+        id: box1
+        orientation: 'vertical'
+
+        BoxLayout:
+            id: box2
+            orientation: 'vertical'
+
+            MDTabsBadge:
+                id: mdtabs
+                #on_tab_switch: self.on_tab_switch(*args)
+                background_color: 0.847, 0.847, 0.529, 1
+                text_color_normal: 0, 0, 0, 1
+                tab_hint_x: True
+                text_color_active: 0, 0, 0, 1
+                indicator_color: 0.608, 0.122, 0.941, 1
+                elevation: 10
+                tab_indicator_anim: True
+                tab_indicator_type: 'line-round'
+                lock_swiping: True
+
+                # Execution tab.
+                Tab:
+                    id: tab1
+                    text: ''
+
+                    BoxLayout:
+                        orientation: 'vertical'
+                        id: Screen_One
+                        padding: '15dp'
+                        canvas:
+                            Color:
+                                rgb: 0.878, 0.8, 0.984, 1
+                            Rectangle:
+                                size: self.size
+                                pos: self.pos
+
+                        Label:
+                            id: tab1_choose_between
+                            size_hint: None, None
+                            size: (500, 50)
+                            font_size: '21dp'
+                            text_size: self.size
+                            color: 0.4, 0, 0.922, 1
+
+                        # Execution block.
+                        BoxLayout:
+                            Label:
+                                id: tab1_choose_automation # Run Automation.
+                                color: 0.4, 0, 0.922, 1
+                                font_size: '17dp'
+                                text_size : self.size
+                                halign: 'left'
+                                valign: 'middle'
+                                pos_hint_x: None
+                                size_hint:(.5, 1)
+
+                            CheckBox:
+                                id: automation_checkbox # Run Automation.
+                                canvas.before:
+                                    Rectangle:
+                                        size: sp(17), sp(17)
+                                        pos: int(self.center_x - sp(9)), int(self.center_y - sp(9))
+                                color:.233, .761, .188
+                                active: True
+                                text_size : self.size
+                                size_hint:(.4, 1)
+                                on_active:
+                                    root.set_automation_checkbox(self, self.active)
+                                    root.manager.get_screen('ScreenMain').is_shown_execution(self, self.active)
+
+                            Label: # General note.
+                                id: note_execution
+                                text: ''
+                                color: 0, 0, 0, 1
+                                font_size: '15dp'
+                                text_size : self.size
+                                halign: 'left'
+                                valign: 'middle'
+                                pos_hint_x: None
+
+                        # Compare block.
+                        BoxLayout:
+                            Label:
+                                id: tab1_choose_compare # Run Compare.
+                                color: 0.4, 0, 0.922, 1
+                                font_size: '17dp'
+                                text_size : self.size
+                                halign: 'left'
+                                valign: 'middle'
+                                pos_hint_x: None
+                                size_hint:(.5, 1)
+
+                            CheckBox:
+                                id: compare_checkbox # Run Compare.
+                                canvas.before:
+                                    Rectangle:
+                                        size: sp(17), sp(17)
+                                        pos: int(self.center_x - sp(9)), int(self.center_y - sp(9))
+                                text_size : self.size
+                                color:.233, .761, .188
+                                size_hint:(.4, 1)
+                                on_active:
+                                    root.manager.get_screen('ScreenMain').set_compare_checkbox(self, self.active)
+                                    root.manager.get_screen('ScreenMain').is_shown_compare(self, self.active)
+
+                            Label: # General note.
+                                id: note_compare
+                                text: ''
+                                color: 0, 0, 0, 1
+                                font_size: '15dp'
+                                text_size : self.size
+                                halign: 'left'
+                                valign: 'middle'
+                                pos_hint_x: None
+
+                        # Cookie block.
+                        BoxLayout:
+                            Label:
+                                id: tab1_cookie_label
+                                color: 0.4, 0, 0.922, 1
+                                font_size: '17dp'
+                                text_size : self.size
+                                halign: 'left'
+                                valign: 'middle'
+                                pos_hint_x: None
+                                size_hint:(.5, 1)
+
+                            CheckBox:
+                                id: cookie_checkbox
+                                canvas.before:
+                                    Rectangle:
+                                        size: sp(17), sp(17)
+                                        pos: int(self.center_x - sp(9)), int(self.center_y - sp(9))
+                                text_size : self.size
+                                active: False
+                                color:.233, .761, .188
+                                size_hint:(.4, 1)
+                                on_active:
+                                    root.manager.get_screen('ScreenMain').set_cookie_checkbox(self, self.active)
+
+                            Label: # General note.
+                                id: note_cookie
+                                text: ''
+                                color: 0, 0, 0, 1
+                                font_size: '15dp'
+                                text_size : self.size
+                                halign: 'left'
+                                valign: 'middle'
+                                pos_hint_x: None
+
+
+                        # Project block.
+                        BoxLayout:
+                            Label:
+                                id: tab1_project_label
+                                text: ""
+                                font_size: '18dp'
+                                text_size: self.size
+                                halign: 'left'
+                                valign: 'center'
+                                color: 0.4, 0, 0.922, 1
+                                pos_hint_x: None
+                                size_hint:(.25, 1)
+
+                            MDTextField:
+                                id: tab1_project
+                                width: '350dp'
+                                on_focus:
+                                    if self.focus: root.manager.get_screen('ScreenMain').filter_projects_tab1()
+                                on_text:
+                                    root.manager.get_screen('ScreenMain').filter_projects_tab1()
+
+                        # Test Plan block.
+                        BoxLayout:
+                            Label:
+                                id: tab1_testplan_label
+                                text: ""
+                                font_size: '18dp'
+                                text_size: self.size
+                                halign: 'left'
+                                valign: 'center'
+                                color: 0.4, 0, 0.922, 1
+                                pos_hint_x: None
+                                size_hint:(.25, 1)
+
+                            MDTextField:
+                                id: tab1_testplan
+                                width: '350dp'
+                                on_focus:
+                                    if self.focus: root.manager.get_screen('ScreenMain').filter_testplan_tab1()
+                                on_text:
+                                    root.manager.get_screen('ScreenMain').filter_testplan_tab1()
+
+                        # Test Suit block.
+                        BoxLayout:
+                            Label:
+                                id: tab1_testsuit_label
+                                text: "Test suit"
+                                font_size: '18dp'
+                                text_size: self.size
+                                halign: 'left'
+                                valign: 'center'
+                                color: 0.4, 0, 0.922, 1
+                                pos_hint_x: None
+                                size_hint:(.25, 1)
+
+                            MDTextField:
+                                id: tab1_testsuit
+                                width: '350dp'
+                                on_focus:
+                                    if self.focus: root.manager.get_screen('ScreenMain').filter_testsuit_tab1()
+                                on_text:
+                                    root.manager.get_screen('ScreenMain').filter_testsuit_tab1()
+
+                        # Isolate test case block (Checkbox).
+                        BoxLayout:
+                            Label:
+                                id: tab1_choose_testcase
+                                color: 0.4, 0, 0.922, 1
+                                font_size: '17dp'
+                                text_size : self.size
+                                halign: 'left'
+                                valign: 'middle'
+                                pos_hint_x: None
+                                size_hint:(.5, 1)
+
+                            CheckBox:
+                                id: test_case_checkbox
+                                canvas.before:
+                                    Color:
+                                        rgb: 255, 255, 255
+                                    Rectangle:
+                                        size: sp(17), sp(17)
+                                        pos: int(self.center_x - sp(9)), int(self.center_y - sp(9))
+                                color:.233, .761, .188
+                                text_size : self.size
+                                size_hint:(.4, 1)
+                                on_active:
+                                    root.manager.get_screen('ScreenMain').set_testcase_checkbox(self, self.active, tab1_testcase)
+                                    root.manager.get_screen('ScreenMain').is_shown_test_case(self, self.active)
+
+                            Label: # General note.
+                                id: note_isolate
+                                text: ''
+                                color: 0, 0, 0, 1
+                                font_size: '15dp'
+                                text_size : self.size
+                                halign: 'left'
+                                valign: 'middle'
+                                pos_hint_x: None
+
+                        # Isolate test case block (Test case ID).
+                        BoxLayout:
+                            Label:
+                                id: tab1_testcase_label
+                                color: 0.4, 0, 0.922, 1
+                                font_size: '17dp'
+                                text_size : self.size
+                                halign: 'left'
+                                valign: 'middle'
+                                pos_hint_x: None
+                                size_hint:(.25, 1)
+
+                            MDTextField:
+                                id: tab1_testcase
+                                text: ''
+                                pos_hint: {"center_y": .5}
+
+                        # Automation evidence block.
+                        BoxLayout:
+                            Label:
+                                id: tab1_evidence_label
+                                font_size: '18dp'
+                                text_size: self.size
+                                halign: 'left'
+                                valign: 'center'
+                                color: 0.4, 0, 0.922, 1
+                                size_hint:(.5, 1)
+
+                            CheckBox:
+                                id: evidence_checkbox
+                                canvas.before:
+                                    Color:
+                                        rgb: 255, 255, 255
+                                    Rectangle:
+                                        size: sp(17), sp(17)
+                                        pos: int(self.center_x - sp(9)), int(self.center_y - sp(9))
+                                color:.233, .761, .188
+                                text_size : self.size
+                                size_hint:(.4, 1)
+                                on_active:
+                                    root.manager.get_screen('ScreenMain').set_evidence_checkbox(self, self.active)
+
+                            Label: # General note.
+                                id: note_evidence
+                                text: ''
+                                color: 0, 0, 0, 1
+                                font_size: '15dp'
+                                text_size : self.size
+                                halign: 'left'
+                                valign: 'middle'
+                                pos_hint_x: None
+
+                        # Timeout field.
+                        BoxLayout:
+                            Label:
+                                id: tab1_timeout
+                                font_size: '18dp'
+                                text_size: self.size
+                                halign: 'left'
+                                valign: 'center'
+                                color: 0.4, 0, 0.922, 1
+                                size_hint:(.5, 1)
+
+                            MDTextField:
+                                id: tab1_timeout_value
+                                text: '2'
+                                pos_hint: {"left": .5}
+                                text_size : self.size
+                                size_hint:(.1, 1)
+
+                            Label:
+                                id: help_timeout_value
+                                text: ''
+                                color: 0, 0, 0, 1
+                                font_size: '15dp'
+                                text_size : self.size
+                                halign: 'left'
+                                valign: 'middle'
+                                pos_hint_x: None
+
+                        BoxLayout:
+                            MDButtonText:
+                                id: execute_button
+                                text: ''
+                                icon: 'engine-outline'
+                                text_color: 1, 1, 1, 1
+                                md_bg_color: 0.4, 0, 0.922, 1
+                                font_size: '16dp'
+                                #on_press:
+                                #    root.manager.get_screen('ScreenMain').change_screen_execute()
+
+                            MDButtonText:
+                                id: compare_button
+                                text: ''
+                                icon: 'file-compare'
+                                text_color: 1, 1, 1, 1
+                                md_bg_color: 0.4, 0, 0.922, 1
+                                font_size: '16dp'
+                                #on_press:
+                                #    root.manager.get_screen('ScreenMain').change_screen_compare()
+
+                        BoxLayout:
+                            MDButtonText:
+                                id: running_screen
+                                text: ''
+                                icon: 'cryengine'
+                                text_color: 1, 1, 1, 1
+                                md_bg_color: 0.4, 0, 0.922, 1
+                                font_size: '16dp'
+                                #on_press:
+                                #    root.manager.current = 'Running'
+
+                # Evidence Tab.
+                Tab:
+                    id: tab2
+                    text: ''
+                    BoxLayout
+                        orientation: 'vertical'
+                        id: Screen_Three
+                        padding: '15dp'
+                        canvas:
+                            Color:
+                                rgb: 0.878, 0.8, 0.984, 1
+                            Rectangle:
+                                size: self.size
+                                pos: self.pos
+
+                        BoxLayout:
+                            Label:
+                                id: tab2_project_label # Project_label
+                                text: "" # It's the same as the first tab
+                                font_size: '18dp'
+                                text_size: self.size
+                                halign: 'left'
+                                valign: 'center'
+                                color: 0.4, 0, 0.922, 1
+                                size_hint:(.25, 1)
+
+                            MDTextField:
+                                id: tab2_project
+                                text_size : self.size
+                                on_focus: if self.focus: root.manager.get_screen('ScreenMain').filter_projects_tab2()
+                                on_text: root.manager.get_screen('ScreenMain').filter_projects_tab2()
+
+                        BoxLayout:
+                            Label:
+                                id: tab2_run_id_label
+                                font_size: '18dp'
+                                text_size: self.size
+                                halign: 'left'
+                                valign: 'center'
+                                color: 0.4, 0, 0.922, 1
+                                size_hint:(.25, 1)
+
+                            MDTextField:
+                                id: tab2_runid
+                                text_size : self.size
+
+                        BoxLayout:
+                            Label:
+                                id: tab2_choose_testcase_label
+                                font_size: '18dp'
+                                text_size: self.size
+                                halign: 'left'
+                                valign: 'center'
+                                color: 0.4, 0, 0.922, 1
+                                size_hint:(.25, 1)
+
+                            CheckBox:
+                                id: test_case_checkbox
+                                canvas.before:
+                                    Color:
+                                        rgb: 255, 255, 255
+                                    Rectangle:
+                                        size: sp(17), sp(17)
+                                        pos: int(self.center_x - sp(9)), int(self.center_y - sp(9))
+                                color:.233, .761, .188
+                                text_size : self.size
+                                on_active:
+                                    root.manager.get_screen('ScreenMain').set_testcase_checkbox(self, self.active, tab2_testcase)
+                                    root.manager.get_screen('ScreenMain').is_shown_test_case_tab2(self, self.active)
+
+                        BoxLayout:
+                            Label:
+                                id: tab2_testcase_label
+                                text: ""
+                                font_size: '18dp'
+                                text_size: self.size
+                                halign: 'left'
+                                valign: 'center'
+                                color: 0.4, 0, 0.922, 1
+                                size_hint:(.25, 1)
+
+                            MDTextField:
+                                id: tab2_testcase
+                                pos_hint: {'center_x': .25,}
+                                text_size : self.size
+
+                        BoxLayout:
+                            MDButtonText:
+                                id: evidence_button
+                                text: ''
+                                font_size: '17dp'
+                                icon: 'camera'
+                                text_color: 1, 1, 1, 1
+                                md_bg_color: 0.4, 0, 0.922, 1
+                                #on_press: root.manager.get_screen('ScreenMain').change_screen_evidence()
+
+                        BoxLayout:
+                            MDButtonText:
+                                id: tab2_running_screen
+                                text: ''
+                                icon: 'cryengine'
+                                text_color: 1, 1, 1, 1
+                                md_bg_color: 0.4, 0, 0.922, 1
+                                size_hint_y: None
+                                font_size: '17dp'
+                                #on_press: root.manager.current = 'Running'
+
+                # 'Help' tab.
+                Tab:
+                    id: tab4_help
+                    text: ''
+                    BoxLayout
+                        orientation: 'vertical'
+                        padding: '15dp'
+                        canvas:
+                            Color:
+                                rgb: 0.878, 0.8, 0.984, 1
+                            Rectangle:
+                                size: self.size
+                                pos: self.pos
+
+                        GridLayout
+                            cols: 1
+                            rows: 2
+                            row_force_default: True
+                            row_default_height: '110dp'
+                            col_force_default: True
+                            col_default_width: '150dp'
+
+                            GridLayout
+                                cols: 2
+                                rows: 5
+                                col_force_default: True
+                                col_default_width: '127dp'
+                                rows_minimum: {0: 20, 1: 20, 2: 20, 3: 30}
+
+                                Label:
+                                    id: languages
+                                    text: ''
+                                    font_size: '18dp'
+                                    text_size: self.size
+                                    halign: 'left'
+                                    valign: 'center'
+                                    color: 0.4, 0, 0.922, 1
+
+                                MDTextField:
+                                    id: which_language
+                                    size_hint: None, None
+                                    width: '200dp'
+                                    on_focus:
+                                        if self.focus: root.manager.get_screen('ScreenMain').filter_language()
+                                    on_text:
+                                        root.manager.get_screen('ScreenMain').filter_language()
+
+                                Label:
+                                    id: verb
+                                    text: ''
+                                    font_size: '18dp'
+                                    text_size: self.size
+                                    halign: 'left'
+                                    valign: 'center'
+                                    color: 0.4, 0, 0.922, 1
+
+                                MDTextField:
+                                    id: verbs # Help_menu.
+                                    size_hint: None, None
+                                    width: '350dp'
+                                    on_focus:
+                                        if self.focus: root.manager.get_screen('ScreenMain').filter_menu_help()
+                                    on_text:
+                                        root.manager.get_screen('ScreenMain').filter_menu_help()
+
+                                Label:
+                                    id: functions
+                                    text: ''
+                                    font_size: '18dp'
+                                    text_size: self.size
+                                    halign: 'left'
+                                    valign: 'center'
+                                    color: 0.4, 0, 0.922, 1
+
+                                MDTextField:
+                                    id: function_id # Msg_id.
+                                    size_hint: None, None
+                                    width: '350dp'
+                                    readonly: True
+
+                                Label:
+                                    id: explanation
+                                    text: ''
+                                    font_size: '18dp'
+                                    text_size: self.size
+                                    halign: 'left'
+                                    valign: 'center'
+                                    color: 0.4, 0, 0.922, 1
+
+                                MDTextField:
+                                    id: phrase # Where_id
+                                    multiline: True
+                                    size_hint: None, None
+                                    width: '600dp'
+                                    readonly: True
+
+                                Label:
+                                    id: syntax_label
+                                    text: ''
+                                    font_size: '18dp'
+                                    text_size: self.size
+                                    halign: 'left'
+                                    valign: 'center'
+                                    color: 0.4, 0, 0.922, 1
+
+                                MDTextField:
+                                    id: syntax_field # Where_id
+                                    multiline: True
+                                    size_hint: None, None
+                                    width: '600dp'
+
+                # 'Release notes' tab.
+                Tab:
+                    id: tab5
+                    text: ''
+                    ScrollView:
+                        id: scroll1
+                        do_scroll_x: False
+                        do_scroll_y: True
+                        bar_color: 'black'
+                        scroll_type: ['bars', 'content']
+                        BoxLayout
+                            orientation: 'vertical'
+                            padding: '15dp'
+                            size_hint_y: None
+                            height: self.minimum_height
+                            canvas:
+                                Color:
+                                    rgb: 0.878, 0.8, 0.984, 1
+                                Rectangle:
+                                    size: self.size
+                                    pos: self.pos
+                            Label:
+                                id: read_me
+                                size_hint: None, None
+                                size: self.texture_size
+                                font_size: '16dp'
+                                color: 0, 0, 0, 1

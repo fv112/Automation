@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+	<head>
+		<title>Teste</title>
+		<meta charset="utf-8">
+	  	<meta name="viewport" content="width=device-width, initial-scale=1">
+	  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	  	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	</head>
+
+	<body>
+
+		<div class="jumbotron text-center">
+		  <h1>Página para testar elementos da Automação.</h1>
+		  <p>Página responsiva para testes</p>
+		</div>
+
+		<div class="container">
+			<div class="row">
+				<div class="col-3">
+					<ul class="nav flex-column">
+						<li class="nav-item">
+					      <a class="nav-link" href="#">App</a>
+					    </li>
+					    <li class="nav-item">
+					      <a class="nav-link" href="#">Produto</a>
+					    </li>
+					    <li class="nav-item">
+					      <a class="nav-link" href="#">Usuário</a>
+					    </li>
+					    <li class="nav-item">
+					      <a class="nav-link" href="#">Cliente</a>
+					    </li>
+					 </ul>
+				</div>
+				<div class="col-9">
+					<div class="row">
+						<h2>Botões</h2>
+						<div class="col-12">
+							<button type="button" class="btn btn-primary" disabled id="btnInativo">Botão Inativo</button>
+							<button type="button" class="btn btn-primary" id="btnAtivo">Botão Ativo</button>
+							<button type="button" class="btn btn-secondary">Botão Secondary</button>
+							<button type="button" class="btn btn-success">Botão Success</button>
+							<button type="button" class="btn btn-info">Botão Info</button>
+							<button type="button" class="btn btn-warning">Botão Warning</button>
+						</div>
+					</div>
+					<div class="row">
+						<h2>Inputs</h2>
+						<div class="col-12">
+							<div class="form-group">
+								<label for="usr">Nome:</label>
+								<input type="text" title="Nome" class="form-control" id="usr">
+								<label for="password">Sobrenome:</label>
+								<input type="text" title="Sobrenome" class="form-control" id="password">
+								<label for="comment">Commentários:</label>
+		  						<textarea class="form-control" rows="5" id="comment"></textarea>
+							</div>
+
+							<h3>Checkboxes</h3>
+							<div class="form-check-inline">
+								<label class="form-check-label">
+							    	<input type="checkbox" id="selecionado" class="form-check-input" value="" checked>Option 1
+							  	</label>
+							</div>
+							<div class="form-check-inline">
+							  	<label class="form-check-label">
+							    	<input type="checkbox" class="form-check-input" value="">Option 2
+							  	</label>
+							</div>
+							<div class="form-check-inline">
+							  	<label class="form-check-label">
+							    	<input type="checkbox" class="form-check-input" value="" disabled>Option 3
+							  	</label>
+							</div>
+
+							<h3>Radio Buttons</h3>
+							<div class="form-check">
+								<label class="form-check-label">
+						    		<input type="radio" class="form-check-input" name="optradio" >Option 1
+						  		</label>
+							</div>
+							<div class="form-check">
+						 		<label class="form-check-label">
+						   			<input type="radio" class="form-check-input" name="optradio" checked id="radioSelecionado">Option 2
+						  		</label>
+							</div>
+							<div class="form-check disabled">
+						  		<label class="form-check-label">
+						    		<input type="radio" class="form-check-input" name="optradio" disabled>Option 3
+						  		</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+						
+		</div>
+
+		<footer class="jumbotron text-center">
+			<p>Todos os direitos reservados - 2020</p>
+		</footer> >
+	</body>
+</html>
