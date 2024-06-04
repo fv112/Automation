@@ -36,6 +36,7 @@ searchForAttribute = []
 searchForComponent = []
 messages = []
 
+
 # Colored the text.
 class Textcolor:
     BLUE = '\033[1;34;47m'  # Blue
@@ -47,34 +48,7 @@ class Textcolor:
     UNDERLINE = '\033[4m'   # Underline
 
 
-# Pop-up for exceptions.
-class MDDialogAppTest:
-
-    def __init__(self):
-        pass
-
-    def save_messages(self, message):
-        messages.append(message)
-
-    def show_mddialog(self):
-        from kivymd.uix.dialog import MDDialog
-        from kivymd.uix.button import MDRaisedButton
-        self.dialog = MDDialog(
-            title=otherConfigs['Message']['Msg'],
-            text=messages[0],
-            buttons=[
-                MDRaisedButton(
-                    text="OK", on_release=lambda _: self.dialog.dismiss()
-                ),
-            ],
-        )
-        self.dialog.open()
-
-
 class Main:
-
-    def __init__(self):
-        pass
 
     # Called to clean the file 'Tokens.txt'
     def clean_token_file(self):
@@ -97,38 +71,34 @@ class Main:
         return name_buffer.value
 
     # Set language.
-    def setLanguage(self, **kwargs):
+    def setLanguage(**kwargs):
         try:
             # kwargs variables.
             language = kwargs.get('language')
-            interface = kwargs.get('interface')
 
-            print(f"{Textcolor.GREEN}{otherConfigs['Translating']}{Textcolor.END}\n")
             if language == 'pt_BR':
-                Main.loadConfigs(self, language='pt', interface=interface)  # Change to the Portuguese language.
+                Main.loadConfigs(language='pt')  # Change to the Portuguese language.
                 print(f"{Textcolor.GREEN}{otherConfigs['NoTranslating']}{Textcolor.END}\n")
             elif language == 'en_US':
-                need_translation, new_hash = Main.configureLanguage(self, language='en')
+                need_translation, new_hash = Main.configureLanguage(language='en')
                 if need_translation:
-                    Main.translateMsg(self, language='en', new_hash=new_hash)  # Translation.
+                    Main.translateMsg(language='en', new_hash=new_hash)  # Translation.
                 else:
                     print(f"{Textcolor.GREEN}{otherConfigs['NoTranslating']}{Textcolor.END}\n")
-                Main.loadConfigs(self, language='en', interface=interface)  # Change to the English language.
+                Main.loadConfigs(language='en')  # Change to the English language.
             else:  # es
-                need_translation, new_hash = Main.configureLanguage(self, language='es')
+                need_translation, new_hash = Main.configureLanguage(language='es')
                 if need_translation:
-                    Main.translateMsg(self, language='es', new_hash=new_hash)  # Translation.
+                    Main.translateMsg(language='es', new_hash=new_hash)  # Translation.
                 else:
                     print(f"{Textcolor.GREEN}{otherConfigs['NoTranslating']}{Textcolor.END}\n")
-                Main.loadConfigs(self, language='es', interface=interface)  # Change to the Spanish language.
+                Main.loadConfigs(language='es')  # Change to the Spanish language.
 
-            Main.addLogs(self, message="General", value=logs["SetLanguage"])
+            Main.addLogs(message="General", value=logs["SetLanguage"])
 
         except Exception as ex:
-            if otherConfigs['Interface']:
-                MDDialogAppTest().save_messages(logs['ErrorSetLanguage']['Msg'])
             print(f"{Textcolor.FAIL}{logs['ErrorSetLanguage']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(self, message="setLanguage", value=logs["ErrorSetLanguage"]['Msg'], value1=ex)
+            Main.addLogs(message="setLanguage", value=logs["ErrorSetLanguage"]['Msg'], value1=ex)
 
     # Request the token or verify if it was informed.
     def accessAzure(self):
@@ -142,7 +112,7 @@ class Main:
                 os.makedirs(directories["TokensFile"])
                 # Create the file and set the mode.
                 with open(file_path, 'w'):
-                    Main.saveToken(self, file_path=file_path, name=name)
+                    Main.saveToken(file_path=file_path, name=name)
 
             else:
                 token_exist = False
@@ -152,19 +122,17 @@ class Main:
                             otherConfigs['Token'] = line.split(',')[1]
                             token_exist = True
                     if token_exist is False:
-                        Main.saveToken(self, file_path=file_path, name=name)
+                        Main.saveToken(file_path=file_path, name=name)
 
             otherConfigs['HttpBasicAuth'] = HTTPBasicAuth('', otherConfigs['Token'])
-            Main.addLogs(self, message="NewConfig", value=logs["AccessAzure"]['Msg'])
+            Main.addLogs(message="NewConfig", value=logs["AccessAzure"]['Msg'])
 
         except Exception as ex:
-            if otherConfigs['Interface']:
-                MDDialogAppTest().save_messages(logs['ErrorAccessAzure']['Msg'])
             print(f"{Textcolor.FAIL}{logs['ErrorAccessAzure']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(self, message="NewConfig", value=logs["ErrorAccessAzure"]['Msg'], value1=ex)
+            Main.addLogs(message="NewConfig", value=logs["ErrorAccessAzure"]['Msg'], value1=ex)
 
     # Ask and save the Token in a file.
-    def saveToken(self, **kwargs):
+    def saveToken(**kwargs):
         try:
             # kwargs variables.
             file_path = kwargs.get("file_path")
@@ -187,16 +155,14 @@ class Main:
             token_file = open(file_path, 'a')
             token_file.write(str(name) + ',' + otherConfigs['Token'] + ',\n')
             token_file.close()
-            Main.addLogs(self, message="General", value=logs["SaveToken"])
+            Main.addLogs(message="General", value=logs["SaveToken"])
 
         except Exception as ex:
-            if otherConfigs['Interface']:
-                MDDialogAppTest().save_messages(logs['ErrorSaveToken']['Msg'])
             print(f"{Textcolor.FAIL}{logs['ErrorSaveToken']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(self, message="General", value=logs["ErrorSaveToken"], value1=ex)
+            Main.addLogs(message="General", value=logs["ErrorSaveToken"], value1=ex)
 
     # Validate test case name.
-    def validateTestName(self, **kwargs):
+    def validateTestName(**kwargs):
         try:
             # kwargs variables.
             name_testcase = kwargs.get("name_testcase")
@@ -205,37 +171,29 @@ class Main:
 
             validation = regex.match('.*[\.\@\!\#\$\%^\&\*\<\>\?\\\/\\|\"}{:].*', name_testcase)
             if validation:
-                if otherConfigs['Interface']:
-                    MDDialogAppTest().save_messages(f"{name_testcase} - {logs['ErrorSpecialCharacter']['Msg']} - "
-                                                    f"{otherConfigs['InvalidCharacter']}")
-
                 print(f"{Textcolor.FAIL}{logs['ErrorSpecialCharacter']['Msg']} "
                       f"{otherConfigs['InvalidCharacter']} {Textcolor.END}")
-                Main.addLogs(self, message="General", value=logs["ErrorSpecialCharacter"],
+                Main.addLogs(message="General", value=logs["ErrorSpecialCharacter"],
                              value1=f"{otherConfigs['InvalidCharacter']}")
                 validation_status = True
                 ###exit(0)
 
             if len(name_testcase) >= 85:
-                if otherConfigs['Interface']:
-                    MDDialogAppTest().save_messages(f"{name_testcase} - {logs['ErrorSizeName']['Msg']}")
                 print(f"{Textcolor.FAIL}{logs['ErrorSizeName']['Msg']}{Textcolor.END}")
-                Main.addLogs(self, message="General", value=logs["ErrorSizeName"])
+                Main.addLogs(message="General", value=logs["ErrorSizeName"])
                 validation_status = True
                 ###exit(0)
 
         except Exception as ex:
-            if otherConfigs['Interface']:
-                MDDialogAppTest().save_messages(logs['ErrorTestCaseValidation']['Msg'])
             ###exit(0)
             print(f"{Textcolor.FAIL}{logs['ErrorTestCaseValidation']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(self, message="General", value=logs["ErrorTestCaseValidation"], value1=str(ex))
+            Main.addLogs(message="General", value=logs["ErrorTestCaseValidation"], value1=str(ex))
 
         finally:
             return validation_status
 
     # Create the directories.
-    def createDirectory(self, **kwargs):
+    def createDirectory(**kwargs):
 
         try:
             # kwargs variables.
@@ -256,25 +214,23 @@ class Main:
                         creation_time = os.path.getmtime(os.path.join(path_folder, item))
                         if (current_time - creation_time) // (24 * 3600) >= 30:
                             shutil.rmtree(os.path.join(path_folder, item), ignore_errors=True)
-                            Main.addLogs(self, message="General", value=logs["DeleteFolder"],
+                            Main.addLogs(message="General", value=logs["DeleteFolder"],
                                          value1=path_folder, value2=item)
                     else:
                         creation_time = os.path.getmtime(os.path.join(path_folder, item))
                         if (current_time - creation_time) // (24 * 3600) >= 30:
                             os.remove(os.path.join(path_folder, item))
-                            Main.addLogs(self, message="General", value=logs["DeleteFile"],
+                            Main.addLogs(message="General", value=logs["DeleteFile"],
                                          value1=os.path.join(path_folder, item))
 
         except Exception as ex:
-            if otherConfigs['Interface']:
-                MDDialogAppTest().save_messages(logs['ErrorCreateDirectory']['Msg'])
             print(f"{Textcolor.FAIL}{logs['ErrorCreateDirectory']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(self, message="General", value=logs["ErrorCreateDirectory"], value1=ex)
+            Main.addLogs(message="General", value=logs["ErrorCreateDirectory"], value1=ex)
 
         return create
 
     # Delete the directories.
-    def deleteDirectory(self, **kwargs):
+    def deleteDirectory(**kwargs):
         try:
             # kwargs variables.
             path_folder = kwargs.get('directory')
@@ -283,13 +239,11 @@ class Main:
                 shutil.rmtree(path_folder)
 
         except Exception as ex:
-            if otherConfigs['Interface']:
-                MDDialogAppTest().save_messages(logs['ErrorDeleteDirectory']['Msg'])
             print(f"{Textcolor.FAIL}{logs['ErrorDeleteDirectory']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(self, message="General", value=logs["ErrorDeleteDirectory"], value1=ex)
+            Main.addLogs(message="General", value=logs["ErrorDeleteDirectory"], value1=ex)
 
     # Add the screenshots in the Word file.
-    def wordAddSteps(self, **kwargs):
+    def wordAddSteps(**kwargs):
         try:
 
             # kwargs arguments.
@@ -314,22 +268,22 @@ class Main:
             # Open the document.
             document = Document(word_path)
             # Search the correct paragraph.
-            paragraf = Main.wordSeachText(self, document=document, text=tag_paragraf[0][otherConfigs['Language']])
+            paragraf = Main.wordSeachText(document=document, text=tag_paragraf[0][otherConfigs['Language']])
             # Set the variable.
             image_resize = True
 
             if paragraf is None:
                 print('\033[31m' + '\n' + logs['ErrorWordFindParagraph']['Msg'] + '\033[0;0m')
-                Main.addLogs(self, message="General", value=logs["ErrorWordFindParagraph"])
+                Main.addLogs(message="General", value=logs["ErrorWordFindParagraph"])
                 return None
 
             # Add the info in the file.
-            if not Main.wordAddInfo(self, document=document, test_run_id=test_run_id, test_case_id=test_case_id,
+            if not Main.wordAddInfo(document=document, test_run_id=test_run_id, test_case_id=test_case_id,
                                     name_testcase=name_testcase, summary=summary, step_number=len(list_steps),
                                     full_name_run_evidence=full_name_run_evidence, completed_date=completed_date,
                                     full_name_run_test=full_name_run_test):
                 print('\033[31m' + '\n' + logs['ErrorWordSetCTInfo']['Msg'] + '\033[0;0m')
-                Main.addLogs(self, message="General", value=logs["ErrorWordSetCTInfo"])
+                Main.addLogs(message="General", value=logs["ErrorWordSetCTInfo"])
                 return None
 
             step_order = 1
@@ -351,7 +305,7 @@ class Main:
                         if image.size[0] <= 1500:
                             image_resize = False
 
-                        step = Main.ReplacePasswordEvidence(self, step=step)
+                        step = Main.ReplacePasswordEvidence(step=step)
 
                     paragraf = document.add_paragraph(otherConfigs["StepName"] + " " + str(step_order) + " - " + step)
 
@@ -391,20 +345,13 @@ class Main:
             document.save(path)
 
         except Exception as ex:
-            # Access Screen Running.
-            if otherConfigs['Interface']:
-                import AppAutomation
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-                screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                       f"{logs['ErrorWordAddSteps']['Msg']}[/color][/b]")
-                MDDialogAppTest().save_messages(logs['ErrorWordAddSteps']['Msg'])
             print(f"{Textcolor.FAIL}{logs['ErrorWordAddSteps']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(self, message="General", value=logs["ErrorWordAddSteps"], value1=ex)
+            Main.addLogs(message="General", value=logs["ErrorWordAddSteps"], value1=ex)
             path = None
         return path
 
     # Replace the password in the evidence file.
-    def ReplacePasswordEvidence(self, **kwargs):
+    def ReplacePasswordEvidence(**kwargs):
 
         try:
             # kwargs variables.
@@ -418,24 +365,20 @@ class Main:
                     next_space = pos_password + len(match) + 1
                     password_string = step[next_space + 1: -1]
                     if password_string == '':
-                        if otherConfigs['Interface']:
-                            MDDialogAppTest().save_messages(logs['ErrorReplacePasswordPosition']['Msg'])
                         print(f"{Textcolor.FAIL}{logs['ErrorReplacePasswordPosition']['Msg']}"
                               f"{Textcolor.END}")
-                        Main.addLogs(self, message="General", value=logs["ErrorReplacePasswordPosition"])
+                        Main.addLogs(message="General", value=logs["ErrorReplacePasswordPosition"])
                         ###exit(1)
                     step = step.replace(password_string, '*******')
 
             return step
 
         except Exception as ex:
-            if otherConfigs['Interface']:
-                MDDialogAppTest().save_messages(logs['ErrorReplacePasswordEvidence']['Msg'])
             print(f"{Textcolor.FAIL}{logs['ErrorReplacePasswordEvidence']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(self, message="General", value=logs["ErrorReplacePasswordEvidence"], value1=ex)
+            Main.addLogs(message="General", value=logs["ErrorReplacePasswordEvidence"], value1=ex)
 
     # Search the text in the file.
-    def wordSeachText(self, **kwargs):
+    def wordSeachText(**kwargs):
 
         try:
             # kwargs variables.
@@ -446,15 +389,13 @@ class Main:
                 if p.text == text:
                     return p
         except Exception as ex:
-            if otherConfigs['Interface']:
-                MDDialogAppTest().save_messages(logs['ErrorWordSeachText']['Msg'])
             print(f"{Textcolor.FAIL}{logs['ErrorWordSeachText']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(self, message="General", value=logs["ErrorWordSeachText"], value1=ex)
+            Main.addLogs(message="General", value=logs["ErrorWordSeachText"], value1=ex)
 
         return None
 
     # Add the test case info in the Word file.
-    def wordAddInfo(self, **kwargs):
+    def wordAddInfo(**kwargs):
         try:
             # kwargs arguments.
             document = kwargs.get('document')
@@ -479,35 +420,35 @@ class Main:
             ]
 
             # TestRun id.
-            control = Main.wordSeachText(self, document=document, text=tag_language[0][otherConfigs['Language']])
+            control = Main.wordSeachText(document=document, text=tag_language[0][otherConfigs['Language']])
             control.add_run(str(test_run_id)).bold = True
 
             # CT id.
-            control = Main.wordSeachText(self, document=document, text=tag_language[1][otherConfigs['Language']])
+            control = Main.wordSeachText(document=document, text=tag_language[1][otherConfigs['Language']])
             control.add_run(str(test_case_id)).bold = True
 
             # CT name.
-            control = Main.wordSeachText(self, document=document, text=tag_language[2][otherConfigs['Language']])
+            control = Main.wordSeachText(document=document, text=tag_language[2][otherConfigs['Language']])
             control.add_run(name_testcase).bold = True
 
             # CT Summary.
-            control = Main.wordSeachText(self, document=document, text=tag_language[3][otherConfigs['Language']])
+            control = Main.wordSeachText(document=document, text=tag_language[3][otherConfigs['Language']])
             control.add_run(summary).bold = True
 
             # Executed by.
-            control = Main.wordSeachText(self, document=document, text=tag_language[4][otherConfigs['Language']])
+            control = Main.wordSeachText(document=document, text=tag_language[4][otherConfigs['Language']])
             control.add_run(full_name_run_test).bold = True
 
             # Evidence generate by.
-            control = Main.wordSeachText(self, document=document, text=tag_language[5][otherConfigs['Language']])
+            control = Main.wordSeachText(document=document, text=tag_language[5][otherConfigs['Language']])
             control.add_run(full_name_run_evidence).bold = True
 
             # Execution date
-            control = Main.wordSeachText(self, document=document, text=tag_language[6][otherConfigs['Language']])
+            control = Main.wordSeachText(document=document, text=tag_language[6][otherConfigs['Language']])
             control.add_run(str(completed_date)).bold = True
 
             # Total steps.
-            control = Main.wordSeachText(self, document=document, text=tag_language[7][otherConfigs['Language']])
+            control = Main.wordSeachText(document=document, text=tag_language[7][otherConfigs['Language']])
             control.add_run(str(step_number)).bold = True
 
             infoadd = True
@@ -515,20 +456,13 @@ class Main:
         except Exception as ex:
             infoadd = False
 
-            # Access Screen Running.
-            if otherConfigs['Interface']:
-                import AppAutomation
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-                screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                       f"{logs['ErrorWordAddInfo']['Msg']}[/color][/b]")
-                MDDialogAppTest().save_messages(logs['ErrorWordAddInfo']['Msg'])
             print(f"{Textcolor.FAIL}{logs['ErrorWordAddInfo']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(self, message="General", value=logs["ErrorWordAddInfo"], value1=ex)
+            Main.addLogs(message="General", value=logs["ErrorWordAddInfo"], value1=ex)
 
         return infoadd
 
     # Function to convert docx to pdf.
-    def wordToPDF(self, **kwargs):
+    def wordToPDF(**kwargs):
 
         try:
             # kwargs variables.
@@ -551,21 +485,14 @@ class Main:
             createpdf = pdf_path
 
         except Exception as ex:
-            # Access Screen Running.
-            if otherConfigs['Interface']:
-                import AppAutomation
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-                screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                       f"{logs['ErrorWordToPDF']['Msg']}[/color][/b]")
-                MDDialogAppTest().save_messages(logs['ErrorWordToPDF']['Msg'])
             print(f"{Textcolor.FAIL}{logs['ErrorWordToPDF']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(self, message="General", value=logs["ErrorWordToPDF"], value1=ex)
+            Main.addLogs(message="General", value=logs["ErrorWordToPDF"], value1=ex)
             createpdf = None
 
         return createpdf
 
     # Delete the files.
-    def deleteFiles(self, **kwargs):
+    def deleteFiles(**kwargs):
 
         try:
             # kwargs arguments.
@@ -586,13 +513,11 @@ class Main:
                 os.remove(exact_file)
 
         except Exception as ex:
-            if otherConfigs['Interface']:
-                MDDialogAppTest().save_messages(logs['ErrorDeleteFiles']['Msg'])
             print(f"{Textcolor.FAIL}{logs['ErrorDeleteFiles']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(self, message="General", value=logs["ErrorDeleteFiles"], value1=ex)
+            Main.addLogs(message="General", value=logs["ErrorDeleteFiles"], value1=ex)
 
     # Add the log in the file.
-    def  addLogs(self, **kwargs):
+    def addLogs(**kwargs):
 
         try:
             # kwargs variables.
@@ -643,18 +568,11 @@ class Main:
                     log_file.write(datetime_log + " - Log       - " + value + " " + " - " + str(value1) + "\n")
 
         except Exception as ex:
-            # Access screen running.
-            if otherConfigs['Interface']:
-                import AppAutomation
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-                screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                       f"{logs['ErrorAddlog']['Msg']}[/color][/b]")
-                MDDialogAppTest().save_messages(logs['ErrorAddlog']['Msg'])
-            Main.addLogs(self, message="General", value=logs["ErrorAddlog"]['Msg'], value1=str(ex))
+            Main.addLogs(message="General", value=logs["ErrorAddlog"]['Msg'], value1=str(ex))
             print(f"{Textcolor.FAIL}{logs['ErrorAddlog']['Msg']}{Textcolor.END}", ex)
 
     # Remove the HTML from the string.
-    def removeHTML(self, **kwargs):
+    def removeHTML(**kwargs):
 
         try:
             # kwargs variables.
@@ -670,13 +588,12 @@ class Main:
             return value
 
         except Exception as ex:
-            if otherConfigs['Interface']:
-                MDDialogAppTest().save_messages(logs['ErrorRemoveHTML']['Msg'])
+
             print(f"{Textcolor.FAIL}{logs['ErrorRemoveHTML']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(self, message="General", value=logs["ErrorRemoveHTML"]['Msg'], value1=str(ex))
+            Main.addLogs(message="General", value=logs["ErrorRemoveHTML"]['Msg'], value1=str(ex))
 
     # Translate the messages.
-    def translateMsg(self, **kwargs):
+    def translateMsg(**kwargs):
         try:
             # kwargs arguments.
             language = kwargs.get('language')
@@ -691,7 +608,7 @@ class Main:
             tag = 'Msg:'
 
             if os.path.isfile(path_Translated_Yml):
-                Main.deleteFiles(self, exact_file=path_Translated_Yml)
+                Main.deleteFiles(exact_file=path_Translated_Yml)
 
             with open(path_Origin_Yml, 'r') as yml_file:
                 lines = yml_file.readlines()
@@ -708,24 +625,22 @@ class Main:
                         with open(path_Translated_Yml, 'a') as yml_new_file:
                             yml_new_file.write(f'{line}')
 
-            Main.saveHash(self, new_hash=new_hash, path_part=language)
+            Main.saveHash(new_hash=new_hash, path_part=language)
             print(f"{Textcolor.GREEN}{otherConfigs['TranslateMessage']}{Textcolor.END}")
 
         except Exception as ex:
-            if otherConfigs['Interface']:
-                MDDialogAppTest().save_messages(logs['ErrorTranslateMessage']['Msg'])
             print(f"{Textcolor.FAIL}{logs['ErrorTranslateMessage']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(self, message="General", value=logs["ErrorTranslateMessage"], value1=ex)
+            Main.addLogs(message="General", value=logs["ErrorTranslateMessage"], value1=ex)
 
     # Configure the language for the automation.
-    def configureLanguage(self, **kwargs):
+    def configureLanguage(**kwargs):
         try:
             need_translation = False
             language = kwargs.get('language')
 
             path_file = os.path.join(os.getcwd(), directories["ConfigFolder"], 'dictionary-pt.yml')
-            new_hash = Main.generateHash(self, path_file=path_file)
-            actual_hash = Main.readHash(self, directory=directories["HashFolder"], language=language,
+            new_hash = Main.generateHash(path_file=path_file)
+            actual_hash = Main.readHash(directory=directories["HashFolder"], language=language,
                                         actual_file='hash_dictionary.txt')
 
             if new_hash != actual_hash:
@@ -734,13 +649,11 @@ class Main:
             return need_translation, new_hash
 
         except Exception as ex:
-            if otherConfigs['Interface']:
-                MDDialogAppTest().save_messages(logs['ErrorConfigureLanguage']['Msg'])
             print(f"{Textcolor.FAIL}{logs['ErrorConfigureLanguage']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(self, message="General", value=logs["ErrorConfigureLanguage"], value1=ex)
+            Main.addLogs(message="General", value=logs["ErrorConfigureLanguage"], value1=ex)
 
     # Generate the hash for a file.
-    def generateHash(self, **kwargs):
+    def generateHash(**kwargs):
         try:
             # kwargs arguments.
             path_file = kwargs.get('path_file')
@@ -756,13 +669,11 @@ class Main:
             return hasher.hexdigest()
 
         except Exception as ex:
-            if otherConfigs['Interface']:
-                MDDialogAppTest().save_messages(logs['ErrorGenerateHash']['Msg'])
             print(f"{Textcolor.FAIL}{logs['ErrorGenerateHash']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(self, message="General", value=logs["ErrorGenerateHash"], value1=ex)
+            Main.addLogs(message="General", value=logs["ErrorGenerateHash"], value1=ex)
 
     # Read the hash in a file.
-    def readHash(self, **kwargs):
+    def readHash(**kwargs):
         try:
             # kwargs arguments.
             directory = kwargs.get('directory')
@@ -781,13 +692,11 @@ class Main:
             return content
 
         except Exception as ex:
-            if otherConfigs['Interface']:
-                MDDialogAppTest().save_messages(logs['ErrorReadHash']['Msg'])
             print(f"{Textcolor.FAIL}{logs['ErrorReadHash']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(self, message="General", value=logs["ErrorReadHash"], value1=ex)
+            Main.addLogs(message="General", value=logs["ErrorReadHash"], value1=ex)
 
     # Save the hash in a file.
-    def saveHash(self, **kwargs):
+    def saveHash(**kwargs):
         try:
             # kwargs arguments.
             new_hash = kwargs.get('new_hash')
@@ -797,22 +706,19 @@ class Main:
             hash_file_path = os.path.join(directories["HashFolder"], path_part + '-hash_dictionary.txt')
 
             if not os.path.exists(directories['HashFolder']):
-                Main.createDirectory(self, path_folder=directories['HashFolder'])
+                Main.createDirectory(path_folder=directories['HashFolder'])
             with open(hash_file_path, 'w') as hash_file:
                 hash_file.write(new_hash)
 
         except Exception as ex:
-            if otherConfigs['Interface']:
-                MDDialogAppTest().save_messages(logs['ErrorSaveHash']['Msg'])
             print(f"{Textcolor.FAIL}{logs['ErrorSaveHash']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(self, message="General", value=logs["ErrorSaveHash"], value1=ex)
+            Main.addLogs(message="General", value=logs["ErrorSaveHash"], value1=ex)
 
     # Load the configuration file.
-    def loadConfigs(self, **kwargs):
+    def loadConfigs(**kwargs):
 
         # kwargs parameters.
         language = kwargs.get('language')
-        interface = kwargs.get('interface')
 
         try:
             global verbs, logs, directories, otherConfigs, searchForAttribute, searchForComponent
@@ -833,54 +739,33 @@ class Main:
             searchForAttribute = config["searchForAttribute"]
             searchForComponent = config["searchForComponent"]
 
-            otherConfigs['Interface'] = interface
-
         except Exception as ex:
-            if otherConfigs['Interface']:
-                MDDialogAppTest().save_messages(logs['ErrorLoadConfigs']['Msg'])
             print(f"{Textcolor.FAIL}{logs['ErrorLoadConfigs']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(self, message="General", value=logs["ErrorLoadConfigs"], value1=str(ex))
+            Main.addLogs(message="General", value=logs["ErrorLoadConfigs"], value1=str(ex))
 
     # Calculate the percentage of execution.
-    def percentage(self, **kwargs):
+    def percentage(**kwargs):
         try:
             # kwargs parameters.
             actual_number = kwargs.get('actual')
             total = kwargs.get('total')
 
-            # Access Screen Running.
-            if otherConfigs['Interface']:
-                import AppAutomation
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-
             line = "*" * 12
             percentage = "{0:.2f}".format((actual_number / total) * 100)
-            if otherConfigs['Interface']:
-                screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.blue.defaultvalue}]"
-                                                       f"{line}{' '}"
-                                                       f"{otherConfigs['Percentage']['Msg']}"
-                                                       f"{' '}[u]{percentage}{'%'}{' '}[/u]"
-                                                       f"{line}[/color][/b]\n")
 
             print(f"{Textcolor.BLUE}{line}{' '}"
                   f"{otherConfigs['Percentage']['Msg']}"
                   f"{' '}{Textcolor.UNDERLINE}{percentage}{'%'}{' '}{Textcolor.END}"
                   f"{Textcolor.BLUE}{line}{Textcolor.END}\n")
 
-            Main.addLogs(self, message="General", value=logs["Percentage"])
+            Main.addLogs(message="General", value=logs["Percentage"])
 
         except Exception as ex:
-            # Access Screen Running.
-            if otherConfigs['Interface']:
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-                screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                       f"{logs['ErrorPercentage']['Msg']}[/color][/b]")
-                MDDialogAppTest().save_messages(logs['ErrorPercentage']['Msg'])
             print(f"{Textcolor.FAIL}{logs['ErrorPercentage']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(self, message="General", value=logs["ErrorPercentage"], value1=str(ex))
+            Main.addLogs(message="General", value=logs["ErrorPercentage"], value1=str(ex))
 
     # Verify if the file exist.
-    def verifyFile(self, **kwargs):
+    def verifyFile(**kwargs):
         try:
 
             # kwargs parameters.
@@ -899,13 +784,11 @@ class Main:
                     return False
 
         except Exception as ex:
-            if otherConfigs['Interface']:
-                MDDialogAppTest().save_messages(logs['ErrorVerifyFile']['Msg'])
             print(f"{Textcolor.FAIL}{logs['ErrorVerifyFile']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(self, message="General", value=logs["ErrorVerifyFile"], value1=str(ex))
+            Main.addLogs(message="General", value=logs["ErrorVerifyFile"], value1=str(ex))
 
     # Compare files using Beyond Compare.
-    def compareBeyondCompare(self, **kwargs):
+    def compareBeyondCompare(**kwargs):
         try:
             # kwargs parameters.
             baseline = kwargs.get('baseline')
@@ -918,7 +801,7 @@ class Main:
             # Update the Settings.
             subprocess.Popen([directories['BeyondCompare'], directories['BeyondCompareSettings'], '/silent'])
 
-            file_session = Main._checkSessionBCFile(self, baseline=baseline)
+            file_session = Main._checkSessionBCFile(baseline=baseline)
 
             # Open the session.
             subprocess.Popen([directories['BeyondCompare'], file_session, '/silent'])
@@ -945,24 +828,17 @@ class Main:
             # Disable the mouse.
             pyautogui.FAILSAFE = True
 
-            while Main.checkProcess(self, process='BCompare.exe'):
+            while Main.checkProcess(process='BCompare.exe'):
                 time.sleep(1)
 
-            if otherConfigs['Interface']:
-                import AppAutomation
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-                screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.green.defaultvalue}]"
-                                                       f"{test_name} - {logs['CompareFile']['Msg']}[/color][/b]")
             print(f"{Textcolor.GREEN}{test_name} - {logs['CompareFile']['Msg']}{Textcolor.END}")
 
         except Exception as ex:
-            if otherConfigs['Interface']:
-                MDDialogAppTest().save_messages(logs['ErrorCompareFile']['Msg'])
             print(f"{Textcolor.FAIL}{logs['ErrorCompareFile']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(self, message="General", value=logs["ErrorCompareFile"], value1=str(ex))
+            Main.addLogs(message="General", value=logs["ErrorCompareFile"], value1=str(ex))
 
     # Check if the process is running.
-    def checkProcess(self, **kwargs):
+    def checkProcess(**kwargs):
 
         # kwargs variables.
         process = kwargs.get("process")
@@ -976,7 +852,7 @@ class Main:
             return False
 
     # Load the session file.
-    def _checkSessionBCFile(self, **kwargs):
+    def _checkSessionBCFile(**kwargs):
 
         # kwargs variable.
         file = kwargs.get("baseline")
@@ -996,7 +872,7 @@ class Main:
             return 'VideoFiles'
 
     # Check if the test case is a Desktop test case.
-    def _checkDesktop_TC(self, **kwargs):
+    def _checkDesktop_TC(**kwargs):
 
         # kwargs variable.
         list_steps = kwargs.get("list_steps")
@@ -1013,10 +889,6 @@ class Main:
     def check_Updates(self,):
 
         try:
-            if otherConfigs['Interface']:
-                import AppAutomation
-                update = AppAutomation.UpdateField()
-
             self.URL = 'https://' + otherConfigs['Token_GitHub'] + otherConfigs['GitHubReadMe']
 
             headers = {
@@ -1052,32 +924,29 @@ class Main:
 
                 # If the GitHub version is latest than local version.
                 if GitHubVersion > LocalVersion:
-                    update.show_Update_input()
-                    update.run()
+                    # update.show_Update_input() # CORRIGIR
+                    # update.run() # CORRIGIR
+                    pass
 
                 else:
                     print(f"{Textcolor.GREEN}{logs['UpdateNoNewVersion']['Msg']}{Textcolor.END}")
-                    Main.addLogs(self, message="General", value=logs["UpdateNoNewVersion"],
+                    Main.addLogs(message="General", value=logs["UpdateNoNewVersion"],
                                  value1=logs["UpdateNoNewVersion"]["Msg"])
 
             else:
                 print(f"{Textcolor.FAIL}{logs['CouldNotCheckForUpdates']['Msg']}{Textcolor.END}")
-                Main.addLogs(self, message="General", value=logs["CouldNotCheckForUpdates"],
+                Main.addLogs(message="General", value=logs["CouldNotCheckForUpdates"],
                              value1=logs["CouldNotCheckForUpdates"]["Msg"])
-                update.could_not_check_for_updates_msg()
-                update.run()
+                #update.could_not_check_for_updates_msg() # CORRIGIR
+                #update.run() # CORRIGIR
 
         except Exception as ex:
-            if otherConfigs['Interface']:
-                MDDialogAppTest().save_messages(str(ex))
+            print(f"{Textcolor.FAIL}{logs['DownloadUpdateFunctionFailed']['Msg']}{Textcolor.END}", ex)
+            Main.addLogs(message="General", value=logs["ErrorStartAutomation"], value1=str(ex))
 
     # Check for new automation version.
     def download_Updates(self):
         try:
-            if otherConfigs['Interface']:
-                import AppAutomation
-                update = AppAutomation.UpdateField()
-
             headers = {
                 'Authorization': f"token {otherConfigs['Token_GitHub']}",
                 'Accept': 'application/vnd.github.v4+raw'
@@ -1093,18 +962,18 @@ class Main:
                 if r.status_code == 200:
 
                     # Create the New Version directory.
-                    Main.createDirectory(self, path_folder=directories['UpdateFolder'])
+                    Main.createDirectory(path_folder=directories['UpdateFolder'])
 
                     with open(DOWNLOAD_DIR + '\\' + local_filename, 'wb') as f:
                         shutil.copyfileobj(r.raw, f)
                         print(f"{Textcolor.GREEN}{logs['DownloadPackageCompleted']['Msg']}{Textcolor.END}")
-                        Main.addLogs(self, message="General", value=logs["DownloadPackageCompleted"],
+                        Main.addLogs(message="General", value=logs["DownloadPackageCompleted"],
                                      value1=logs["DownloadPackageCompleted"]["Msg"])
 
                 else:
                     print(f"{Textcolor.FAIL}{logs['ErrorDownloadUpdate']['Msg']}{Textcolor.END}", value1=r.status_code)
-                    update.download_update_fail_msg()
-                    update.run()
+                    # update.download_update_fail_msg() # CORRIGIR
+                    # update.run() # CORRIGIR
 
             LINK_DOWNLOAD_BAT = 'https://' + otherConfigs['Token_GitHub'] + otherConfigs['GitHubBatFile']
             local_filename = LINK_DOWNLOAD_BAT.split('/')[-1]
@@ -1116,29 +985,28 @@ class Main:
                     with open(DOWNLOAD_DIR + '\\' + local_filename, 'wb') as f:
                         shutil.copyfileobj(r.raw, f)
                         print(f"{Textcolor.GREEN}{logs['DownloadBATCompleted']['Msg']}{Textcolor.END}")
-                        Main.addLogs(self, message="General", value=logs["DownloadBATCompleted"],
+                        Main.addLogs(message="General", value=logs["DownloadBATCompleted"],
                                      value1=logs["DownloadBATCompleted"]["Msg"])
                 else:
                     print(f"{Textcolor.FAIL}{logs['ErrorDownloadUpdate']['Msg']}{Textcolor.END}")
-                    update.download_update_fail_msg()
-                    update.run()
+                    # update.download_update_fail_msg() # CORRIGIR
+                    # update.run() # CORRIGIR
 
-            update.download_update_completed_msg.run()
+            # update.download_update_completed_msg.run() # CORRIGIR
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['DownloadUpdateFunctionFailed']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(self, message="General", value=logs["ErrorStartAutomation"], value1=str(ex))
+            Main.addLogs(message="General", value=logs["ErrorStartAutomation"], value1=str(ex))
 
     def install_Update(self):
         try:
-            ###subprocess.call([r'C:\ibope\Repository\TEMP\Install.bat'])
             subprocess.Popen([directories['UpdateFolder'], otherConfigs["InstallBAT"]])
 
             shutil.rmtree(os.path.join(directories['UpdateFolder']))
 
             print(f"{Textcolor.GREEN}{logs['InstallNewVersion']['Msg']}{Textcolor.END}")
-            Main.addLogs(self, message="General", value=logs["InstallNewVersion"], value1=logs["InstallNewVersion"]["Msg"])
+            Main.addLogs(message="General", value=logs["InstallNewVersion"], value1=logs["InstallNewVersion"]["Msg"])
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorInstallNewVersion']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(self, message="General", value=logs["ErrorInstallNewVersion"], value1=str(ex))
+            Main.addLogs(message="General", value=logs["ErrorInstallNewVersion"], value1=str(ex))

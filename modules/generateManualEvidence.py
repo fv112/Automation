@@ -17,31 +17,16 @@ class Main:
             test_run_id = kwargs.get('test_run_id')
             id_test_case = kwargs.get('id_test_case')
 
-            # Access Screen Running.
-            if Aux.otherConfigs['Interface']:
-                import AppAutomation
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-
             # Start generate evidence..
             Main.startGenerateEvidence(self, project=project, project_name=project_name,
                                        test_run_id=test_run_id.strip(), id_test_case=id_test_case)
 
         except Exception as ex:
-            if Aux.otherConfigs['Interface']:
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorMain']['Msg'])
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorMain']['Msg']}{Aux.Textcolor.END}", ex)
             Aux.addLogs(Aux.logs["ErrorMain"], str(ex))
             ###exit(1)
 
         finally:
-            if Aux.otherConfigs['Interface']:
-                # Access screen running.
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-                screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.orange.defaultvalue}]"
-                                                       f"{Aux.otherConfigs['MsgFinishedEvidence']['Msg']}"
-                                                       f"[/color][/b]")
-                Aux.MDDialogAppTest().save_messages(Aux.otherConfigs['MsgFinishedEvidence']['Msg'])
-                Aux.MDDialogAppTest().show_mddialog()
             print(f"{Aux.Textcolor.FAIL}{Aux.otherConfigs['MsgFinishedEvidence']['Msg']}{Aux.Textcolor.END}")
 
     # Generate de manual evidence.
@@ -55,11 +40,6 @@ class Main:
 
         status_ct_automation = 'Planned'
         workitem_status = None
-
-        # Access Screen Running.
-        if Aux.otherConfigs['Interface']:
-            import AppAutomation
-            screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
 
         try:
             # Complete name (if it is using the VPN).
@@ -101,10 +81,6 @@ class Main:
                 Aux.Main.addLogs(self, message="General", value=Aux.logs["EvidenceFolder"])
                 Aux.Main.createDirectory(self, path_folder=test_set_path)
 
-                if Aux.otherConfigs['Interface']:
-                    screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.yellow.defaultvalue}]"
-                                                           f"{Aux.otherConfigs['GeneratingEvidence']['Msg']}"
-                                                           f"[/color][/b]")
                 print(f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['GeneratingEvidence']['Msg']}"
                       f"{Aux.Textcolor.END}\n")
 
@@ -198,12 +174,6 @@ class Main:
             Aux.shutil.rmtree(testset_path_manual)
 
         except Exception as ex:
-            if Aux.otherConfigs['Interface']:
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-                screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                       f"{Aux.logs['ErrorStartGenerateEvidence']['Msg']}[/color][/b]")
-
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorStartGenerateEvidence']['Msg'])
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorStartGenerateEvidence']['Msg']}{Aux.Textcolor.END}", ex)
             Aux.Main.addLogs(self, message="General", value=Aux.logs["ErrorStartGenerateEvidence"], value1=str(ex))
             ###exit(1)

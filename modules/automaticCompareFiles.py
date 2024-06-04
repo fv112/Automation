@@ -18,11 +18,6 @@ class Main:
             list_files_baseline = []    # 'Baseline' files - In this order.
             list_files_new = []         # 'New' files - In this order.
 
-            # Access Screen Running.
-            if Aux.otherConfigs['Interface']:
-                import AppAutomation
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-
             # Start the automation.
             project, test_case_id_list, test_run_id = \
                 Azure.AzureConnection.startRun(self, project=project_id, id_test_plan=id_test_plan,
@@ -61,21 +56,9 @@ class Main:
             Aux.Main.deleteDirectory(self, directory=Aux.directories['DownloadFolderTemp'])
 
         except Exception as ex:
-            # Access Screen Running.
-            if Aux.otherConfigs['Interface']:
-                screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defautlvalue}]"
-                                                       f"{Aux.logs['ErrorMain']['Msg']}[/color][/b]")
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorMain']['Msg'])
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorMain']['Msg']}{Aux.Textcolor.END}", ex)
             Aux.Main.addLogs(self, message="General", value=Aux.logs["ErrorMain"], value1=str(ex))
             ###exit(1)
 
         finally:
-            # Access Screen Running.
-            if Aux.otherConfigs['Interface']:
-                screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.orange.defaultvalue}]"
-                                                       f"{Aux.otherConfigs['MsgFinishedCompare']['Msg']}[/color][/b]")
-                Aux.MDDialogAppTest().save_messages(Aux.otherConfigs['MsgFinishedCompare']['Msg'])
-                Aux.MDDialogAppTest().show_mddialog()
             print(f"{Aux.Textcolor.FAIL}{Aux.otherConfigs['MsgFinishedCompare']['Msg']}{Aux.Textcolor.END}")
-

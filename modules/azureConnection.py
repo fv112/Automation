@@ -5,6 +5,7 @@ import requests
 import base64
 import socket
 from operator import itemgetter
+from prettytable import PrettyTable
 
 import modules.automationAux as Aux
 
@@ -105,14 +106,6 @@ class AzureConnection:
                 completed_date_list.append(completed_date)
 
         except (TypeError, AttributeError):
-            # Access Screen Running.
-            if Aux.otherConfigs['Interface']:
-                import AppAutomation
-                screenRunning = AppAutomation.get_running_app().root.get_screen('Running')
-                screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                       f"{Aux.otherConfigs['IDRunInvalid']['Msg']} "
-                                                       f"'{test_run_id}'[/color][/b]")
-                Aux.MDDialogAppTest().save_messages(Aux.otherConfigs['IDRunInvalid']['Msg'])
             print(f"{Aux.Textcolor.FAIL}{Aux.otherConfigs['IDRunInvalid']['Msg']} '{test_run_id}'"
                   f"{Aux.Textcolor.END}")
             ###exit(1)
@@ -124,7 +117,7 @@ class AzureConnection:
     # ===================================== Modules to extract info from Azure =========================================
     # Load the project list from KantarWare.
     def getProjects(self):
-        projects_selected = 0
+        project_selected = 0
 
         try:
             # Variables.
@@ -136,7 +129,7 @@ class AzureConnection:
             self.url = 'https://sbs.t-systems.com.br/gitlab/api/v4/projects'
 
             # Execute the request from Azure.
-            t = requests.get(self.url, auth=Aux.otherConfigs['HttpBasicAuth'], timeout=None)
+            t = requests.get(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, timeout=None)
             if t.status_code == 200:
 
                 # Filter some fields.
@@ -144,64 +137,52 @@ class AzureConnection:
                 resp = json.loads(json_str)
                 if resp is not []:
 
-                    for Projects_id in resp['id']:
-                        projects.append(Projects_id['name'] + ' | ' + Projects_id['id'])
-                        projects_ids.append(Projects_id)
+                    t = PrettyTable(['ID', 'PROJECT ID', 'PROJECT'])
+
+                    for order in range(0, resp.__len__()):
+                        projects.append(str(option) + ' | ' + str(resp[order]['id']) + ' | ' + resp[order]['name'])
+                        projects_ids.append(order)
+                        t.add_row([option, str(resp[order]['id']), str(resp[order]['name'])])
                         option += 1
-                    return projects
+
+                    print(t)
+                    project_selected = input()
+                    #return projects
+                    return project_selected,
 
                 else:
-                    if Aux.otherConfigs['Interface']:
-                        Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorInstance']['Msg'])
                     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorInstance']['Msg']}{Aux.Textcolor.END}\n")
-                    Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorInstance']['Msg'])
+                    Aux.Main.addLogs(message="General", value=Aux.logs['ErrorInstance']['Msg'])
 
             elif t.status_code == 401:
                 text = Aux.regex.search('(?<=<title>).+?(?=</title>)', t.text, Aux.regex.DOTALL).group().strip()
-                if text == 'Access Denied: The Personal Access Token used has expired.':
-                    # Delete the token directory.
-                    Aux.Main.deleteDirectory(self, directory=Aux.directories['TokensFile'])
-                    Aux.Main.accessAzure(self)
-
-                    print(f"{Aux.Textcolor.FAIL}{Aux.otherConfigs['RunAgain']['Msg']}"
-                          f"{Aux.Textcolor.UNDERLINE}\n")
-                    Aux.Main.addLogs(self, message="General", value=Aux.otherConfigs['TokenExpired'])
+                print(f"{Aux.Textcolor.FAIL}{Aux.otherConfigs['RunAgain']['Msg']}"
+                      f"{Aux.Textcolor.UNDERLINE}\n")
+                Aux.Main.addLogs(message="General", value=Aux.otherConfigs['TokenExpired'])
 
             # If there is something written in your Tokens.txt file OR if token's size < token regular size.
             elif t.status_code == 203:
-                Aux.Main.clean_token_file(self)
-                Aux.Main.accessAzure(self)
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorSaveToken'])
+                Aux.Main.clean_token_file()
+                Aux.Main.accessAzure()
+                Aux.Main.addLogs(message="General", value=Aux.logs['ErrorSaveToken'])
 
             else:
-                if Aux.otherConfigs['Interface']:
-                    Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorRequest']['Msg'])
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.UNDERLINE}\n")
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'],
+                Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'],
                                  value1='Status code: ' + str(t.status_code) + ' - getProjects')
 
         except ValueError:
-            if Aux.otherConfigs['Interface']:
-                Aux.MDDialogAppTest().save_messages(Aux.otherConfigs['OptionInvalid']['Msg'])
-            print(f"{Aux.Textcolor.FAIL}'{projects_selected}' {Aux.otherConfigs['OptionInvalid']['Msg']}"
+            print(f"{Aux.Textcolor.FAIL}'{project_selected}' {Aux.otherConfigs['OptionInvalid']['Msg']}"
                   f"{Aux.Textcolor.END}")
             ### exit(0)
 
-        except AttributeError as e:  # When 'group' (text) doesn't exist.
-            Aux.clean_token_file(self)
-            Aux.accessAzure(self)
-
         except requests.exceptions.RequestException:
-            if Aux.otherConfigs['Interface']:
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorConnection']['Msg'])
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorConnection']['Msg']}{Aux.Textcolor.END}")
-            Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorConnection'])
+            Aux.Main.addLogs(message="General", value=Aux.logs['ErrorConnection'])
 
         except Exception as e:
-            if Aux.otherConfigs['Interface']:
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorGetProjects']['Msg'])
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetProjects']['Msg']}{Aux.Textcolor.END}", e)
-            Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorGetProjects'], value1=str(e))
+            Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetProjects'], value1=str(e))
             ### exit(1)
 
     # Load the test plans.
@@ -234,29 +215,21 @@ class AzureConnection:
                     return test_plans
 
                 else:
-                    if Aux.otherConfigs['Interface']:
-                        Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorGetTestPlan']['Msg'])
                     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetTestPlan']['Msg']}{Aux.Textcolor.END}\n")
                     Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorGetTestPlan'])
                     ###exit(1)
 
             else:
-                if Aux.otherConfigs['Interface']:
-                    Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorRequest']['Msg'])
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'], 
                             value1='Status code: ' + str(q.status_code) +' - getTestPlans')
 
         except ValueError:
-            if Aux.otherConfigs['Interface']:
-                Aux.MDDialogAppTest().save_messages(Aux.otherConfigs['OptionInvalid']['Msg'])
             print(f"{Aux.Textcolor.FAIL}'{test_plan_selected}' {Aux.otherConfigs['OptionInvalid']['Msg']}"
                   f"{Aux.Textcolor.END}")
             ###exit(0)
 
         except Exception as e:
-            if Aux.otherConfigs['Interface']:
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorGetTestPlans']['Msg'])
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetTestPlans']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorGetTestPlans'], value1=str(e))
             # exit(1)
@@ -292,30 +265,22 @@ class AzureConnection:
                     return test_suit
 
                 else:
-                    if Aux.otherConfigs['Interface']:
-                        Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorGetTestSuit']['Msg'])
                     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetTestSuit']['Msg']}{Aux.Textcolor.END}\n")
-                    Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorGetTestSuit'])
+                    Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetTestSuit'])
 
             else:
-                if Aux.otherConfigs['Interface']:
-                    Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorRequest']['Msg'])
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'], 
+                Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'],
                             value1='Status code: ' + str(r.status_code) + ' - getTestSuits')
 
         except ValueError:
-            if Aux.otherConfigs['Interface']:
-                Aux.MDDialogAppTest().save_messages(Aux.otherConfigs['OptionInvalid']['Msg'])
             print(f"{Aux.Textcolor.FAIL}'{test_suit_selected}' {Aux.otherConfigs['OptionInvalid']['Msg']}"
                   f"{Aux.Textcolor.END}")
             ###exit(0)
 
         except Exception as e:
-            if Aux.otherConfigs['Interface']:
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorGetTestSuits']['Msg'])
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetTestSuits']['Msg']}{Aux.Textcolor.END}", e)
-            Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorGetTestSuits'], value1=str(e))
+            Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetTestSuits'], value1=str(e))
             ###exit(1)
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -333,11 +298,6 @@ class AzureConnection:
             test_case_id_list = []
             point_id_list = []
 
-            # Access Screen Running.
-            if Aux.otherConfigs['Interface']:
-                import AppAutomation
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-
             if id_test_case is None:
                 self.url = 'https://' + instance + project + '/_apis/testplan/plans/' + str(id_test_plan) + \
                       '/suites/' + str(id_test_suit) + '/TestCase?api-version=' + version
@@ -353,18 +313,8 @@ class AzureConnection:
                 json_str = json.dumps(s.json())
                 resp = json.loads(json_str)
                 if resp['count'] != 0 and id_test_case is None:
-                    if Aux.otherConfigs['Interface']:
-                        screenRunning.write_message_on_console(
-                            f"[b][color={AppAutomation.KivyTextColor.yellow.defaultvalue}]"
-                            f"{Aux.otherConfigs['TestCaseList']['Msg']}[/color][/b]")
                     print(f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['TestCaseList']['Msg']}{Aux.Textcolor.END}")
                     for cont, testCase_id in enumerate(resp['value']):
-                        if Aux.otherConfigs['Interface']:
-                            screenRunning.write_message_on_console(
-                                f"[color={AppAutomation.KivyTextColor.white.defaultvalue}]" +
-                                "[{0:02d}] ID: {1} Name: {2}".format
-                                (cont + 1, testCase_id['workItem']['id'],
-                                 testCase_id['workItem']['name'])+"[/color]")
                         print("[{0:02d}] ID: {1} Name: {2}".format(cont + 1, testCase_id['workItem']['id'],
                                                                    testCase_id['workItem']['name']))
 
@@ -375,12 +325,6 @@ class AzureConnection:
 
                 elif id_test_case != None:  # Unique test case.
                     testCase_id = resp['value'][0]
-                    if Aux.otherConfigs['Interface']:
-                        screenRunning.write_message_on_console(
-                            f"[b][color={AppAutomation.KivyTextColor.white.defaultvalue}]" +
-                            "[{0:02d}] ID: {1} Name: {2}".format
-                            (1, testCase_id['id'], testCase_id['testCaseReference']['name'])
-                            + "[/color][/b]")
 
                     print("[{0:02d}] ID: {1} Name: {2}".format(1, testCase_id['id'],
                                                                testCase_id['testCaseReference']['name']))
@@ -389,11 +333,6 @@ class AzureConnection:
                     test_suit = testCase_id['testSuite']['id']
 
                 else:
-                    if Aux.otherConfigs['Interface']:
-                        screenRunning.write_message_on_console(
-                            f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                            f"{Aux.logs['ErrorGetTestCase']['Msg']}[/color][/b]")
-                        Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorGetTestCase']['Msg'])
                     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetTestCase']['Msg']}{Aux.Textcolor.END}\n")
                     Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorGetTestCase'])
                     ###exit(1)
@@ -410,20 +349,11 @@ class AzureConnection:
                 Aux.Main.addLogs(self, message="General", value=Aux.otherConfigs['TokenExpired'])
 
             else:
-                if Aux.otherConfigs['Interface']:
-                    screenRunning.write_message_on_console(
-                        f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                        f"{Aux.logs['ErrorRequest']['Msg']}[/color][/b]")
-                    Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorRequest']['Msg'])
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'],
                                  value1='Status code: ' + str(s.status_code) + ' - getTestCases')
 
         except Exception as e:
-            if Aux.otherConfigs['Interface']:
-                screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                       f"{Aux.logs['ErrorGetTestCases']['Msg']}[/color][/b]")
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorGetTestCases']['Msg'])
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetTestCases']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorGetTestCases'], value1=str(e))
             ###exit(1)
@@ -439,21 +369,12 @@ class AzureConnection:
 
         try:
 
-            # Access screen running.
-            if Aux.otherConfigs['Interface']:
-                import AppAutomation
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-
             self.url = 'https://' + instance + project + '/_apis/wit/workitems/' + str(test_case_id) + '?api-version=' \
                        + version
 
             # Execute the Azure request.
             q = requests.get(self.url, auth=Aux.otherConfigs['HttpBasicAuth'], timeout=None)
             if q.status_code == 200:
-                if Aux.otherConfigs['Interface']:
-                    screenRunning.write_message_on_console(
-                        f"[b][color={AppAutomation.KivyTextColor.white.defaultvalue}]"
-                        f"{Aux.logs['GetTestCaseName']['Msg']}[/color][/b]")
                 print(f"{Aux.Textcolor.WARNING}{Aux.logs['GetTestCaseName']['Msg']}"
                       f"{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['GetTestCaseName'], value1="GetTestCaseName")
@@ -464,16 +385,11 @@ class AzureConnection:
 
                 return resp['fields']['System.Title']  # Test case name.
             else:
-                if Aux.otherConfigs['Interface']:
-                    screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                           f"{Aux.logs['ErrorGetTestCaseName']['Msg']}[/color][/b]")
                 print(f"{Aux.Textcolor.WARNING}{Aux.logs['ErrorGetTestCaseName']['Msg']}"
                       f"{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorGetTestCaseName'], value1="GetTestCaseName")
 
         except Exception as e:
-            if Aux.otherConfigs['Interface']:
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorGetTestCaseName']['Msg'])
             print('\033[31m' + Aux.logs['ErrorGetTestCaseName']['Msg'] + '\033[0;0m', e)
             Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorGetTestCaseName'], value1=str(e))
             ###exit(1)
@@ -489,11 +405,6 @@ class AzureConnection:
             point_id_list = kwargs.get("point_id_list", 0)
 
             version = '5.1-preview.3'
-
-            # Access Screen Running.
-            if Aux.otherConfigs['Interface']:
-                import AppAutomation
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
 
             if Aux.otherConfigs['ReplaceEvidence']:
                 # Add the test cases in the Run. (Use the Test Case PointID).
@@ -512,10 +423,6 @@ class AzureConnection:
 
                 p = requests.post(self.url, auth=Aux.otherConfigs['HttpBasicAuth'], json=test_datas, timeout=None)
                 if p.status_code == 200:
-                    if Aux.otherConfigs['Interface']:
-                        screenRunning.write_message_on_console(
-                            f"[b][color={AppAutomation.KivyTextColor.yellow.defaultvalue}]"
-                            f"{Aux.otherConfigs['StatusTestCase']['Msg']}[/color][/b]")
                     print(f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['StatusTestCase']['Msg']}"
                           f"{Aux.Textcolor.END}\n")
                     Aux.Main.addLogs(self, message="General", value=Aux.logs['StatusTestCase'], value1="createTestRun - TestRun")
@@ -527,8 +434,6 @@ class AzureConnection:
                     return testrun_id
 
                 else:
-                    if Aux.otherConfigs['Interface']:
-                        Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorRequest']['Msg'])
                     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
                     Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'], 
                                 value1='Status code: ' + str(p.status_code) + " - createTestRun - TestRun")
@@ -536,8 +441,6 @@ class AzureConnection:
                 return None
 
         except Exception as e:
-            if Aux.otherConfigs['Interface']:
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorLoadTestRun']['Msg'])
             print('\033[31m' + Aux.logs['ErrorLoadTestRun']['Msg'] + '\033[0;0m', e + '- TestRun!')
             Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorLoadTestRun'], value1=str(e) + '- Run!')
             ###exit(1)
@@ -557,18 +460,9 @@ class AzureConnection:
             self.url = 'https://' + instance + project + '/_apis/wit/workitems/' + str(test_case_id) + \
                        '?$expand=All&api-version=' + version
 
-            # Access Screen Running.
-            if Aux.otherConfigs['Interface']:
-                import AppAutomation
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-
             # Execute the request from Azure.
             q = requests.get(self.url, auth=Aux.otherConfigs['HttpBasicAuth'], timeout=None)
             if q.status_code == 200:
-                if Aux.otherConfigs['Interface']:
-                    screenRunning.write_message_on_console(
-                        f"[b][color={AppAutomation.KivyTextColor.yellow.defaultvalue}]"
-                        f"{Aux.otherConfigs['RequestOK']['Msg']}[/color][/b]")
                 print(f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['RequestOK']['Msg']}{Aux.Textcolor.END}\n")
                 # Filter some fields.
                 json_str = json.dumps(q.json())
@@ -581,10 +475,6 @@ class AzureConnection:
                     summary = Aux.otherConfigs['Summary']['Msg']
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['ExecuteTestCase'])
             else:
-                if Aux.otherConfigs['Interface']:
-                    screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                           f"{Aux.logs['ErrorRequest']['Msg']}[/color][/b]")
-                    Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorRequest']['Msg'])
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'],
                                  value1='Status code: ' + str(q.status_code) + ' - executeTestCase')
@@ -592,8 +482,6 @@ class AzureConnection:
             return q.json(), name_testcase, summary
 
         except Exception as e:
-            if Aux.otherConfigs['Interface']:
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorExecuteTestCase']['Msg'])
             print('\033[31m' + Aux.logs['ErrorExecuteTestCase']['Msg'] + '\033[0;0m', e)
             Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorExecuteTestCase'], value1=str(e))
             ###exit(1)
@@ -612,11 +500,6 @@ class AzureConnection:
             cont_steps = 0
             change_download_config: bool = False
 
-            # Access Screen Running.
-            if Aux.otherConfigs['Interface']:
-                import AppAutomation
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-
             steps = []
 
             for _ in root:
@@ -627,8 +510,6 @@ class AzureConnection:
                 if (step.count('"') % 2 == 0) or step.split()[0].upper() in ('SAVE', 'SALVAR', 'GUARDAR'):
 
                     if step == '':
-                        if Aux.otherConfigs['Interface']:
-                            Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorEmptyLine']['Msg'])
                         print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorEmptyLine']['Msg']} {name_testcase}"
                               f"{Aux.Textcolor.END}")
                         Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorEmptyLine'], value1=name_testcase)
@@ -643,11 +524,6 @@ class AzureConnection:
 
                 else:
                     msgErro = ' STEP: ' + str(cont_steps + 1) + ' - TEST CASE: ' + name_testcase
-                    if Aux.otherConfigs['Interface']:
-                        screenRunning.write_message_on_console(
-                            f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                            f"{Aux.logs['ErrorParameters']['Msg']}[/color][/b]")
-                        Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorParameters']['Msg'] + msgErro)
                     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorParameters']['Msg']} {msgErro}"
                           f"{Aux.Textcolor.END}")
                     Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorParameters'], value1=msgErro)
@@ -659,8 +535,6 @@ class AzureConnection:
             return steps, cont_steps, change_download_config
 
         except Exception as e:
-            if Aux.otherConfigs['Interface']:
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorGetSteps']['Msg'])
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetSteps']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorGetSteps'], value1=str(e))
             ###exit(1)
@@ -688,8 +562,6 @@ class AzureConnection:
             return parameters
 
         except Exception as e:
-            if Aux.otherConfigs['Interface']:
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorGetParameters']['Msg'])
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetParameters']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorGetParameters'], value1=str(e))
             ###exit(1)
@@ -719,8 +591,6 @@ class AzureConnection:
             return variables
 
         except Exception as e:
-            if Aux.otherConfigs['Interface']:
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorGetVariables']['Msg'])
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetVariables']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorGetVariables'], value1=str(e))
             ###exit(1)
@@ -764,11 +634,8 @@ class AzureConnection:
                             for num_at in range(0, num_of_at):
                                 variable_no_at = Aux.regex.findall('"@([^"]*)"', step)[0]
                                 variable = "@" + variable_no_at
-                                if variables_param[variable_no_at] is None:
-                                    if Aux.otherConfigs['Interface']:
-                                        raise Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorLineEmpty']['Msg'])
-                                    else:
-                                        raise print(Aux.logs['ErrorLineEmpty']['Msg'])
+                                if variables_param[variable_no_at] is not None:
+                                    raise print(Aux.logs['ErrorLineEmpty']['Msg'])
                                 else:
                                     step = Aux.regex.sub(variable, repr(variables_param[variable_no_at])[1:-1], step)
                             datas.append(step)
@@ -783,15 +650,11 @@ class AzureConnection:
 
         # When there is no variable.
         except ZeroDivisionError:
-            if Aux.otherConfigs['Interface']:
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorLineEmpty']['Msg'])
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorLineEmpty']['Msg']}{Aux.Textcolor.END}")
             Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorLineEmpty'])
             return steps
 
         except Exception as e:
-            if Aux.otherConfigs['Interface']:
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorSliceDatas']['Msg'])
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorSliceDatas']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorSliceDatas'], value1=str(e))
             ###exit(1)
@@ -817,21 +680,12 @@ class AzureConnection:
             old_comments = ''
             actual_comment = ''
 
-            # Access Screen Running.
-            if Aux.otherConfigs['Interface']:
-                import AppAutomation
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-
             # Get the actual Result comments.
             self.url = 'https://' + instance + project + '/_apis/test/Runs/' + str(test_run_id) + '/results/' + \
                        str(test_case_id_azure) + '?api-version=' + version
 
             q = requests.get(self.url, auth=Aux.otherConfigs['HttpBasicAuth'], timeout=None)
             if q.status_code == 200:
-                if Aux.otherConfigs['Interface']:
-                    screenRunning.write_message_on_console(
-                        f"[b][color={AppAutomation.KivyTextColor.yellow.defaultvalue}]"
-                        f"{Aux.logs['GetInfoRun']['Msg']}[/color][/b]")
                 print(f"{Aux.Textcolor.WARNING}{Aux.logs['GetInfoRun']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['GetInfoRun'])
 
@@ -863,21 +717,11 @@ class AzureConnection:
                 return comments, full_name_run_test, actual_comment
 
             else:
-                if Aux.otherConfigs['Interface']:
-                    screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                           f"{Aux.logs['ErrorRequest']['Msg']}[/color][/b]")
-                    Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorRequest']['Msg'])
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'], 
                                  value1='Status code: ' + str(q.status_code) + " - getInfoRun")
 
         except Exception as e:
-            if Aux.otherConfigs['Interface']:
-                # Access screen running.
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-                screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                       f"{Aux.logs['ErrorGetInfoRun']['Msg']}[/color][/b]")
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorGetInfoRun']['Msg'])
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetInfoRun']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorGetInfoRun'], value1=str(e))
             ###exit(1)
@@ -896,11 +740,6 @@ class AzureConnection:
         try:
             version = '6.0'
 
-            # Access Screen Running.
-            if Aux.otherConfigs['Interface']:
-                import AppAutomation
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-
             # Get the actual Result comments.
             self.url = 'https://' + instance + project + '/_apis/test/Runs/' + str(test_run_id) + \
                        '/results?api-version=' + version
@@ -916,28 +755,14 @@ class AzureConnection:
 
             p = requests.patch(self.url, auth=Aux.otherConfigs['HttpBasicAuth'], json=test_datas, timeout=None)
             if p.status_code == 200:
-                if Aux.otherConfigs['Interface']:
-                    screenRunning.write_message_on_console(
-                        f"[b][color={AppAutomation.KivyTextColor.yellow.defaultvalue}]"
-                        f"{Aux.logs['UpdateTestCaseRun']['Msg']}[/color][/b]")
                 print(f"{Aux.Textcolor.WARNING}{Aux.logs['UpdateTestCaseRun']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['UpdateTestCaseRun'])
             else:
-                if Aux.otherConfigs['Interface']:
-                    screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                           f"{Aux.logs['ErrorRequest']['Msg']}[/color][/b]")
-                    Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorRequest']['Msg'])
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'],
                                  value1='Status code: ' + str(p.status_code) + ' - UpdateTestCaseRun')
 
         except Exception as e:
-            # Access screen running.
-            if Aux.otherConfigs['Interface']:
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-                screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                       f"{Aux.logs['ErrorUpdateTestCaseRun']['Msg']}[/color][/b]")
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorUpdateTestCaseRun']['Msg'])
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorUpdateTestCaseRun']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorUpdateTestCaseRun'], value1=str(e))
             ###exit(1)
@@ -973,35 +798,16 @@ class AzureConnection:
                 "attachmentType": "GeneralAttachment"
             }
 
-            # Access Screen Running.
-            if Aux.otherConfigs['Interface']:
-                import AppAutomation
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-
             p = requests.post(self.url, auth=Aux.otherConfigs['HttpBasicAuth'], json=file_datas, timeout=None)
             if p.status_code == 200:
-                if Aux.otherConfigs['Interface']:
-                    screenRunning.write_message_on_console(
-                        f"[b][color={AppAutomation.KivyTextColor.yellow.defaultvalue}]"
-                        f"{Aux.logs['SaveEvidenceRun']['Msg']}[/color][/b]")
                 print(f"{Aux.Textcolor.WARNING}{Aux.logs['SaveEvidenceRun']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['SaveEvidenceRun'], value1="SaveEvidenceRun")
             else:
-                if Aux.otherConfigs['Interface']:
-                    screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                           f"{Aux.logs['ErrorRequest']['Msg']}"
-                                                           f"[/color][/b]")
-                    Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorRequest']['Msg'])
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'], 
                                  value1='Status code: ' + str(p.status_code) + " - SaveEvidenceRun")
 
         except Exception as e:
-            if Aux.otherConfigs['Interface']:
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-                screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                       f"{Aux.logs['ErrorSaveEvidenceRun']['Msg']}[/color][/b]")
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorSaveEvidenceRun']['Msg'])
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorSaveEvidenceRun']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorSaveEvidenceRun'], value1=str(e))
             ###exit(1)
@@ -1025,11 +831,6 @@ class AzureConnection:
             self.url = 'https://' + instance + project + '/_apis/wit/attachments?fileName=' + evidence_file + \
                        '&api-version=' + version
 
-            # Access Screen Running.
-            if Aux.otherConfigs['Interface']:
-                import AppAutomation
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-
             with open(Aux.os.path.join(evidence_folder, name_testcase, evidence_file), "rb") as pdf_file:
                 data = pdf_file.read()
 
@@ -1043,18 +844,9 @@ class AzureConnection:
                 resp = json.loads(json_str)
                 idAttachment = resp['id']
 
-                if Aux.otherConfigs['Interface']:
-                    screenRunning.write_message_on_console(
-                        f"[b][color={AppAutomation.KivyTextColor.yellow.defaultvalue}]"
-                        f"{Aux.logs['SaveEvidenceTestCaseID']['Msg']}[/color][/b]")
                 print(f"{Aux.Textcolor.WARNING}{Aux.logs['SaveEvidenceTestCaseID']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['SaveEvidenceTestCaseID'])
             else:
-                if Aux.otherConfigs['Interface']:
-                    screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                           f"{Aux.logs['ErrorRequest']['Msg']}"
-                                                           f"[/color][/b]")
-                    Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorRequest']['Msg'])
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'], 
                                  value1='Status code: ' + str(p.status_code) + ' - SaveEvidenceTestCaseID')
@@ -1097,39 +889,19 @@ class AzureConnection:
             q = requests.patch(self.url, auth=Aux.otherConfigs['HttpBasicAuth'], json=file_datas, headers=headers,
                                timeout=None)
             if q.status_code == 200:
-                if Aux.otherConfigs['Interface']:
-                    screenRunning.write_message_on_console(
-                        f"[b][color={AppAutomation.KivyTextColor.yellow.defaultvalue}]"
-                        f"{Aux.logs['SaveEvidenceTestCase']['Msg']}[/color][/b]")
                 print(f"{Aux.Textcolor.WARNING}{Aux.logs['SaveEvidenceTestCase']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['SaveEvidenceTestCase'])
             elif q.status_code in [500, 412]:
                 AzureConnection._DownloadAttachment(self, project=project, test_case_id=test_case_id,
                                                     cont_iteration=cont_iteration, name_testcase=name_testcase)
 
-                if Aux.otherConfigs['Interface']:
-                    screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                           f"{Aux.logs['SaveEvidence100files']['Msg']}"
-                                                           f"[/color][/b]")
-                    Aux.MDDialogAppTest().save_messages(Aux.logs['SaveEvidence100files']['Msg'])
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['SaveEvidence100files']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['SaveEvidence100files'])
             else:
-                if Aux.otherConfigs['Interface']:
-                    screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                           f"{Aux.logs['ErrorRequest']['Msg']}"
-                                                           f"[/color][/b]")
-                    Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorRequest']['Msg'])
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'], 
                                  value1='Status code: ' + str(q.status_code) + ' - ' + str(q.text) + ' - SaveEvidenceTestCase')
         except Exception as e:
-            # Access Screen Running.
-            if Aux.otherConfigs['Interface']:
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-                screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                       f"{Aux.logs['ErrorSaveEvidenceTestCase']['Msg']}[/color][/b]")
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorSaveEvidenceTestCase']['Msg'])
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorSaveEvidenceTestCase']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorSaveEvidenceTestCase'], value1=str(e))
             ###exit(1)
@@ -1176,20 +948,12 @@ class AzureConnection:
             r = requests.patch(self.url, auth=Aux.otherConfigs['HttpBasicAuth'], json=file_datas, headers=headers,
                                timeout=None)
             if r.status_code == 200:
-                # Access Screen Running.
-                if Aux.otherConfigs['Interface']:
-                    import AppAutomation
-                    screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-                    screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.blue.defaultvalue}]"
-                                                           f"{Aux.logs['UpdateStatusAutomated']['Msg']}[/color][/b]")
                 print(f"{Aux.Textcolor.BLUE}{Aux.logs['UpdateStatusAutomated']['Msg']}{Aux.Textcolor.END}")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['UpdateStatusAutomated'])
             else:
                 raise Exception
 
         except Exception as e:
-            if Aux.otherConfigs['Interface']:
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorUpdateStatusAutomated']['Msg'])
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorUpdateStatusAutomated']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorUpdateStatusAutomated'], 
                              value1='Status code: ' + str(r.status_code) + " - UpdateStatusAutomated")
@@ -1245,13 +1009,6 @@ class AzureConnection:
                 if relation_failed != None:
                     for seconds in range(1, 15):
                         time.sleep(1)
-                        # Access Screen Running.
-                        if Aux.otherConfigs['Interface']:
-                            import AppAutomation
-                            screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-                            screenRunning.write_message_on_console(
-                                f"[b][color={AppAutomation.KivyTextColor.blue.defaultvalue}]"
-                                f"{Aux.logs['WaitTime']['Msg']} {seconds} / 15[/color][/b]")
                         print(f"{Aux.Textcolor.BLUE}{Aux.logs['WaitTime']['Msg']}{seconds} / 15{Aux.Textcolor.END}")
 
                 # If any download fail.
@@ -1268,13 +1025,6 @@ class AzureConnection:
                             order_list.pop(0)
                             count_evidences_list.pop(0)
 
-                # Access Screen Running.
-                if Aux.otherConfigs['Interface']:
-                    import AppAutomation
-                    screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-
-                    screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                           f"{Aux.logs['GenerateZIPFile']['Msg']}[/color][/b]")
                 print(f"{Aux.Textcolor.BLUE}{Aux.logs['GenerateZIPFile']['Msg']}{Aux.Textcolor.END}")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['GenerateZIPFile']['Msg'])
                 Aux.shutil.make_archive(evidence_folder, 'zip', evidence_folder)
@@ -1285,9 +1035,6 @@ class AzureConnection:
                                                    file_name=name_testcase + '.zip')
 
         except Exception as e:
-            if Aux.otherConfigs['Interface']:
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorDownloadAttachment']['Msg'])
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorDownloadAttachment']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorDownloadAttachment'], value1=str(e))
             ###exit(1)
 
@@ -1318,13 +1065,6 @@ class AzureConnection:
                 id_point = relation['url'].split('/')[7]
                 name = relation['attributes']['name']
 
-                # Access Screen Running.
-                if Aux.otherConfigs['Interface']:
-                    import AppAutomation
-                    screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-                    screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                           f"{Aux.logs['GenerateZIP']['Msg']} "
-                                                           f"{count_evidences} / {total}[/color][/b]")
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['GenerateZIP']['Msg']} {count_evidences} / "
                       f"{total}{Aux.Textcolor.END}")
 
@@ -1356,13 +1096,6 @@ class AzureConnection:
             count_evidences += 1
 
         except Exception as e:
-            # Access Screen Running.
-            if Aux.otherConfigs['Interface']:
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-
-                screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                       f"{Aux.logs['ErrorDownloadAttachment']['Msg']}[/color][/b]")
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorDownloadAttachment']['Msg'])
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorDownloadAttachment']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorDownloadAttachment'], value1=str(e))
             ###exit(1)
@@ -1381,10 +1114,6 @@ class AzureConnection:
             compare = kwargs.get('compare')
 
             version = '6.0'
-
-            # Access Screen Running.
-            if Aux.otherConfigs['Interface']:
-                import AppAutomation
 
             # check if the download file already exist.
             self.url = 'https://' + instance + project + '/_apis/wit/workitems/' + str(test_case_id) + \
@@ -1426,24 +1155,15 @@ class AzureConnection:
                                                    test_case_id=str(test_case_id),
                                                    download_file_name=download_file_name, file_name=file_name)
 
-                if Aux.otherConfigs['Interface']:
-                    screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-                    screenRunning.write_message_on_console(
-                        f"[b][color={AppAutomation.KivyTextColor.yellow.defaultvalue}]"
-                        f"{Aux.logs['CheckDownloadFile']['Msg']}[/color][/b]")
                 print(f"{Aux.Textcolor.WARNING}{Aux.logs['CheckDownloadFile']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['CheckDownloadFile'])
 
             else:
-                if Aux.otherConfigs['Interface']:
-                    Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorRequest']['Msg'])
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'], 
                                  value1='Status code: ' + str(q.status_code) + ' - CheckDownloadFile')
 
         except Exception as e:
-            if Aux.otherConfigs['Interface']:
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorCheckDownloadFile']['Msg'])
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorCheckDownloadFile']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorCheckDownloadFile'], value1=str(e))
             ###exit(1)
@@ -1481,25 +1201,14 @@ class AzureConnection:
                                headers=headers, timeout=None)
 
             if q.status_code == 200:
-                # Access Screen Running.
-                if Aux.otherConfigs['Interface']:
-                    import AppAutomation
-                    screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-                    screenRunning.write_message_on_console(
-                        f"[b][color={AppAutomation.KivyTextColor.yellow.defaultvalue}]"
-                        f"{Aux.logs['DeleteDownloadFile']['Msg']}[/color][/b]")
                 print(f"{Aux.Textcolor.WARNING}{Aux.logs['DeleteDownloadFile']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['DeleteDownloadFile'])
             else:
-                if Aux.otherConfigs['Interface']:
-                    Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorRequest']['Msg'])
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'], 
                                  value1='Status code: ' + str(q.status_code) + ' - DeleteDownloadFile')
 
         except Exception as e:
-            if Aux.otherConfigs['Interface']:
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorDeleteDownloadFile']['Msg'])
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorDeleteDownloadFile']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorDeleteDownloadFile'], value1=str(e))
             ###exit(1)
@@ -1517,9 +1226,6 @@ class AzureConnection:
             # Get the Attachment ID.
             version = '6.0'
 
-            if Aux.otherConfigs['Interface']:
-                import AppAutomation
-
             self.url = 'https://' + instance + project + '/_apis/wit/attachments?fileName=' + str(file_name) + \
                        '&api-version=' + version
 
@@ -1535,17 +1241,9 @@ class AzureConnection:
                 json_str = json.dumps(p.json())
                 resp = json.loads(json_str)
                 idAttachment = resp['id']
-                # Access Screen Running.
-                if Aux.otherConfigs['Interface']:
-                    screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-                    screenRunning.write_message_on_console(
-                        f"[b][color={AppAutomation.KivyTextColor.yellow.defaultvalue}]"
-                        f"{Aux.logs['UploadDownloadFileID']['Msg']}[/color][/b]")
                 print(f"{Aux.Textcolor.WARNING}{Aux.logs['UploadDownloadFileID']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['UploadDownloadFileID'])
             else:
-                if Aux.otherConfigs['Interface']:
-                    Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorRequest']['Msg'])
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'], 
                                  value1='Status code: ' + str(p.status_code) + ' - UploadDownloadFileID')
@@ -1583,24 +1281,14 @@ class AzureConnection:
             q = requests.patch(self.url, auth=Aux.otherConfigs['HttpBasicAuth'], json=file_datas, headers=headers,
                                timeout=None)
             if q.status_code == 200:
-                # Access Screen Running.
-                if Aux.otherConfigs['Interface']:
-                    screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-                    screenRunning.write_message_on_console(
-                        f"[b][color={AppAutomation.KivyTextColor.yellow.defaultvalue}]"
-                        f"{Aux.logs['UploadDownloadFile']['Msg']}[/color][/b]")
                 print(f"{Aux.Textcolor.WARNING}{Aux.logs['UploadDownloadFile']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['UploadDownloadFile'])
             else:
-                if Aux.otherConfigs['Interface']:
-                    Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorRequest']['Msg'])
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'], 
                                  value1='Status code: ' + str(q.status_code) + ' - UploadDownloadFile')
 
         except Exception as e:
-            if Aux.otherConfigs['Interface']:
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorUploadDownloadFile']['Msg'])
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorUploadDownloadFile']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorUploadDownloadFile'], value1=str(e))
             ###exit(1)
@@ -1621,11 +1309,6 @@ class AzureConnection:
 
             self.url = 'https://' + instance + project + '/_apis/wit/workitems?ids=' + str(id_testcase) + \
                        '&$expand=all&api-version=' + version
-
-            # Access Screen Running.
-            if Aux.otherConfigs['Interface']:
-                import AppAutomation
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
 
             p = requests.get(self.url, auth=Aux.otherConfigs['HttpBasicAuth'], timeout=None)
             if p.status_code == 200:
@@ -1656,19 +1339,10 @@ class AzureConnection:
                         else:
                             list_files_new.append(download_name)
 
-                if Aux.otherConfigs['Interface']:
-                    screenRunning.write_message_on_console(
-                        f"[b][color={AppAutomation.KivyTextColor.yellow.defaultvalue}]"
-                        f"{Aux.logs['SaveDownloadFileLocally']['Msg']}[/color][/b]")
                 print(f"{Aux.Textcolor.WARNING}{Aux.logs['SaveDownloadFileLocally']['Msg']}"
                       f"{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['SaveDownloadFileLocally'])
             else:
-                if Aux.otherConfigs['Interface']:
-                    screenRunning.write_message_on_console(
-                        f"[b][color={AppAutomation.KivyTextColor.yellow.defaultvalue}]"
-                        f"{Aux.logs['ErrorRequest']['Msg']}[/color][/b]")
-                    Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorRequest']['Msg'])
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'], 
                                  value1='Status code: ' + str(p.status_code) + ' - ErrorSaveDownloadFileLocally')
@@ -1676,12 +1350,6 @@ class AzureConnection:
             return test_name, id_testcase, sorted(list_files_baseline), sorted(list_files_new)
 
         except Exception as e:
-            # Access Screen Running.
-            if Aux.otherConfigs['Interface']:
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-                screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.yellow.defaultvalue}]"
-                                                       f"{Aux.logs['ErrorSaveDownloadFileLocally']['Msg']}[/color][/b]")
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorSaveDownloadFileLocally']['Msg'])
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorSaveDownloadFileLocally']['Msg']}"
                   f"{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorSaveDownloadFileLocally'], value1=str(e))
@@ -1706,35 +1374,16 @@ class AzureConnection:
                 "state": status_run,
             }
 
-            # Access Screen Running.
-            if Aux.otherConfigs['Interface']:
-                import AppAutomation
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-
             p = requests.patch(self.url, auth=Aux.otherConfigs['HttpBasicAuth'], json=test_datas, timeout=None)
             if p.status_code == 200:
-                if Aux.otherConfigs['Interface']:
-                    screenRunning.write_message_on_console(
-                        f"[b][color={AppAutomation.KivyTextColor.yellow.defaultvalue}]"
-                        f"{Aux.logs['UpdateRun']['Msg']}[/color][/b]")
                 print(f"{Aux.Textcolor.WARNING}{Aux.logs['UpdateRun']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['UpdateRun'])
             else:
-                if Aux.otherConfigs['Interface']:
-                    screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                           f"{Aux.logs['ErrorRequest']['Msg']}[/color][/b]")
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorRequest']['Msg'])
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'], 
                                  value1='Status code: ' + str(p.status_code) + ' - updateRun')
 
         except Exception as e:
-            # Access screen running.
-            if Aux.otherConfigs['Interface']:
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-                screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                       f"{Aux.logs['ErrorUpdateRun']['Msg']}[/color][/b]")
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorUpdateRun']['Msg'])
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorUpdateRun']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorUpdateRun'], value1=str(e))
             ###exit(1)
@@ -1752,10 +1401,6 @@ class AzureConnection:
 
             version = '6.1-preview.6'
             id_azure = 100000
-
-            # Access Screen Running.
-            if Aux.otherConfigs['Interface']:
-                import AppAutomation
 
             # Get the actual Result comments.
             self.url = 'https://' + instance + project + '/_apis/test/Runs/' + str(test_run_id) + \
@@ -1779,11 +1424,6 @@ class AzureConnection:
                         amount_test_case = 1
 
             else:
-                if Aux.otherConfigs['Interface']:
-                    screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-                    screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                           f"{Aux.logs['ErrorRequest']['Msg']}[/color][/b]")
-                    Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorRequest']['Msg'])
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'], 
                                  value1='Status code: ' + str(p.status_code) + ' - getTestCaseRun')
@@ -1791,23 +1431,12 @@ class AzureConnection:
             if amount_test_case == 0:
                 return None
             else:
-                if Aux.otherConfigs['Interface']:
-                    screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-                    screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.yellow.defaultvalue}]"
-                                                           f"{Aux.logs['GetTestCaseRun']['Msg']}[/color][/b]")
-
                 print(f"{Aux.Textcolor.WARNING}{Aux.logs['GetTestCaseRun']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['GetTestCaseRun'])
 
                 return amount_test_case, id_azure, full_name_run_test
 
         except Exception as e:
-            # Access screen running.
-            if Aux.otherConfigs['Interface']:
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-                screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                       f"{Aux.logs['ErrorGetTestCaseRun']['Msg']}[/color][/b]")
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorGetTestCaseRun']['Msg'])
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetTestCaseRun']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorGetTestCaseRun'], value1=str(e))
             exit(1)
@@ -1833,11 +1462,6 @@ class AzureConnection:
             # Return values.
             failed_details = {}
 
-            # Access screen running.
-            if Aux.otherConfigs['Interface']:
-                import AppAutomation
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-
             self.url = 'https://' + instance + project + '/_apis/test/Runs/' + str(test_run_id) + '/results/' + \
                        str(id_azure) + '/?detailsToInclude=iterations&?api-version=' + version
 
@@ -1850,9 +1474,6 @@ class AzureConnection:
 
                 # Verify the test execution.
                 if not resp['iterationDetails']:
-                    if Aux.otherConfigs['Interface']:
-                        Aux.MDDialogAppTest().save_messages(Aux.otherConfigs['NoExecutions']['Msg'])
-                        Aux.Main.addLogs(self, message="General", value=Aux.otherConfigs['NoExecutions']['Msg'])
                     raise Exception(f"{Aux.Textcolor.FAIL}{Aux.logs['NoExecutions']['Msg']}{Aux.Textcolor.END}")
 
                 # Verify the number of test cases.
@@ -1876,17 +1497,10 @@ class AzureConnection:
 
                         # Verify the prints.
                         if not resp['iterationDetails'][n_iteration]['attachments']:
-                            if Aux.otherConfigs['Interface']:
-                                Aux.MDDialogAppTest().save_messages(Aux.otherConfigs['NoEvidences']['Msg'])
                             print(f"{Aux.Textcolor.FAIL}{Aux.otherConfigs['NoEvidences']['Msg']}"
                                   f"{Aux.Textcolor.END}")
                             Aux.Main.addLogs(self, message="General", value=Aux.otherConfigs['NoEvidences'])
                             return None, None, None
-
-                        if Aux.otherConfigs['Interface']:
-                            screenRunning.write_message_on_console(
-                                f"[b][color={AppAutomation.KivyTextColor.white.defaultvalue}]"
-                                f"{test_case_name}[/color][/b]")
 
                         print(f"{Aux.Textcolor.BOLD}{test_case_name}{Aux.Textcolor.END}")
                         attachments = resp['iterationDetails'][n_iteration]['attachments']
@@ -1955,30 +1569,16 @@ class AzureConnection:
 
                     test_case_id = resp['testCase']['id']
 
-                    if Aux.otherConfigs['Interface']:
-                        screenRunning.write_message_on_console(
-                            f"[b][color={AppAutomation.KivyTextColor.blue.defaultvalue}]"
-                            f"{Aux.logs['AttachmentList']['Msg']}[/color][/b]")
                     print(f"{Aux.Textcolor.BLUE}{Aux.logs['AttachmentList']['Msg']}{Aux.Textcolor.END}")
 
                     return test_case_id, n_iterations, failed_info_dict, completed_date
 
             else:
-                if Aux.otherConfigs['Interface']:
-                    screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                           f"{Aux.logs['ErrorRequest']['Msg']}[/color][/b]")
-                    Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorRequest']['Msg'])
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'], 
                                  value1='Status code: ' + str(q.status_code) + ' - attachmentList')
 
         except Exception as e:
-            # Access screen running.
-            if Aux.otherConfigs['Interface']:
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-                screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                       f"{Aux.logs['ErrorAttachmentList']['Msg']}[/color][/b]")
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorAttachmentList']['Msg'])
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorAttachmentList']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorAttachmentList'], value1=str(e))
             ###exit(1)
@@ -1996,11 +1596,6 @@ class AzureConnection:
             n_test_case = kwargs.get('n_test_case')
             n_iteration = kwargs.get('n_iteration')
             test_case_name = kwargs.get('test_case_name')
-
-            # Access Screen Running.
-            if Aux.otherConfigs['Interface']:
-                import AppAutomation
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
 
             # Saving by the attachment ID order.
             for index, id_manual_print in enumerate(list_id_manual_print):
@@ -2023,145 +1618,22 @@ class AzureConnection:
                     with open(evidence_image, 'wb') as print_screen:
                         print_screen.write(q.content)
 
-                    if Aux.otherConfigs['Interface']:
-                        screenRunning.write_message_on_console(
-                            f"[u][color={AppAutomation.KivyTextColor.white.defaultvalue}]"
-                            f"{Aux.logs['SaveManualPrintScreen']['Msg']}[/u]" +
-                            f" {test_case_name} ITERATION " +
-                            f"{n_iteration} - Print {step_order}[/color]")
-
                     print(f"{Aux.Textcolor.UNDERLINE}{Aux.logs['SaveManualPrintScreen']['Msg']}{Aux.Textcolor.END} "
                           f"{test_case_name} ITERATION "
                           f"{n_iteration} - Print {step_order}")
 
                 elif q.status_code == 401:
-                    if Aux.otherConfigs['Interface']:
-                        screenRunning.write_message_on_console(
-                            f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                            f"{Aux.logs['ErrorToken']['Msg']}[/color][/b]")
-                        Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorRequest']['Msg'])
                     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorToken']['Msg']}{Aux.Textcolor.END}\n")
                     Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorToken'],
                                      value1='Status code: ' + str(q.status_code) + ' - saveManualPrintScreen')
 
                 else:
-                    if Aux.otherConfigs['Interface']:
-                        screenRunning.write_message_on_console(
-                            f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                            f"{Aux.logs['ErrorRequest']['Msg']}[/color][/b]")
-                        Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorRequest']['Msg'])
                     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
                     Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'], 
                                      value1='Status code: ' + str(q.status_code) + ' - saveManualPrintScreen')
 
         except Exception as e:
-            # Access screen running.
-            if Aux.otherConfigs['Interface']:
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-                screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                       f"{Aux.logs['ErrorSaveManualPrintScreen']['Msg']}[/color][/b]")
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorSaveManualPrintScreen']['Msg'])
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorSaveManualPrintScreen']['Msg']}"
                   f"{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorSaveManualPrintScreen'], value1=str(e))
             ###exit(1)
-
-# class GitHubConnection:
-#
-#     def __init__(self):
-#         self.url = None
-#
-#     # Check for Updates.
-#     def check_Updates(self):
-#
-#         self.URL = 'https://' + token_GitHub + '@raw.githubusercontent.com/AutomacaoITQC/AutomacaoQA/master/version.txt'
-#
-#         headers = {
-#             'Authorization': f'token {token_GitHub}',
-#             'Accept': 'application/vnd.github.v4+raw'
-#         }
-#
-#         try:
-#             from AppAutomation import UpdateField
-#             update = UpdateField()
-#
-#             response = requests.get(self.URL, headers=headers)
-#
-#             if response.status_code == 200:
-#                 GitHubVersion = response.text
-#
-#                 # If the GitHub version is latest than local version.
-#                 if float(GitHubVersion) > float(LocalVersion):
-#                     update.show_Update_input()
-#                     update.run()
-#
-#                 else:
-#                     print('Não há atualizações disponíveis')
-#                     #update.no_updates_available()
-#                     #update.run()
-#
-#             else:
-#                 print('Não foi possível verificar atualizações!')
-#                 update.could_not_check_for_updates_msg()
-#                 update.run()
-#
-#         except Exception as error:
-#             print('Erro: ' + str(error))
-#
-#     # Check for Updates
-#     def download_Updates(self):
-#
-#         from AppAutomation import UpdateField
-#
-#         update = UpdateField()
-#
-#         headers = {
-#             'Authorization': f'token {token_GitHub}',
-#             'Accept': 'application/vnd.github.v4+raw'
-#         }
-#
-#         try:
-#             # diretório de download
-#             DOWNLOAD_DIR = 'C:\ibope\Repository\TEMP'
-#             LINK_DOWNLOAD = 'https://' + token_GitHub + '@raw.githubusercontent.com/AutomacaoITQC/AutomacaoQA/master/exec/Automation_EXE.zip'
-#             local_filename = LINK_DOWNLOAD.split('/')[-1]
-#
-#             # download Atualização
-#             with requests.get(LINK_DOWNLOAD, stream=True, headers=headers) as r:
-#                 if r.status_code == 200:
-#                     with open(DOWNLOAD_DIR + '\\' + local_filename, 'wb') as f:
-#                         shutil.copyfileobj(r.raw, f)
-#                         print('DOWNLOAD COMPLETO DA ATUALIZAÇÃO!')
-#
-#                 else:
-#                     print('FALHA AO BAIXAR A VERSÃO')
-#                     update.download_update_fail_msg()
-#                     update.run()
-#
-#             LINK_DOWNLOAD_BAT = 'https://' + token_GitHub + '@raw.githubusercontent.com/AutomacaoITQC/AutomacaoQA/master/exec/Install.bat'
-#             local_filename = LINK_DOWNLOAD_BAT.split('/')[-1]
-#
-#             # download BAT da Atualização
-#             with requests.get(LINK_DOWNLOAD_BAT, stream=True, headers=headers) as r:
-#                 if r.status_code == 200:
-#
-#                     with open(DOWNLOAD_DIR + '\\' + local_filename, 'wb') as f:
-#                         shutil.copyfileobj(r.raw, f)
-#                         print('DOWNLOAD COMPLETO DA BAT!')
-#
-#                 else:
-#                     print('FALHA AO BAIXAR A BAT DE INSTALAÇÃO DA VERSÃO')
-#                     update.download_update_fail_msg()
-#                     update.run()
-#
-#             #update.download_update_completed_msg()
-#             #update.run()
-#
-#             #instalar Atualização
-#             #install_Update(self)
-#
-#         except Exception as error:
-#             print('Erro: ' + str(error))
-#
-#     def install_Update(self):
-#         subprocess.call([r'C:\ibope\Repository\TEMP\Install.bat'])

@@ -30,11 +30,6 @@ class Main:
             # Clear the temp files.
             Aux.Main.deleteDirectory(self, directory=Aux.directories["Temp"])
 
-            # Access Screen Running.
-            if Aux.otherConfigs['Interface']:
-                import AppAutomation
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-
             # Start the automation.
             project, test_case_id_list, test_run_id = \
                 Azure.AzureConnection.startRun(self, project=project, id_test_plan=id_test_plan,
@@ -44,31 +39,11 @@ class Main:
                                  id_test_suit=id_test_suit, test_case_id_list=test_case_id_list,
                                  test_run_id=test_run_id)
 
-        except IndexError as e:
-            # Access Screen Running.
-            if Aux.otherConfigs['Interface']:
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-                screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                       f"{Aux.logs['IndexError']['Msg']}[/color][/b]")
-
         except Exception as ex:
-            # Access Screen Running.
-            if Aux.otherConfigs['Interface']:
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-                screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                       f"{Aux.logs['ErrorMain']['Msg']}[/color][/b]")
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorMain']['Msg'])
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorMain']['Msg']}{Aux.Textcolor.END}", ex)
             Aux.Main.addLogs(self, message="General", value=Aux.logs["ErrorMain"]['Msg'], value1=str(ex))
 
         finally:
-            # Access screen running.
-            if Aux.otherConfigs['Interface']:
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-                screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.orange.defaultvalue}]"
-                                                       f"{Aux.otherConfigs['MsgFinishedEvidence']['Msg']}[/color][/b]")
-                Aux.MDDialogAppTest().save_messages(Aux.otherConfigs['MsgFinishedExecution']['Msg'])
-                Aux.MDDialogAppTest().show_mddialog()
             print(f"{Aux.Textcolor.FAIL}{Aux.otherConfigs['MsgFinishedEvidence']['Msg']}{Aux.Textcolor.END}")
 
     # Execute the test case iterations.
@@ -92,11 +67,6 @@ class Main:
         full_name_run_test = None
         actual_comment = None
         status_list = []
-
-        # Access Screen Running.
-        if Aux.otherConfigs['Interface']:
-            import AppAutomation
-            screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
 
         try:
             # Complete name (if it is using the VPN).
@@ -158,10 +128,6 @@ class Main:
                                            "\nPROJECT: " + project_name + " - TEST PLAN: " + id_test_plan +
                                            " - TEST SUIT: " + id_test_suit + " - RUN ID: " + str(test_run_id) + "\n")
 
-                    if Aux.otherConfigs['Interface']:
-                        screenRunning.write_message_on_console(
-                            f"[b][color={AppAutomation.KivyTextColor.white.defaultvalue}]"
-                            f"{name_testcase}[/color][/b]")
                     print(f"{Aux.Textcolor.BOLD}{name_testcase}{Aux.Textcolor.END}")
                     status, step_failed, save_evidence, take_picture_status = \
                         Main.executeStepByStep(self, list_steps=list_steps, test_set_path=test_set_path,
@@ -218,11 +184,6 @@ class Main:
                         Azure.AzureConnection.updateTestCaseRun(self, project=project, test_run_id=test_run_id,
                                                                 test_case_id_azure=test_case_id_azure, status_ct=status,
                                                                 duration=duration, comments=comments)
-                        if Aux.otherConfigs['Interface']:
-                            screenRunning.write_message_on_console(
-                                f"[b][color={AppAutomation.KivyTextColor.yellow.defaultvalue}]"
-                                f"{Aux.otherConfigs['GeneratingEvidence']['Msg']}[/color]"
-                                f"[/b]")
                         print(f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['GeneratingEvidence']['Msg']}"
                               f"{Aux.Textcolor.END}\n")
 
@@ -301,12 +262,6 @@ class Main:
             Aux.Main.percentage(self, actual=len(test_case_id_list), total=len(test_case_id_list))
 
         except Exception as ex:
-            # Access Screen Running.
-            if Aux.otherConfigs['Interface']:
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-                screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                       f"{Aux.logs['ErrorStartAutomation']['Msg']}[/color][/b]")
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorStartAutomation']['Msg'])
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorStartAutomation']['Msg']}{Aux.Textcolor.END}", ex)
             Aux.Main.addLogs(self, message="General", value=Aux.logs["ErrorStartAutomation"], value1=str(ex))
 
@@ -344,11 +299,6 @@ class Main:
         save_evidence= True
         take_picture_status = None
 
-        # Access Screen Running.
-        if Aux.otherConfigs['Interface']:
-            import AppAutomation
-            screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-
         try:
             for step in list_steps[step_initial:step_final]:
                 # Initialize the variables.
@@ -371,18 +321,6 @@ class Main:
                     value2 = step.split('"')[3]
                 elif step.count('"') == 2:  # One parameter.
                     value1 = step.split('"')[1]
-
-                if Aux.otherConfigs['Interface']:
-                    screenRunning.write_message_on_console(f"[color={AppAutomation.KivyTextColor.white.defaultvalue}]"
-                                                           f"{Aux.otherConfigs['Step']['Msg']}: {step}[/color]")
-                    screenRunning.write_message_on_console(f"[color={AppAutomation.KivyTextColor.white.defaultvalue}]"
-                                                           f"{Aux.otherConfigs['Verb']['Msg']}: {verb}[/color]")
-                    screenRunning.write_message_on_console(f"[color={AppAutomation.KivyTextColor.white.defaultvalue}]"
-                                                           f"PARAM 1: {value1}[/color]")
-                    screenRunning.write_message_on_console(f"[color={AppAutomation.KivyTextColor.white.defaultvalue}]"
-                                                           f"PARAM 2: {value2}[/color]")
-                    screenRunning.write_message_on_console(f"[color={AppAutomation.KivyTextColor.white.defaultvalue}]" +
-                                                           f"{('=+=' * 20)}" + "[/color]")
 
                 print(f"{Aux.otherConfigs['Step']['Msg']}: {step}")
                 print(f"{Aux.otherConfigs['Verb']['Msg']}: {verb}")
@@ -434,11 +372,5 @@ class Main:
             return status_ct, step_failed, save_evidence, take_picture_status
 
         except Exception as ex:
-            # Access Screen Running.
-            if Aux.otherConfigs['Interface']:
-                screenRunning = AppAutomation.AppAutomation.get_running_app().root.get_screen('Running')
-                screenRunning.write_message_on_console(f"[b][color={AppAutomation.KivyTextColor.red.defaultvalue}]"
-                                                       f"{Aux.logs['ErrorExecuteStepByStep']['Msg']}[/color][/b]")
-                Aux.MDDialogAppTest().save_messages(Aux.logs['ErrorExecuteStepByStep']['Msg'])
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorExecuteStepByStep']['Msg']}{Aux.Textcolor.END}", ex)
             Aux.Main.addLogs(self, message="General", value=Aux.logs["ErrorExecuteStepByStep"], value1=str(ex))
