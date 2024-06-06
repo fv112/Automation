@@ -6,14 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="d16153e1-5b12-4734-a6f3-14148c7d886c" name="Changes" comment="Adaptação para o ambiente da T-Systems / GitLab.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AppAutomation.kv" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/AppAutomation.py" beforeDir="false" afterPath="$PROJECT_DIR$/AppAutomation.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Automation/configs/dictionary-pt.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Automation/configs/dictionary-pt.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/automaticCompareFiles.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/automaticCompareFiles.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/automationAux.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/automationAux.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules/automatizationCore_Azure.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/automatizationCore_Azure.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules/azureConnection.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/azureConnection.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/generateManualEvidence.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/generateManualEvidence.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,7 +39,7 @@
     &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
     &quot;Python.AppAutomation.executor&quot;: &quot;Debug&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;CommandLine&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
 }</component>
@@ -127,19 +124,19 @@
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/modules/azureConnection.py</url>
-          <line>39</line>
-          <option name="timeStamp" value="11" />
+          <url>file://$PROJECT_DIR$/modules/automatizationCore_Azure.py</url>
+          <line>10</line>
+          <option name="timeStamp" value="29" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/modules/azureConnection.py</url>
-          <line>150</line>
-          <option name="timeStamp" value="13" />
+          <url>file://$PROJECT_DIR$/modules/automatizationCore_Azure.py</url>
+          <line>139</line>
+          <option name="timeStamp" value="46" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/modules/azureConnection.py</url>
+          <url>file://$PROJECT_DIR$/modules/automatizationCore_Azure.py</url>
           <line>132</line>
-          <option name="timeStamp" value="14" />
+          <option name="timeStamp" value="53" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -1,9 +1,19 @@
 Automation QA - Release notes
 ----
+**Version 9.2.0**                            
+
+<em>06/06/2024</em>
+- <font color='red'>__[Novo]__</font> - Leitura dos passos do GitLab.
+- <font color='red'>__[Novo]__</font> - Leitura dos parâmetros de cada passo.
+                                           
+<em>03/06/2024</em>
+- Remoção dos itens de interface.
+- Conectando com o GitLab da T-Systems.
+
 **Version 9.0.0**                            
                                            
 <em>28/05/2024</em>
-- <font color='red'>__[Novo]__</font> - Adaptação para o ambiente da T-Systems / GitLab.
+- Adaptação para o ambiente da T-Systems / GitLab.
 
 **Version 8.6.0**                            
                                            

@@ -6,42 +6,52 @@ import modules.azureConnection as Azure
 class Main:
 
     def __init__(self):
-        pass
+        self.main()
 
-    def main(self, **kwargs):
+    def main(self):
         try:
             # Variables.
-            test_case_id_list = []
-            project = kwargs.get('project_id')
-            project_name = kwargs.get('project_name') # Only for log.
-            id_test_plan = kwargs.get('id_test_plan')
-            id_test_suit = kwargs.get('id_test_suit')
-            test_case_id_list_all = kwargs.get('test_case_id_list_all')
-            enable_cookie = kwargs.get('cookie')
-            Aux.otherConfigs['ReplaceEvidence'] = kwargs.get('evidence')
-            Aux.otherConfigs['TimeoutSession'] = kwargs.get('timeout')
+            # test_case_id_list = []
+            # project = kwargs.get('project_id')
+            # project_name = kwargs.get('project_name') # Only for log.
+            # id_test_plan = kwargs.get('id_test_plan')
+            # id_test_suit = kwargs.get('id_test_suit')
+            # test_case_id_list_all = kwargs.get('test_case_id_list_all')
+            # enable_cookie = kwargs.get('cookie')
+            # Aux.otherConfigs['ReplaceEvidence'] = kwargs.get('evidence')
+            # Aux.otherConfigs['TimeoutSession'] = kwargs.get('timeout')
 
-            if enable_cookie:
-                Aux.otherConfigs['FlagEnableCookie'] = True
-            else:
-                Aux.otherConfigs['FlagEnableCookie'] = False
-            if test_case_id_list_all == '': test_case_id_list_all = None
+            # if enable_cookie:
+            #     Aux.otherConfigs['FlagEnableCookie'] = True
+            # else:
+            #     Aux.otherConfigs['FlagEnableCookie'] = False
+            # if test_case_id_list_all == '': test_case_id_list_all = None
 
             # Clear the temp files.
-            Aux.Main.deleteDirectory(self, directory=Aux.directories["Temp"])
+            Aux.Main.deleteDirectory(directory=Aux.directories["Temp"])
 
             # Start the automation.
-            project, test_case_id_list, test_run_id = \
-                Azure.AzureConnection.startRun(self, project=project, id_test_plan=id_test_plan,
-                                               id_test_suit=id_test_suit, test_case_id_list_all=test_case_id_list_all)
+            # project, test_case_id_list, test_run_id = \
+            #     Azure.AzureConnection.startRun(project=project, id_test_plan=id_test_plan,
+            #                                    id_test_suit=id_test_suit, test_case_id_list_all=test_case_id_list_all)
+            # project, test_case_id_list = Azure.AzureConnection.startRun(project=project)
 
-            Main.startAutomation(self, project=project, project_name=project_name, id_test_plan=id_test_plan,
-                                 id_test_suit=id_test_suit, test_case_id_list=test_case_id_list,
-                                 test_run_id=test_run_id)
+            # project = AzureConnection.getProjects(self)
+            #
+            # test_case_id_list_all, test_suit = \
+            # AzureConnection.getTestCases(self, project=project, id_test_plan=id_test_plan,
+            #                              id_test_suit=id_test_suit,
+            #                              id_test_case=id_test_case)
+
+            project = Azure.AzureConnection.getProjects(self)
+
+            test_case_id_list = Azure.AzureConnection.getTestCases(self, project=project)
+
+            Main.startAutomation(self, project=project, test_case_id_list=test_case_id_list)
 
         except Exception as ex:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorMain']['Msg']}{Aux.Textcolor.END}", ex)
-            Aux.Main.addLogs(self, message="General", value=Aux.logs["ErrorMain"]['Msg'], value1=str(ex))
+            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorMain"]['Msg'], value1=str(ex))
 
         finally:
             print(f"{Aux.Textcolor.FAIL}{Aux.otherConfigs['MsgFinishedEvidence']['Msg']}{Aux.Textcolor.END}")
@@ -53,19 +63,19 @@ class Main:
         project = kwargs.get("project")
         project_name = kwargs.get('project_name')  # Only for log.
         test_case_id_list = kwargs.get("test_case_id_list")
-        test_run_id = kwargs.get("test_run_id")
-        id_test_plan = kwargs.get("id_test_plan") # Only for log.
-        id_test_suit = kwargs.get("id_test_suit") # Only for log.
+        # test_run_id = kwargs.get("test_run_id")
+        # id_test_plan = kwargs.get("id_test_plan")  # Only for log.
+        # id_test_suit = kwargs.get("id_test_suit")  # Only for log.
 
         # Variables.
         duration = 0
         status = None
         save_evidence = False
         status_ct_automation = None
-        comments = None
-        workitem_status = None
-        full_name_run_test = None
-        actual_comment = None
+        # comments = None
+        # workitem_status = None
+        # full_name_run_test = None
+        # actual_comment = None
         status_list = []
 
         try:
@@ -86,21 +96,21 @@ class Main:
                 status_ct_automation = 'Planned'
 
                 # Inform the test case percentage already executed.
-                Aux.Main.percentage(self, actual=index, total=len(test_case_id_list))
+                Aux.Main.percentage(actual=index, total=len(test_case_id_list))
 
                 change_download_config: bool
-                list_steps, name_testcase, summary, cont_steps, change_download_config = \
+                order_steps_list, name_testcase, steps_list, verbs, parameters1, parameters2 = \
                     Azure.AzureConnection.startSteps(self, project=project, test_case_id=test_case_id)
-                total_steps = len(list_steps)
-                total_iteration = int(total_steps / cont_steps) + 1
-                step_initial = 0
-                step_final = cont_steps
+                total_steps = len(order_steps_list)
+                # total_iteration = int(total_steps / cont_steps) + 1
+                # step_initial = 0
+                # step_final = cont_steps
 
                 # Execution Initial time.
                 initial_time = Aux.datetime.datetime.now()
 
                 # Validate the testcase name.
-                if Aux.Main.validateTestName(self, name_testcase=name_testcase):
+                if Aux.Main.validateTestName(name_testcase=name_testcase):
                     test_case_id_azure += 1
                     continue
 
@@ -111,30 +121,24 @@ class Main:
                     test_set_path = Aux.os.path.join(Aux.directories["EvidenceFolder"], Aux.otherConfigs["ETSName"] +
                                                      str(test_case_id) + " - " + name_testcase)
 
-                    Aux.Main.createDirectory(self, path_folder=test_set_path)
+                    Aux.Main.createDirectory(path_folder=test_set_path)
                     Aux.shutil.rmtree(test_set_path)
                     Aux.os.makedirs(test_set_path)
-                    Aux.Main.addLogs(self, message="General", value=Aux.logs["EvidenceFolder"])
+                    Aux.Main.addLogs(message="General", value=Aux.logs["EvidenceFolder"])
                 else:
                     test_set_path = None
-                    Aux.Main.addLogs(self, message="General", value=Aux.logs["WarningEvidenceFolder"])
+                    Aux.Main.addLogs(message="General", value=Aux.logs["WarningEvidenceFolder"])
 
                 # Execute step by step per Iteration.
-                for cont_iteration in range(1, total_iteration):
+                for cont_iteration in range(1, total_steps):
 
-                    Aux.Main.addLogs(self, message="NewSession",
-                                     value="\nID: " + str(test_case_id) + " - TEST CASE: " +
-                                           name_testcase + " - ITERATION: " + str(cont_iteration) +
-                                           "\nPROJECT: " + project_name + " - TEST PLAN: " + id_test_plan +
-                                           " - TEST SUIT: " + id_test_suit + " - RUN ID: " + str(test_run_id) + "\n")
+                    Aux.Main.addLogs(message="NewSession",
+                                     value="\nID: " + str(test_case_id) + " - TEST CASE: " + name_testcase +
+                                           "\nPROJECT: " + project_name + "\n")
 
                     print(f"{Aux.Textcolor.BOLD}{name_testcase}{Aux.Textcolor.END}")
-                    status, step_failed, save_evidence, take_picture_status = \
-                        Main.executeStepByStep(self, list_steps=list_steps, test_set_path=test_set_path,
-                                               step_initial=step_initial, step_final=step_final,
-                                               change_download_config=change_download_config,
-                                               cont_iteration=cont_iteration,
-                                               enable_cookie=Aux.otherConfigs['FlagEnableCookie'])
+                    status, step_failed, save_evidence, take_picture_status = \ #### PAREI AQUI.
+                        Main.executeStepByStep(list_steps=list_steps, step_initial=step_initial, step_final=step_final)
 
                     # Set the list of iteration status for the test case.
                     status_list.append(status)
@@ -143,7 +147,7 @@ class Main:
                     if status == "Failed" and save_evidence:
                         Func.Main.verifyBrowser(self)
                         comments, full_name_run_test, actual_comment = \
-                            Azure.AzureConnection.getInfoRun(self, project=project, test_run_id=test_run_id,
+                            Azure.AzureConnection.getInfoRun(project=project, test_run_id=test_run_id,
                                                              test_case_id_azure=test_case_id_azure,
                                                              name_testcase=name_testcase, status_ct=status,
                                                              cont_iteration=cont_iteration, step_failed=step_failed)
@@ -157,7 +161,7 @@ class Main:
 
                     elif save_evidence:
                         comments, full_name_run_test, actual_comment = \
-                            Azure.AzureConnection.getInfoRun(self, project=project, test_run_id=test_run_id,
+                            Azure.AzureConnection.getInfoRun(project=project, test_run_id=test_run_id,
                                                              test_case_id_azure=test_case_id_azure,
                                                              name_testcase=name_testcase, status_ct=status,
                                                              cont_iteration=cont_iteration, step_failed=step_failed)
@@ -181,7 +185,7 @@ class Main:
                     # Process to generate the evidences and save to Azure.
                     if save_evidence:
                         # Update the test case inside the Run.
-                        Azure.AzureConnection.updateTestCaseRun(self, project=project, test_run_id=test_run_id,
+                        Azure.AzureConnection.updateTestCaseRun(project=project, test_run_id=test_run_id,
                                                                 test_case_id_azure=test_case_id_azure, status_ct=status,
                                                                 duration=duration, comments=comments)
                         print(f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['GeneratingEvidence']['Msg']}"
@@ -192,7 +196,7 @@ class Main:
                         # Create an EST file.
                         word_path = Aux.directories["ESTFile"] + ' ' + Aux.otherConfigs["Language"] + '.docx'
 
-                        est = Aux.Main.wordAddSteps(self, test_run_id=test_run_id, test_case_id=test_case_id,
+                        est = Aux.Main.wordAddSteps(test_run_id=test_run_id, test_case_id=test_case_id,
                                                     name_testcase=name_testcase + " - ITERATION " + str(cont_iteration),
                                                     summary=summary, word_path=word_path, test_set_path=test_set_path,
                                                     list_steps=list_steps[step_initial:step_final],
@@ -202,40 +206,40 @@ class Main:
                                                     take_picture_status=take_picture_status,
                                                     completed_date=str(Aux.datetime.datetime.now().
                                                                        strftime("%d/%m/%Y %H:%M")))
-                        pdf = Aux.Main.wordToPDF(self, path=est)
+                        pdf = Aux.Main.wordToPDF(path=est)
 
                         if est is None:
-                            Aux.Main.addLogs(self, message="General", value=Aux.logs["ErrorEST"],
+                            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorEST"],
                                              value1=name_testcase + " - ITERATION " + str(cont_iteration))
 
                         if pdf is None:
-                            Aux.Main.addLogs(self, message="General", value=Aux.logs["ErrorConvertPDF"],
+                            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorConvertPDF"],
                                              value1=name_testcase + " - ITERATION " + str(cont_iteration))
 
                         if (est is not None) and (pdf is not None):
                             # Add the evidence to the Run and the Test case.
-                            Aux.Main.addLogs(self, message="General", value=Aux.logs["ConvertPDF"],
+                            Aux.Main.addLogs(message="General", value=Aux.logs["ConvertPDF"],
                                              value1=name_testcase + " - ITERATION " + str(cont_iteration))
-                            Azure.AzureConnection.SaveEvidenceRun(self, project=project, test_run_id=test_run_id,
+                            Azure.AzureConnection.SaveEvidenceRun(project=project, test_run_id=test_run_id,
                                                                   test_case_id_azure=test_case_id_azure,
                                                                   evidence_folder=Aux.directories["EvidenceFolder"],
                                                                   name_testcase=Aux.otherConfigs["ETSName"] + str(
                                                                       test_case_id) + " - " + name_testcase,
                                                                   cont_iteration=cont_iteration)
-                            Azure.AzureConnection.SaveEvidenceTestCase(self, project=project, test_case_id=test_case_id,
+                            Azure.AzureConnection.SaveEvidenceTestCase(project=project, test_case_id=test_case_id,
                                                                        evidence_folder=Aux.directories["EvidenceFolder"]
                                                                        , name_testcase=Aux.otherConfigs["ETSName"] +
                                                                        str(test_case_id) + " - " + name_testcase,
                                                                        cont_iteration=cont_iteration)
 
                         # Clear the evidences prints.
-                        Aux.Main.deleteFiles(self, path_log=test_set_path, extension="png")
+                        Aux.Main.deleteFiles(path_log=test_set_path, extension="png")
 
                     # If there is file to download update to Azure.
                     if change_download_config and save_evidence and not status == "Aborted":
                         file_name = Aux.os.listdir(Aux.directories["DownloadFolder"])
                         if file_name:  # Check if the file was download.
-                            Azure.AzureConnection.CheckDownloadFile(self, project=project, test_case_id=str(test_case_id),
+                            Azure.AzureConnection.CheckDownloadFile(project=project, test_case_id=str(test_case_id),
                                                                     file_name=file_name[0], compare=False,
                                                                     evidence_folder=Aux.directories["DownloadFolder"])
                         else:
@@ -244,7 +248,7 @@ class Main:
                             status = "Failed"
                             comments = Aux.logs["ErrorDownload"]["Msg"]
                             raise Exception
-                        Aux.Main.deleteFiles(self, path_log=Aux.directories["DownloadFolder"], extension='*')
+                        Aux.Main.deleteFiles(path_log=Aux.directories["DownloadFolder"], extension='*')
 
                     # Variables.
                     step_initial = step_final
@@ -252,32 +256,32 @@ class Main:
 
                     if save_evidence:
                         # Update the status automation and test case status inside Test Case.
-                        Azure.AzureConnection.UpdateStatusAutomated(self, project=project, test_case_id=test_case_id,
+                        Azure.AzureConnection.UpdateStatusAutomated(project=project, test_case_id=test_case_id,
                                                                     workitem_status=workitem_status,
                                                                     automation_status=status_ct_automation)
 
                 test_case_id_azure += 1
 
             # Inform the test case percentage already executed (100%).
-            Aux.Main.percentage(self, actual=len(test_case_id_list), total=len(test_case_id_list))
+            Aux.Main.percentage(actual=len(test_case_id_list), total=len(test_case_id_list))
 
         except Exception as ex:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorStartAutomation']['Msg']}{Aux.Textcolor.END}", ex)
-            Aux.Main.addLogs(self, message="General", value=Aux.logs["ErrorStartAutomation"], value1=str(ex))
+            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorStartAutomation"], value1=str(ex))
 
-            Azure.AzureConnection.UpdateStatusAutomated(self, project=project, test_case_id=test_case_id,
+            Azure.AzureConnection.UpdateStatusAutomated(project=project, test_case_id=test_case_id,
                                                         workitem_status=workitem_status,
                                                         automation_status=status_ct_automation)
-            Azure.AzureConnection.updateTestCaseRun(self, project=project, test_run_id=test_run_id, status_ct=status,
+            Azure.AzureConnection.updateTestCaseRun(project=project, test_run_id=test_run_id, status_ct=status,
                                                     test_case_id_azure=test_case_id_azure, duration=duration,
                                                     comments=comments)
-            Azure.AzureConnection.updateRun(self, project=project, test_run_id=test_run_id, status_run="Aborted")
+            Azure.AzureConnection.updateRun(project=project, test_run_id=test_run_id, status_run="Aborted")
 
         # Update the Run status.
         finally:
             if Aux.otherConfigs["ReplaceEvidence"]:
-                Azure.AzureConnection.updateRun(self, project=project, test_run_id=test_run_id, status_run="Completed")
-            Aux.Main.addLogs(self, message="EndExecution")
+                Azure.AzureConnection.updateRun(project=project, test_run_id=test_run_id, status_run="Completed")
+            Aux.Main.addLogs(message="EndExecution")
 
     # Execute the test case steps.
     def executeStepByStep(self, **kwargs):
@@ -286,17 +290,17 @@ class Main:
         list_steps = kwargs.get('list_steps')
         step_initial = kwargs.get('step_initial', None)
         step_final = kwargs.get('step_final', None)
-        change_download_config = kwargs.get('change_download_config', False)
-        cont_iteration = kwargs.get('cont_iteration', 0)
-        test_set_path = kwargs.get('test_set_path')
-        enable_cookie = kwargs.get('enable_cookie')
+        # change_download_config = kwargs.get('change_download_config', False)
+        # cont_iteration = kwargs.get('cont_iteration', 0)
+        # test_set_path = kwargs.get('test_set_path')
+        # enable_cookie = kwargs.get('enable_cookie')
 
         # Variables.
         element = None
         step_order = 1
         step_failed = None
         status_steps = []
-        save_evidence= True
+        save_evidence = True
         take_picture_status = None
 
         try:
@@ -332,10 +336,10 @@ class Main:
                 if value1 is None:
                     status_step = eval(Aux.verbs[verb]['Function'])(self)
                 else:
-                    status_step = eval(Aux.verbs[verb]['Function'])(self, value1=value1, value2=value2,
+                    status_step = eval(Aux.verbs[verb]['Function'])(value1=value1, value2=value2,
                                                                     step=step,cont_iteration=cont_iteration,
                                                                     change_download_config=change_download_config,
-                                                                    enable_cookie=enable_cookie, list_steps=list_steps)
+                                                                    list_steps=list_steps)
 
                 # Take the first step failed.
                 if status_step == "Failed" and step_failed is None:
@@ -354,11 +358,11 @@ class Main:
                     # Image name file.
                     imagename = Aux.otherConfigs["EvidenceName"] + str(step_order).zfill(2)
 
-                    take_picture_status = Func.Main.takePicture(self, test_set_path=test_set_path,
+                    take_picture_status = Func.Main.takePicture(test_set_path=test_set_path,
                                                                 image_name=imagename, verb=verb, list_steps=list_steps)
 
                     if not take_picture_status:
-                        Aux.Main.addLogs(self, message="General", value=Aux.logs["ErrorScreenshot"], value1=step)
+                        Aux.Main.addLogs(message="General", value=Aux.logs["ErrorScreenshot"], value1=step)
 
                 step_order += 1
 
@@ -373,4 +377,4 @@ class Main:
 
         except Exception as ex:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorExecuteStepByStep']['Msg']}{Aux.Textcolor.END}", ex)
-            Aux.Main.addLogs(self, message="General", value=Aux.logs["ErrorExecuteStepByStep"], value1=str(ex))
+            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorExecuteStepByStep"], value1=str(ex))

@@ -176,7 +176,6 @@ logs:
         ErrorDeleteFiles: {Type: Error, Msg: Erro ao deletar os arquivos!, Where: deleteFiles},
         ErrorDoubleClick: {Type: Error, Msg: Erro no duplo clique no elemento!, Where: doubleClick},
         ErrorDownloadUpdate: {Type: Error, Msg: Falha ao realizar o download., Where: automationAux}, ###
-        ErrorDownloadUpdate: {Type: Error, Msg: OK, Where: AppAutomation}, ###
         ErrorDownloadUpdateTitle: {Type: Error, Msg: Falha ao baixar a nova versão, Where: AppAutomation},###
         ErrorDownload: {Type: Warning, Msg: Não foi possível realizar o download!, Where: startAutomation},
         ErrorDownloadAttachment: {Type: Error, Msg: Não foi possível gerar o arquivo .zip!, Where: DownloadAttachment},
