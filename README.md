@@ -1,10 +1,18 @@
 Automation QA - Release notes
 ----
-**Version 9.2.0**                            
+**Version 9.3.0**                            
 
-<em>06/06/2024</em>
-- <font color='red'>__[Novo]__</font> - Leitura dos passos do GitLab.
-- <font color='red'>__[Novo]__</font> - Leitura dos parâmetros de cada passo.
+<em>07/06/2024</em>
+- <font color='red'>__[Novo]__</font> - Adaptação das funções e aumento da performance.
+- <font color='red'>__[Novo]__</font> - Correção do log.
+
+**Version 9.2.0**
+
+<em>07/06/2024</em>
+- Leitura dos passos do GitLab.
+- Leitura dos parâmetros de cada passo.
+
+**Version 9.1.0**
                                            
 <em>03/06/2024</em>
 - Remoção dos itens de interface.

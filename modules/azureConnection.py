@@ -54,11 +54,12 @@ class AzureConnection:
     def startSteps(self, **kwargs):
 
         # kwargs variables.
-        project = kwargs.get('project')
+        project_id = kwargs.get('project_id')
         test_case_id = kwargs.get('test_case_id')
 
         # Execute each test case.
-        name_testcase, step_block = AzureConnection.executeTestCase(self, project=project, test_case_id=test_case_id)
+        name_testcase, step_block = AzureConnection.executeTestCase(self, project_id=project_id,
+                                                                    test_case_id=test_case_id)
         # Load the test case steps.
         steps_list, order_steps_list = AzureConnection.getSteps(self, step_block=step_block)
         # Load the parameter from each test case.
@@ -67,9 +68,9 @@ class AzureConnection:
         # variables = AzureConnection.getVariables(self, request=request, parameters=parameters)
         # Disjoint the variable from each step.
         # datas = AzureConnection.sliceDatas(self, variables=variables, parameters=parameters, steps=steps)
-        verbs, parameters1, parameters2 = AzureConnection.sliceDatas(self, steps_list=steps_list)
+        verbs_list, parameters1_list, parameters2_list = AzureConnection.sliceDatas(self, steps_list=steps_list)
 
-        return order_steps_list, name_testcase, steps_list, verbs, parameters1, parameters2
+        return order_steps_list, name_testcase, steps_list, verbs_list, parameters1_list, parameters2_list
 
     # Read the print screen from each step.
     def manualEvidences(self, **kwargs):
@@ -93,10 +94,9 @@ class AzureConnection:
                                                                                             id_test_case=id_test_case)
 
             for n_test_case in range(0, amount_test_case):
-                test_case_id, n_iterations, failed_info_dict, completed_date = \
-                    AzureConnection.attachmentList(self, project=project, test_run_id=test_run_id,
-                                                   n_test_case=n_test_case, failed_info_dict=failed_info_dict,
-                                                   id_azure=id_azure)
+                test_case_id, n_iterations, failed_info_dict, completed_date = AzureConnection.attachmentList(
+                    self, project=project, test_run_id=test_run_id, n_test_case=n_test_case,
+                    failed_info_dict=failed_info_dict, id_azure=id_azure)
 
                 n_iterations_list.append(n_iterations)
                 id_azure_list.append(id_azure)
@@ -118,7 +118,7 @@ class AzureConnection:
     # ===================================== Modules to extract info from Azure =========================================
     # Load the project list from KantarWare.
     def getProjects(self):
-        project_selected = 0
+        projects_dic = {}
 
         try:
             self.url = url + 'projects'
@@ -136,11 +136,13 @@ class AzureConnection:
 
                     for order in range(0, resp.__len__()):
                         table.add_row([str(resp[order]['id']), str(resp[order]['name'])])
+                        projects_dic[resp[order]['id']] = str(resp[order]['name'])
 
                     print(table.get_string(sortby="PROJECT ID"))
                     print(f"Please inform the Project ID:")
-                    return input()
-
+                    project_selected = int(input())
+                    project_name = projects_dic[project_selected]
+                    return project_selected, project_name
                 else:
                     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorInstance']['Msg']}{Aux.Textcolor.END}\n")
                     Aux.Main.addLogs(message="General", value=Aux.logs['ErrorInstance']['Msg'])
@@ -277,7 +279,7 @@ class AzureConnection:
         try:
 
             # kwargs variables.
-            project = kwargs.get("project")
+            project_id = kwargs.get("project_id")
             ### id_test_plan = kwargs.get("id_test_plan")
             ### id_test_suit = kwargs.get("id_test_suit")
             # id_test_case = kwargs.get("id_test_case")
@@ -286,7 +288,7 @@ class AzureConnection:
             point_id_list = []
 
             # if id_test_case is None:
-            self.url = (url + 'projects/' + str(project) + '/issues?labels=Test%20case')
+            self.url = (url + 'projects/' + str(project_id) + '/issues?labels=Test%20case')
 
             # Execute the request from Azure.
             s = requests.get(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, timeout=None)
@@ -434,14 +436,13 @@ class AzureConnection:
     def executeTestCase(self, **kwargs):
         try:
             # kwargs variables.
-            project = kwargs.get("project")
+            project_id = kwargs.get("project_id")
             test_case_id = kwargs.get("test_case_id")
 
-            # version = '6.0-preview.2'
             name_testcase = ''
-            steps = ''
+            step_block = ''
 
-            self.url = (url + 'projects/' + str(project) + '/issues?iids[]=' + str(test_case_id))
+            self.url = (url + 'projects/' + str(project_id) + '/issues?iids[]=' + str(test_case_id))
 
             # Execute the request from Azure.
             q = requests.get(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, timeout=None)
@@ -453,10 +454,6 @@ class AzureConnection:
                 name_testcase = resp[0]['title']
                 step_block = resp[0]['description']
 
-                # if 'System.Description' in resp['fields']:
-                #     summary = Aux.Main.removeHTML(self, value=resp['fields']['System.Description'])
-                # else:
-                #     summary = Aux.otherConfigs['Summary']['Msg']
                 Aux.Main.addLogs(message="General", value=Aux.logs['ExecuteTestCase'])
             else:
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
@@ -480,47 +477,10 @@ class AzureConnection:
 
             # kwargs variables.
             step_block = kwargs.get("step_block")
-            # name_testcase = kwargs.get("name_testcase")
-
-            # xml_steps = request['fields']['Microsoft.VSTS.TCM.Steps']
-            #
-            # root = eT.fromstring(xml_steps)
-            # cont_steps = 0
-            # change_download_config: bool = False
-
-            # steps = []
-
-            # for _ in root:
-            #     # Remove HTML Tags from step.
-            #     step = root[cont_steps][0].text
-            #     step = Aux.Main.removeHTML(self, value=step)
-            #
-            #     if (step.count('"') % 2 == 0) or step.split()[0].upper() in ('SAVE', 'SALVAR', 'GUARDAR'):
-            #
-            #         if step == '':
-            #             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorEmptyLine']['Msg']} {name_testcase}"
-            #                   f"{Aux.Textcolor.END}")
-            #             Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorEmptyLine'], value1=name_testcase)
-            #             ###quit() #only the test with blank line.
-            #         steps.append(step)
-            #
-            #         # Verify if there is the save step to configure the browser.
-            #         if step.split()[0].upper() in ('SAVE', 'SALVAR', 'GUARDAR'):
-            #             change_download_config = True
-            #
-            #         cont_steps = cont_steps + 1
-            #
-            #     else:
-            #         msgErro = ' STEP: ' + str(cont_steps + 1) + ' - TEST CASE: ' + name_testcase
-            #         print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorParameters']['Msg']} {msgErro}"
-            #               f"{Aux.Textcolor.END}")
-            #         Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorParameters'], value1=msgErro)
-            #         break
-            #         ### exit(1)
 
             steps = step_block.splitlines()
             for step in steps:
-                order_steps_list.append(step[:step.index(":")])
+                order_steps_list.append(int(step[:step.index(":")]))
                 steps_list.append(step[step.index(":") + 2:])
 
             Aux.Main.addLogs(message="General", value=Aux.logs['GetSteps'])
@@ -533,134 +493,87 @@ class AzureConnection:
             ###exit(1)
 
     # Extract the parameters from the Test Case.
-    def getParameters(self, **kwargs):
-
-        try:
-            # kwargs variables.
-            request = kwargs.get("request")
-
-            # In some cases the Test Case doesn't have variables.
-            if 'Microsoft.VSTS.TCM.Parameters' in request['fields']:
-                xml_parameters = request['fields']['Microsoft.VSTS.TCM.Parameters']
-
-                root = eT.fromstring(xml_parameters)
-                parameters = []
-
-                for child in root.findall('param'):
-                    parameters.append(child.get('name'))
-
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['GetParameters'])
-            else:
-                parameters = None
-            return parameters
-
-        except Exception as e:
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetParameters']['Msg']}{Aux.Textcolor.END}", e)
-            Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorGetParameters'], value1=str(e))
-            ###exit(1)
+    # def getParameters(self, **kwargs):
+    #
+    #     try:
+    #         # kwargs variables.
+    #         request = kwargs.get("request")
+    #
+    #         # In some cases the Test Case doesn't have variables.
+    #         if 'Microsoft.VSTS.TCM.Parameters' in request['fields']:
+    #             xml_parameters = request['fields']['Microsoft.VSTS.TCM.Parameters']
+    #
+    #             root = eT.fromstring(xml_parameters)
+    #             parameters = []
+    #
+    #             for child in root.findall('param'):
+    #                 parameters.append(child.get('name'))
+    #
+    #             Aux.Main.addLogs(self, message="General", value=Aux.logs['GetParameters'])
+    #         else:
+    #             parameters = None
+    #         return parameters
+    #
+    #     except Exception as e:
+    #         print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetParameters']['Msg']}{Aux.Textcolor.END}", e)
+    #         Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorGetParameters'], value1=str(e))
+    #         ###exit(1)
 
     # Extract the variables from de Test Case.
-    def getVariables(self, **kwargs):
-
-        try:
-            # kwargs variables.
-            request = kwargs.get("request")
-            parameters = kwargs.get("parameters")
-
-            variables = []
-            if parameters:
-                xml_variables = request['fields']['Microsoft.VSTS.TCM.LocalDataSource']
-
-                root = eT.fromstring(xml_variables)
-
-                for child in root.findall('Table1'):
-                    for x in parameters:
-                        variables.append(child.find(x).text)
-
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['GetVariables'])
-            else:
-                variables = None
-
-            return variables
-
-        except Exception as e:
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetVariables']['Msg']}{Aux.Textcolor.END}", e)
-            Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorGetVariables'], value1=str(e))
-            ###exit(1)
+    # def getVariables(self, **kwargs):
+    #
+    #     try:
+    #         # kwargs variables.
+    #         request = kwargs.get("request")
+    #         parameters = kwargs.get("parameters")
+    #
+    #         variables = []
+    #         if parameters:
+    #             xml_variables = request['fields']['Microsoft.VSTS.TCM.LocalDataSource']
+    #
+    #             root = eT.fromstring(xml_variables)
+    #
+    #             for child in root.findall('Table1'):
+    #                 for x in parameters:
+    #                     variables.append(child.find(x).text)
+    #
+    #             Aux.Main.addLogs(self, message="General", value=Aux.logs['GetVariables'])
+    #         else:
+    #             variables = None
+    #
+    #         return variables
+    #
+    #     except Exception as e:
+    #         print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetVariables']['Msg']}{Aux.Textcolor.END}", e)
+    #         Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorGetVariables'], value1=str(e))
+    #         ###exit(1)
 
     # Dismember the variables from each test case.
     def sliceDatas(self, **kwargs):
 
         try:
             # Variables.
-            verbs = []
-            parameters1 = []
-            parameters2 = []
+            verbs_list = []
+            parameters1_list = []
+            parameters2_list = []
 
             # kwargs variables.
-            # order_steps_list = kwargs.get("order_steps_list")
             steps_list = kwargs.get("steps_list")
 
-
-            # # kwargs variables.
-            # variables = kwargs.get("variables")
-            # parameters = kwargs.get("parameters")
-            # steps = kwargs.get("steps")
-            #
-            # if variables and parameters:
-            #     # Variables.
-            #     dic_test = {}
-            #     datas = []
-            #     cont_variable = 0
-            #
-            #     # Amount of test cases.
-            #     testcase_amount = int(len(variables) / len(parameters))
-            #     # Create the dict with the tests and steps for each one.
-            #     for num in range(1, testcase_amount + 1):
-            #         list_step = []
-            #         for cont, step_content in enumerate(steps, start=1):
-            #             list_step.append(step_content)
-            #             dic_test[num] = list_step
-            #
-            #     # Variables x Parameters.
-            #     for num in range(0, testcase_amount):
-            #         variables_param = {}
-            #         for cont, _ in enumerate(parameters):
-            #             variables_param[parameters[cont]] = variables[cont + cont_variable]
-            #         cont_variable = cont_variable + len(parameters)
-            #
-            #         # Create the dict to the variables.
-            #         # Each variable line is new interaction = test.
-            #         for step in steps:
-            #             if '@' in step:
-            #                 num_of_at = step.count('@')
-            #                 for num_at in range(0, num_of_at):
-            #                     variable_no_at = Aux.regex.findall('"@([^"]*)"', step)[0]
-            #                     variable = "@" + variable_no_at
-            #                     if variables_param[variable_no_at] is not None:
-            #                         raise print(Aux.logs['ErrorLineEmpty']['Msg'])
-            #                     else:
-            #                         step = Aux.regex.sub(variable, repr(variables_param[variable_no_at])[1:-1], step)
-            #                 datas.append(step)
-            #             else:
-            #                 datas.append(step)
-            # else:
-            #     datas = steps
+            for step in steps_list:
+                verbs_list.append(step[:step.index(" ")])
 
             for step in steps_list:
-                verbs.append(step[:step.index(" ")])
-
-            for step in steps_list:
-                parameters1.append(Aux.re.findall(r'"([^"]*)"', step)[0])
+                parameters1_list.append(Aux.re.findall(r'"([^"]*)"', step)[0])
                 count_character = step.count('\"')
                 if count_character > 2:
-                    parameters2.append(Aux.re.findall(r'"([^"]*)"', step)[1])
+                    parameters2_list.append(Aux.re.findall(r'"([^"]*)"', step)[1])
                 else:
-                    parameters2.append(None)
+                    parameters2_list.append(None)
 
             Aux.Main.addLogs(message="General", value=Aux.logs['SliceDatas'])
 
-            return verbs, parameters1, parameters2
+            return verbs_list, parameters1_list, parameters2_list
 
         # When there is no variable.
         except ZeroDivisionError:
@@ -740,45 +653,45 @@ class AzureConnection:
             ###exit(1)
 
     # Update the test cases in a Run.
-    def updateTestCaseRun(self, **kwargs):
-
-        # kwargs variables.
-        project = kwargs.get("project")
-        test_run_id = kwargs.get("test_run_id")
-        test_case_id_azure = kwargs.get("test_case_id_azure")
-        status_ct = kwargs.get("status_ct")
-        duration = kwargs.get("duration")
-        comments = kwargs.get("comments")
-
-        try:
-            version = '6.0'
-
-            # Get the actual Result comments.
-            self.url = 'https://' + instance + project + '/_apis/test/Runs/' + str(test_run_id) + \
-                       '/results?api-version=' + version
-
-            test_datas = {
-                             "id": test_case_id_azure,
-                             "state": "Completed",
-                             "computerName": socket.gethostname(),
-                             "outcome": status_ct,
-                             "durationInMs": duration,
-                             "comment": comments,
-                         },
-
-            p = requests.patch(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, json=test_datas, timeout=None)
-            if p.status_code == 200:
-                print(f"{Aux.Textcolor.WARNING}{Aux.logs['UpdateTestCaseRun']['Msg']}{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['UpdateTestCaseRun'])
-            else:
-                print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'],
-                                 value1='Status code: ' + str(p.status_code) + ' - UpdateTestCaseRun')
-
-        except Exception as e:
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorUpdateTestCaseRun']['Msg']}{Aux.Textcolor.END}", e)
-            Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorUpdateTestCaseRun'], value1=str(e))
-            ###exit(1)
+    # def updateTestCaseRun(self, **kwargs):
+    #
+    #     # kwargs variables.
+    #     project = kwargs.get("project")
+    #     test_run_id = kwargs.get("test_run_id")
+    #     test_case_id_azure = kwargs.get("test_case_id_azure")
+    #     status_ct = kwargs.get("status_ct")
+    #     duration = kwargs.get("duration")
+    #     comments = kwargs.get("comments")
+    #
+    #     try:
+    #         version = '6.0'
+    #
+    #         # Get the actual Result comments.
+    #         self.url = 'https://' + instance + project + '/_apis/test/Runs/' + str(test_run_id) + \
+    #                    '/results?api-version=' + version
+    #
+    #         test_datas = {
+    #                          "id": test_case_id_azure,
+    #                          "state": "Completed",
+    #                          "computerName": socket.gethostname(),
+    #                          "outcome": status_ct,
+    #                          "durationInMs": duration,
+    #                          "comment": comments,
+    #                      },
+    #
+    #         p = requests.patch(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, json=test_datas, timeout=None)
+    #         if p.status_code == 200:
+    #             print(f"{Aux.Textcolor.WARNING}{Aux.logs['UpdateTestCaseRun']['Msg']}{Aux.Textcolor.END}\n")
+    #             Aux.Main.addLogs(self, message="General", value=Aux.logs['UpdateTestCaseRun'])
+    #         else:
+    #             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
+    #             Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'],
+    #                              value1='Status code: ' + str(p.status_code) + ' - UpdateTestCaseRun')
+    #
+    #     except Exception as e:
+    #         print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorUpdateTestCaseRun']['Msg']}{Aux.Textcolor.END}", e)
+    #         Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorUpdateTestCaseRun'], value1=str(e))
+    #         ###exit(1)
 
     # Save the evidencess in the Run.
     def SaveEvidenceRun(self, **kwargs):
@@ -1486,106 +1399,105 @@ class AzureConnection:
                 resp = json.loads(json_str)
 
                 # Verify the test execution.
-                if not resp['iterationDetails']:
-                    raise Exception(f"{Aux.Textcolor.FAIL}{Aux.logs['NoExecutions']['Msg']}{Aux.Textcolor.END}")
+                # if not resp['iterationDetails']:
+                #     raise Exception(f"{Aux.Textcolor.FAIL}{Aux.logs['NoExecutions']['Msg']}{Aux.Textcolor.END}")
 
                 # Verify the number of test cases.
-                if resp['iterationDetails'] != 0:
-                    test_case_id = resp['testCase']['id']
-                    test_case_name = AzureConnection.getTestCaseName(self, project=project, test_case_id=test_case_id)
+                # if resp['iterationDetails'] != 0:
+                test_case_id = resp['testCase']['id']
+                test_case_name = AzureConnection.getTestCaseName(self, project=project, test_case_id=test_case_id)
 
-                    # Failed dictionary.
-                    failed_info_dict[test_case_id] = {}
+                # Failed dictionary.
+                failed_info_dict[test_case_id] = {}
 
                     # Validate the testcase name.
-                    if Aux.Main.validateTestName(self, name_testcase=test_case_name):
-                        return test_case_id, None, failed_info_dict, None
+                    # if Aux.Main.validateTestName(self, name_testcase=test_case_name):
+                    #     return test_case_id, None, failed_info_dict, None
 
                     # Verify the number of iteration for each test case.
-                    n_iterations = len(resp['iterationDetails'])
+                    # n_iterations = len(resp['iterationDetails'])
 
-                    for n_iteration in range(0, n_iterations):
+                    # for n_iteration in range(0, n_iterations):
+                    #
+                    #     failed_details[n_iteration + 1] = {}
+                    #
+                    #     # Verify the prints.
+                    #     if not resp['iterationDetails'][n_iteration]['attachments']:
+                    #         print(f"{Aux.Textcolor.FAIL}{Aux.otherConfigs['NoEvidences']['Msg']}"
+                    #               f"{Aux.Textcolor.END}")
+                    #         Aux.Main.addLogs(self, message="General", value=Aux.otherConfigs['NoEvidences'])
+                    #         return None, None, None
+                    #
+                    #     print(f"{Aux.Textcolor.BOLD}{test_case_name}{Aux.Textcolor.END}")
+                    #     attachments = resp['iterationDetails'][n_iteration]['attachments']
+                    #     status_step = resp['iterationDetails'][n_iteration]['actionResults']
+                    #     completed_date = resp['iterationDetails'][n_iteration]['startedDate']
+                    #     for character in ('T', 'Z'):  # Remove letters.
+                    #         completed_date = completed_date.replace(character, ' ')
+                    #
+                    #     # Remove the attachments are not print screen.
+                    #     index = len(attachments)
+                    #     while index > 0:
+                    #         for word in ('html', 'json'):
+                    #             if word in attachments[index - 1]['name']:
+                    #                 attachments.pop(index - 1)
+                    #         else:
+                    #             index -= 1
+                    #
+                    #     num_prints = len(attachments)
+                    #     for num_print in range(0, num_prints):
+                    #         actionPath = attachments[num_print]['actionPath']
+                    #         file_name = attachments[num_print]['name']
+                    #         id_file = attachments[num_print]['id']
+                    #
+                    #         # Check the attachment and the status of the step.
+                    #         for result, _ in enumerate(status_step):
+                    #             if attachments[num_print]['actionPath'] == status_step[result]['actionPath']:
+                    #                 status = status_step[result]['outcome']
+                    #
+                    #                 if 'Failed' in status_step[result]['outcome']:
+                    #                     step_failed = result
+                    #                     if 'errorMessage' in status_step[step_failed]:
+                    #                         comment = status_step[step_failed]['errorMessage']
+                    #                         failed_details[n_iteration + 1]['Step'] = step_failed
+                    #                         failed_details[n_iteration + 1]['Comment'] = comment
+                    #                         failed_info_dict[test_case_id] = failed_details
+                    #                     else:
+                    #                         comment = ''
+                    #                 else:
+                    #                     step_failed = 0
+                    #                     comment = ''
+                    #
+                    #         list_id_manual_print.append([file_name, id_file, actionPath, status])
+                    #
+                    #     # Sorted by: order print by name.
+                    #     for order, _ in enumerate(list_id_manual_print):
+                    #         if '_' in list_id_manual_print[order][0]:  # Treat the filename save by LightShot.
+                    #             list_id_manual_print[order][0] = \
+                    #                 '0' + Aux.regex.search(r'\d+', list_id_manual_print[order][0]).group(0)
+                    #             list_id_manual_print = sorted(list_id_manual_print)
+                    #         else:  # Treat the filename save by Azure.
+                    #             list_id_manual_print = sorted(list_id_manual_print)
+                    #             list_id_manual_print[order][0] = '0' + str(order + 1)
+                    #
+                    #     # Get the first item from the tuple in list.
+                    #     list_num_print = [int(first_item[0]) for first_item in list_id_manual_print]
+                    #
+                    #     AzureConnection.saveManualPrintScreen(self, project=project, list_num_print=list_num_print,
+                    #                                           list_id_manual_print=list_id_manual_print,
+                    #                                           n_test_case=n_test_case + 1, n_iteration=n_iteration + 1,
+                    #                                           test_case_name=test_case_name,
+                    #                                           completed_date=completed_date)
+                    #
+                    #     list_id_manual_print.clear()
+                    #     list_num_print.clear()
+                    #     list_step_status_manual.clear()
 
-                        failed_details[n_iteration + 1] = {}
+                test_case_id = resp['testCase']['id']
 
-                        # Verify the prints.
-                        if not resp['iterationDetails'][n_iteration]['attachments']:
-                            print(f"{Aux.Textcolor.FAIL}{Aux.otherConfigs['NoEvidences']['Msg']}"
-                                  f"{Aux.Textcolor.END}")
-                            Aux.Main.addLogs(self, message="General", value=Aux.otherConfigs['NoEvidences'])
-                            return None, None, None
+                print(f"{Aux.Textcolor.BLUE}{Aux.logs['AttachmentList']['Msg']}{Aux.Textcolor.END}")
 
-                        print(f"{Aux.Textcolor.BOLD}{test_case_name}{Aux.Textcolor.END}")
-                        attachments = resp['iterationDetails'][n_iteration]['attachments']
-                        status_step = resp['iterationDetails'][n_iteration]['actionResults']
-                        completed_date = resp['iterationDetails'][n_iteration]['startedDate']
-                        for character in ('T', 'Z'):  # Remove letters.
-                            completed_date = completed_date.replace(character, ' ')
-
-                        # Remove the attachments are not print screen.
-                        index = len(attachments)
-                        while index > 0:
-                            for word in ('html', 'json'):
-                                if word in attachments[index - 1]['name']:
-                                    attachments.pop(index - 1)
-                            else:
-                                index -= 1
-
-                        num_prints = len(attachments)
-                        for num_print in range(0, num_prints):
-                            actionPath = attachments[num_print]['actionPath']
-                            file_name = attachments[num_print]['name']
-                            id_file = attachments[num_print]['id']
-
-                            # Check the attachment and the status of the step.
-                            for result, _ in enumerate(status_step):
-                                if attachments[num_print]['actionPath'] == status_step[result]['actionPath']:
-                                    status = status_step[result]['outcome']
-
-                                    if 'Failed' in status_step[result]['outcome']:
-                                        step_failed = result
-                                        if 'errorMessage' in status_step[step_failed]:
-                                            comment = status_step[step_failed]['errorMessage']
-                                            failed_details[n_iteration + 1]['Step'] = step_failed
-                                            failed_details[n_iteration + 1]['Comment'] = comment
-                                            failed_info_dict[test_case_id] = failed_details
-                                        else:
-                                            comment = ''
-                                    else:
-                                        step_failed = 0
-                                        comment = ''
-
-                            list_id_manual_print.append([file_name, id_file, actionPath, status])
-
-                        # Sorted by: order print by name.
-                        for order, _ in enumerate(list_id_manual_print):
-                            if '_' in list_id_manual_print[order][0]:  # Treat the filename save by LightShot.
-                                list_id_manual_print[order][0] = \
-                                    '0' + Aux.regex.search(r'\d+', list_id_manual_print[order][0]).group(0)
-                                list_id_manual_print = sorted(list_id_manual_print)
-                            else:  # Treat the filename save by Azure.
-                                list_id_manual_print = sorted(list_id_manual_print)
-                                list_id_manual_print[order][0] = '0' + str(order + 1)
-
-                        # Get the first item from the tuple in list.
-                        list_num_print = [int(first_item[0]) for first_item in list_id_manual_print]
-
-                        AzureConnection.saveManualPrintScreen(self, project=project, list_num_print=list_num_print,
-                                                              list_id_manual_print=list_id_manual_print,
-                                                              n_test_case=n_test_case + 1, n_iteration=n_iteration + 1,
-                                                              test_case_name=test_case_name,
-                                                              completed_date=completed_date)
-
-                        list_id_manual_print.clear()
-                        list_num_print.clear()
-                        list_step_status_manual.clear()
-
-                    test_case_id = resp['testCase']['id']
-
-                    print(f"{Aux.Textcolor.BLUE}{Aux.logs['AttachmentList']['Msg']}{Aux.Textcolor.END}")
-
-                    return test_case_id, n_iterations, failed_info_dict, completed_date
-
+                # return test_case_id, n_iterations, failed_info_dict, completed_date
             else:
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'], 

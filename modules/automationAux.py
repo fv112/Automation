@@ -1,7 +1,7 @@
 import os
 import datetime
 import re
-import requests ###
+# import requests ###
 
 import win32api                                         # Read the Windows login.
 import win32net                                         # Read the Windows login.
@@ -25,13 +25,13 @@ from docx.shared import Inches                          # Used to insert image i
 from PIL import ImageGrab
 from collections import Counter                         # Used in automatizationCore_Azure.
 
-verbs = None
-logs = None
-directories = None
-otherConfigs = None
-connection = None
+# verbs = None
+# logs = None
+# directories = None
+# otherConfigs = None
+# connection = None
 replaceEvidence = None
-compareTypes = []
+# compareTypes = []
 searchForAttribute = []
 searchForComponent = []
 messages = []
@@ -162,35 +162,35 @@ class Main:
             Main.addLogs(message="General", value=logs["ErrorSaveToken"], value1=ex)
 
     # Validate test case name.
-    def validateTestName(**kwargs):
-        try:
-            # kwargs variables.
-            name_testcase = kwargs.get("name_testcase")
-
-            validation_status = None
-
-            validation = regex.match('.*[\.\@\!\#\$\%^\&\*\<\>\?\\\/\\|\"}{:].*', name_testcase)
-            if validation:
-                print(f"{Textcolor.FAIL}{logs['ErrorSpecialCharacter']['Msg']} "
-                      f"{otherConfigs['InvalidCharacter']} {Textcolor.END}")
-                Main.addLogs(message="General", value=logs["ErrorSpecialCharacter"],
-                             value1=f"{otherConfigs['InvalidCharacter']}")
-                validation_status = True
-                ###exit(0)
-
-            if len(name_testcase) >= 85:
-                print(f"{Textcolor.FAIL}{logs['ErrorSizeName']['Msg']}{Textcolor.END}")
-                Main.addLogs(message="General", value=logs["ErrorSizeName"])
-                validation_status = True
-                ###exit(0)
-
-        except Exception as ex:
-            ###exit(0)
-            print(f"{Textcolor.FAIL}{logs['ErrorTestCaseValidation']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(message="General", value=logs["ErrorTestCaseValidation"], value1=str(ex))
-
-        finally:
-            return validation_status
+    # def validateTestName(**kwargs):
+    #     try:
+    #         # kwargs variables.
+    #         name_testcase = kwargs.get("name_testcase")
+    #
+    #         validation_status = None
+    #
+    #         validation = regex.match('.*[\.\@\!\#\$\%^\&\*\<\>\?\\\/\\|\"}{:].*', name_testcase)
+    #         if validation:
+    #             print(f"{Textcolor.FAIL}{logs['ErrorSpecialCharacter']['Msg']} "
+    #                   f"{otherConfigs['InvalidCharacter']} {Textcolor.END}")
+    #             Main.addLogs(message="General", value=logs["ErrorSpecialCharacter"],
+    #                          value1=f"{otherConfigs['InvalidCharacter']}")
+    #             validation_status = True
+    #             ###exit(0)
+    #
+    #         if len(name_testcase) >= 85:
+    #             print(f"{Textcolor.FAIL}{logs['ErrorSizeName']['Msg']}{Textcolor.END}")
+    #             Main.addLogs(message="General", value=logs["ErrorSizeName"])
+    #             validation_status = True
+    #             ###exit(0)
+    #
+    #     except Exception as ex:
+    #         ###exit(0)
+    #         print(f"{Textcolor.FAIL}{logs['ErrorTestCaseValidation']['Msg']}{Textcolor.END}", ex)
+    #         Main.addLogs(message="General", value=logs["ErrorTestCaseValidation"], value1=str(ex))
+    #
+    #     finally:
+    #         return validation_status
 
     # Create the directories.
     def createDirectory(**kwargs):
@@ -244,26 +244,29 @@ class Main:
 
     # Add the screenshots in the Word file.
     def wordAddSteps(**kwargs):
+
         try:
 
             # kwargs arguments.
-            test_run_id = kwargs.get('test_run_id')
+            # test_run_id = kwargs.get('test_run_id')
             test_case_id = kwargs.get('test_case_id')
             name_testcase = kwargs.get('name_testcase')
-            summary = kwargs.get('summary')
-            take_picture_status = kwargs.get('take_picture_status', True)
             word_path = kwargs.get('word_path')
+            # summary = kwargs.get('summary')
+            steps_list = kwargs['steps_list']
             test_set_path = kwargs.get('test_set_path')
-            list_steps = kwargs['list_steps']
             step_failed = kwargs.get('step_failed')
-            full_name_run_test = kwargs.get('full_name_run_test')
-            full_name_run_evidence = kwargs.get('full_name_run_evidence')
-            comment = kwargs.get('comment')
+            # full_name_run_evidence = kwargs.get('full_name_run_evidence')
+            take_picture_status = kwargs.get('take_picture_status', True)
             completed_date = kwargs.get('completed_date')
+            # full_name_run_test = kwargs.get('full_name_run_test')
+            # comment = kwargs.get('comment')
 
+            # Variables.
             tag_paragraf = [
                 {'pt_BR': 'Evidências dos passos', 'en_US': 'Evidence of the steps', 'es': 'Evidencia de los pasos'}
             ]
+            image_path = ""
 
             # Open the document.
             document = Document(word_path)
@@ -278,10 +281,9 @@ class Main:
                 return None
 
             # Add the info in the file.
-            if not Main.wordAddInfo(document=document, test_run_id=test_run_id, test_case_id=test_case_id,
-                                    name_testcase=name_testcase, summary=summary, step_number=len(list_steps),
-                                    full_name_run_evidence=full_name_run_evidence, completed_date=completed_date,
-                                    full_name_run_test=full_name_run_test):
+            if not Main.wordAddInfo(document=document, test_case_id=test_case_id,
+                                    name_testcase=name_testcase, step_number=len(steps_list),
+                                    completed_date=completed_date):
                 print('\033[31m' + '\n' + logs['ErrorWordSetCTInfo']['Msg'] + '\033[0;0m')
                 Main.addLogs(message="General", value=logs["ErrorWordSetCTInfo"])
                 return None
@@ -289,7 +291,7 @@ class Main:
             step_order = 1
 
             # Read the test case steps and add them in the order.
-            for step in list_steps:
+            for step in steps_list:
 
                 verb = step.split()[0]
                 # Don't execute the step with No / Não.
@@ -298,8 +300,8 @@ class Main:
                     # Last step or take_picture_status is true.
                     if verb not in ('Fechar', 'Cerrar', 'Close') and take_picture_status:
                         # Check the image size.
-                        image_path = os.path.join(test_set_path, otherConfigs["EvidenceName"] + str(step_order).zfill(2) +
-                                                  otherConfigs["EvidenceExtension"])
+                        image_path = os.path.join(test_set_path, otherConfigs["EvidenceName"] +
+                                                  str(step_order).zfill(2) + otherConfigs["EvidenceExtension"])
                         image = ImageGrab.Image.open(image_path)
 
                         if image.size[0] <= 1500:
@@ -317,10 +319,10 @@ class Main:
                         run_paragraf = paragraf.add_run()
 
                     # Add the comment to the Manual Evidence.
-                    if (comment is not None) and (step_failed == step_order):
-                        # Add the error message in the document.
-                        paragraf = document.add_paragraph(comment)
-                        run_paragraf = paragraf.add_run()
+                    # if (comment is not None) and (step_failed == step_order):
+                    #     # Add the error message in the document.
+                    #     paragraf = document.add_paragraph(comment)
+                    #     run_paragraf = paragraf.add_run()
 
                     if verb not in ('Fechar', 'Cerrar', 'Close') and take_picture_status:
                         # Resize the image if it is not full screen.
@@ -348,6 +350,7 @@ class Main:
             print(f"{Textcolor.FAIL}{logs['ErrorWordAddSteps']['Msg']}{Textcolor.END}", ex)
             Main.addLogs(message="General", value=logs["ErrorWordAddSteps"], value1=ex)
             path = None
+
         return path
 
     # Replace the password in the evidence file.
@@ -535,6 +538,9 @@ class Main:
             date_log = str(datetime.datetime.now().strftime("%d.%m.%Y"))
             # Set the file name.
             path = os.path.join(directories["LogFolder"], hostname + " - " + date_log + ".log")
+
+            if not os.path.isdir(directories["LogFolder"]):
+                Main.createDirectory(path_folder=directories["LogFolder"])
 
             # Append the log file.
             with open(path, 'a+', encoding='utf-8') as log_file:
@@ -753,10 +759,10 @@ class Main:
             line = "*" * 12
             percentage = "{0:.2f}".format((actual_number / total) * 100)
 
-            print(f"{Textcolor.BLUE}{line}{' '}"
+            print(f"{Textcolor.BLUE}{' '}"
                   f"{otherConfigs['Percentage']['Msg']}"
                   f"{' '}{Textcolor.UNDERLINE}{percentage}{'%'}{' '}{Textcolor.END}"
-                  f"{Textcolor.BLUE}{line}{Textcolor.END}\n")
+                  f"{Textcolor.BLUE}{Textcolor.END}\n")
 
             Main.addLogs(message="General", value=logs["Percentage"])
 
@@ -886,127 +892,127 @@ class Main:
         return desktop_TC
 
     # Check for Updates.
-    def check_Updates(self,):
-
-        try:
-            self.URL = 'https://' + otherConfigs['Token_GitHub'] + otherConfigs['GitHubReadMe']
-
-            headers = {
-                'Authorization': f"token {otherConfigs['Token_GitHub']}",
-                'Accept': 'application/vnd.github.v4+raw'
-            }
-
-            if os.path.exists(directories['ReadMeFile']):
-                with open(directories['ReadMeFile'], 'r') as readme:
-                    Main.addLogs(None, message="General", value=logs["UpdateNoNewVersion"], value1="ReadMe") ### Só para testar, pode retirar
-
-                    for line in readme:
-                        if 'Version' in line:
-                            LocalVersion = regex.search('Version(.*)\*\*', line).group(1)
-                            LocalVersion = LocalVersion.strip()
-                            break
-            else:
-                with open(directories['ReadMeFileEXEC'], 'r') as readme:
-                    Main.addLogs(None, message="General", value=logs["UpdateNoNewVersion"], value1="ReadMeEXEC") ### Só para testar, pode retirar
-
-                    for line in readme:
-                        if 'Version' in line:
-                            LocalVersion = regex.search('Version(.*)\*\*', line).group(1)
-                            LocalVersion = LocalVersion.strip()
-                            break
-
-            response = requests.get(self.URL, headers=headers)
-
-            if response.status_code == 200:
-                GitHubVersion = response.text
-                GitHubVersion = regex.search('Version(.*)\*\*', response.text).group(1)
-                GitHubVersion = GitHubVersion.strip()
-
-                # If the GitHub version is latest than local version.
-                if GitHubVersion > LocalVersion:
-                    # update.show_Update_input() # CORRIGIR
-                    # update.run() # CORRIGIR
-                    pass
-
-                else:
-                    print(f"{Textcolor.GREEN}{logs['UpdateNoNewVersion']['Msg']}{Textcolor.END}")
-                    Main.addLogs(message="General", value=logs["UpdateNoNewVersion"],
-                                 value1=logs["UpdateNoNewVersion"]["Msg"])
-
-            else:
-                print(f"{Textcolor.FAIL}{logs['CouldNotCheckForUpdates']['Msg']}{Textcolor.END}")
-                Main.addLogs(message="General", value=logs["CouldNotCheckForUpdates"],
-                             value1=logs["CouldNotCheckForUpdates"]["Msg"])
-                #update.could_not_check_for_updates_msg() # CORRIGIR
-                #update.run() # CORRIGIR
-
-        except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['DownloadUpdateFunctionFailed']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(message="General", value=logs["ErrorStartAutomation"], value1=str(ex))
-
-    # Check for new automation version.
-    def download_Updates(self):
-        try:
-            headers = {
-                'Authorization': f"token {otherConfigs['Token_GitHub']}",
-                'Accept': 'application/vnd.github.v4+raw'
-            }
-
-            # Download folder.
-            DOWNLOAD_DIR = directories['UpdateFolder']
-            LINK_DOWNLOAD = 'https://' + otherConfigs['Token_GitHub'] + otherConfigs['GitHubContent']
-            local_filename = LINK_DOWNLOAD.split('/')[-1]
-
-            # Execute the new version download.
-            with requests.get(LINK_DOWNLOAD, stream=True, headers=headers) as r:
-                if r.status_code == 200:
-
-                    # Create the New Version directory.
-                    Main.createDirectory(path_folder=directories['UpdateFolder'])
-
-                    with open(DOWNLOAD_DIR + '\\' + local_filename, 'wb') as f:
-                        shutil.copyfileobj(r.raw, f)
-                        print(f"{Textcolor.GREEN}{logs['DownloadPackageCompleted']['Msg']}{Textcolor.END}")
-                        Main.addLogs(message="General", value=logs["DownloadPackageCompleted"],
-                                     value1=logs["DownloadPackageCompleted"]["Msg"])
-
-                else:
-                    print(f"{Textcolor.FAIL}{logs['ErrorDownloadUpdate']['Msg']}{Textcolor.END}", value1=r.status_code)
-                    # update.download_update_fail_msg() # CORRIGIR
-                    # update.run() # CORRIGIR
-
-            LINK_DOWNLOAD_BAT = 'https://' + otherConfigs['Token_GitHub'] + otherConfigs['GitHubBatFile']
-            local_filename = LINK_DOWNLOAD_BAT.split('/')[-1]
-
-            # Download the BAT file.
-            with requests.get(LINK_DOWNLOAD_BAT, stream=True, headers=headers) as r:
-                if r.status_code == 200:
-
-                    with open(DOWNLOAD_DIR + '\\' + local_filename, 'wb') as f:
-                        shutil.copyfileobj(r.raw, f)
-                        print(f"{Textcolor.GREEN}{logs['DownloadBATCompleted']['Msg']}{Textcolor.END}")
-                        Main.addLogs(message="General", value=logs["DownloadBATCompleted"],
-                                     value1=logs["DownloadBATCompleted"]["Msg"])
-                else:
-                    print(f"{Textcolor.FAIL}{logs['ErrorDownloadUpdate']['Msg']}{Textcolor.END}")
-                    # update.download_update_fail_msg() # CORRIGIR
-                    # update.run() # CORRIGIR
-
-            # update.download_update_completed_msg.run() # CORRIGIR
-
-        except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['DownloadUpdateFunctionFailed']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(message="General", value=logs["ErrorStartAutomation"], value1=str(ex))
-
-    def install_Update(self):
-        try:
-            subprocess.Popen([directories['UpdateFolder'], otherConfigs["InstallBAT"]])
-
-            shutil.rmtree(os.path.join(directories['UpdateFolder']))
-
-            print(f"{Textcolor.GREEN}{logs['InstallNewVersion']['Msg']}{Textcolor.END}")
-            Main.addLogs(message="General", value=logs["InstallNewVersion"], value1=logs["InstallNewVersion"]["Msg"])
-
-        except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['ErrorInstallNewVersion']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(message="General", value=logs["ErrorInstallNewVersion"], value1=str(ex))
+    # def check_Updates(self,):
+    #
+    #     try:
+    #         self.URL = 'https://' + otherConfigs['Token_GitHub'] + otherConfigs['GitHubReadMe']
+    #
+    #         headers = {
+    #             'Authorization': f"token {otherConfigs['Token_GitHub']}",
+    #             'Accept': 'application/vnd.github.v4+raw'
+    #         }
+    #
+    #         if os.path.exists(directories['ReadMeFile']):
+    #             with open(directories['ReadMeFile'], 'r') as readme:
+    #                 Main.addLogs(None, message="General", value=logs["UpdateNoNewVersion"], value1="ReadMe") ### Só para testar, pode retirar
+    #
+    #                 for line in readme:
+    #                     if 'Version' in line:
+    #                         LocalVersion = regex.search('Version(.*)\*\*', line).group(1)
+    #                         LocalVersion = LocalVersion.strip()
+    #                         break
+    #         else:
+    #             with open(directories['ReadMeFileEXEC'], 'r') as readme:
+    #                 Main.addLogs(None, message="General", value=logs["UpdateNoNewVersion"], value1="ReadMeEXEC") ### Só para testar, pode retirar
+    #
+    #                 for line in readme:
+    #                     if 'Version' in line:
+    #                         LocalVersion = regex.search('Version(.*)\*\*', line).group(1)
+    #                         LocalVersion = LocalVersion.strip()
+    #                         break
+    #
+    #         response = requests.get(self.URL, headers=headers)
+    #
+    #         if response.status_code == 200:
+    #             GitHubVersion = response.text
+    #             GitHubVersion = regex.search('Version(.*)\*\*', response.text).group(1)
+    #             GitHubVersion = GitHubVersion.strip()
+    #
+    #             # If the GitHub version is latest than local version.
+    #             if GitHubVersion > LocalVersion:
+    #                 # update.show_Update_input() # CORRIGIR
+    #                 # update.run() # CORRIGIR
+    #                 pass
+    #
+    #             else:
+    #                 print(f"{Textcolor.GREEN}{logs['UpdateNoNewVersion']['Msg']}{Textcolor.END}")
+    #                 Main.addLogs(message="General", value=logs["UpdateNoNewVersion"],
+    #                              value1=logs["UpdateNoNewVersion"]["Msg"])
+    #
+    #         else:
+    #             print(f"{Textcolor.FAIL}{logs['CouldNotCheckForUpdates']['Msg']}{Textcolor.END}")
+    #             Main.addLogs(message="General", value=logs["CouldNotCheckForUpdates"],
+    #                          value1=logs["CouldNotCheckForUpdates"]["Msg"])
+    #             #update.could_not_check_for_updates_msg() # CORRIGIR
+    #             #update.run() # CORRIGIR
+    #
+    #     except Exception as ex:
+    #         print(f"{Textcolor.FAIL}{logs['DownloadUpdateFunctionFailed']['Msg']}{Textcolor.END}", ex)
+    #         Main.addLogs(message="General", value=logs["ErrorStartAutomation"], value1=str(ex))
+    #
+    # # Check for new automation version.
+    # def download_Updates(self):
+    #     try:
+    #         headers = {
+    #             'Authorization': f"token {otherConfigs['Token_GitHub']}",
+    #             'Accept': 'application/vnd.github.v4+raw'
+    #         }
+    #
+    #         # Download folder.
+    #         DOWNLOAD_DIR = directories['UpdateFolder']
+    #         LINK_DOWNLOAD = 'https://' + otherConfigs['Token_GitHub'] + otherConfigs['GitHubContent']
+    #         local_filename = LINK_DOWNLOAD.split('/')[-1]
+    #
+    #         # Execute the new version download.
+    #         with requests.get(LINK_DOWNLOAD, stream=True, headers=headers) as r:
+    #             if r.status_code == 200:
+    #
+    #                 # Create the New Version directory.
+    #                 Main.createDirectory(path_folder=directories['UpdateFolder'])
+    #
+    #                 with open(DOWNLOAD_DIR + '\\' + local_filename, 'wb') as f:
+    #                     shutil.copyfileobj(r.raw, f)
+    #                     print(f"{Textcolor.GREEN}{logs['DownloadPackageCompleted']['Msg']}{Textcolor.END}")
+    #                     Main.addLogs(message="General", value=logs["DownloadPackageCompleted"],
+    #                                  value1=logs["DownloadPackageCompleted"]["Msg"])
+    #
+    #             else:
+    #                 print(f"{Textcolor.FAIL}{logs['ErrorDownloadUpdate']['Msg']}{Textcolor.END}", value1=r.status_code)
+    #                 # update.download_update_fail_msg() # CORRIGIR
+    #                 # update.run() # CORRIGIR
+    #
+    #         LINK_DOWNLOAD_BAT = 'https://' + otherConfigs['Token_GitHub'] + otherConfigs['GitHubBatFile']
+    #         local_filename = LINK_DOWNLOAD_BAT.split('/')[-1]
+    #
+    #         # Download the BAT file.
+    #         with requests.get(LINK_DOWNLOAD_BAT, stream=True, headers=headers) as r:
+    #             if r.status_code == 200:
+    #
+    #                 with open(DOWNLOAD_DIR + '\\' + local_filename, 'wb') as f:
+    #                     shutil.copyfileobj(r.raw, f)
+    #                     print(f"{Textcolor.GREEN}{logs['DownloadBATCompleted']['Msg']}{Textcolor.END}")
+    #                     Main.addLogs(message="General", value=logs["DownloadBATCompleted"],
+    #                                  value1=logs["DownloadBATCompleted"]["Msg"])
+    #             else:
+    #                 print(f"{Textcolor.FAIL}{logs['ErrorDownloadUpdate']['Msg']}{Textcolor.END}")
+    #                 # update.download_update_fail_msg() # CORRIGIR
+    #                 # update.run() # CORRIGIR
+    #
+    #         # update.download_update_completed_msg.run() # CORRIGIR
+    #
+    #     except Exception as ex:
+    #         print(f"{Textcolor.FAIL}{logs['DownloadUpdateFunctionFailed']['Msg']}{Textcolor.END}", ex)
+    #         Main.addLogs(message="General", value=logs["ErrorStartAutomation"], value1=str(ex))
+    #
+    # def install_Update(self):
+    #     try:
+    #         subprocess.Popen([directories['UpdateFolder'], otherConfigs["InstallBAT"]])
+    #
+    #         shutil.rmtree(os.path.join(directories['UpdateFolder']))
+    #
+    #         print(f"{Textcolor.GREEN}{logs['InstallNewVersion']['Msg']}{Textcolor.END}")
+    #         Main.addLogs(message="General", value=logs["InstallNewVersion"], value1=logs["InstallNewVersion"]["Msg"])
+    #
+    #     except Exception as ex:
+    #         print(f"{Textcolor.FAIL}{logs['ErrorInstallNewVersion']['Msg']}{Textcolor.END}", ex)
+    #         Main.addLogs(message="General", value=logs["ErrorInstallNewVersion"], value1=str(ex))
