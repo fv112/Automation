@@ -742,7 +742,7 @@ class AzureConnection:
     def SaveEvidenceTestCase(self, **kwargs):
 
         # kwargs variables.
-        project = kwargs.get("project")
+        project_name = kwargs.get("project_name")
         evidence_folder = kwargs.get("evidence_folder")
         test_case_id = kwargs.get("test_case_id")
         name_testcase = kwargs.get("name_testcase")
@@ -754,7 +754,7 @@ class AzureConnection:
 
             evidence_file = name_testcase + " - ITERATION " + str(cont_iteration) + ".pdf"
 
-            self.url = 'https://' + instance + project + '/_apis/wit/attachments?fileName=' + evidence_file + \
+            self.url = 'https://' + instance + project_name + '/_apis/wit/attachments?fileName=' + evidence_file + \
                        '&api-version=' + version
 
             with open(Aux.os.path.join(evidence_folder, name_testcase, evidence_file), "rb") as pdf_file:
@@ -787,7 +787,7 @@ class AzureConnection:
 
             version = '6.1-preview.3'
 
-            self.url = 'https://' + instance + project + '/_apis/wit/workitems/' + str(test_case_id) + '?api-version=' \
+            self.url = 'https://' + instance + project_name + '/_apis/wit/workitems/' + str(test_case_id) + '?api-version=' \
                        + version
 
             headers = {'content-type': 'application/json-patch+json'}

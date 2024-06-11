@@ -3,12 +3,28 @@ import time
 import requests
 from selenium.webdriver.support import expected_conditions as ec
 from selenium import webdriver
+
+# Chrome
+from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager
+
+# Edge
+from selenium.webdriver.edge.service import Service as EdgeService
+from webdriver_manager.microsoft import EdgeChromiumDriverManager
+
+# Firefox
+from selenium.webdriver.firefox.service import Service as FirefoxService
+from webdriver_manager.firefox import GeckoDriverManager
+
+# IE
+from selenium.webdriver.ie.service import Service as IEService
+from webdriver_manager.microsoft import IEDriverManager
+
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.select import Select
-#from msedge.selenium_tools import Edge, EdgeOptions  # It is necessary to install the Edge in the PC.
 from bs4 import BeautifulSoup
 
 import modules.automationAux as Aux
@@ -48,7 +64,7 @@ class Main:
                 if newelement != None:
                     Main.highlight(self, newelement=newelement, effect_time=1, color=color, border=3)
 
-                    Aux.Main.addLogs(message="General", value=Aux.logs["FindElement"], parameters1=tag, 
+                    Aux.Main.addLogs(message="General", value=Aux.logs["FindElement"], parameters1=tag,
                                      parameters2=parameters1)
 
                     return newelement
@@ -87,15 +103,15 @@ class Main:
 
             return "Passed"
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorNoExecute"], 
+            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorNoExecute"],
                              parameters1="'" + step + "' - " + str(ex))
             return "Failed"
 
     # Execute a MS-DOS command line.
     def execute(self, **kwargs):
-        
+
         path = ""
-        
+
         try:
             # kwargs arguments.
             path = kwargs.get('parameters1')
@@ -108,7 +124,7 @@ class Main:
 
         except Exception as ex:
             Aux.Main.addLogs(message="General", value=Aux.logs["ErrorExecute"], parameters1="'" + path + "' - " +
-                                                                                             str(ex))
+                                                                                            str(ex))
             return "Failed"
 
     # Click in an element.
@@ -169,6 +185,7 @@ class Main:
     COMMENT: ERROR IN THE SELENIUM ACTION.
 
     """
+
     def dragDrop(self, **kwargs):
         try:
             # kwargs arguments.
@@ -201,6 +218,7 @@ class Main:
     COMMENT: ERROR IN THE SELENIUM ACTION.
 
     """
+
     def dragDropToElement(self, **kwargs):
         try:
             # kwargs arguments.
@@ -228,19 +246,13 @@ class Main:
             # kwargs arguments.
             parameters1 = kwargs.get('parameters1')
             parameters2 = kwargs.get('parameters2')
-            list_steps = kwargs.get('list_steps')
-
-            Desktop_TC = False
 
             if parameters2 is None:
                 parameters2 = 1
-            parameters2 = int(parameters2)
             parameters1 = str(parameters1)
+            parameters2 = int(parameters2)
 
-            Desktop_TC = Aux.Main._checkDesktop_TC(self, list_steps=list_steps)
-
-            if not Desktop_TC:
-                actions = ActionChains(driver)
+            actions = ActionChains(driver)
 
             if parameters1.upper() == 'RETURN' or parameters1.upper() == 'ENTER':
                 for _ in range(parameters2): actions.send_keys(Keys.RETURN)
@@ -273,8 +285,7 @@ class Main:
                     Aux.time.sleep(.2)
                     Aux.pyautogui.keyUp(parameters1.upper().rsplit('+')[0])
 
-            if not Desktop_TC:
-                actions.perform()
+            actions.perform()
 
             Aux.Main.addLogs(message="General", value=Aux.logs["PressButton"],
                              parameters1=parameters1 + " - " + str(parameters2) + "x")
@@ -945,8 +956,6 @@ class Main:
     # Function to create the browser object.
     def openBrowser(self, **kwargs):
 
-        print("ENTROU")
-
         try:
             # kwargs arguments.
             parameters1 = kwargs.get('parameters1')
@@ -976,8 +985,7 @@ class Main:
                 options.add_experimental_option("excludeSwitches", ["enable-automation"])
                 options.add_experimental_option("prefs", preferences)
 
-                ###??? O DRIVER ESTÁ NO LUGAR ERRADO
-                driver = webdriver.Chrome(Aux.directories["WebDriverChrome"], chrome_options=options, options=options)
+                driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
 
             # Configure before open the browser.
             elif parameters1.upper() in ("MOZILLA", "FIREFOX"):
@@ -1003,7 +1011,8 @@ class Main:
                     'application/zip-compressed',
                     'application/x-zip-compressed']
                 profile.set_preference("browser.helperApps.neverAsk.saveToDisk", ",".join(mime_types))
-                driver = webdriver.Firefox(executable_path=Aux.directories["WebDriverFirefox"], firefox_profile=profile)
+
+                driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()), profile=profile)
 
             # Change inside the Save function.
             elif parameters1.upper() in ("IE", "INTERNET", "INTERNET EXPLORER"):  # Internet Explorer 11
@@ -1016,7 +1025,7 @@ class Main:
                 options.initial_browser_url("")
 
                 if not change_download_config:
-                    driver = webdriver.Ie(Aux.directories["WebDriverIE"], options=options)
+                    driver = webdriver.Ie(service=IEService(IEDriverManager().install()), options=options)
                 else:
                     print(f"{Aux.Textcolor.FAIL}{Aux.otherConfigs['DownloadingFileIE']['Msg']}"
                           f"{Aux.Textcolor.END}")
@@ -1024,21 +1033,11 @@ class Main:
 
                     return "Aborted"
 
-            # Change inside the Save function.
-            elif parameters1.upper() in ("LEGACY", "ANTIGO"):  # Edge Legacy.
-                Aux.otherConfigs['Browser'] = parameters1.upper()
-
-                if change_download_config:
-                    Main._resetEdgeLegacy(self)
-                    Aux.time.sleep(5)
-                    driver = webdriver.Edge(executable_path=Aux.directories["WebDriverEdgeLegacy"], port=9515)
-                    Main._configureSavePath(self)
-                else:
-                    driver = webdriver.Edge(executable_path=Aux.directories["WebDriverEdgeLegacy"], port=9515)
-
             # Configure before open the browser.
             elif parameters1.upper() in "EDGE":  # Edge Chromium.
-                options = EdgeOptions()
+
+                options = webdriver.EdgeOptions()
+
                 options.use_chromium = True
                 options.ensure_clean_session = True  # Set blank user.
                 options.add_argument("-inprivate")
@@ -1056,7 +1055,7 @@ class Main:
                 }
                 options.add_experimental_option('excludeSwitches', ['enable-logging'])
                 options.add_experimental_option("prefs", preferences)
-                driver = Edge(executable_path=Aux.directories["WebDriverEdge"], port=9516, options=options)
+                driver = webdriver.Edge(service=EdgeService(EdgeChromiumDriverManager().install()), options=options)
 
             else:
                 Aux.Main.addLogs(message="General", value=Aux.logs["ErrorOpenBrowser"])
@@ -1255,17 +1254,12 @@ class Main:
         # kwargs variables:
         test_set_path = kwargs.get("test_set_path")
         image_name = kwargs.get("image_name")
-        verb = kwargs.get("verb")
-        list_steps = kwargs.get("list_steps")
 
         create = False
 
         try:
-            if Aux.Main._checkDesktop_TC(self, list_steps=list_steps):
-                Aux.pyscreenshot.grab(childprocess=False).save(test_set_path + "\\" + image_name + ".png")
-
             # Alert print screen.
-            elif ec.alert_is_present()(driver):
+            if ec.alert_is_present()(driver):
                 Aux.time.sleep(1)
                 Aux.shutil.copyfile(Aux.os.path.join(Aux.os.getcwd(), 'Automation', 'images',
                                                      Aux.directories['UnavailablePrint']),

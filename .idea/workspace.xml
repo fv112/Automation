@@ -6,8 +6,16 @@
   <component name="ChangeListManager">
     <list default="true" id="d16153e1-5b12-4734-a6f3-14148c7d886c" name="Changes" comment="Adaptação para o ambiente da T-Systems / GitLab.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AppAutomation.py" beforeDir="false" afterPath="$PROJECT_DIR$/AppAutomation.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Automation/configs/dictionary-pt.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Automation/configs/dictionary-pt.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Automation/drivers/Chrome32Bits.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Automation/drivers/Firefox64Bits.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Automation/drivers/IE32bits.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Automation/drivers/MSEdge64Bits.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Automation/drivers/MSEdgeLegacy-v16.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Automation/evidence/ETS - en_US.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Automation/evidence/ETS - en_US.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Automation/evidence/ETS - es.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Automation/evidence/ETS - es.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Automation/evidence/ETS - pt_BR.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Automation/evidence/ETS - pt_BR.docx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules/automationAux.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/automationAux.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules/automationFunc.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/automationFunc.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules/automatizationCore_Azure.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/automatizationCore_Azure.py" afterDir="false" />
@@ -120,11 +128,6 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/modules/automatizationCore_Azure.py</url>
-          <line>228</line>
-          <option name="timeStamp" value="56" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/modules/automationAux.py</url>
           <line>73</line>
           <option name="timeStamp" value="57" />
@@ -136,23 +139,33 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/modules/automationFunc.py</url>
-          <line>1122</line>
-          <option name="timeStamp" value="79" />
+          <line>256</line>
+          <option name="timeStamp" value="93" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/modules/automationFunc.py</url>
+          <line>243</line>
+          <option name="timeStamp" value="95" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/modules/automatizationCore_Azure.py</url>
-          <line>314</line>
-          <option name="timeStamp" value="88" />
+          <line>128</line>
+          <option name="timeStamp" value="101" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/modules/automationFunc.py</url>
-          <line>955</line>
-          <option name="timeStamp" value="89" />
+          <url>file://$PROJECT_DIR$/modules/automatizationCore_Azure.py</url>
+          <line>147</line>
+          <option name="timeStamp" value="103" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/modules/automationFunc.py</url>
-          <line>951</line>
-          <option name="timeStamp" value="90" />
+          <url>file://$PROJECT_DIR$/modules/automatizationCore_Azure.py</url>
+          <line>124</line>
+          <option name="timeStamp" value="104" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/modules/automatizationCore_Azure.py</url>
+          <line>191</line>
+          <option name="timeStamp" value="105" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

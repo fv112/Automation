@@ -94,6 +94,9 @@ class Main:
                     print(f"{Textcolor.GREEN}{otherConfigs['NoTranslating']}{Textcolor.END}\n")
                 Main.loadConfigs(language='es')  # Change to the Spanish language.
 
+            # Variables.
+            otherConfigs['Language'] = language
+
             Main.addLogs(message="General", value=logs["SetLanguage"])
 
         except Exception as ex:
@@ -248,19 +251,15 @@ class Main:
         try:
 
             # kwargs arguments.
-            # test_run_id = kwargs.get('test_run_id')
             test_case_id = kwargs.get('test_case_id')
             name_testcase = kwargs.get('name_testcase')
             word_path = kwargs.get('word_path')
-            # summary = kwargs.get('summary')
             steps_list = kwargs['steps_list']
             test_set_path = kwargs.get('test_set_path')
             step_failed = kwargs.get('step_failed')
             # full_name_run_evidence = kwargs.get('full_name_run_evidence')
             take_picture_status = kwargs.get('take_picture_status', True)
             completed_date = kwargs.get('completed_date')
-            # full_name_run_test = kwargs.get('full_name_run_test')
-            # comment = kwargs.get('comment')
 
             # Variables.
             tag_paragraf = [
@@ -337,7 +336,7 @@ class Main:
                 else:
                     paragraf = document.add_paragraph(otherConfigs["StepName"] + " " + str(step_order) + " - " +
                                                       otherConfigs["DisabledStep"]['Msg'])
-                    run_paragraf = paragraf.add_run()
+                    # run_paragraf = paragraf.add_run()
 
                 step_order += 1
 
