@@ -1,11 +1,16 @@
 Automation QA - Release notes
 ----
+**Version 9.5.0**                            
+
+<em>11/06/2024</em>
+- <font color='red'>__[Novo]__</font> - Geração do instalador.
+
 **Version 9.4.0**                            
 
 <em>11/06/2024</em>
-- <font color='red'>__[Novo]__</font> - Geração da evidência.
-- <font color='red'>__[Novo]__</font> - Implementação da abertura do browser em tempo de execução.
-- <font color='red'>__[Novo]__</font> - Remoção dos drivers dos navegadores.
+- Geração da evidência.
+- Implementação da abertura do browser em tempo de execução.
+- Remoção dos drivers dos navegadores.
 
 **Version 9.3.0**                            
 
