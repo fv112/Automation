@@ -25,13 +25,7 @@ from docx.shared import Inches                          # Used to insert image i
 from PIL import ImageGrab
 from collections import Counter                         # Used in automatizationCore_Azure.
 
-# verbs = None
-# logs = None
-# directories = None
-# otherConfigs = None
-# connection = None
 replaceEvidence = None
-# compareTypes = []
 searchForAttribute = []
 searchForComponent = []
 messages = []

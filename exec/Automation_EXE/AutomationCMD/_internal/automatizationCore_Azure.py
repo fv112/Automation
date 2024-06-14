@@ -9,6 +9,7 @@ class Main:
         self.main()
 
     def main(self):
+
         try:
             # Clear the temp files.
             Aux.Main.deleteDirectory(directory=Aux.directories["Temp"])

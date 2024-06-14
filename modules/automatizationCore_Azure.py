@@ -32,7 +32,7 @@ class Main:
 
         # kwargs variables.
         project_id = kwargs.get("project_id")
-        project_name = kwargs.get('project_name')  # Only for log.
+        project_name = kwargs.get('project_name')
         test_case_id_list = kwargs.get("test_case_id_list")
 
         # Variables.
@@ -156,7 +156,8 @@ class Main:
                         #                                           test_case_id) + " - " + name_testcase,
                         #                                       cont_iteration=cont_iteration)
 
-                        Azure.AzureConnection.SaveEvidenceTestCase(project_id=project_id, test_case_id=test_case_id,
+                        Azure.AzureConnection.SaveEvidenceTestCase(self, project_id=project_id,
+                                                                   test_case_id=test_case_id,
                                                                    evidence_folder=Aux.directories["EvidenceFolder"],
                                                                    name_testcase=Aux.otherConfigs["ETSName"] +
                                                                    str(test_case_id) + " - " + name_testcase)
@@ -167,16 +168,11 @@ class Main:
                     # If there is file to download update to Azure.
                     if change_download_config and save_evidence and not status == "Aborted":
                         file_name = Aux.os.listdir(Aux.directories["DownloadFolder"])
-                        if file_name:  # Check if the file was download.
-                            Azure.AzureConnection.CheckDownloadFile(project=project, test_case_id=str(test_case_id),
-                                                                    file_name=file_name[0], compare=False,
-                                                                    evidence_folder=Aux.directories["DownloadFolder"])
-                        else:
-                            status_ct_automation = "Planned"
-                            testcase_status = "Design"
-                            status = "Failed"
-                            # comments = Aux.logs["ErrorDownload"]["Msg"]
-                            raise Exception
+
+                        status_ct_automation = "Planned"
+                        testcase_status = "Design"
+                        status = "Failed"
+                        raise Exception
                         Aux.Main.deleteFiles(path_log=Aux.directories["DownloadFolder"], extension='*')
 
                     #### SOMENTE APÓS EXISTIR O TEST SUIT.

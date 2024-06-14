@@ -3,6 +3,7 @@ import time
 import requests
 from selenium.webdriver.support import expected_conditions as ec
 from selenium import webdriver
+from selenium.webdriver.support.wait import WebDriverWait
 
 # Chrome
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -58,7 +59,7 @@ class Main:
 
         for tag in search_list:
             try:
-                driver.implicitly_wait(3)
+                driver.implicitly_wait(1)
                 newelement = driver.find_element(tag, parameters1)
 
                 if newelement != None:
@@ -926,7 +927,8 @@ class Main:
             parameters1 = kwargs.get('parameters1')
             parameters2 = kwargs.get('parameters2')
 
-            alert = driver.switch_to_alert()
+            wait = WebDriverWait(driver, timeout=2)
+            alert = wait.until(lambda d: d.switch_to.alert)
 
             # Validate de Alert content (Text).
             if parameters2 != None:

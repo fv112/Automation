@@ -1,9 +1,14 @@
 Automation QA - Release notes
 ----
+**Version 9.6.0**                            
+
+<em>14/06/2024</em>
+- <font color='red'>__[Novo]__</font> - Possibilidade de rodar um caso de teste específico.
+
 **Version 9.5.0**                            
 
 <em>11/06/2024</em>
-- <font color='red'>__[Novo]__</font> - Geração do instalador.
+- Geração do instalador.
 
 **Version 9.4.0**                            
 
