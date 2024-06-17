@@ -1,9 +1,16 @@
 Automation QA - Release notes
 ----
+**Version 9.7.0**                            
+
+<em>17/06/2024</em>
+- <font color='red'>__[Novo]__</font> - Tratamento de opção inválida.
+- <font color='red'>__[Novo]__</font> - Geração do ID da evidência.
+- <font color='red'>__[Novo]__</font> - Apresentação de mais projetos na listagem.
+
 **Version 9.6.0**                            
 
 <em>14/06/2024</em>
-- <font color='red'>__[Novo]__</font> - Possibilidade de rodar um caso de teste específico.
+- Possibilidade de rodar um caso de teste específico.
 
 **Version 9.5.0**                            
 

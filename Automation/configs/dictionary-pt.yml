@@ -367,7 +367,7 @@ otherConfigs:
         ChooseBetweenAutomationCompare: {Type: Info, Msg: "Clique abaixo no que deseja realizar", Where: AppAutomation},
         ChooseAutomation: {Type: Info, Msg: "Executar Automação", Where: AppAutomation },
         ChooseCompare: {Type: Info, Msg: "Executar Comparação", Where: AppAutomation },
-        ChooseTestCase: {Type: Info, Msg: "Executar um caso de teste isolado?", Where: getTestCases},
+        ChooseTestCase: {Type: Info, Msg: "Informe o ID do caso de teste:", Where: getTestCases},
         CleanConsole: {Type: Info, Msg: "Limpar console", Where: AppAutomation},
         CloseBrowser: {Type: Success, Msg: Fechar o navegador., Where: close},
         CloseTokenMenu: {Type: Info, Msg: "SALVAR", Where: automationAux},

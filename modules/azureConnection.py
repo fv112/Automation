@@ -106,13 +106,14 @@ class AzureConnection:
             return test_case_id_list, n_iterations_list, id_azure_list, n_test_case_list, failed_info_dict, \
                    completed_date_list, full_name_run_test
 
-    # ===================================== Modules to extract info from Azure =========================================
+    # ===================================== Modules to extract info from GitLab ========================================
     # Load the project list from KantarWare.
     def getProjects(self):
         projects_dic = {}
+        project_selected = ''
 
         try:
-            self.url = url + 'projects'
+            self.url = url + 'projects?pagination=keyset&per_page=50&order_by=id&sort=desc'
 
             # Execute the request from Azure.
             t = requests.get(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, timeout=None)
@@ -132,8 +133,8 @@ class AzureConnection:
                     print(table.get_string(sortby="PROJECT ID"))
                     print(f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['InformProject']['Msg']}{Aux.Textcolor.END}\n")
 
-                    project_selected = int(input())
-                    project_name = projects_dic[project_selected]
+                    project_selected = input()
+                    project_name = projects_dic[int(project_selected)]
                     return project_selected, project_name
                 else:
                     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorInstance']['Msg']}{Aux.Textcolor.END}\n")
@@ -153,7 +154,7 @@ class AzureConnection:
         except ValueError:
             print(f"{Aux.Textcolor.FAIL}'{project_selected}' {Aux.otherConfigs['OptionInvalid']['Msg']}"
                   f"{Aux.Textcolor.END}")
-            ### exit(0)
+            exit(1)
 
         except requests.exceptions.RequestException:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorConnection']['Msg']}{Aux.Textcolor.END}")
@@ -162,7 +163,7 @@ class AzureConnection:
         except Exception as e:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetProjects']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetProjects'], value1=str(e))
-            ### exit(1)
+            exit(1)
 
     # Load the test plans.
     # def getTestPlans(self, **kwargs):
@@ -301,7 +302,7 @@ class AzureConnection:
                         if isolated_tc not in ["Y", "N"]:
                             print(f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['AskCT']['Msg']}{Aux.Textcolor.END}\n")
                             isolated_tc = input().upper()
-                            if isolated_tc.upper() == "Y":
+                            if isolated_tc.upper() in ["Y", "S"]:
                                 print(f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['ChooseTestCase']['Msg']}{Aux.Textcolor.END}\n")
                                 tc_id = int(input())
                                 test_case_id_list.clear()
@@ -500,60 +501,66 @@ class AzureConnection:
         name_testcase = kwargs.get("name_testcase")
 
         # Variables.
-        file_markdown = ''
+        file_url = ''
 
         try:
 
             # Get the ID.
-            self.url = (url + str(project_id) + '/uploads')
+            self.url = (url + 'projects/' + str(project_id) + '/uploads')
 
-            body = {
-                "file": os.path.join(evidence_folder, name_testcase)
-                # "body": f"EVIDENCE\n\n![{name_testcase}]({os.path.join(evidence_folder, name_testcase)})"
+            ### ERRO
+            files = {
+                "file": "[" + name_testcase + "]" + os.path.join(evidence_folder, name_testcase, name_testcase) + ".pdf"
+                # "body": f"EVIDENCE\n\n![{name_testcase}]({os.path.join(evidence_folder, name_testcase,
+                #                                                        name_testcase)}.pdf)"
                 #'file': open(os.path.join(evidence_folder, name_testcase), 'rb')
                 }
 
-            q = requests.post(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["BearerUpload"]},
-                              files=body)
+            data_note = {
+                "data": "teste do note",
+            }
 
-            ### ERRO!!!
-            if q.status_code == 200:
+            q = requests.post(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["BearerUpload"]},
+                              files=files, data=data_note)
+
+            if q.status_code == 201:
                 print(f"{Aux.Textcolor.WARNING}{Aux.logs['SaveEvidenceTestCase']['Msg']}{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(message="General", value=Aux.logs['SaveEvidenceTestCase - GetID'])
+                Aux.Main.addLogs(message="General", value=Aux.logs['SaveEvidenceTestCase'])
 
                 # Filter some fields.
                 json_str = json.dumps(q.json())
                 resp = json.loads(json_str)
-                file_markdown = resp['markdown']
+                file_url = resp['url']
 
             else:
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'], 
                                  value1='Status code: ' + str(q.status_code) + ' - ' + str(q.text) + 
                                         ' - SaveEvidenceTestCase - GetID')
+                exit(1)
 
-            self.url = (url + str(project_id) + '/issues/' + str(test_case_id) + 'notes')
+            self.url = (url + 'projects/' + str(project_id) + '/issues/' + str(test_case_id) + '/notes')
 
             # Upload file.
-            headers = {
-                'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"],
-                'content-type': 'application/json-patch+json'
-            }
+            file_url = file_url.replace("file", name_testcase + ".pdf")
+            # file_url = file_url.replace(" ", "_")
+
 
             body = {
-                "body": "See attached file: " + file_markdown
+                "body": "[" + name_testcase + "](" + file_url + ")"
             }
 
-            p = requests.post(self.url, headers=headers, data=body)
+            p = requests.post(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["BearerUpload"]},
+                              data=body)
 
-            if p.status_code == 200:
+            if p.status_code == 201:
                 print(f"{Aux.Textcolor.WARNING}{Aux.logs['SaveEvidenceTestCase']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(message="General", value=Aux.logs['SaveEvidenceTestCase'])
 
             else:
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'],
-                                 value1='Status code: ' + str(q.status_code) + ' - ' + str(q.text) +
+                                 value1='Status code: ' + str(p.status_code) + ' - ' + str(p.text) +
                                         ' - SaveEvidenceTestCase - Upload File')
 
         except Exception as e:
