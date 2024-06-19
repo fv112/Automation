@@ -113,7 +113,7 @@ class AzureConnection:
         project_selected = ''
 
         try:
-            self.url = url + 'projects?pagination=keyset&per_page=50&order_by=id&sort=desc'
+            self.url = url + 'projects?topic=QA-Automation'
 
             # Execute the request from Azure.
             t = requests.get(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, timeout=None)
@@ -394,62 +394,6 @@ class AzureConnection:
             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetSteps'], value1=str(e))
             ###exit(1)
 
-    # Extract the parameters from the Test Case.
-    # def getParameters(self, **kwargs):
-    #
-    #     try:
-    #         # kwargs variables.
-    #         request = kwargs.get("request")
-    #
-    #         # In some cases the Test Case doesn't have variables.
-    #         if 'Microsoft.VSTS.TCM.Parameters' in request['fields']:
-    #             xml_parameters = request['fields']['Microsoft.VSTS.TCM.Parameters']
-    #
-    #             root = eT.fromstring(xml_parameters)
-    #             parameters = []
-    #
-    #             for child in root.findall('param'):
-    #                 parameters.append(child.get('name'))
-    #
-    #             Aux.Main.addLogs(message="General", value=Aux.logs['GetParameters'])
-    #         else:
-    #             parameters = None
-    #         return parameters
-    #
-    #     except Exception as e:
-    #         print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetParameters']['Msg']}{Aux.Textcolor.END}", e)
-    #         Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetParameters'], value1=str(e))
-    #         ###exit(1)
-
-    # Extract the variables from de Test Case.
-    # def getVariables(self, **kwargs):
-    #
-    #     try:
-    #         # kwargs variables.
-    #         request = kwargs.get("request")
-    #         parameters = kwargs.get("parameters")
-    #
-    #         variables = []
-    #         if parameters:
-    #             xml_variables = request['fields']['Microsoft.VSTS.TCM.LocalDataSource']
-    #
-    #             root = eT.fromstring(xml_variables)
-    #
-    #             for child in root.findall('Table1'):
-    #                 for x in parameters:
-    #                     variables.append(child.find(x).text)
-    #
-    #             Aux.Main.addLogs(message="General", value=Aux.logs['GetVariables'])
-    #         else:
-    #             variables = None
-    #
-    #         return variables
-    #
-    #     except Exception as e:
-    #         print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetVariables']['Msg']}{Aux.Textcolor.END}", e)
-    #         Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetVariables'], value1=str(e))
-    #         ###exit(1)
-
     # Dismember the variables from each test case.
     def sliceDatas(self, **kwargs):
 
@@ -500,28 +444,18 @@ class AzureConnection:
         test_case_id = kwargs.get("test_case_id")
         name_testcase = kwargs.get("name_testcase")
 
-        # Variables.
-        file_url = ''
-
         try:
 
             # Get the ID.
             self.url = (url + 'projects/' + str(project_id) + '/uploads')
 
-            ### ERRO
-            files = {
-                "file": "[" + name_testcase + "]" + os.path.join(evidence_folder, name_testcase, name_testcase) + ".pdf"
-                # "body": f"EVIDENCE\n\n![{name_testcase}]({os.path.join(evidence_folder, name_testcase,
-                #                                                        name_testcase)}.pdf)"
-                #'file': open(os.path.join(evidence_folder, name_testcase), 'rb')
-                }
+            file = os.path.join(evidence_folder, name_testcase, name_testcase) + ".pdf"
 
-            data_note = {
-                "data": "teste do note",
-            }
+            files = {'file': open(file, 'rb')}
 
-            q = requests.post(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["BearerUpload"]},
-                              files=files, data=data_note)
+            with open(file, 'rb') as f:
+                q = requests.post(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["BearerUpload"]},
+                                  files=files)
 
             if q.status_code == 201:
                 print(f"{Aux.Textcolor.WARNING}{Aux.logs['SaveEvidenceTestCase']['Msg']}{Aux.Textcolor.END}\n")
@@ -543,8 +477,6 @@ class AzureConnection:
 
             # Upload file.
             file_url = file_url.replace("file", name_testcase + ".pdf")
-            # file_url = file_url.replace(" ", "_")
-
 
             body = {
                 "body": "[" + name_testcase + "](" + file_url + ")"

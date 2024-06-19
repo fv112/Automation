@@ -9,7 +9,6 @@ class Main:
         self.main()
 
     def main(self):
-
         try:
             # Clear the temp files.
             Aux.Main.deleteDirectory(directory=Aux.directories["Temp"])
@@ -33,7 +32,7 @@ class Main:
 
         # kwargs variables.
         project_id = kwargs.get("project_id")
-        project_name = kwargs.get('project_name')  # Only for log.
+        project_name = kwargs.get('project_name')
         test_case_id_list = kwargs.get("test_case_id_list")
 
         # Variables.
@@ -46,11 +45,11 @@ class Main:
 
         try:
             # Complete name (if it is using the VPN).
-            full_name_run_evidence = Aux.win32net.NetUserGetInfo(Aux.win32net.NetGetAnyDCName(),
-                                                                 Aux.win32api.GetUserName(), 2)["full_name"]
+            executed_by = Aux.win32net.NetUserGetInfo(Aux.win32net.NetGetAnyDCName(),
+                                                      Aux.win32api.GetUserName(), 2)["full_name"]
         except:
             # Windows login (if it is not using the VPN).
-            full_name_run_evidence = Aux.Main.get_display_name(self)
+            executed_by = Aux.Main.get_display_name(self)
 
         try:
             if Aux.otherConfigs['ReplaceEvidence']:
@@ -133,6 +132,7 @@ class Main:
                                                 steps_list=steps_list,
                                                 test_set_path=test_set_path,
                                                 step_failed=step_failed,
+                                                executed_by=executed_by,
                                                 take_picture_status=take_picture_status,
                                                 completed_date=str(Aux.datetime.datetime.now().
                                                                    strftime("%d/%m/%Y %H:%M")))
@@ -157,7 +157,8 @@ class Main:
                         #                                           test_case_id) + " - " + name_testcase,
                         #                                       cont_iteration=cont_iteration)
 
-                        Azure.AzureConnection.SaveEvidenceTestCase(project_id=project_id, test_case_id=test_case_id,
+                        Azure.AzureConnection.SaveEvidenceTestCase(self, project_id=project_id,
+                                                                   test_case_id=test_case_id,
                                                                    evidence_folder=Aux.directories["EvidenceFolder"],
                                                                    name_testcase=Aux.otherConfigs["ETSName"] +
                                                                    str(test_case_id) + " - " + name_testcase)
@@ -166,19 +167,14 @@ class Main:
                     Aux.Main.deleteFiles(path_log=test_set_path, extension="png")
 
                     # If there is file to download update to Azure.
-                    if change_download_config and save_evidence and not status == "Aborted":
-                        file_name = Aux.os.listdir(Aux.directories["DownloadFolder"])
-                        if file_name:  # Check if the file was download.
-                            Azure.AzureConnection.CheckDownloadFile(project=project, test_case_id=str(test_case_id),
-                                                                    file_name=file_name[0], compare=False,
-                                                                    evidence_folder=Aux.directories["DownloadFolder"])
-                        else:
-                            status_ct_automation = "Planned"
-                            testcase_status = "Design"
-                            status = "Failed"
-                            # comments = Aux.logs["ErrorDownload"]["Msg"]
-                            raise Exception
-                        Aux.Main.deleteFiles(path_log=Aux.directories["DownloadFolder"], extension='*')
+                    # if save_evidence and not status == "Aborted":
+                    #     file_name = Aux.os.listdir(Aux.directories["DownloadFolder"])
+                    #
+                    #     status_ct_automation = "Planned"
+                    #     testcase_status = "Design"
+                    #     status = "Failed"
+                    #     raise Exception
+                    #     Aux.Main.deleteFiles(path_log=Aux.directories["DownloadFolder"], extension='*')
 
                     #### SOMENTE APÓS EXISTIR O TEST SUIT.
                     # if save_evidence:

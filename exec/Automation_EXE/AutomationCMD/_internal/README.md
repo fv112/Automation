@@ -1,11 +1,36 @@
 Automation QA - Release notes
 ----
+**Version 9.8.0**
+
+<em>19/06/2024</em>
+- <font color='red'>__[Novo]__</font> - Implementação do upload da evidência no GitLab.
+- <font color='red'>__[Novo]__</font> -  Remoção dos campos desnecessários no arquivo de evidência.
+- <font color='red'>__[Novo]__</font> -  Inclusão do nome do executor na evidência.
+- <font color='red'>__[Novo]__</font> -  Ajustes da geração do instalador.
+- 
+**Version 9.7.0**                            
+
+<em>17/06/2024</em>
+- Tratamento de opção inválida.
+- Geração do ID da evidência.
+- Apresentação de mais projetos na listagem.
+
+**Version 9.6.0**                            
+
+<em>14/06/2024</em>
+- Possibilidade de rodar um caso de teste específico.
+
+**Version 9.5.0**                            
+
+<em>11/06/2024</em>
+- Geração do instalador.
+
 **Version 9.4.0**                            
 
 <em>11/06/2024</em>
-- <font color='red'>__[Novo]__</font> - Geração da evidência.
-- <font color='red'>__[Novo]__</font> - Implementação da abertura do browser em tempo de execução.
-- <font color='red'>__[Novo]__</font> - Remoção dos drivers dos navegadores.
+- Geração da evidência.
+- Implementação da abertura do browser em tempo de execução.
+- Remoção dos drivers dos navegadores.
 
 **Version 9.3.0**                            
 

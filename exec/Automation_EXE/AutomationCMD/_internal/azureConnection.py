@@ -1,10 +1,7 @@
 import json
+import os.path
 import time
-import xml.etree.ElementTree as eT
 import requests
-import base64
-import socket
-from operator import itemgetter
 from prettytable import PrettyTable
 
 import modules.automationAux as Aux
@@ -62,12 +59,6 @@ class AzureConnection:
                                                                     test_case_id=test_case_id)
         # Load the test case steps.
         steps_list, order_steps_list = AzureConnection.getSteps(self, step_block=step_block)
-        # Load the parameter from each test case.
-        # parameters = AzureConnection.getParameters(self,request=request)
-        # Load the datas from each test case (Variables).
-        # variables = AzureConnection.getVariables(self, request=request, parameters=parameters)
-        # Disjoint the variable from each step.
-        # datas = AzureConnection.sliceDatas(self, variables=variables, parameters=parameters, steps=steps)
         verbs_list, parameters1_list, parameters2_list = AzureConnection.sliceDatas(self, steps_list=steps_list)
 
         return order_steps_list, name_testcase, steps_list, verbs_list, parameters1_list, parameters2_list
@@ -115,13 +106,14 @@ class AzureConnection:
             return test_case_id_list, n_iterations_list, id_azure_list, n_test_case_list, failed_info_dict, \
                    completed_date_list, full_name_run_test
 
-    # ===================================== Modules to extract info from Azure =========================================
+    # ===================================== Modules to extract info from GitLab ========================================
     # Load the project list from KantarWare.
     def getProjects(self):
         projects_dic = {}
+        project_selected = ''
 
         try:
-            self.url = url + 'projects'
+            self.url = url + 'projects?topic=QA-Automation'
 
             # Execute the request from Azure.
             t = requests.get(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, timeout=None)
@@ -139,9 +131,10 @@ class AzureConnection:
                         projects_dic[resp[order]['id']] = str(resp[order]['name'])
 
                     print(table.get_string(sortby="PROJECT ID"))
-                    print(f"Please inform the Project ID:")
-                    project_selected = int(input())
-                    project_name = projects_dic[project_selected]
+                    print(f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['InformProject']['Msg']}{Aux.Textcolor.END}\n")
+
+                    project_selected = input()
+                    project_name = projects_dic[int(project_selected)]
                     return project_selected, project_name
                 else:
                     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorInstance']['Msg']}{Aux.Textcolor.END}\n")
@@ -161,7 +154,7 @@ class AzureConnection:
         except ValueError:
             print(f"{Aux.Textcolor.FAIL}'{project_selected}' {Aux.otherConfigs['OptionInvalid']['Msg']}"
                   f"{Aux.Textcolor.END}")
-            ### exit(0)
+            exit(1)
 
         except requests.exceptions.RequestException:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorConnection']['Msg']}{Aux.Textcolor.END}")
@@ -170,7 +163,7 @@ class AzureConnection:
         except Exception as e:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetProjects']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetProjects'], value1=str(e))
-            ### exit(1)
+            exit(1)
 
     # Load the test plans.
     # def getTestPlans(self, **kwargs):
@@ -203,12 +196,12 @@ class AzureConnection:
         #
         #         else:
         #             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetTestPlan']['Msg']}{Aux.Textcolor.END}\n")
-        #             Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorGetTestPlan'])
+        #             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetTestPlan'])
         #             ###exit(1)
         #
         #     else:
         #         print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
-        #         Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'],
+        #         Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'],
         #                     value1='Status code: ' + str(q.status_code) +' - getTestPlans')
         #
         # except ValueError:
@@ -280,14 +273,10 @@ class AzureConnection:
 
             # kwargs variables.
             project_id = kwargs.get("project_id")
-            ### id_test_plan = kwargs.get("id_test_plan")
-            ### id_test_suit = kwargs.get("id_test_suit")
-            # id_test_case = kwargs.get("id_test_case")
 
+            # Variables.
             test_case_id_list = []
-            point_id_list = []
 
-            # if id_test_case is None:
             self.url = (url + 'projects/' + str(project_id) + '/issues?labels=Test%20case')
 
             # Execute the request from Azure.
@@ -301,26 +290,26 @@ class AzureConnection:
                 resp = json.loads(json_str)
                 if resp.__len__() != 0:
                     print(f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['TestCaseList']['Msg']}{Aux.Textcolor.END}")
-                    for id, testCase_id in enumerate(resp):
-                        # print("[{0:02d}] ID: {1} Name: {2}".format(cont + 1, testCase_id['workItem']['id'],
-                        #                                            testCase_id['workItem']['name']))
-                        table.add_row([id + 1, str(testCase_id['iid']), testCase_id['title']])
-
+                    for id_test, testCase_id in enumerate(resp):
+                        table.add_row([id_test + 1, str(testCase_id['iid']), testCase_id['title']])
                         test_case_id_list.append(testCase_id['iid'])
-                        # point_id_list.append(testCase_id['title'])
 
                     print(table)
 
-                #     test_suit = testCase_id['testSuite']['name']
-                #
-                # elif id_test_case != None:  # Unique test case.
-                #     testCase_id = resp['value'][0]
-                #
-                #     print("[{0:02d}] ID: {1} Name: {2}".format(1, testCase_id['id'],
-                #                                                testCase_id['testCaseReference']['name']))
-                #     test_case_id_list.append(testCase_id['testCaseReference']['id'])
-                #     point_id_list.append(testCase_id['id'])
-                #     test_suit = testCase_id['testSuite']['id']
+                    isolated_tc = None
+
+                    while True:
+                        if isolated_tc not in ["Y", "N"]:
+                            print(f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['AskCT']['Msg']}{Aux.Textcolor.END}\n")
+                            isolated_tc = input().upper()
+                            if isolated_tc.upper() in ["Y", "S"]:
+                                print(f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['ChooseTestCase']['Msg']}{Aux.Textcolor.END}\n")
+                                tc_id = int(input())
+                                test_case_id_list.clear()
+                                test_case_id_list.append(int(tc_id))
+                                break
+                        else:
+                            print("Invalid option. Try again!")
 
                 else:
                     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetTestCase']['Msg']}{Aux.Textcolor.END}\n")
@@ -343,93 +332,6 @@ class AzureConnection:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetTestCases']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetTestCases'], value1=str(e))
             ###exit(1)
-
-    # Get the test case name updated (If was changed after the executed the test case).
-    def getTestCaseName(self, **kwargs):
-
-        # kwargs variables.
-        test_case_id = kwargs.get("test_case_id")
-        project = kwargs.get("project")
-
-        version = '6.0-preview.2'
-
-        try:
-
-            self.url = 'https://' + instance + project + '/_apis/wit/workitems/' + str(test_case_id) + '?api-version=' \
-                       + version
-
-            # Execute the Azure request.
-            q = requests.get(self.url, auth=Aux.otherConfigs['HttpBasicAuth'], timeout=None)
-            if q.status_code == 200:
-                print(f"{Aux.Textcolor.WARNING}{Aux.logs['GetTestCaseName']['Msg']}"
-                      f"{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['GetTestCaseName'], value1="GetTestCaseName")
-
-                # Filter some fields.
-                json_str = json.dumps(q.json())
-                resp = json.loads(json_str)
-
-                return resp['fields']['System.Title']  # Test case name.
-            else:
-                print(f"{Aux.Textcolor.WARNING}{Aux.logs['ErrorGetTestCaseName']['Msg']}"
-                      f"{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorGetTestCaseName'], value1="GetTestCaseName")
-
-        except Exception as e:
-            print('\033[31m' + Aux.logs['ErrorGetTestCaseName']['Msg'] + '\033[0;0m', e)
-            Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorGetTestCaseName'], value1=str(e))
-            ###exit(1)
-
-    # Add the test cases in the Run.
-    # def createTestRunID(self, **kwargs):
-    #
-    #     try:
-    #         # kwargs variables.
-    #         project = kwargs.get("project")
-    #         test_suit = kwargs.get("test_suit")
-    #         id_test_plan = kwargs.get("id_test_plan")
-    #         point_id_list = kwargs.get("point_id_list", 0)
-    #
-    #         version = '5.1-preview.3'
-    #
-    #         if Aux.otherConfigs['ReplaceEvidence']:
-    #             # Add the test cases in the Run. (Use the Test Case PointID).
-    #             self.url = 'https://' + instance + project + '/_apis/test/runs?api-version=' + version
-    #
-    #             test_datas = {
-    #                 "name": test_suit,
-    #                 "priority": 1,
-    #                 "plan": {
-    #                     "id": id_test_plan,
-    #                 },
-    #                 "pointIds": point_id_list,
-    #                 "Type": "Web",
-    #                 "Automated": True
-    #             }
-    #
-    #             p = requests.post(self.url, auth=Aux.otherConfigs['HttpBasicAuth'], json=test_datas, timeout=None)
-    #             if p.status_code == 200:
-    #                 print(f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['StatusTestCase']['Msg']}"
-    #                       f"{Aux.Textcolor.END}\n")
-    #                 Aux.Main.addLogs(self, message="General", value=Aux.logs['StatusTestCase'], value1="createTestRun - TestRun")
-    #                 # Filter some fields.
-    #                 json_str = json.dumps(p.json())
-    #                 resp = json.loads(json_str)
-    #                 testrun_id = resp['id']
-    #
-    #                 return testrun_id
-    #
-    #             else:
-    #                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
-    #                 Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'],
-    #                             value1='Status code: ' + str(p.status_code) + " - createTestRun - TestRun")
-    #         else:
-    #             return None
-    #
-    #     except Exception as e:
-    #         print('\033[31m' + Aux.logs['ErrorLoadTestRun']['Msg'] + '\033[0;0m', e + '- TestRun!')
-    #         Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorLoadTestRun'], value1=str(e) + '- Run!')
-    #         ###exit(1)
 
     # ===================================================== TEST CASE ==================================================
     # Execute the Test Case from Azure.
@@ -492,62 +394,6 @@ class AzureConnection:
             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetSteps'], value1=str(e))
             ###exit(1)
 
-    # Extract the parameters from the Test Case.
-    # def getParameters(self, **kwargs):
-    #
-    #     try:
-    #         # kwargs variables.
-    #         request = kwargs.get("request")
-    #
-    #         # In some cases the Test Case doesn't have variables.
-    #         if 'Microsoft.VSTS.TCM.Parameters' in request['fields']:
-    #             xml_parameters = request['fields']['Microsoft.VSTS.TCM.Parameters']
-    #
-    #             root = eT.fromstring(xml_parameters)
-    #             parameters = []
-    #
-    #             for child in root.findall('param'):
-    #                 parameters.append(child.get('name'))
-    #
-    #             Aux.Main.addLogs(self, message="General", value=Aux.logs['GetParameters'])
-    #         else:
-    #             parameters = None
-    #         return parameters
-    #
-    #     except Exception as e:
-    #         print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetParameters']['Msg']}{Aux.Textcolor.END}", e)
-    #         Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorGetParameters'], value1=str(e))
-    #         ###exit(1)
-
-    # Extract the variables from de Test Case.
-    # def getVariables(self, **kwargs):
-    #
-    #     try:
-    #         # kwargs variables.
-    #         request = kwargs.get("request")
-    #         parameters = kwargs.get("parameters")
-    #
-    #         variables = []
-    #         if parameters:
-    #             xml_variables = request['fields']['Microsoft.VSTS.TCM.LocalDataSource']
-    #
-    #             root = eT.fromstring(xml_variables)
-    #
-    #             for child in root.findall('Table1'):
-    #                 for x in parameters:
-    #                     variables.append(child.find(x).text)
-    #
-    #             Aux.Main.addLogs(self, message="General", value=Aux.logs['GetVariables'])
-    #         else:
-    #             variables = None
-    #
-    #         return variables
-    #
-    #     except Exception as e:
-    #         print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetVariables']['Msg']}{Aux.Textcolor.END}", e)
-    #         Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorGetVariables'], value1=str(e))
-    #         ###exit(1)
-
     # Dismember the variables from each test case.
     def sliceDatas(self, **kwargs):
 
@@ -564,8 +410,12 @@ class AzureConnection:
                 verbs_list.append(step[:step.index(" ")])
 
             for step in steps_list:
-                parameters1_list.append(Aux.re.findall(r'"([^"]*)"', step)[0])
                 count_character = step.count('\"')
+                if count_character > 0:
+                    parameters1_list.append(Aux.re.findall(r'"([^"]*)"', step)[0])
+                else:
+                    parameters1_list.append(None)
+
                 if count_character > 2:
                     parameters2_list.append(Aux.re.findall(r'"([^"]*)"', step)[1])
                 else:
@@ -585,114 +435,6 @@ class AzureConnection:
             Aux.Main.addLogs( message="General", value=Aux.logs['ErrorSliceDatas'], value1=str(e))
             ###exit(1)
 
-    # ====================================== ISOLATE FUNCTIONS =========================================================
-    # Get the Run info.
-    def getInfoRun(self, **kwargs):
-
-        try:
-
-            # kwargs variables.
-            project = kwargs.get("project")
-            test_run_id = kwargs.get("test_run_id")
-            test_case_id_azure = kwargs.get("test_case_id_azure")
-            name_testcase = kwargs.get("name_testcase")
-            cont_iteration = kwargs.get("cont_iteration")
-            step = kwargs.get("step_failed")
-            status_ct = kwargs.get("status_ct")
-
-            version = '6.0-preview.6'
-            new_comments = ''
-            comments = ''
-            old_comments = ''
-            actual_comment = ''
-
-            # Get the actual Result comments.
-            self.url = 'https://' + instance + project + '/_apis/test/Runs/' + str(test_run_id) + '/results/' + \
-                       str(test_case_id_azure) + '?api-version=' + version
-
-            q = requests.get(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, timeout=None)
-            if q.status_code == 200:
-                print(f"{Aux.Textcolor.WARNING}{Aux.logs['GetInfoRun']['Msg']}{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['GetInfoRun'])
-
-                # Filter some fields.
-                json_str = json.dumps(q.json())
-                resp = json.loads(json_str)
-                if status_ct != "Passed":
-                    # Comments from older iterations plus actual comments.
-                    if 'comment' in resp:
-                        old_comments = resp['comment'] + '\n\n'
-
-                    actual_comment = "**TEST CASE FAILED - NAME:** " + name_testcase \
-                                   + " - **ITERATION** :" + str(cont_iteration) + " - **STEP** : " \
-                                   + str(step)
-
-                    new_comments = old_comments + actual_comment
-
-                # Comments from older iterations.
-                elif 'comment' in resp:
-                    new_comments = resp['comment'] + '\n\n'
-
-                comments = comments + new_comments
-
-                # Test executed by.
-                full_name_run_test = resp['runBy']['displayName']
-
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['GetInfoRun'])
-
-                return comments, full_name_run_test, actual_comment
-
-            else:
-                print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'], 
-                                 value1='Status code: ' + str(q.status_code) + " - getInfoRun")
-
-        except Exception as e:
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetInfoRun']['Msg']}{Aux.Textcolor.END}", e)
-            Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorGetInfoRun'], value1=str(e))
-            ###exit(1)
-
-    # Update the test cases in a Run.
-    # def updateTestCaseRun(self, **kwargs):
-    #
-    #     # kwargs variables.
-    #     project = kwargs.get("project")
-    #     test_run_id = kwargs.get("test_run_id")
-    #     test_case_id_azure = kwargs.get("test_case_id_azure")
-    #     status_ct = kwargs.get("status_ct")
-    #     duration = kwargs.get("duration")
-    #     comments = kwargs.get("comments")
-    #
-    #     try:
-    #         version = '6.0'
-    #
-    #         # Get the actual Result comments.
-    #         self.url = 'https://' + instance + project + '/_apis/test/Runs/' + str(test_run_id) + \
-    #                    '/results?api-version=' + version
-    #
-    #         test_datas = {
-    #                          "id": test_case_id_azure,
-    #                          "state": "Completed",
-    #                          "computerName": socket.gethostname(),
-    #                          "outcome": status_ct,
-    #                          "durationInMs": duration,
-    #                          "comment": comments,
-    #                      },
-    #
-    #         p = requests.patch(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, json=test_datas, timeout=None)
-    #         if p.status_code == 200:
-    #             print(f"{Aux.Textcolor.WARNING}{Aux.logs['UpdateTestCaseRun']['Msg']}{Aux.Textcolor.END}\n")
-    #             Aux.Main.addLogs(self, message="General", value=Aux.logs['UpdateTestCaseRun'])
-    #         else:
-    #             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
-    #             Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'],
-    #                              value1='Status code: ' + str(p.status_code) + ' - UpdateTestCaseRun')
-    #
-    #     except Exception as e:
-    #         print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorUpdateTestCaseRun']['Msg']}{Aux.Textcolor.END}", e)
-    #         Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorUpdateTestCaseRun'], value1=str(e))
-    #         ###exit(1)
-
     # Update the evidence in the TestCase.
     def SaveEvidenceTestCase(self, **kwargs):
 
@@ -704,33 +446,58 @@ class AzureConnection:
 
         try:
 
-            self.url = (url + str(project_id) + '/issues/' + str(test_case_id) + '/uploads')
+            # Get the ID.
+            self.url = (url + 'projects/' + str(project_id) + '/uploads')
 
-            file_datas = [
-                {
-                    "file": evidence_folder + '@' + name_testcase,
-                }
-            ]
+            file = os.path.join(evidence_folder, name_testcase, name_testcase) + ".pdf"
 
-            q = requests.post(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]},
-                              form=file_datas)
-            if q.status_code == 200:
+            files = {'file': open(file, 'rb')}
+
+            with open(file, 'rb') as f:
+                q = requests.post(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["BearerUpload"]},
+                                  files=files)
+
+            if q.status_code == 201:
                 print(f"{Aux.Textcolor.WARNING}{Aux.logs['SaveEvidenceTestCase']['Msg']}{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['SaveEvidenceTestCase'])
+                Aux.Main.addLogs(message="General", value=Aux.logs['SaveEvidenceTestCase'])
 
-            elif q.status_code in [500, 412]:
-                AzureConnection._DownloadAttachment(self, project=project, test_case_id=test_case_id,
-                                                    cont_iteration=cont_iteration, name_testcase=name_testcase)
+                # Filter some fields.
+                json_str = json.dumps(q.json())
+                resp = json.loads(json_str)
+                file_url = resp['url']
 
-                print(f"{Aux.Textcolor.FAIL}{Aux.logs['SaveEvidence100files']['Msg']}{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['SaveEvidence100files'])
             else:
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'], 
-                                 value1='Status code: ' + str(q.status_code) + ' - ' + str(q.text) + ' - SaveEvidenceTestCase')
+                Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'], 
+                                 value1='Status code: ' + str(q.status_code) + ' - ' + str(q.text) + 
+                                        ' - SaveEvidenceTestCase - GetID')
+                exit(1)
+
+            self.url = (url + 'projects/' + str(project_id) + '/issues/' + str(test_case_id) + '/notes')
+
+            # Upload file.
+            file_url = file_url.replace("file", name_testcase + ".pdf")
+
+            body = {
+                "body": "[" + name_testcase + "](" + file_url + ")"
+            }
+
+            p = requests.post(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["BearerUpload"]},
+                              data=body)
+
+            if p.status_code == 201:
+                print(f"{Aux.Textcolor.WARNING}{Aux.logs['SaveEvidenceTestCase']['Msg']}{Aux.Textcolor.END}\n")
+                Aux.Main.addLogs(message="General", value=Aux.logs['SaveEvidenceTestCase'])
+
+            else:
+                print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
+                Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'],
+                                 value1='Status code: ' + str(p.status_code) + ' - ' + str(p.text) +
+                                        ' - SaveEvidenceTestCase - Upload File')
+
         except Exception as e:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorSaveEvidenceTestCase']['Msg']}{Aux.Textcolor.END}", e)
-            Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorSaveEvidenceTestCase'], value1=str(e))
+            Aux.Main.addLogs(message="General", value=Aux.logs['ErrorSaveEvidenceTestCase'], value1=str(e))
             ###exit(1)
 
     def UpdateStatusAutomated(self, **kwargs):
@@ -776,94 +543,94 @@ class AzureConnection:
             #                    timeout=None)
             if r.status_code == 200:
                 print(f"{Aux.Textcolor.BLUE}{Aux.logs['UpdateStatusAutomated']['Msg']}{Aux.Textcolor.END}")
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['UpdateStatusAutomated'])
+                Aux.Main.addLogs(message="General", value=Aux.logs['UpdateStatusAutomated'])
             else:
                 raise Exception
 
         except Exception as e:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorUpdateStatusAutomated']['Msg']}{Aux.Textcolor.END}", e)
-            Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorUpdateStatusAutomated'], 
+            Aux.Main.addLogs(message="General", value=Aux.logs['ErrorUpdateStatusAutomated'], 
                              value1='Status code: ' + str(r.status_code) + " - UpdateStatusAutomated")
             ###exit(1)
 
     # Download de attachments when there are more than 100 in a WIT and upload a .zip file.
-    def _DownloadAttachment(self, **kwargs):
-        try:
-            # kwargs arguments.
-            project = kwargs.get('project')
-            test_case_id = kwargs.get('test_case_id')
-            cont_iteration = kwargs.get('cont_iteration')
-            name_testcase = kwargs.get('name_testcase')
-
-            count_evidences = 1
-            order = 0
-            version = '6.0'
-            evidence_folder = Aux.os.path.join(Aux.directories['EvidenceFolder'], name_testcase)
-            relation_list = []
-            order_list = []
-            count_evidences_list = []
-            relation_failed = ''
-            order_failed = ''
-            count_evidences_failed = ''
-
-            Aux.Main.deleteDirectory(self, directory=evidence_folder)
-            Aux.Main.deleteFiles(self, path_log=Aux.os.path.join(Aux.directories['EvidenceFolder']), extension='.zip',
-                                 exact_file=name_testcase + '.zip')
-
-            self.url = 'https://' + instance + project + '/_apis/wit/workitems?ids=' + str(test_case_id) + \
-                       '&$expand=Relations&api-version=' + version
-
-            r = requests.get(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, timeout=None)
-            if r.status_code == 200:
-                # Filter some fields.
-                json_str = json.dumps(r.json())
-                resp = json.loads(json_str)
-                rev_id = resp['value'][0]['rev']
-                total = resp['value'][0]['relations'].__len__()
-
-                for relation in resp['value'][0]['relations']:
-                    order, count_evidences, rev_id, relation_failed, order_failed, count_evidences_failed = \
-                        AzureConnection._readRelation(self, project=project, total=total, test_case_id=test_case_id,
-                                                      order=order, rev_id=rev_id, name_testcase=name_testcase,
-                                                      count_evidences=count_evidences, relation=relation)
-
-                    if relation_failed != None:
-                        relation_list.append(relation_failed)
-                        order_list.append(order_failed)
-                        count_evidences_list.append(count_evidences_failed)
-
-                # Sleep to try again.
-                if relation_failed != None:
-                    for seconds in range(1, 15):
-                        time.sleep(1)
-                        print(f"{Aux.Textcolor.BLUE}{Aux.logs['WaitTime']['Msg']}{seconds} / 15{Aux.Textcolor.END}")
-
-                # If any download fail.
-                while relation_list.__len__() != 0:
-                    for relation in relation_list:
-                        order, count_evidences, rev_id, relation_failed, order_failed, count_evidences_failed = \
-                            AzureConnection._readRelation(self, name_testcase=name_testcase, order=order_list[0],
-                                                          test_case_id=test_case_id, relation=relation,
-                                                          total=count_evidences_list[-1], rev_id=rev_id,
-                                                          project=project, count_evidences=count_evidences_list[0])
-
-                        if relation_failed is None:
-                            relation_list.pop(0)
-                            order_list.pop(0)
-                            count_evidences_list.pop(0)
-
-                print(f"{Aux.Textcolor.BLUE}{Aux.logs['GenerateZIPFile']['Msg']}{Aux.Textcolor.END}")
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['GenerateZIPFile']['Msg'])
-                Aux.shutil.make_archive(evidence_folder, 'zip', evidence_folder)
-
-                AzureConnection.UploadDownloadFile(self, project=project, test_case_id=str(test_case_id),
-                                                   evidence_folder=Aux.directories['EvidenceFolder'],
-                                                   download_file_name=name_testcase + '.zip',
-                                                   file_name=name_testcase + '.zip')
-
-        except Exception as e:
-            Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorDownloadAttachment'], value1=str(e))
-            ###exit(1)
+    # def _DownloadAttachment(self, **kwargs):
+    #     try:
+    #         # kwargs arguments.
+    #         project = kwargs.get('project')
+    #         test_case_id = kwargs.get('test_case_id')
+    #         cont_iteration = kwargs.get('cont_iteration')
+    #         name_testcase = kwargs.get('name_testcase')
+    # 
+    #         count_evidences = 1
+    #         order = 0
+    #         version = '6.0'
+    #         evidence_folder = Aux.os.path.join(Aux.directories['EvidenceFolder'], name_testcase)
+    #         relation_list = []
+    #         order_list = []
+    #         count_evidences_list = []
+    #         relation_failed = ''
+    #         order_failed = ''
+    #         count_evidences_failed = ''
+    # 
+    #         Aux.Main.deleteDirectory(self, directory=evidence_folder)
+    #         Aux.Main.deleteFiles(self, path_log=Aux.os.path.join(Aux.directories['EvidenceFolder']), extension='.zip',
+    #                              exact_file=name_testcase + '.zip')
+    # 
+    #         self.url = 'https://' + instance + project + '/_apis/wit/workitems?ids=' + str(test_case_id) + \
+    #                    '&$expand=Relations&api-version=' + version
+    # 
+    #         r = requests.get(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, timeout=None)
+    #         if r.status_code == 200:
+    #             # Filter some fields.
+    #             json_str = json.dumps(r.json())
+    #             resp = json.loads(json_str)
+    #             rev_id = resp['value'][0]['rev']
+    #             total = resp['value'][0]['relations'].__len__()
+    # 
+    #             for relation in resp['value'][0]['relations']:
+    #                 order, count_evidences, rev_id, relation_failed, order_failed, count_evidences_failed = \
+    #                     AzureConnection._readRelation(self, project=project, total=total, test_case_id=test_case_id,
+    #                                                   order=order, rev_id=rev_id, name_testcase=name_testcase,
+    #                                                   count_evidences=count_evidences, relation=relation)
+    # 
+    #                 if relation_failed != None:
+    #                     relation_list.append(relation_failed)
+    #                     order_list.append(order_failed)
+    #                     count_evidences_list.append(count_evidences_failed)
+    # 
+    #             # Sleep to try again.
+    #             if relation_failed != None:
+    #                 for seconds in range(1, 15):
+    #                     time.sleep(1)
+    #                     print(f"{Aux.Textcolor.BLUE}{Aux.logs['WaitTime']['Msg']}{seconds} / 15{Aux.Textcolor.END}")
+    # 
+    #             # If any download fail.
+    #             while relation_list.__len__() != 0:
+    #                 for relation in relation_list:
+    #                     order, count_evidences, rev_id, relation_failed, order_failed, count_evidences_failed = \
+    #                         AzureConnection._readRelation(self, name_testcase=name_testcase, order=order_list[0],
+    #                                                       test_case_id=test_case_id, relation=relation,
+    #                                                       total=count_evidences_list[-1], rev_id=rev_id,
+    #                                                       project=project, count_evidences=count_evidences_list[0])
+    # 
+    #                     if relation_failed is None:
+    #                         relation_list.pop(0)
+    #                         order_list.pop(0)
+    #                         count_evidences_list.pop(0)
+    # 
+    #             print(f"{Aux.Textcolor.BLUE}{Aux.logs['GenerateZIPFile']['Msg']}{Aux.Textcolor.END}")
+    #             Aux.Main.addLogs(message="General", value=Aux.logs['GenerateZIPFile']['Msg'])
+    #             Aux.shutil.make_archive(evidence_folder, 'zip', evidence_folder)
+    # 
+    #             AzureConnection.UploadDownloadFile(self, project=project, test_case_id=str(test_case_id),
+    #                                                evidence_folder=Aux.directories['EvidenceFolder'],
+    #                                                download_file_name=name_testcase + '.zip',
+    #                                                file_name=name_testcase + '.zip')
+    # 
+    #     except Exception as e:
+    #         Aux.Main.addLogs(message="General", value=Aux.logs['ErrorDownloadAttachment'], value1=str(e))
+    #         ###exit(1)
 
     # Read the test case relation to upload the .zip file.
     def _readRelation(self, **kwargs):
@@ -924,7 +691,7 @@ class AzureConnection:
 
         except Exception as e:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorDownloadAttachment']['Msg']}{Aux.Textcolor.END}", e)
-            Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorDownloadAttachment'], value1=str(e))
+            Aux.Main.addLogs(message="General", value=Aux.logs['ErrorDownloadAttachment'], value1=str(e))
             ###exit(1)
 
         finally:
@@ -983,16 +750,16 @@ class AzureConnection:
                                                    download_file_name=download_file_name, file_name=file_name)
 
                 print(f"{Aux.Textcolor.WARNING}{Aux.logs['CheckDownloadFile']['Msg']}{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['CheckDownloadFile'])
+                Aux.Main.addLogs(message="General", value=Aux.logs['CheckDownloadFile'])
 
             else:
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'], 
+                Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'], 
                                  value1='Status code: ' + str(q.status_code) + ' - CheckDownloadFile')
 
         except Exception as e:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorCheckDownloadFile']['Msg']}{Aux.Textcolor.END}", e)
-            Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorCheckDownloadFile'], value1=str(e))
+            Aux.Main.addLogs(message="General", value=Aux.logs['ErrorCheckDownloadFile'], value1=str(e))
             ###exit(1)
 
     # Delete the 'New' download file to the TestCase.
@@ -1029,15 +796,15 @@ class AzureConnection:
 
             if q.status_code == 200:
                 print(f"{Aux.Textcolor.WARNING}{Aux.logs['DeleteDownloadFile']['Msg']}{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['DeleteDownloadFile'])
+                Aux.Main.addLogs(message="General", value=Aux.logs['DeleteDownloadFile'])
             else:
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'], 
+                Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'], 
                                  value1='Status code: ' + str(q.status_code) + ' - DeleteDownloadFile')
 
         except Exception as e:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorDeleteDownloadFile']['Msg']}{Aux.Textcolor.END}", e)
-            Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorDeleteDownloadFile'], value1=str(e))
+            Aux.Main.addLogs(message="General", value=Aux.logs['ErrorDeleteDownloadFile'], value1=str(e))
             ###exit(1)
 
     # Upload the download file in the TestCase.
@@ -1069,10 +836,10 @@ class AzureConnection:
                 resp = json.loads(json_str)
                 idAttachment = resp['id']
                 print(f"{Aux.Textcolor.WARNING}{Aux.logs['UploadDownloadFileID']['Msg']}{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['UploadDownloadFileID'])
+                Aux.Main.addLogs(message="General", value=Aux.logs['UploadDownloadFileID'])
             else:
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'], 
+                Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'], 
                                  value1='Status code: ' + str(p.status_code) + ' - UploadDownloadFileID')
 
             # ------------------------------------ Second API conection ------------------------------------------------
@@ -1109,15 +876,15 @@ class AzureConnection:
             #                    timeout=None)
             if q.status_code == 200:
                 print(f"{Aux.Textcolor.WARNING}{Aux.logs['UploadDownloadFile']['Msg']}{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['UploadDownloadFile'])
+                Aux.Main.addLogs(message="General", value=Aux.logs['UploadDownloadFile'])
             else:
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'], 
+                Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'], 
                                  value1='Status code: ' + str(q.status_code) + ' - UploadDownloadFile')
 
         except Exception as e:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorUploadDownloadFile']['Msg']}{Aux.Textcolor.END}", e)
-            Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorUploadDownloadFile'], value1=str(e))
+            Aux.Main.addLogs(message="General", value=Aux.logs['ErrorUploadDownloadFile'], value1=str(e))
             ###exit(1)
 
     # Save the download file, from the test case locally.
@@ -1168,10 +935,10 @@ class AzureConnection:
 
                 print(f"{Aux.Textcolor.WARNING}{Aux.logs['SaveDownloadFileLocally']['Msg']}"
                       f"{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['SaveDownloadFileLocally'])
+                Aux.Main.addLogs(message="General", value=Aux.logs['SaveDownloadFileLocally'])
             else:
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'], 
+                Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'], 
                                  value1='Status code: ' + str(p.status_code) + ' - ErrorSaveDownloadFileLocally')
 
             return test_name, id_testcase, sorted(list_files_baseline), sorted(list_files_new)
@@ -1179,7 +946,7 @@ class AzureConnection:
         except Exception as e:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorSaveDownloadFileLocally']['Msg']}"
                   f"{Aux.Textcolor.END}", e)
-            Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorSaveDownloadFileLocally'], value1=str(e))
+            Aux.Main.addLogs(message="General", value=Aux.logs['ErrorSaveDownloadFileLocally'], value1=str(e))
             ###exit(1)
 
     # Update the Run.
@@ -1204,69 +971,69 @@ class AzureConnection:
             p = requests.patch(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, json=test_datas, timeout=None)
             if p.status_code == 200:
                 print(f"{Aux.Textcolor.WARNING}{Aux.logs['UpdateRun']['Msg']}{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['UpdateRun'])
+                Aux.Main.addLogs(message="General", value=Aux.logs['UpdateRun'])
             else:
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'], 
+                Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'], 
                                  value1='Status code: ' + str(p.status_code) + ' - updateRun')
 
         except Exception as e:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorUpdateRun']['Msg']}{Aux.Textcolor.END}", e)
-            Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorUpdateRun'], value1=str(e))
+            Aux.Main.addLogs(message="General", value=Aux.logs['ErrorUpdateRun'], value1=str(e))
             ###exit(1)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Functions to manual evidence.
     # ------------------------------------------------------------------------------------------------------------------
     # Get the number of test cases in Run.
-    def getTestCaseRun(self, **kwargs):
-        try:
-            # kwargs variables.
-            project = kwargs.get('project')
-            test_run_id = kwargs.get('test_run_id')
-            id_test_case = kwargs.get('id_test_case')
-
-            version = '6.1-preview.6'
-            id_azure = 100000
-
-            # Get the actual Result comments.
-            self.url = 'https://' + instance + project + '/_apis/test/Runs/' + str(test_run_id) + \
-                       '/results?api-version=' + version
-
-            p = requests.get(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, timeout=None)
-            if p.status_code == 200:
-                # Filter some fields.
-                json_str = json.dumps(p.json())
-                resp = json.loads(json_str)
-                amount_test_case = resp['count']
-
-                # Test executed by.
-                full_name_run_test = resp['value'][0]['runBy']['displayName']
-
-                # If is a unique test case.
-                if id_test_case != '':
-                    for index in range(0, amount_test_case):
-                        if resp['value'][index]['testCase']['id'] == id_test_case:
-                            id_azure = resp['value'][index]['id']
-                        amount_test_case = 1
-
-            else:
-                print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'], 
-                                 value1='Status code: ' + str(p.status_code) + ' - getTestCaseRun')
-
-            if amount_test_case == 0:
-                return None
-            else:
-                print(f"{Aux.Textcolor.WARNING}{Aux.logs['GetTestCaseRun']['Msg']}{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['GetTestCaseRun'])
-
-                return amount_test_case, id_azure, full_name_run_test
-
-        except Exception as e:
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetTestCaseRun']['Msg']}{Aux.Textcolor.END}", e)
-            Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorGetTestCaseRun'], value1=str(e))
-            exit(1)
+    # def getTestCaseRun(self, **kwargs):
+    #     try:
+    #         # kwargs variables.
+    #         project = kwargs.get('project')
+    #         test_run_id = kwargs.get('test_run_id')
+    #         id_test_case = kwargs.get('id_test_case')
+    #
+    #         version = '6.1-preview.6'
+    #         id_azure = 100000
+    #
+    #         # Get the actual Result comments.
+    #         self.url = 'https://' + instance + project + '/_apis/test/Runs/' + str(test_run_id) + \
+    #                    '/results?api-version=' + version
+    #
+    #         p = requests.get(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, timeout=None)
+    #         if p.status_code == 200:
+    #             # Filter some fields.
+    #             json_str = json.dumps(p.json())
+    #             resp = json.loads(json_str)
+    #             amount_test_case = resp['count']
+    #
+    #             # Test executed by.
+    #             full_name_run_test = resp['value'][0]['runBy']['displayName']
+    #
+    #             # If is a unique test case.
+    #             if id_test_case != '':
+    #                 for index in range(0, amount_test_case):
+    #                     if resp['value'][index]['testCase']['id'] == id_test_case:
+    #                         id_azure = resp['value'][index]['id']
+    #                     amount_test_case = 1
+    #
+    #         else:
+    #             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
+    #             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'],
+    #                              value1='Status code: ' + str(p.status_code) + ' - getTestCaseRun')
+    #
+    #         if amount_test_case == 0:
+    #             return None
+    #         else:
+    #             print(f"{Aux.Textcolor.WARNING}{Aux.logs['GetTestCaseRun']['Msg']}{Aux.Textcolor.END}\n")
+    #             Aux.Main.addLogs(message="General", value=Aux.logs['GetTestCaseRun'])
+    #
+    #             return amount_test_case, id_azure, full_name_run_test
+    #
+    #     except Exception as e:
+    #         print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetTestCaseRun']['Msg']}{Aux.Textcolor.END}", e)
+    #         Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetTestCaseRun'], value1=str(e))
+    #         exit(1)
 
     # Load the attachment list in Run Result.
     def attachmentList(self, **kwargs):
@@ -1326,7 +1093,7 @@ class AzureConnection:
                     #     if not resp['iterationDetails'][n_iteration]['attachments']:
                     #         print(f"{Aux.Textcolor.FAIL}{Aux.otherConfigs['NoEvidences']['Msg']}"
                     #               f"{Aux.Textcolor.END}")
-                    #         Aux.Main.addLogs(self, message="General", value=Aux.otherConfigs['NoEvidences'])
+                    #         Aux.Main.addLogs(message="General", value=Aux.otherConfigs['NoEvidences'])
                     #         return None, None, None
                     #
                     #     print(f"{Aux.Textcolor.BOLD}{test_case_name}{Aux.Textcolor.END}")
@@ -1401,12 +1168,12 @@ class AzureConnection:
                 # return test_case_id, n_iterations, failed_info_dict, completed_date
             else:
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'], 
+                Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'], 
                                  value1='Status code: ' + str(q.status_code) + ' - attachmentList')
 
         except Exception as e:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorAttachmentList']['Msg']}{Aux.Textcolor.END}", e)
-            Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorAttachmentList'], value1=str(e))
+            Aux.Main.addLogs(message="General", value=Aux.logs['ErrorAttachmentList'], value1=str(e))
             ###exit(1)
 
     # Save the images locally.
@@ -1451,16 +1218,16 @@ class AzureConnection:
 
                 elif q.status_code == 401:
                     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorToken']['Msg']}{Aux.Textcolor.END}\n")
-                    Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorToken'],
+                    Aux.Main.addLogs(message="General", value=Aux.logs['ErrorToken'],
                                      value1='Status code: ' + str(q.status_code) + ' - saveManualPrintScreen')
 
                 else:
                     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
-                    Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorRequest'], 
+                    Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'], 
                                      value1='Status code: ' + str(q.status_code) + ' - saveManualPrintScreen')
 
         except Exception as e:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorSaveManualPrintScreen']['Msg']}"
                   f"{Aux.Textcolor.END}", e)
-            Aux.Main.addLogs(self, message="General", value=Aux.logs['ErrorSaveManualPrintScreen'], value1=str(e))
+            Aux.Main.addLogs(message="General", value=Aux.logs['ErrorSaveManualPrintScreen'], value1=str(e))
             ###exit(1)

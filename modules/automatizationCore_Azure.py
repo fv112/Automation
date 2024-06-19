@@ -45,11 +45,11 @@ class Main:
 
         try:
             # Complete name (if it is using the VPN).
-            full_name_run_evidence = Aux.win32net.NetUserGetInfo(Aux.win32net.NetGetAnyDCName(),
-                                                                 Aux.win32api.GetUserName(), 2)["full_name"]
+            executed_by = Aux.win32net.NetUserGetInfo(Aux.win32net.NetGetAnyDCName(),
+                                                      Aux.win32api.GetUserName(), 2)["full_name"]
         except:
             # Windows login (if it is not using the VPN).
-            full_name_run_evidence = Aux.Main.get_display_name(self)
+            executed_by = Aux.Main.get_display_name(self)
 
         try:
             if Aux.otherConfigs['ReplaceEvidence']:
@@ -132,6 +132,7 @@ class Main:
                                                 steps_list=steps_list,
                                                 test_set_path=test_set_path,
                                                 step_failed=step_failed,
+                                                executed_by=executed_by,
                                                 take_picture_status=take_picture_status,
                                                 completed_date=str(Aux.datetime.datetime.now().
                                                                    strftime("%d/%m/%Y %H:%M")))
@@ -166,14 +167,14 @@ class Main:
                     Aux.Main.deleteFiles(path_log=test_set_path, extension="png")
 
                     # If there is file to download update to Azure.
-                    if change_download_config and save_evidence and not status == "Aborted":
-                        file_name = Aux.os.listdir(Aux.directories["DownloadFolder"])
-
-                        status_ct_automation = "Planned"
-                        testcase_status = "Design"
-                        status = "Failed"
-                        raise Exception
-                        Aux.Main.deleteFiles(path_log=Aux.directories["DownloadFolder"], extension='*')
+                    # if save_evidence and not status == "Aborted":
+                    #     file_name = Aux.os.listdir(Aux.directories["DownloadFolder"])
+                    #
+                    #     status_ct_automation = "Planned"
+                    #     testcase_status = "Design"
+                    #     status = "Failed"
+                    #     raise Exception
+                    #     Aux.Main.deleteFiles(path_log=Aux.directories["DownloadFolder"], extension='*')
 
                     #### SOMENTE APÓS EXISTIR O TEST SUIT.
                     # if save_evidence:

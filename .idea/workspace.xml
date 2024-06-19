@@ -6,7 +6,30 @@
   <component name="ChangeListManager">
     <list default="true" id="d16153e1-5b12-4734-a6f3-14148c7d886c" name="Changes" comment="Adaptação para o ambiente da T-Systems / GitLab.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Automation/configs/dictionary-pt.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Automation/configs/dictionary-pt.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Automation/evidence/ETS - en_US.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Automation/evidence/ETS - en_US.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Automation/evidence/ETS - es.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Automation/evidence/ETS - es.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Automation/evidence/ETS - pt_BR.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Automation/evidence/ETS - pt_BR.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/AutomationQA/Analysis-00.toc" beforeDir="false" afterPath="$PROJECT_DIR$/build/AutomationQA/Analysis-00.toc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/AutomationQA/AutomationQA.exe" beforeDir="false" afterPath="$PROJECT_DIR$/build/AutomationQA/AutomationQA.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/AutomationQA/AutomationQA.pkg" beforeDir="false" afterPath="$PROJECT_DIR$/build/AutomationQA/AutomationQA.pkg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/AutomationQA/COLLECT-00.toc" beforeDir="false" afterPath="$PROJECT_DIR$/build/AutomationQA/COLLECT-00.toc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/AutomationQA/EXE-00.toc" beforeDir="false" afterPath="$PROJECT_DIR$/build/AutomationQA/EXE-00.toc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/AutomationQA/PYZ-00.pyz" beforeDir="false" afterPath="$PROJECT_DIR$/build/AutomationQA/PYZ-00.pyz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/AutomationQA/PYZ-00.toc" beforeDir="false" afterPath="$PROJECT_DIR$/build/AutomationQA/PYZ-00.toc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/AutomationQA/xref-AutomationQA.html" beforeDir="false" afterPath="$PROJECT_DIR$/build/AutomationQA/xref-AutomationQA.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exec/Automation_EXE/AutomationCMD/AutomationQA.exe" beforeDir="false" afterPath="$PROJECT_DIR$/exec/Automation_EXE/AutomationCMD/AutomationQA.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exec/Automation_EXE/AutomationCMD/_internal/Automation/configs/dictionary-pt.yml" beforeDir="false" afterPath="$PROJECT_DIR$/exec/Automation_EXE/AutomationCMD/_internal/Automation/configs/dictionary-pt.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exec/Automation_EXE/AutomationCMD/_internal/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/exec/Automation_EXE/AutomationCMD/_internal/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exec/Automation_EXE/AutomationCMD/_internal/_elementtree.pyd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/exec/Automation_EXE/AutomationCMD/_internal/automationAux.py" beforeDir="false" afterPath="$PROJECT_DIR$/exec/Automation_EXE/AutomationCMD/_internal/automationAux.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exec/Automation_EXE/AutomationCMD/_internal/automationFunc.py" beforeDir="false" afterPath="$PROJECT_DIR$/exec/Automation_EXE/AutomationCMD/_internal/automationFunc.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exec/Automation_EXE/AutomationCMD/_internal/automatizationCore_Azure.py" beforeDir="false" afterPath="$PROJECT_DIR$/exec/Automation_EXE/AutomationCMD/_internal/automatizationCore_Azure.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exec/Automation_EXE/AutomationCMD/_internal/azureConnection.py" beforeDir="false" afterPath="$PROJECT_DIR$/exec/Automation_EXE/AutomationCMD/_internal/azureConnection.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exec/Generate_EXE/GenerateEXE.bat" beforeDir="false" afterPath="$PROJECT_DIR$/exec/Generate_EXE/GenerateEXE.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exec/Install.bat" beforeDir="false" afterPath="$PROJECT_DIR$/exec/Install.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/automationAux.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/automationAux.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/automatizationCore_Azure.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/automatizationCore_Azure.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules/azureConnection.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/azureConnection.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -121,23 +144,18 @@
           <option name="timeStamp" value="57" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/modules/automatizationCore_Azure.py</url>
-          <line>30</line>
-          <option name="timeStamp" value="60" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/modules/automationFunc.py</url>
           <line>244</line>
           <option name="timeStamp" value="95" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/exec/Automation_EXE/AutomationCMD/_internal/automatizationCore_Azure.py</url>
-          <line>14</line>
+          <line>13</line>
           <option name="timeStamp" value="111" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/exec/Automation_EXE/AutomationCMD/_internal/automatizationCore_Azure.py</url>
-          <line>16</line>
+          <line>15</line>
           <option name="timeStamp" value="112" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -151,19 +169,24 @@
           <option name="timeStamp" value="126" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/modules/azureConnection.py</url>
-          <line>544</line>
-          <option name="timeStamp" value="132" />
+          <url>file://$PROJECT_DIR$/exec/Automation_EXE/AutomationCMD/_internal/automatizationCore_Azure.py</url>
+          <line>128</line>
+          <option name="timeStamp" value="139" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/modules/azureConnection.py</url>
-          <line>525</line>
-          <option name="timeStamp" value="135" />
+          <url>file://$PROJECT_DIR$/modules/automatizationCore_Azure.py</url>
+          <line>128</line>
+          <option name="timeStamp" value="140" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/modules/azureConnection.py</url>
-          <line>512</line>
-          <option name="timeStamp" value="136" />
+          <url>file://$PROJECT_DIR$/modules/automationAux.py</url>
+          <line>275</line>
+          <option name="timeStamp" value="141" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/exec/Automation_EXE/AutomationCMD/_internal/automatizationCore_Azure.py</url>
+          <line>159</line>
+          <option name="timeStamp" value="142" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
