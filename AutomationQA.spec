@@ -66,5 +66,5 @@ coll = COLLECT(exe, Tree('C:\\QA-Automation\\Automation\\modules'),
                 command.datas,
                 strip=False,
                 upx=False,
-                name='AutomationCMD',
+                name='Automation',
                 icon='C:\\QA-Automation\\Automation\\Automation\\images\\Robot.ico')

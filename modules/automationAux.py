@@ -1,8 +1,6 @@
 import os
 import datetime
 import re
-# import requests ###
-
 import win32api                                         # Read the Windows login.
 import win32net                                         # Read the Windows login.
 import sys
@@ -25,7 +23,10 @@ from docx.shared import Inches                          # Used to insert image i
 from PIL import ImageGrab
 from collections import Counter                         # Used in automatizationCore_Azure.
 
-replaceEvidence = None
+verbs = None
+logs = None
+directories = None
+otherConfigs = None
 searchForAttribute = []
 searchForComponent = []
 messages = []
@@ -43,6 +44,9 @@ class Textcolor:
 
 
 class Main:
+
+    def __init__(self):
+        pass
 
     # Called to clean the file 'Tokens.txt'
     def clean_token_file(self):
