@@ -1,12 +1,13 @@
 import json
 import os.path
-import time
 import requests
+import urllib3
 from prettytable import PrettyTable
 
 import modules.automationAux as Aux
 
 url = 'https://sbs.t-systems.com.br/gitlab/api/v4/'
+urllib3.disable_warnings()
 
 
 class AzureConnection:
@@ -109,14 +110,14 @@ class AzureConnection:
     # ===================================== Modules to extract info from GitLab ========================================
     # Load the project list from KantarWare.
     def getProjects(self):
+
         projects_dic = {}
         project_selected = ''
 
         try:
             self.url = url + 'projects?topic=QA-Automation'
 
-            # Execute the request from Azure.
-            t = requests.get(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, timeout=None)
+            t = requests.get(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, verify=False)
             if t.status_code == 200:
 
                 # Filter some fields.
@@ -182,7 +183,7 @@ class AzureConnection:
         #                + version
         #
         #     # Execute the request from Azure.
-        #     q = requests.get(self.url, auth=Aux.otherConfigs['HttpBasicAuth'], timeout=None)
+        #     q = requests.get(self.url, auth=Aux.otherConfigs['HttpBasicAuth'], verify=False)
         #     if q.status_code == 200:
         #         # Filter some fields.
         #         json_str = json.dumps(q.json())
@@ -234,7 +235,7 @@ class AzureConnection:
             #            '?api-version=' + version
             #
             # # Execute the request from Azure.
-            # r = requests.get(self.url, auth=Aux.otherConfigs['HttpBasicAuth'], timeout=None)
+            # r = requests.get(self.url, auth=Aux.otherConfigs['HttpBasicAuth'], verify=False)
             # if r.status_code == 200:
             #     # Filter some fields.
             #     json_str = json.dumps(r.json())
@@ -280,7 +281,7 @@ class AzureConnection:
             self.url = (url + 'projects/' + str(project_id) + '/issues?labels=Test%20case')
 
             # Execute the request from Azure.
-            s = requests.get(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, timeout=None)
+            s = requests.get(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, verify=False)
             if s.status_code == 200:
 
                 table = PrettyTable(['ORDER', 'TEST CASE ID', 'TEST CASE'])
@@ -347,7 +348,7 @@ class AzureConnection:
             self.url = (url + 'projects/' + str(project_id) + '/issues?iids[]=' + str(test_case_id))
 
             # Execute the request from Azure.
-            q = requests.get(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, timeout=None)
+            q = requests.get(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, verify=False)
             if q.status_code == 200:
                 print(f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['RequestOK']['Msg']}{Aux.Textcolor.END}\n")
                 # Filter some fields.
@@ -455,7 +456,7 @@ class AzureConnection:
 
             with open(file, 'rb') as f:
                 q = requests.post(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["BearerUpload"]},
-                                  files=files)
+                                  files=files, verify=False)
 
             if q.status_code == 201:
                 print(f"{Aux.Textcolor.WARNING}{Aux.logs['SaveEvidenceTestCase']['Msg']}{Aux.Textcolor.END}\n")
@@ -483,7 +484,7 @@ class AzureConnection:
             }
 
             p = requests.post(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["BearerUpload"]},
-                              data=body)
+                              data=body, verify=False)
 
             if p.status_code == 201:
                 print(f"{Aux.Textcolor.WARNING}{Aux.logs['SaveEvidenceTestCase']['Msg']}{Aux.Textcolor.END}\n")
@@ -540,7 +541,7 @@ class AzureConnection:
             ]
 
             # r = requests.patch(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, json=file_datas, headers=headers,
-            #                    timeout=None)
+            #                    verify=False)
             if r.status_code == 200:
                 print(f"{Aux.Textcolor.BLUE}{Aux.logs['UpdateStatusAutomated']['Msg']}{Aux.Textcolor.END}")
                 Aux.Main.addLogs(message="General", value=Aux.logs['UpdateStatusAutomated'])
@@ -580,7 +581,7 @@ class AzureConnection:
     #         self.url = 'https://' + instance + project + '/_apis/wit/workitems?ids=' + str(test_case_id) + \
     #                    '&$expand=Relations&api-version=' + version
     # 
-    #         r = requests.get(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, timeout=None)
+    #         r = requests.get(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, verify=False)
     #         if r.status_code == 200:
     #             # Filter some fields.
     #             json_str = json.dumps(r.json())
@@ -713,7 +714,7 @@ class AzureConnection:
             self.url = 'https://' + instance + project + '/_apis/wit/workitems/' + str(test_case_id) + \
                        '?$expand=all&api-version=' + version
 
-            q = requests.get(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, timeout=None)
+            q = requests.get(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, verify=False)
 
             if q.status_code == 200:
                 flag_save_baseline = True
@@ -792,7 +793,7 @@ class AzureConnection:
             ]
 
             # q = requests.patch(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, json=attachment_details,
-            #                    headers=headers, timeout=None)
+            #                    headers=headers, verify=False)
 
             if q.status_code == 200:
                 print(f"{Aux.Textcolor.WARNING}{Aux.logs['DeleteDownloadFile']['Msg']}{Aux.Textcolor.END}\n")
@@ -829,7 +830,7 @@ class AzureConnection:
             headers = {'Content-Type': 'application/octet-stream'}
 
             # p = requests.post(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, data=data, headers=headers,
-            #                   timeout=None)
+            #                   verify=False)
             if p.status_code == 201:
                 # Filter some fields.
                 json_str = json.dumps(p.json())
@@ -873,7 +874,7 @@ class AzureConnection:
             ]
 
             # q = requests.patch(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, json=file_datas, headers=headers,
-            #                    timeout=None)
+            #                    verify=False)
             if q.status_code == 200:
                 print(f"{Aux.Textcolor.WARNING}{Aux.logs['UploadDownloadFile']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(message="General", value=Aux.logs['UploadDownloadFile'])
@@ -904,7 +905,7 @@ class AzureConnection:
             self.url = 'https://' + instance + project + '/_apis/wit/workitems?ids=' + str(id_testcase) + \
                        '&$expand=all&api-version=' + version
 
-            p = requests.get(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, timeout=None)
+            p = requests.get(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, verify=False)
             if p.status_code == 200:
                 # Filter some fields.
                 json_str = json.dumps(p.json())
@@ -917,7 +918,7 @@ class AzureConnection:
                     if any(x in download_name for x in list_names):
                         file_url = resp['value'][0]['relations'][order]['url']
 
-                        r = requests.get(file_url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, timeout=None)
+                        r = requests.get(file_url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, verify=False)
 
                         # Create the Compare directory.
                         Aux.Main.createDirectory(self,
@@ -968,7 +969,7 @@ class AzureConnection:
                 "state": status_run,
             }
 
-            p = requests.patch(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, json=test_datas, timeout=None)
+            p = requests.patch(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, json=test_datas, verify=False)
             if p.status_code == 200:
                 print(f"{Aux.Textcolor.WARNING}{Aux.logs['UpdateRun']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(message="General", value=Aux.logs['UpdateRun'])
@@ -1000,7 +1001,7 @@ class AzureConnection:
     #         self.url = 'https://' + instance + project + '/_apis/test/Runs/' + str(test_run_id) + \
     #                    '/results?api-version=' + version
     #
-    #         p = requests.get(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, timeout=None)
+    #         p = requests.get(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, verify=False)
     #         if p.status_code == 200:
     #             # Filter some fields.
     #             json_str = json.dumps(p.json())
@@ -1060,7 +1061,7 @@ class AzureConnection:
                        str(id_azure) + '/?detailsToInclude=iterations&?api-version=' + version
 
             # Execute the Azure request.
-            q = requests.get(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, timeout=None)
+            q = requests.get(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, verify=False)
             if q.status_code == 200:
                 # Filter some fields.
                 json_str = json.dumps(q.json())
@@ -1205,7 +1206,7 @@ class AzureConnection:
 
                 # Execute the Azure request.
                 q = requests.get(self.url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]},
-                                 timeout=None)
+                                 verify=False)
 
                 if q.status_code == 200:
                     evidence_image = Aux.os.path.join(Aux.directories['EvidenceFolderManual'], file_name)

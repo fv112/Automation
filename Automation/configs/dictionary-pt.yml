@@ -71,7 +71,7 @@ verbs:
 
         Pressionar: {Language: Portuguese, Function: Func.Main.rightClick, Phrase: "Clique com o botão direito do mouse sobre um componente.", Syntax: "Pressionar no componente \"<Componente>\""},
         Presionar: {Language: Spanish, Function: Func.Main.rightClick, Phrase: "Click derecho del mouse en el componente.", Syntax: "Presionar el \"<Componente>\""},
-        Right: {Language: English, Function: Func.Main.rightClick, Phrase: "Right click of the mouse on the component .", Syntax: "Press on the \"<Component>\""},
+        Press: {Language: English, Function: Func.Main.rightClick, Phrase: "Press the right button of the mouse on the component.", Syntax: "Press the right button of the mouse on the \"<Component>\""},
 
         Retornar: {Language: Portuguese, Function: Func.Main.returnDefault, Phrase: "Retorna para a janela principal.", Syntax: "Retornar"},
         Retornar_: {Language: Spanish, Function: Func.Main.returnDefault, Phrase: "Regrese a la pantalla principal del navegador.", Syntax: "Retornar"},
@@ -95,7 +95,7 @@ verbs:
 
         Teclar: {Language: Portuguese, Function: Func.Main.pressButton, Phrase: "Tecla um botão específico do teclado (Exemplo: CTRL, ALT, RETURN, UP, DOWN, LEFT, RIGHT, TAB, PAGE UP, PAGE DOWN, ESC, DELETE, BACKSPACE).", Syntax: " Teclar \"<Nome da tecla>\" \n Teclar \"<Nome da tecla + Nome da tecla 2>\" -> Exemplo: Teclar \"Ctrl + v\" \n Teclar \"<Nome da tecla>\" \"<Número de vezes>\" vezes."},
         Teclar_: {Language: Spanish, Function: Func.Main.pressButton, Phrase: "Tecla en un botón específico en el teclado (Ejemplo: CTRL, ALT, RETURN, UP, DOWN, LEFT, RIGHT, TAB, PAGE UP, PAGE DOWN, ESC, DELETE, BACKSPACE).", Syntax: " Teclar \"<Nombre de la tecla>\" \n Teclar \"<Nombre de la tecla + Nombre de la tecla 2>\" -> Ejemplo: Teclar \"Ctrl + v\" \n Teclar  \"<Nombre de la tecla>\" \"<Número de veces>\" veces"},
-        Press: {Language: English, Function: Func.Main.pressButton, Phrase: "Type an especific button in keyboard (Example: CTRL, ALT, RETURN, UP, DOWN, LEFT, RIGHT, TAB, PAGE UP, PAGE DOWN, ESC, DELETE, BACKSPACE). ", Syntax: " Press \"<Key name>\" \n Press \"<Key name + Key name 2>\" -> Sample: Press \"Ctrl + v\" \n Press \"<Key name>\" the \"<Number of times>\" times."},
+        Type: {Language: English, Function: Func.Main.pressButton, Phrase: "Type an especific button in keyboard (Example: CTRL, ALT, RETURN, UP, DOWN, LEFT, RIGHT, TAB, PAGE UP, PAGE DOWN, ESC, DELETE, BACKSPACE). ", Syntax: " Type \"<Key name>\" \n Type \"<Key name + Key name 2>\" -> Sample: Type \"Ctrl + v\" \n Type \"<Key name>\" the \"<Number of times>\" times."},
 
         Validar: {Language: Portuguese, Function: Func.Main.validateData, Phrase: "Valida o conteúdo de um componente com o um texto informado.", Syntax: " Validar no componente \"<Componente>\" o texto \"<Texto que deve validar>\" \n Validar no componente \"<Componente>\" está \"(.)True\" \n Validar no componente \"<Componente>\" está \"(?)\" ativo \n Validar se a URL é igual a \"(url)<Caminho da URL>\" \n Validar se o título da janela é igual a \"(title)<Título da janela>\" \n Validar se o atributo do componente é igual a \"(#value)<Atributo do componente>\" \n Validar se o título do componente é igual a \"(#title)<Título do componente>\" \n Validar se o href do componente é igual a \"(#href)<HREF do componente>\"\n Validar se componente existe \"* <Componente>\""},
         Validar_: {Language: Spanish, Function: Func.Main.validateData, Phrase: "Obtenga un texto componente y compárelo con el esperado.", Syntax: " Validar en el componente\"<Componente>\" el texto \"<Texto que debe validar>\" \n Validar en el componente\"<Componente>\" es \"(.)Verdadero\ \n Validar en el componente \"<Componente>\" es \"(?)\" activo \n Validar si la URL es igual a \"(url)<Ruta URL>\"\ n Validar si el título de la ventana es igual a \"(título)<Título de la ventana>\" \n Validar si el atributo del componente es igual a \"(# valor)<Atributo del componente>\" \n Validar si el título del componente es igual a \"(# título)<Título del componente>\" \n Validar si el href del componente es igual a \"(# href)<Componente HREF>\" \n Validar si el componente existe \"* <Componente>\""},
@@ -163,7 +163,7 @@ logs:
         ErrorClose: {Type: Error, Msg: Erro ao fechar!, Where: close},
         ErrorConfigureLanguage: {Type: Error, Msg: Ocorreu um erro na configuração do idioma!, Where: configureLanguage},
         ErrorConfigureSavePath: {Type: Error, Msg: Erro ao configurar o diretório para download!, Where: _configureSavePath},
-        ErrorConnection: {Type: Error, Msg: Não se trata de falha na automação. O Azure não está respondendo. Verifique a sua conexão e tente novamente mais tarde!, Where: azureConnection},
+        ErrorConnection: {Type: Error, Msg: Não se trata de falha na automação. O GitLab não está respondendo. Verifique a sua conexão e tente novamente mais tarde!, Where: azureConnection},
         ErrorConvertPDF: {Type: Error, Msg: Não foi possível converter o ETS para PDF!, Where: mainFunction},
         ErrorCompareFile: {Type: Error, Msg: Não foi possível abrir o Beyond Compare!, Where: compareBeyondCompare},
         ErrorCore: {Type: Error, Msg: Ocorreu um erro na aplicação!, Where: mainFunction},
