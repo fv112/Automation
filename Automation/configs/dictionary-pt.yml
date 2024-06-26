@@ -415,7 +415,7 @@ otherConfigs:
         Percentage: {Type: Info, Msg: Porcentagem da automação executada., Where: startAutomation},
         ProjectList: {Type: Info, Msg: "Lista de projetos:", Where: azureConnection},
         RequestOK: {Type: Info, Msg: Request realizada com sucesso!, Where: azureConnection},
-        ReplaceEvidence: True,
+#        ReplaceEvidence: True,
         RunAgain: {Type: Info, Msg: Execute a automação novamente., Where: getProjects},
         Exit: {Type: Info, Msg: Fechar o menu., Where: azureConnection},
         StatusIDTestCase: {Type: Info, Msg: Point ID do caso de teste consultado com sucesso., Where: azureConnection},

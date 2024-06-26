@@ -1,11 +1,21 @@
 Automation QA - Release notes
 ----
+**Version 1.1.0**
+
+<em>27/06/2024</em>
+- <font color='red'>__[Novo]__</font> - Alteração dos componentes do Azure para o GitLab.
+
+**Version 1.0.0**
+
+<em>25/06/2024</em>
+- Geração do instalador da automação.
+
 **Version 0.10.0**
 
 <em>21/06/2024</em>
-- <font color='red'>__[Novo]__</font> - Atualização do verbo para botão direito do mouse e teclar um botão do teclado.
-- <font color='red'>__[Novo]__</font> - Atualização das bibliotecas.
-- <font color='red'>__[Novo]__</font> - Evolução da geração do instalador.
+- Atualização do verbo para botão direito do mouse e teclar um botão do teclado.
+- Atualização das bibliotecas.
+- Evolução da geração do instalador.
 
 **Version 0.9.0**
 

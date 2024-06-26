@@ -4,7 +4,7 @@ import PyInstaller.config
 block_cipher = None
 
 # Variables.
-OUTPUT_DIR = "C:\\QA-Automation\\Automation\\exec\\Temp"
+OUTPUT_DIR = "C:\\QA-Automation\\Automation\\exec\\Automation_EXE"
 
 # Create the folder to save the token.
 if not os.path.exists(os.path.join(OUTPUT_DIR)):
@@ -30,9 +30,9 @@ command = Analysis([
             ('C:\\QA-Automation\\Automation\\Automation\\images\\Robot.ico', 'Automation\\images'),
             ('C:\\QA-Automation\\Automation\\Automation\\images\\Robot.png', 'Automation\\images'),
             ('C:\\QA-Automation\\Automation\\Automation\\images\\Unavailable.jpg', 'Automation\\images'),
-            ('C:\\QA-Automation\\Automation\\Automation\\configs\\dictionary-en.yml','Automation\\configs'),
+            ('C:\\QA-Automation\\Automation\\Automation\\configs\\dictionary-en_US.yml','Automation\\configs'),
             ('C:\\QA-Automation\\Automation\\Automation\\configs\\dictionary-es.yml','Automation\\configs'),
-            ('C:\\QA-Automation\\Automation\\Automation\\configs\\dictionary-pt.yml','Automation\\configs'),
+            ('C:\\QA-Automation\\Automation\\Automation\\configs\\dictionary-pt_BR.yml','Automation\\configs'),
             ('C:\\QA-Automation\\Automation\\Automation\\configs\\Notepad_Theme_Log_Automation.xml','Automation\\configs'),
             ('C:\\QA-Automation\\Automation\\Automation\\evidence\\ETS - en_US.docx','Automation\\evidence'),
             ('C:\\QA-Automation\\Automation\\Automation\\evidence\\ETS - es.docx','Automation\\evidence'),

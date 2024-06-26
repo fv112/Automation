@@ -1,23 +1,27 @@
-import ctypes                                       # To load the computer language.
-import locale                                       # To load the computer language.
-import argparse                                     # Command line help.
-import win32gui                                     # To minimize the Python screen (command line).
-import win32con                                     # To minimize the Python screen (command line).
-from sys import argv                                # To read the arguments in the command line.
-import getopt                                       # To read the arguments in the command line.
-import os
-import textwrap
+#import automatizationCore_GitLab as Core
+# import automationAux as Aux
 
-import modules.automatizationCore_Azure as Core
-import modules.automationAux as Aux
+# import Automation.modules.automationAux as Aux
+import Automation.modules.automatizationCore_GitLab as Core
+#import Automation.modules.automationAux as Aux
 
 
-class Main:
+class AutomationQA:
 
     def __init__(self):
+        import Automation.Automation.modules.automationAux as Aux
         Aux.Main.setLanguage(language='pt_BR')
-        Core.Main()
+        # self.execute_automation()
+        Core.Main.main(self)
 
+    # def execute_automation(self):
+    #     from Automation.modules.automatizationCore_GitLab import Main as Execute
+    #     Execute.main(self=self)
+
+    # def __init__(self):
+        # Read any language to load the directories and paths.
+        # Aux.Main.setLanguage(language='pt_BR')
+        # Core.Main.main(self)
 
     #     self.cmdHelp()
     #
@@ -83,7 +87,7 @@ class Main:
     #     if language not in ('es', 'en_US', 'pt_BR'):
     #         print(f"{Aux.Textcolor.FAIL}{Aux.otherConfigs['LanguageError']['Msg']}{Aux.Textcolor.END}")
     #         Aux.Main.addLogs(self, message="General", value=Aux.otherConfigs["LanguageError"])
-    #         exit(1)
+    #         #exit(1)
     #
     #     # Configure the languages.
     #     Aux.Main.setLanguage(self, language=language, interface=False)
@@ -129,6 +133,4 @@ class Main:
 
 
 if __name__ == "__main__":
-    # Aux.Main.setLanguage(language='pt_BR')
-    #Core.Main()
-    Main()
+    run = AutomationQA()
