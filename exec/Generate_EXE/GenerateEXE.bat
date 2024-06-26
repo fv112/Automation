@@ -14,7 +14,7 @@ REM ----------------------------------------------------------------------------
 echo Creating zip files.
 powershell Compress-Archive -path C:\QA-Automation\Automation\exec\Automation_EXE -Update -DestinationPath C:\QA-Automation\Automation\exec\Automation_EXE\Automation
 powershell Compress-Archive -path C:\QA-Automation\Automation\exec\TestEnvironment -Update -DestinationPath C:\QA-Automation\Automation\exec\Automation_EXE\TestEnvironment
-powershell Compress-Archive -literalpath "C:\QA-Automation\Automation\exec\\Automation_EXE\TestEnvironment.zip", "C:\QA-Automation\Automation\exec\Automation_EXE\Automation.zip" -Update -DestinationPath C:\QA-Automation\Automation\exec\Automation_EXE\Automation_EXE.zip
+powershell Compress-Archive -literalpath "C:\QA-Automation\Automation\exec\Automation_EXE\TestEnvironment.zip", "C:\QA-Automation\Automation\exec\Automation_EXE\Automation.zip" -Update -DestinationPath C:\QA-Automation\Automation\exec\Automation_EXE\Automation_EXE.zip
 
 echo Move from Automation_EXE folder to exec.
 copy C:\QA-Automation\Automation\exec\Automation_EXE\Automation_EXE.zip C:\QA-Automation\Automation\exec

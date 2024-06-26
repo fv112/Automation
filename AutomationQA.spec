@@ -15,11 +15,11 @@ PyInstaller.config.CONF['distpath'] = OUTPUT_DIR
 # Create the Command Line executable.
 command = Analysis([
             'C:\\QA-Automation\\Automation\\AppAutomation.py',
-            'C:\\QA-Automation\\Automation\\modules\\automationAux.py',
-            'C:\\QA-Automation\\Automation\\modules\\automationFunc.py',
-            'C:\\QA-Automation\\Automation\\modules\\automatizationCore_Azure.py',
-            'C:\\QA-Automation\\Automation\\modules\\azureConnection.py',
-            'C:\\QA-Automation\\Automation\\modules\\generateManualEvidence.py'
+            'C:\\QA-Automation\\Automation\\Automation\\modules\\automationAux.py',
+            'C:\\QA-Automation\\Automation\\Automation\\modules\\automationFunc.py',
+            'C:\\QA-Automation\\Automation\\Automation\\modules\\automatizationCore_GitLab.py',
+            'C:\\QA-Automation\\Automation\\Automation\\modules\\GitLabConnection.py',
+            'C:\\QA-Automation\\Automation\\Automation\\modules\\generateManualEvidence.py'
             ],
             pathex=[],
             binaries=None,
@@ -30,9 +30,9 @@ command = Analysis([
             ('C:\\QA-Automation\\Automation\\Automation\\images\\Robot.ico', 'Automation\\images'),
             ('C:\\QA-Automation\\Automation\\Automation\\images\\Robot.png', 'Automation\\images'),
             ('C:\\QA-Automation\\Automation\\Automation\\images\\Unavailable.jpg', 'Automation\\images'),
-            ('C:\\QA-Automation\\Automation\\Automation\\configs\\dictionary-en_US.yml','Automation\\configs'),
+            ('C:\\QA-Automation\\Automation\\Automation\\configs\\dictionary-en.yml','Automation\\configs'),
             ('C:\\QA-Automation\\Automation\\Automation\\configs\\dictionary-es.yml','Automation\\configs'),
-            ('C:\\QA-Automation\\Automation\\Automation\\configs\\dictionary-pt_BR.yml','Automation\\configs'),
+            ('C:\\QA-Automation\\Automation\\Automation\\configs\\dictionary-pt.yml','Automation\\configs'),
             ('C:\\QA-Automation\\Automation\\Automation\\configs\\Notepad_Theme_Log_Automation.xml','Automation\\configs'),
             ('C:\\QA-Automation\\Automation\\Automation\\evidence\\ETS - en_US.docx','Automation\\evidence'),
             ('C:\\QA-Automation\\Automation\\Automation\\evidence\\ETS - es.docx','Automation\\evidence'),
@@ -61,7 +61,7 @@ exe = EXE(pyz,
             console=True, # True = Enable the command line in background to debug.
             icon='C:\\QA-Automation\\Automation\\Automation\\images\\Robot.ico')
 
-coll = COLLECT(exe, Tree('C:\\QA-Automation\\Automation\\modules'),
+coll = COLLECT(exe, Tree('C:\\QA-Automation\\Automation\\Automation\\modules'),
                 command.binaries,
                 command.zipfiles,
                 command.datas,

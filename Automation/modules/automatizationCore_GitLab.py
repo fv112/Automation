@@ -1,7 +1,6 @@
-import Automation.Automation.modules.automationAux as Aux
-import Automation.Automation.modules.automationFunc as Func
-import Automation.Automation.modules.GitLabConnection as GitLab
-
+import Automation.modules.automationAux as Aux
+import Automation.modules.automationFunc as Func
+import Automation.modules.GitLabConnection as GitLab
 
 class Main:
 
@@ -10,8 +9,6 @@ class Main:
 
     def main(self):
         try:
-            # Aux.Main.setLanguage(language='pt')  # Default.
-
             Aux.Main.deleteDirectory(self, directory=Aux.directories["Temp"])
 
             project_id, project_name = GitLab.GitLabConnection.getProjects(self)
@@ -53,8 +50,6 @@ class Main:
             executed_by = Aux.Main.get_display_name(self)
 
         try:
-            # if Aux.otherConfigs['ReplaceEvidence']:
-            #     save_evidence = True
 
             for index, test_case_id in enumerate(test_case_id_list):
                 status_ct_automation = 'Planned'
@@ -62,7 +57,7 @@ class Main:
                 # Inform the test case percentage already executed.
                 Aux.Main.percentage(actual=index, total=len(test_case_id_list))
 
-                change_download_config: bool
+                # change_download_config: bool
                 order_steps_list, name_testcase, steps_list, verbs_list, parameters1_list, parameters2_list = \
                     GitLab.GitLabConnection.startSteps(self, project_id=project_id, test_case_id=test_case_id)
                 total_steps = len(order_steps_list)
@@ -105,8 +100,6 @@ class Main:
                 elif status == "Aborted" and save_evidence:
                     Func.Main.verifyBrowser(self)
                     status_ct_automation = 'Failed'
-                    # testcase_status = 'Design'
-
                 else:
                     testcase_status = 'Closed'
 
@@ -159,7 +152,7 @@ class Main:
                         #                                       cont_iteration=cont_iteration)
 
                         GitLab.GitLabConnection.SaveEvidenceTestCase(self, project_id=project_id,
-                                                                     test_case_id=test_case_id,
+                                                                     test_case_id=test_case_id, status=status,
                                                                      evidence_folder=Aux.directories["EvidenceFolder"],
                                                                      name_testcase=Aux.otherConfigs["ETSName"] +
                                                                                    str(test_case_id) + " - " +
@@ -232,7 +225,6 @@ class Main:
                     verb = 'NoExecute'
 
                 print(f"{Aux.otherConfigs['Step']['Msg']}: {step}")
-                print(f"{Aux.otherConfigs['Verb']['Msg']}: {verb}")
                 print(f"PARAM 1: {parameters1}")
                 if parameters2 is not None:
                     print(f"PARAM 2: {parameters2}")

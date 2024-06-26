@@ -1,9 +1,16 @@
 Automation QA - Release notes
 ----
-**Version 1.1.0**
+**Version 1.1.1**
 
 <em>27/06/2024</em>
 - <font color='red'>__[Novo]__</font> - Alteração dos componentes do Azure para o GitLab.
+
+**Version 1.1.0**
+
+<em>27/06/2024</em>
+
+- <font color='red'>__[Novo]__</font> - Execução dos casos de teste na sequência.
+- <font color='red'>__[Novo]__</font> - Inclusão da palavra BUG na evidência com bug. 
 
 **Version 1.0.0**
 

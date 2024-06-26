@@ -4,7 +4,7 @@ import requests
 import urllib3
 from prettytable import PrettyTable
 
-import Automation.Automation.modules.automationAux as Aux
+import Automation.modules.automationAux as Aux
 
 url = 'https://sbs.t-systems.com.br/gitlab/api/v4/'
 
@@ -100,7 +100,7 @@ class GitLabConnection:
         except (TypeError, AttributeError):
             print(f"{Aux.Textcolor.FAIL}{Aux.otherConfigs['IDRunInvalid']['Msg']} '{test_run_id}'"
                   f"{Aux.Textcolor.END}")
-            ####exit(1)
+            #exit(1)
 
         else:
             return test_case_id_list, n_iterations_list, id_azure_list, n_test_case_list, failed_info_dict, \
@@ -198,7 +198,7 @@ class GitLabConnection:
         #         else:
         #             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetTestPlan']['Msg']}{Aux.Textcolor.END}\n")
         #             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetTestPlan'])
-        #             ####exit(1)
+        #             #exit(1)
         #
         #     else:
         #         print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
@@ -208,7 +208,7 @@ class GitLabConnection:
         # except ValueError:
         #     print(f"{Aux.Textcolor.FAIL}'{test_plan_selected}' {Aux.otherConfigs['OptionInvalid']['Msg']}"
         #           f"{Aux.Textcolor.END}")
-        #     ####exit(0)
+        #     #exit(0)
 
         #     return 0
         #
@@ -260,12 +260,12 @@ class GitLabConnection:
         # except ValueError:
         #     print(f"{Aux.Textcolor.FAIL}'{test_suit_selected}' {Aux.otherConfigs['OptionInvalid']['Msg']}"
         #           f"{Aux.Textcolor.END}")
-        #     ####exit(0)
+        #     #exit(0)
         #
         # except Exception as e:
         #     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetTestSuits']['Msg']}{Aux.Textcolor.END}", e)
         #     Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetTestSuits'], value1=str(e))
-        #     ####exit(1)
+        #     #exit(1)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Load the test cases.
@@ -277,9 +277,7 @@ class GitLabConnection:
 
             # Variables.
             test_case_id_list = []
-            # url = ''
 
-            #url = (url + 'projects/' + str(project_id) + '/issues?labels=Test%20case')
             new_url = url + 'projects/' + str(project_id) + '/issues?labels=Test%20case'
 
             # Execute the request from Azure.
@@ -311,13 +309,15 @@ class GitLabConnection:
                                 test_case_id_list.clear()
                                 test_case_id_list.append(int(tc_id))
                                 break
+                            else:
+                                break
                         else:
                             print("Invalid option. Try again!")
 
                 else:
                     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetTestCase']['Msg']}{Aux.Textcolor.END}\n")
                     Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetTestCase'])
-                    ####exit(1)
+                    #exit(1)
 
                 return test_case_id_list
 
@@ -334,7 +334,7 @@ class GitLabConnection:
         except Exception as e:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetTestCases']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetTestCases'], value1=str(e))
-            ####exit(1)
+            #exit(1)
 
     # ===================================================== TEST CASE ==================================================
     # Execute the Test Case from Azure.
@@ -348,8 +348,6 @@ class GitLabConnection:
             step_block = ''
 
             new_url = (url + 'projects/' + str(project_id) + '/issues?iids[]=' + str(test_case_id))
-
-            #url = (url + 'projects/' + str(project_id) + '/issues?iids[]=' + str(test_case_id))
 
             # Execute the request from Azure.
             q = requests.get(new_url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, verify=False)
@@ -372,7 +370,7 @@ class GitLabConnection:
         except Exception as e:
             print('\033[31m' + Aux.logs['ErrorExecuteTestCase']['Msg'] + '\033[0;0m', e)
             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorExecuteTestCase'], value1=str(e))
-            ####exit(1)
+            #exit(1)
 
     # Extract the steps from Test Case.
     def getSteps(self, **kwargs):
@@ -397,7 +395,7 @@ class GitLabConnection:
         except Exception as e:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetSteps']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetSteps'], value1=str(e))
-            ####exit(1)
+            #exit(1)
 
     # Dismember the variables from each test case.
     def sliceDatas(self, **kwargs):
@@ -438,7 +436,7 @@ class GitLabConnection:
         except Exception as e:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorSliceDatas']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs( message="General", value=Aux.logs['ErrorSliceDatas'], value1=str(e))
-            ####exit(1)
+            #exit(1)
 
     # Update the evidence in the TestCase.
     def SaveEvidenceTestCase(self, **kwargs):
@@ -448,13 +446,19 @@ class GitLabConnection:
         evidence_folder = kwargs.get("evidence_folder")
         test_case_id = kwargs.get("test_case_id")
         name_testcase = kwargs.get("name_testcase")
+        status = kwargs.get("status")
 
         try:
 
             # Get the ID.
             new_url = (url + 'projects/' + str(project_id) + '/uploads')
 
-            file = os.path.join(evidence_folder, name_testcase, name_testcase) + ".pdf"
+            if status == 'Failed':
+                status_name_testcase = '[BUG] - ' + name_testcase
+            else:
+                status_name_testcase = name_testcase
+
+            file = os.path.join(evidence_folder, name_testcase, status_name_testcase) + ".pdf"
 
             files = {'file': open(file, 'rb')}
 
@@ -481,10 +485,10 @@ class GitLabConnection:
             new_url = (url + 'projects/' + str(project_id) + '/issues/' + str(test_case_id) + '/notes')
 
             # Upload file.
-            file_url = file_url.replace("file", name_testcase + ".pdf")
+            file_url = file_url.replace("file", status_name_testcase + ".pdf")
 
             body = {
-                "body": "[" + name_testcase + "](" + file_url + ")"
+                "body": "[" + status_name_testcase + "](" + file_url + ")"
             }
 
             p = requests.post(new_url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["BearerUpload"]},
@@ -503,7 +507,7 @@ class GitLabConnection:
         except Exception as e:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorSaveEvidenceTestCase']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorSaveEvidenceTestCase'], value1=str(e))
-            ####exit(1)
+            #exit(1)
 
     def UpdateStatusAutomated(self, **kwargs):
         """
@@ -556,7 +560,7 @@ class GitLabConnection:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorUpdateStatusAutomated']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorUpdateStatusAutomated'], 
                              value1='Status code: ' + str(r.status_code) + " - UpdateStatusAutomated")
-            ####exit(1)
+            #exit(1)
 
     # Download de attachments when there are more than 100 in a WIT and upload a .zip file.
     # def _DownloadAttachment(self, **kwargs):
@@ -635,7 +639,7 @@ class GitLabConnection:
     # 
     #     except Exception as e:
     #         Aux.Main.addLogs(message="General", value=Aux.logs['ErrorDownloadAttachment'], value1=str(e))
-    #         ####exit(1)
+    #         #exit(1)
 
     # Read the test case relation to upload the .zip file.
     # def _readRelation(self, **kwargs):
@@ -697,7 +701,7 @@ class GitLabConnection:
     #     except Exception as e:
     #         print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorDownloadAttachment']['Msg']}{Aux.Textcolor.END}", e)
     #         Aux.Main.addLogs(message="General", value=Aux.logs['ErrorDownloadAttachment'], value1=str(e))
-    #         ####exit(1)
+    #         #exit(1)
     #
     #     finally:
     #         return order, count_evidences, rev_id, relation_failed, order_failed, count_evidences_failed
@@ -765,7 +769,7 @@ class GitLabConnection:
         except Exception as e:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorCheckDownloadFile']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorCheckDownloadFile'], value1=str(e))
-            ####exit(1)
+            #exit(1)
 
     # Delete the 'New' download file to the TestCase.
     def DeleteDownloadFile(self, **kwargs):
@@ -810,7 +814,7 @@ class GitLabConnection:
         except Exception as e:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorDeleteDownloadFile']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorDeleteDownloadFile'], value1=str(e))
-            ####exit(1)
+            #exit(1)
 
     # Upload the download file in the TestCase.
     def UploadDownloadFile(self, **kwargs):
@@ -890,7 +894,7 @@ class GitLabConnection:
         except Exception as e:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorUploadDownloadFile']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorUploadDownloadFile'], value1=str(e))
-            ####exit(1)
+            #exit(1)
 
     # Save the download file, from the test case locally.
     def SaveDownloadFileLocally(self, **kwargs):
@@ -952,7 +956,7 @@ class GitLabConnection:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorSaveDownloadFileLocally']['Msg']}"
                   f"{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorSaveDownloadFileLocally'], value1=str(e))
-            ####exit(1)
+            #exit(1)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Functions to manual evidence.
@@ -1146,7 +1150,7 @@ class GitLabConnection:
     #     except Exception as e:
     #         print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorAttachmentList']['Msg']}{Aux.Textcolor.END}", e)
     #         Aux.Main.addLogs(message="General", value=Aux.logs['ErrorAttachmentList'], value1=str(e))
-    #         ####exit(1)
+    #         #exit(1)
 
     # Save the images locally.
     def saveManualPrintScreen(self, **kwargs):
@@ -1202,4 +1206,4 @@ class GitLabConnection:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorSaveManualPrintScreen']['Msg']}"
                   f"{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorSaveManualPrintScreen'], value1=str(e))
-            ####exit(1)
+            #exit(1)

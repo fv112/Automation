@@ -151,7 +151,6 @@ logs:
         DownloadUpdateCompletedTitle: {Type: Log, Msg: Download realizado com sucesso., Where: AppAutomation}, ###
         DragDrop: {Type: Success, Msg: O componente foi arrastado com sucesso., Where: dragDrop},
         DragDropToElement: {Type: Success, Msg: Foi possível segurar e arrastar o componente até outro componente com sucesso., Where: dragDropToElement},
-        ErrorAccessAzure: {Type: Error, Msg: Falha ao acessar o Azure DevOps. Verifique o seu token!, Where: accessAzure},
         ErrorAddlog: {Type: Error, Msg: Erro na atualização do log!, Where: addlog},
         ErrorAlter: {Type: Error, Msg: Não foi possível alterar o foco, Where: alter},
         ErrorAlterIframe: {Type: Error, Msg: O foco não foi alterado para o IFRAME, Where: alterFrame},
@@ -185,7 +184,7 @@ logs:
         ErrorExecuteStepByStep: {Type: Error, Msg: Erro na execução do passo a passo!, Where: executeStepByStep},
         ErrorExecuteTestCase: {Type: Error, Msg: Erro ao carregar a execução do caso de teste!, Where: executeTestCase},
         ErrorFillField: {Type: Error, Msg: Erro ao preencher campo!, Where: fillField},
-        ErrorFindBrowser: {Type: Error, Msg: Não foi possível encontrar este browser instalado na máquina!, Where: takePicture},
+        ErrorFindBrowser: {Type: Error, Msg: Não foi possível instalar o browser na máquina!, Where: openBrowser},
         ErrorForwardPage: {Type: Error, Msg: Erro ao avançar a página!, Where: ForwardPage},
         ErrorFunctionValidateData: {Type: Error, Msg: Erro ao executar a validação!, Where: validateData},
         ErrorInstallNewVersion: {Type: Error, Msg: Erro ao instalar a nova versão!, Where: automationAux},
@@ -257,8 +256,6 @@ logs:
         ErrorStepFor: {Type: Error, Msg: Erro na execução dos passos!, Where: mainFunction},
         ErrorPressButton: {Type: Error, Msg: A tecla informada é inválida!, Where: pressButton},
         ErrorTakePicture: {Type: Error, Msg: Erro ao executar o PrintScreen do passo!, Where: takePicture},
-        ErrorTestNameValidation: {Type: Error, Msg: Falha na validação do nome do caso de teste!, Where: validateTestName},
-        ErrorToken: {Type: Error, Msg: Verifique se o token inserido na automação foi configurado com FullAccess, Where: ErrorToken},
         ErrorTranslateMessage: {Type: Error, Msg: Erro ao realizar a tradução das mensagens!, Where: translateMsg},
         ErrorUpdateFunctionFailed: {Type: Error, Msg: Falha na função de download., Where: automationAux}, ###
         ErrorUploadDownloadFile: {Type: Error, Msg: Error ao realizar o upload do arquivo!, Where: UploadDownloadFile},
@@ -350,7 +347,6 @@ directories:
         ReadMeFileEXEC: C:\QA-Automation\envAutomation\AutomacaoQA\exec\Automation_EXE\Automation\README.md,
         TokenExpiredUrl: https://kantarware.visualstudio.com/_usersSettings/tokens,
         Temp: C:\QA-Automation-Files\Repository\Automation\Temp\,
-        TokensFile: C:\QA-Automation-Files\Repository\Automation\Tokens,
         UnavailablePrint: Unavailable.jpg,
         UpdateFolder: C:\QA-Automation-Files\Repository\NewVersion
     }
@@ -415,7 +411,6 @@ otherConfigs:
         Percentage: {Type: Info, Msg: Porcentagem da automação executada., Where: startAutomation},
         ProjectList: {Type: Info, Msg: "Lista de projetos:", Where: azureConnection},
         RequestOK: {Type: Info, Msg: Request realizada com sucesso!, Where: azureConnection},
-#        ReplaceEvidence: True,
         RunAgain: {Type: Info, Msg: Execute a automação novamente., Where: getProjects},
         Exit: {Type: Info, Msg: Fechar o menu., Where: azureConnection},
         StatusIDTestCase: {Type: Info, Msg: Point ID do caso de teste consultado com sucesso., Where: azureConnection},

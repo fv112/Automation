@@ -1,27 +1,16 @@
-#import automatizationCore_GitLab as Core
-# import automationAux as Aux
-
-# import Automation.modules.automationAux as Aux
+import os
 import Automation.modules.automatizationCore_GitLab as Core
-#import Automation.modules.automationAux as Aux
+import Automation.modules.automationAux as Aux
 
 
 class AutomationQA:
 
     def __init__(self):
-        import Automation.Automation.modules.automationAux as Aux
+
+        os.system('cls')
+
         Aux.Main.setLanguage(language='pt_BR')
-        # self.execute_automation()
         Core.Main.main(self)
-
-    # def execute_automation(self):
-    #     from Automation.modules.automatizationCore_GitLab import Main as Execute
-    #     Execute.main(self=self)
-
-    # def __init__(self):
-        # Read any language to load the directories and paths.
-        # Aux.Main.setLanguage(language='pt_BR')
-        # Core.Main.main(self)
 
     #     self.cmdHelp()
     #

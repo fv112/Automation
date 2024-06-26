@@ -17,10 +17,6 @@ from webdriver_manager.microsoft import EdgeChromiumDriverManager
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from webdriver_manager.firefox import GeckoDriverManager
 
-# IE
-from selenium.webdriver.ie.service import Service as IEService
-from webdriver_manager.microsoft import IEDriverManager
-
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
@@ -28,7 +24,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.select import Select
 from bs4 import BeautifulSoup
 
-import Automation.Automation.modules.automationAux as Aux
+import Automation.modules.automationAux as Aux
 
 driver = None
 
@@ -988,7 +984,7 @@ class Main:
 
                 driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
 
-            # Configure before open the browser.
+            # Configure before open the browser. ### https://www.selenium.dev/pt-br/documentation/webdriver/browsers/firefox/
             elif parameters1.upper() in ("MOZILLA", "FIREFOX"):
                 profile = webdriver.FirefoxProfile()
                 profile.set_preference("browser.download.dir", Aux.directories['DownloadFolderTemp'])
@@ -996,43 +992,25 @@ class Main:
                 profile.set_preference("browser.download.folderList", 2)
                 profile.set_preference("browser.download.panel.shown", True)
                 profile.set_preference("marionette.actors.enabled", False)
-                mime_types = [
-                    'text/plain',
-                    'application/vnd.ms-excel',
-                    'text/csv',
-                    'application/csv',
-                    'text/comma-separated-values',
-                    'application/download',
-                    'application/octet-stream',
-                    'binary/octet-stream',
-                    'application/binary',
-                    'application/x-unknown',
-                    'multipart/x-zip',
-                    'application/zip',
-                    'application/zip-compressed',
-                    'application/x-zip-compressed']
-                profile.set_preference("browser.helperApps.neverAsk.saveToDisk", ",".join(mime_types))
+                # mime_types = [
+                #     'text/plain',
+                #     'application/vnd.ms-excel',
+                #     'text/csv',
+                #     'application/csv',
+                #     'text/comma-separated-values',
+                #     'application/download',
+                #     'application/octet-stream',
+                #     'binary/octet-stream',
+                #     'application/binary',
+                #     'application/x-unknown',
+                #     'multipart/x-zip',
+                #     'application/zip',
+                #     'application/zip-compressed',
+                #     'application/x-zip-compressed']
+                # profile.set_preference("browser.helperApps.neverAsk.saveToDisk", ",".join(mime_types))
 
-                driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()), profile=profile)
-
-            # Change inside the Save function.
-            elif parameters1.upper() in ("IE", "INTERNET", "INTERNET EXPLORER"):  # Internet Explorer 11
-
-                options = webdriver.IeOptions()
-                options.add_argument('-private')
-                options.ignore_zoom_level = True
-                options.set_capability("silent", True)
-                options.ignore_protected_mode_settings = True
-                options.initial_browser_url("")
-
-                if not change_download_config:
-                    driver = webdriver.Ie(service=IEService(IEDriverManager().install()), options=options)
-                else:
-                    print(f"{Aux.Textcolor.FAIL}{Aux.otherConfigs['DownloadingFileIE']['Msg']}"
-                          f"{Aux.Textcolor.END}")
-                    Aux.Main.addLogs(message="General", value=Aux.otherConfigs["DownloadingFileIE"])
-
-                    return "Aborted"
+                driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()),
+                                           firefox_profile=profile)
 
             # Configure before open the browser.
             elif parameters1.upper() in "EDGE":  # Edge Chromium.

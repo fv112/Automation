@@ -1,7 +1,6 @@
 import os
 import datetime
 import re
-
 import win32api                                         # Read the Windows login.
 import win32net                                         # Read the Windows login.
 import sys
@@ -17,7 +16,6 @@ import shutil
 import subprocess
 import pyautogui                                        # Press keyboard outside the browser.
 import pyscreenshot as pyscreenshot
-from requests.auth import HTTPBasicAuth
 from deep_translator import GoogleTranslator
 from docx import Document
 from docx.shared import Inches                          # Used to insert image in .docx file.
@@ -26,11 +24,6 @@ from collections import Counter                         # Used in automatization
 
 verbs = None
 logs = None
-# directories = []
-# otherConfigs = []
-# searchForAttribute = []
-# searchForComponent = []
-# messages = []
 
 
 # Colored the text.
@@ -102,37 +95,6 @@ class Main:
             print(f"{Textcolor.FAIL}{logs['ErrorSetLanguage']['Msg']}{Textcolor.END}", ex)
             Main.addLogs(message="setLanguage", value=logs["ErrorSetLanguage"]['Msg'], value1=ex)
 
-    # Request the token or verify if it was informed.
-    def accessAzure(self):
-        try:
-            name = os.getlogin()
-
-            file_path = os.path.join(directories["TokensFile"], 'Tokens.txt')
-
-            # Create the folder to save the token.
-            if not os.path.exists(os.path.join(directories["TokensFile"])):
-                os.makedirs(directories["TokensFile"])
-                # Create the file and set the mode.
-                with open(file_path, 'w'):
-                    Main.saveToken(file_path=file_path, name=name)
-
-            else:
-                token_exist = False
-                with open(file_path, 'r') as myfile:
-                    for line in myfile:
-                        if name in line:
-                            otherConfigs['Token'] = line.split(',')[1]
-                            token_exist = True
-                    if token_exist is False:
-                        Main.saveToken(file_path=file_path, name=name)
-
-            otherConfigs['HttpBasicAuth'] = HTTPBasicAuth('', otherConfigs['Token'])
-            Main.addLogs(message="NewConfig", value=logs["AccessAzure"]['Msg'])
-
-        except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['ErrorAccessAzure']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(message="NewConfig", value=logs["ErrorAccessAzure"]['Msg'], value1=ex)
-
     # Ask and save the Token in a file.
     def saveToken(**kwargs):
         try:
@@ -140,19 +102,15 @@ class Main:
             file_path = kwargs.get("file_path")
             name = kwargs.get("name")
 
-            if otherConfigs['Interface']:
-                from AppAutomation import TokenField
+            TokenField.show_token_input(TokenField)
+            TokenField.invalid_token_msg(TokenField)
+            TokenField().run()
+            otherConfigs['Token'] = TokenField().token_input_callback()
 
-                TokenField.show_token_input(TokenField)
-                TokenField.invalid_token_msg(TokenField)
-                TokenField().run()
-                otherConfigs['Token'] = TokenField().token_input_callback()
-
-            else:
-                print(otherConfigs['InvalidTokenMessage']['Msg'])
-                otherConfigs['Token'] = input(otherConfigs['InformTokenPart1']['Msg'] + ' ' +
-                                              otherConfigs['InformTokenPart2']['Msg'] + ' ' +
-                                              directories['TokenExpiredUrl'] + ': ')
+            print(otherConfigs['InvalidTokenMessage']['Msg'])
+            otherConfigs['Token'] = input(otherConfigs['InformTokenPart1']['Msg'] + ' ' +
+                                          otherConfigs['InformTokenPart2']['Msg'] + ' ' +
+                                          directories['TokenExpiredUrl'] + ': ')
 
             token_file = open(file_path, 'a')
             token_file.write(str(name) + ',' + otherConfigs['Token'] + ',\n')
@@ -162,37 +120,6 @@ class Main:
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorSaveToken']['Msg']}{Textcolor.END}", ex)
             Main.addLogs(message="General", value=logs["ErrorSaveToken"], value1=ex)
-
-    # Validate test case name.
-    # def validateTestName(**kwargs):
-    #     try:
-    #         # kwargs variables.
-    #         name_testcase = kwargs.get("name_testcase")
-    #
-    #         validation_status = None
-    #
-    #         validation = regex.match('.*[\.\@\!\#\$\%^\&\*\<\>\?\\\/\\|\"}{:].*', name_testcase)
-    #         if validation:
-    #             print(f"{Textcolor.FAIL}{logs['ErrorSpecialCharacter']['Msg']} "
-    #                   f"{otherConfigs['InvalidCharacter']} {Textcolor.END}")
-    #             Main.addLogs(message="General", value=logs["ErrorSpecialCharacter"],
-    #                          value1=f"{otherConfigs['InvalidCharacter']}")
-    #             validation_status = True
-    #             ####exit(0)
-    #
-    #         if len(name_testcase) >= 85:
-    #             print(f"{Textcolor.FAIL}{logs['ErrorSizeName']['Msg']}{Textcolor.END}")
-    #             Main.addLogs(message="General", value=logs["ErrorSizeName"])
-    #             validation_status = True
-    #             ####exit(0)
-    #
-    #     except Exception as ex:
-    #         ####exit(0)
-    #         print(f"{Textcolor.FAIL}{logs['ErrorTestCaseValidation']['Msg']}{Textcolor.END}", ex)
-    #         Main.addLogs(message="General", value=logs["ErrorTestCaseValidation"], value1=str(ex))
-    #
-    #     finally:
-    #         return validation_status
 
     # Create the directories.
     def createDirectory(**kwargs):
@@ -340,8 +267,13 @@ class Main:
                 step_order += 1
 
             # Save the file.
-            path = os.path.join(test_set_path, otherConfigs["ETSName"] + str(test_case_id) + " - " + str(name_testcase)
-                                + otherConfigs["ETSExtension"])
+            if step_failed:
+                path = os.path.join(test_set_path, '[BUG] - ' +
+                                    otherConfigs["ETSName"] + str(test_case_id) + " - " + str(name_testcase)
+                                    + otherConfigs["ETSExtension"])
+            else:
+                path = os.path.join(test_set_path, otherConfigs["ETSName"] + str(test_case_id) + " - " +
+                                    str(name_testcase) + otherConfigs["ETSExtension"])
             document.save(path)
 
         except Exception as ex:
