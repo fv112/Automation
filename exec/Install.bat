@@ -12,7 +12,6 @@ echo ###########################################################################
 
 echo Removing the latest version.
 rmdir /s /q C:\QA-Automation
-rmdir /s /q C:\QA-Automation-Files
 
 echo Creating the destination folder.
 mkdir C:\QA-Automation\Automation
@@ -36,7 +35,6 @@ echo Move the hash files used by the translation.
 mkdir C:\QA-Automation\Automation\Hash
 move C:\QA-Automation\Automation\Automation_EXE\Automation\Repository\Hash\en-hash_dictionary.txt C:\QA-Automation-Files\Hash
 move C:\QA-Automation\Automation\Automation_EXE\Automation\Repository\Hash\es-hash_dictionary.txt C:\QA-Automation-Files\Hash
-rmdir /s /q C:\QA-Automation-Files\Repository
 
 echo Deleting the temp .zip files.
 DEL /F /Q C:\QA-Automation\Automation\Automation.zip
@@ -45,4 +43,6 @@ DEL /F /Q C:\QA-Automation\Automation\TestEnvironment.zip
 echo -----------------------------------------------------------------------------------------------------------------------
 echo  New version installed.
 echo -----------------------------------------------------------------------------------------------------------------------
+
+
 pause

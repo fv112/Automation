@@ -1,3 +1,5 @@
+import os
+
 import Automation.modules.automationAux as Aux
 import Automation.modules.automationFunc as Func
 import Automation.modules.GitLabConnection as GitLab
@@ -12,6 +14,8 @@ class Main:
             Aux.Main.deleteDirectory(self, directory=Aux.directories["Temp"])
 
             project_id, project_name = GitLab.GitLabConnection.getProjects(self)
+
+            os.system('cls')
 
             test_case_id_list = GitLab.GitLabConnection.getTestCases(self, project_id=project_id)
 

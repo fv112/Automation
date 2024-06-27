@@ -185,13 +185,10 @@ class Main:
     def dragDrop(self, **kwargs):
         try:
             # kwargs arguments.
-
             parameters1 = kwargs.get('parameters1')
             parameters2 = kwargs.get('parameters2')
 
             actions = ActionChains(driver)
-            source = Main.findElement(self, parameters1=parameters1)
-            target = Main.findElement(self, parameters1=parameters2)
 
             positions = parameters2.split(":")
             positionx = positions[0]
@@ -214,7 +211,6 @@ class Main:
     COMMENT: ERROR IN THE SELENIUM ACTION.
 
     """
-
     def dragDropToElement(self, **kwargs):
         try:
             # kwargs arguments.
@@ -984,7 +980,7 @@ class Main:
 
                 driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
 
-            # Configure before open the browser. ### https://www.selenium.dev/pt-br/documentation/webdriver/browsers/firefox/
+            # Configure before open the browser.
             elif parameters1.upper() in ("MOZILLA", "FIREFOX"):
                 profile = webdriver.FirefoxProfile()
                 profile.set_preference("browser.download.dir", Aux.directories['DownloadFolderTemp'])
@@ -992,25 +988,24 @@ class Main:
                 profile.set_preference("browser.download.folderList", 2)
                 profile.set_preference("browser.download.panel.shown", True)
                 profile.set_preference("marionette.actors.enabled", False)
-                # mime_types = [
-                #     'text/plain',
-                #     'application/vnd.ms-excel',
-                #     'text/csv',
-                #     'application/csv',
-                #     'text/comma-separated-values',
-                #     'application/download',
-                #     'application/octet-stream',
-                #     'binary/octet-stream',
-                #     'application/binary',
-                #     'application/x-unknown',
-                #     'multipart/x-zip',
-                #     'application/zip',
-                #     'application/zip-compressed',
-                #     'application/x-zip-compressed']
-                # profile.set_preference("browser.helperApps.neverAsk.saveToDisk", ",".join(mime_types))
+                mime_types = [
+                    'text/plain',
+                    'application/vnd.ms-excel',
+                    'text/csv',
+                    'application/csv',
+                    'text/comma-separated-values',
+                    'application/download',
+                    'application/octet-stream',
+                    'binary/octet-stream',
+                    'application/binary',
+                    'application/x-unknown',
+                    'multipart/x-zip',
+                    'application/zip',
+                    'application/zip-compressed',
+                    'application/x-zip-compressed']
+                profile.set_preference("browser.helperApps.neverAsk.saveToDisk", ",".join(mime_types))
 
-                driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()),
-                                           firefox_profile=profile)
+                driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
 
             # Configure before open the browser.
             elif parameters1.upper() in "EDGE":  # Edge Chromium.
@@ -1059,7 +1054,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorOpenBrowser']['Msg']}{Aux.Textcolor.END}")
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorOpenBrowser"])
+            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorOpenBrowser"], parameters1=str(ex))
 
             return "Failed"
 

@@ -262,7 +262,7 @@ class Main:
                 else:
                     paragraf = document.add_paragraph(otherConfigs["StepName"] + " " + str(step_order) + " - " +
                                                       otherConfigs["DisabledStep"]['Msg'])
-                    # run_paragraf = paragraf.add_run()
+                    run_paragraf = paragraf.add_run()
 
                 step_order += 1
 
