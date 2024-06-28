@@ -1,10 +1,17 @@
 Automation QA - Release notes
 ----
+**Version 1.3.0**
+
+<em>29/06/2024</em>
+- <font color='red'>__[Novo]__</font> - Implementação do tratamento do GET para API;
+- <font color='red'>__[Novo]__</font> - Inclusão do release notes na tela inicial.
+#
+
 **Version 1.2.1**
 
 <em>27/06/2024</em>
-- <font color='red'>__[Novo]__</font> - Correção do problema do Firefox.
-- <font color='red'>__[Novo]__</font> - Limpeza da tela na linha comando.
+- Correção do problema do Firefox.
+- Limpeza da tela na linha comando.
 
 **Version 1.1.1**
 

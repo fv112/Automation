@@ -29,6 +29,7 @@ logs = None
 # Colored the text.
 class Textcolor:
     BLUE = '\033[1;34;47m'  # Blue
+    HIGHLIGHT = '\033[7m'   # Highlight
     GREEN = '\033[32m'      # Green (seems yellow)
     WARNING = '\033[93m'    # Yellow
     FAIL = '\033[91m'       # Red
@@ -761,38 +762,38 @@ class Main:
             Main.addLogs(message="General", value=logs["ErrorCompareFile"], value1=str(ex))
 
     # Check if the process is running.
-    def checkProcess(**kwargs):
-
-        # kwargs variables.
-        process = kwargs.get("process")
-
-        # List the running process.
-        output = os.popen('wmic process get description, processid').read()
-
-        if process in output:
-            return True
-        else:
-            return False
-
-    # Load the session file.
-    def _checkSessionBCFile(**kwargs):
-
-        # kwargs variable.
-        file = kwargs.get("baseline")
-
-        if file.upper().endswith('CSV'):
-            return 'CSVFiles'
-        elif file.upper().endswith('TXT'):
-            return 'TXTFiles'
-        elif file.upper().endswith('PDF'):
-            return 'PDFFiles'
-        elif file.upper().endswith('DOC') or file.upper().endswith('DOCX'):
-            return 'WordFiles'
-        elif file.upper().endswith('GIF') or file.upper().endswith('ICO') or file.upper().endswith('JPG') or \
-                file.upper().endswith('PNG') or file.upper().endswith('TIF') or file.upper().endswith('BMP'):
-            return 'ImageFiles'
-        elif file.upper().endswith('MP4'):
-            return 'VideoFiles'
+    # def checkProcess(**kwargs):
+    #
+    #     # kwargs variables.
+    #     process = kwargs.get("process")
+    #
+    #     # List the running process.
+    #     output = os.popen('wmic process get description, processid').read()
+    #
+    #     if process in output:
+    #         return True
+    #     else:
+    #         return False
+    #
+    # # Load the session file.
+    # def _checkSessionBCFile(**kwargs):
+    #
+    #     # kwargs variable.
+    #     file = kwargs.get("baseline")
+    #
+    #     if file.upper().endswith('CSV'):
+    #         return 'CSVFiles'
+    #     elif file.upper().endswith('TXT'):
+    #         return 'TXTFiles'
+    #     elif file.upper().endswith('PDF'):
+    #         return 'PDFFiles'
+    #     elif file.upper().endswith('DOC') or file.upper().endswith('DOCX'):
+    #         return 'WordFiles'
+    #     elif file.upper().endswith('GIF') or file.upper().endswith('ICO') or file.upper().endswith('JPG') or \
+    #             file.upper().endswith('PNG') or file.upper().endswith('TIF') or file.upper().endswith('BMP'):
+    #         return 'ImageFiles'
+    #     elif file.upper().endswith('MP4'):
+    #         return 'VideoFiles'
 
     # Check if the test case is a Desktop test case.
     def _checkDesktop_TC(**kwargs):
@@ -808,8 +809,27 @@ class Main:
 
         return desktop_TC
 
-    # Check for Updates.
-    # def check_Updates(self,):
+     # Inform the updates.
+    def releaseNotes(self):
+
+        path = os.path.join(os.getcwd(), 'README.md')
+        releaseInfos = []
+
+        if path:
+            with open(path, 'r') as readme:
+
+                for line in readme:
+                    if 'Version' in line:
+                        localVersion = (regex.search('Version(.*)\*\*', line).group(1)).strip()
+                    if '<em>' in line:
+                        dateVersion = line[4:-6]
+                    if '</font>' in line:
+                        releaseInfos.append(line[38:].strip())
+                    if '#' in line:
+                        break
+
+        return localVersion, dateVersion, releaseInfos
+
     #
     #     try:
     #         self.URL = 'https://' + otherConfigs['Token_GitHub'] + otherConfigs['GitHubReadMe']

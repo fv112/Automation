@@ -1,6 +1,8 @@
 import time
 
 import requests
+import json
+
 from selenium.webdriver.support import expected_conditions as ec
 from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
@@ -196,7 +198,7 @@ class Main:
             positiony = positions[1]
             positiony = positiony[1:]  # Only the numeric number.
 
-            actions.drag_and_drop_by_offset(element_field, int(positionx) * 10, int(positiony) * 10)
+            # actions.drag_and_drop_by_offset(element_field, int(positionx) * 10, int(positiony) * 10)
             actions.perform()
 
             Aux.Main.addLogs(message="General", value=Aux.logs['DragDrop'])
@@ -639,7 +641,7 @@ class Main:
                         status = "Failed"
 
                 # Check a part of the text was found.
-                elif '*' in parameters2:  # If it only part of text.
+                elif '*' in parameters2:  # Check parto of the text.
                     text_found, status = Main.getText(self, parameters1=parameters1)
 
                     # Remove new lines.
@@ -1046,11 +1048,11 @@ class Main:
 
             return "Passed"
 
-        except requests.exceptions.RequestException:
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorFindBrowser']['Msg']}{Aux.Textcolor.END}")
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorFindBrowser"])
-
-            return "Failed"
+        # except requests.exceptions.RequestException:
+        #     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorFindBrowser']['Msg']}{Aux.Textcolor.END}")
+        #     Aux.Main.addLogs(message="General", value=Aux.logs["ErrorFindBrowser"])
+        #
+        #     return "Failed"
 
         except Exception as ex:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorOpenBrowser']['Msg']}{Aux.Textcolor.END}")
@@ -1259,3 +1261,79 @@ class Main:
             create = False
 
         return create
+
+# --------------------------------------------- API Functions ----------------------------------------------------------
+    def getAPI(self, **kwargs):
+
+        # kwargs variables:
+        parameters1 = kwargs.get("parameters1")
+
+        # Variables
+        submit = False
+
+        try:
+            if parameters1.upper() != 'SUBMIT':
+                tag = parameters1[:parameters1.find(':')]
+                if tag.upper() == 'ENDPOINT':
+                    Aux.otherConfigs['GetAPI_Endpoint'] = parameters1[parameters1.find(':') + 1:]
+                elif tag.upper() == 'AUTHORIZATION':
+                    Aux.otherConfigs['GetAPI_Authorization'] = parameters1[parameters1.find(':') + 1:]
+                elif tag.upper() == 'HEADERS':
+                    Aux.otherConfigs['GetAPI_Headers'] = parameters1[parameters1.find(':') + 1:]
+                elif tag.upper() == 'BODY':
+                    Aux.otherConfigs['GetAPI_Body'] = parameters1[parameters1.find(':') + 1:]
+                elif tag.upper() == 'PARAMS':
+                    Aux.otherConfigs['GetAPI_Params'] = parameters1[parameters1.find(':') + 1:]
+
+                if Aux.otherConfigs['GetAPI_Endpoint'] is None:
+                    print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorAPIGetMissingInfo']['Msg']}{Aux.Textcolor.END}")
+                    Aux.Main.addLogs(message="General", value=Aux.logs["ErrorAPIGetMissingInfo"])
+                    raise TypeError(Aux.logs['ErrorAPIGetMissingInfo']['Msg'])
+            else:
+                submit = True
+
+            if submit:
+                get = requests.get(Aux.otherConfigs['GetAPI_Endpoint'],
+                                   params=Aux.otherConfigs['GetAPI_Params'],
+                                   headers={'Authorization': Aux.otherConfigs['GetAPI_Authorization']},
+                                   verify=False,
+                                   data=json.dumps(Aux.otherConfigs['GetAPI_Body']))
+
+                if get.status_code == 200:
+                    print("OK")
+
+                    # Filter some fields.
+                    json_str = json.dumps(get.json())
+                    resp = json.loads(json_str)
+                    if resp is not []:
+                        Aux.otherConfigs['ResponseAPI'] = resp
+
+                # Clear the API variables.
+                Aux.otherConfigs['GetAPI_Endpoint'] = ''
+                Aux.otherConfigs['GetAPI_Authorization'] = ''
+                Aux.otherConfigs['GetAPI_Headers'] = ''
+                Aux.otherConfigs['GetAPI_Body'] = ''
+                Aux.otherConfigs['GetAPI_Params'] = ''
+
+        except Exception as ex:
+            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetAPI']['Msg']}{Aux.Textcolor.END}", ex)
+            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorGetAPI"])
+
+    def responseAPI(self, **kwargs):
+
+        # kwargs variables:
+        parameters1 = kwargs.get("parameters1")
+
+        try:
+            pass
+            ### validar o conteúdo da variável Aux.otherConfigs['ResponseAPI']
+
+            # # Filter some fields.
+            # json_str = json.dumps(get.json())
+            # resp = json.loads(json_str)
+            # if resp is not []:
+            #     Aux.otherConfigs['ResponseAPI'] = resp
+
+        except Exception as ex: ### Corrigir variáveis de erro.
+            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetAPI']['Msg']}{Aux.Textcolor.END}", ex)
+            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorGetAPI"])
