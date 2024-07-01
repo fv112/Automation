@@ -1,11 +1,18 @@
 Automation QA - Release notes
 ----
+**Version 1.3.1**
+
+<em>01/07/2024</em>
+- <font color='red'>__[Novo]__</font> - Correção da leitura do Release Notes;
+- <font color='red'>__[Novo]__</font> - Correção da acentuação do Release Notes.
+#
+
 **Version 1.3.0**
 
 <em>29/06/2024</em>
-- <font color='red'>__[Novo]__</font> - Implementação do tratamento do GET para API;
-- <font color='red'>__[Novo]__</font> - Inclusão do release notes na tela inicial.
-#
+- Implementação do tratamento do GET para API;
+- Inclusão do release notes na tela inicial.
+
 
 **Version 1.2.1**
 

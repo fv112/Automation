@@ -1270,6 +1270,7 @@ class Main:
 
         # Variables
         submit = False
+        Aux.otherConfigs['APIStep'] = True
 
         try:
             if parameters1.upper() != 'SUBMIT':
@@ -1299,9 +1300,8 @@ class Main:
                                    verify=False,
                                    data=json.dumps(Aux.otherConfigs['GetAPI_Body']))
 
+                Aux.otherConfigs['StatusCodeAPI'] = get.status_code
                 if get.status_code == 200:
-                    print("OK")
-
                     # Filter some fields.
                     json_str = json.dumps(get.json())
                     resp = json.loads(json_str)
@@ -1323,17 +1323,29 @@ class Main:
 
         # kwargs variables:
         parameters1 = kwargs.get("parameters1")
+        find_content = None
+        Aux.otherConfigs['APIStep'] = True
 
         try:
-            pass
-            ### validar o conteúdo da variável Aux.otherConfigs['ResponseAPI']
+            response = Aux.otherConfigs['ResponseAPI']
 
-            # # Filter some fields.
-            # json_str = json.dumps(get.json())
-            # resp = json.loads(json_str)
-            # if resp is not []:
-            #     Aux.otherConfigs['ResponseAPI'] = resp
+            tag = parameters1[:parameters1.find(':')]
+            param = parameters1[parameters1.find(':') + 1:]
 
-        except Exception as ex: ### Corrigir variáveis de erro.
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetAPI']['Msg']}{Aux.Textcolor.END}", ex)
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorGetAPI"])
+            # Status Code.
+            if tag.upper() == "STATUS CODE" and int(param) == Aux.otherConfigs['StatusCodeAPI']:
+                status_code = "Passed"
+            else:
+                status_code = None
+
+            if tag.upper() != "STATUS CODE":
+                find_content = Aux.Main.find_content_json(self, response=response, param=param)
+
+            if status_code and find_content:
+                return "Passed"
+            else:
+                return "Failed"
+
+        except Exception as ex:
+            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorResponseAPI']['Msg']}{Aux.Textcolor.END}", ex)
+            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorResponseAPI"])

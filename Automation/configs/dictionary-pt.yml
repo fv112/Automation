@@ -2,8 +2,8 @@
 verbs:
     {
         # Portuguese.
-        # Spanish (with _ before is the same as Portuguese).
-        # English (with __ before is the same as Portuguese).
+        # Spanish (with _ after is the same as Portuguese).
+        # English (with __ after is the same as Portuguese).
         Abrir: {Language: Portuguese, Function: Func.Main.openNewTab, Phrase: "Abre uma nova tab.", Syntax: "Abrir nova aba."},
         Abrir_: {Language: Spanish, Function: Func.Main.openNewTab, Phrase: "Abrir nueva pestaña .", Syntax: "Abrir pestaña nueva" },
         Open: {Language: English, Function: Func.Main.openNewTab, Phrase: "Open new tab.", Syntax: "Open new tab."},
@@ -50,11 +50,11 @@ verbs:
         Close: {Language: English, Function: Func.Main.close, Phrase: "Close.", Syntax: "Close window \nClose \"browser\" -> close the browser"},
 
         Get: { Language: Portuguese, Function: Func.Main.getAPI, Phrase: "Enviar um Get para API.", Syntax: "Get endpoint \"<endpoint:<url>\". \nGet authorization \"<authorization>\":\"<Authorization type>\"=\"<Authorization content\"> \nGet params \"<params\">\":\"<params content\">\nGet headers \"<headers\">\":\"<headers content\"> \nGet body \"<body\">\":\"<body content\">"},
-        _Get: { Language: Spanish, Function: Func.Main.getAPI, Phrase: "Enviar el Get para la API.", Syntax: "Get endpoint \"<endpoint:<url>\". \nGet authorization \"<authorization>\":\"<Authorization type>\"=\"<Authorization content\"> \nGet params \"<params\">\":\"<params content\">\nGet headers \"<headers\">\":\"<headers content\"> \nGet body \"<body\">\":\"<body content\">"},
-        __Get: { Language: English, Function: Func.Main.getAPI, Phrase: "Send the Get to API.", Syntax: "Get endpoint \"<endpoint:<url>\". \nGet authorization \"<authorization>\":\"<Authorization type>\"=\"<Authorization content\"> \nGet params \"<params\">\":\"<params content\">\nGet headers \"<headers\">\":\"<headers content\"> \nGet body \"<body\">\":\"<body content\">"},
+        Get_: { Language: Spanish, Function: Func.Main.getAPI, Phrase: "Enviar el Get para la API.", Syntax: "Get endpoint \"<endpoint:<url>\". \nGet authorization \"<authorization>\":\"<Authorization type>\"=\"<Authorization content\"> \nGet params \"<params\">\":\"<params content\">\nGet headers \"<headers\">\":\"<headers content\"> \nGet body \"<body\">\":\"<body content\">"},
+        Get__: { Language: English, Function: Func.Main.getAPI, Phrase: "Send the Get to API.", Syntax: "Get endpoint \"<endpoint:<url>\". \nGet authorization \"<authorization>\":\"<Authorization type>\"=\"<Authorization content\"> \nGet params \"<params\">\":\"<params content\">\nGet headers \"<headers\">\":\"<headers content\"> \nGet body \"<body\">\":\"<body content\">"},
 
         Informar: {Language: Portuguese, Function: Func.Main.inform, Phrase: "Escolhe uma opção no alerta do browser.", Syntax: "Informar o alerta com o botão \"OK\" o texto \"<Texto que deseja validar>\" \nInformar o alerta com o botão \"Cancelar\" o texto \"<Texto que deseja validar>\" \nInformar o texto \"<Texto desejado>\" e validar o texto \"<Texto que deseja validar>\""},
-        _Informar: {Language: Spanish, Function: Func.Main.inform, Phrase: "Informa una opción en una alerta del navegador.", Syntax: "Informa la alerta con el botón \"Aceptar\" y comprobar el \"<Texto que desea validar>\" \nInforma la alerta con el botón \"Cancelar\" y comprobar el \"<Texto que desea validar>\" \nInforma el texto \"<Texto deseado>\" y comprobar el texto \"<Texto que desea validar>\" "},
+        Informar_: {Language: Spanish, Function: Func.Main.inform, Phrase: "Informa una opción en una alerta del navegador.", Syntax: "Informa la alerta con el botón \"Aceptar\" y comprobar el \"<Texto que desea validar>\" \nInforma la alerta con el botón \"Cancelar\" y comprobar el \"<Texto que desea validar>\" \nInforma el texto \"<Texto deseado>\" y comprobar el texto \"<Texto que desea validar>\" "},
         Inform: {Language: English, Function: Func.Main.inform, Phrase: "Inform a option in a browser alert.", Syntax: "Inform the alert with the \"OK\" button the text \"<Text you want to validate>\" \nInform the alert with the \"Cancel\" button the text \"<Text you want to validate>\" \nInform the text \"<Any text>\" and validate the text \"<Text you want to validate>\""},
 
         Mover: {Language: Portuguese, Function: Func.Main.mouseOver, Phrase: "Movimenta o mouse sobre um componente.", Syntax: "Mover o mouse sobre o \"<Nome do componente>\""},
@@ -76,6 +76,10 @@ verbs:
         Pressionar: {Language: Portuguese, Function: Func.Main.rightClick, Phrase: "Clique com o botão direito do mouse sobre um componente.", Syntax: "Pressionar no componente \"<Componente>\""},
         Presionar: {Language: Spanish, Function: Func.Main.rightClick, Phrase: "Click derecho del mouse en el componente.", Syntax: "Presionar el \"<Componente>\""},
         Press: {Language: English, Function: Func.Main.rightClick, Phrase: "Press the right button of the mouse on the component.", Syntax: "Press the right button of the mouse on the \"<Component>\""},
+
+        Response: {Language: Portuguese, Function: Func.Main.responseAPI, Phrase: "Validar o retorno da API.", Syntax: "Response <tag:conteúdo da tag>"},
+        Response_: {Language: Spanish, Function: Func.Main.responseAPI, Phrase: "Validar o retorno da API.", Syntax: "Response <tag:contenido de la tag>"},
+        Response__: {Language: English, Function: Func.Main.responseAPI, Phrase: "Validar o retorno da API.", Syntax: "Response <tag:tag content>"},
 
         Retornar: {Language: Portuguese, Function: Func.Main.returnDefault, Phrase: "Retorna para a janela principal.", Syntax: "Retornar"},
         Retornar_: {Language: Spanish, Function: Func.Main.returnDefault, Phrase: "Regrese a la pantalla principal del navegador.", Syntax: "Retornar"},
@@ -188,6 +192,7 @@ logs:
         ErrorExecute: {Type: Error, Msg: Não foi possível abrir o aplicativo!, Where: Execute},
         ErrorExecuteStepByStep: {Type: Error, Msg: Erro na execução do passo a passo!, Where: executeStepByStep},
         ErrorExecuteTestCase: {Type: Error, Msg: Erro ao carregar a execução do caso de teste!, Where: executeTestCase},
+        ErrorFindContentAPI: {Type: Error, Msg: Erro ao buscar conteúdo no retorno da API!, Where: find_content_json},
         ErrorFillField: {Type: Error, Msg: Erro ao preencher campo!, Where: fillField},
         ErrorFindBrowser: {Type: Error, Msg: Não foi possível instalar o browser na máquina!, Where: openBrowser},
         ErrorForwardPage: {Type: Error, Msg: Erro ao avançar a página!, Where: ForwardPage},
@@ -234,6 +239,7 @@ logs:
         ErrorReplacePasswordEvidence: {Type: Error, Msg: "Falha na alteração das senhas por asteriscos!", Where: ReplacePasswordEvidence},
         ErrorReplacePasswordPosition: {Type: Error, Msg: "A sintaxe do passo não está correta. Favor seguir a seguinte sintaxe:  Digitar no campo 'nome do campo' a senha 'conteúdo do senha'", Where: ReplacePasswordEvidence},
         ErrorRequest: {Type: Error, Msg: Falha na request!, Where: AzureConnection - General},
+        ErrorResponseAPI: {Type: Error, Msg: Erro na resposta da API!, Where: responseAPI},
         ErrorRightClick: {Type: Error, Msg: Erro ao clicar no elemento!, Where: rightClick},
         ErrorReturnDefault: {Type: Error, Msg: "O foco não foi alterado!", Where: returnDefault},
         ErrorReturnIframe: {Type: Error, Msg: "O foco não foi alterado para o iframe desejado!", Where: returnFrame},
@@ -244,8 +250,6 @@ logs:
         ErrorScreenshot: {Type: Error, Msg: Não foi possível tirar o screenshot!, Where: mainFunction},
         ErrorSelectDropDownList: {Type: Error, Msg: Não foi possível selecionar a DropDownList!,Where: selectDropDownList},
         ErrorSelectCombobox: {Type: Error, Msg: Não foi possível selecionar a combobox!, Where: selectCombobox},
-        ErrorResetEdgeLegacy: {Type: Error, Msg: Erro ao restaurar as configuração do Edge Legacy!, Where: _resetEdgeLegacy},
-        ErrorSaveEvidence100files: {Type: Error, Msg: "Erro ao salvar o arquivo zip em substituição ao 100 arquivos anexados no caso de teste", Where: SaveEvidenceTestCase},
         ErrorSaveDownloadFileLocally: {Type: Error, Msg: Erro ao baixar os arquivos do caso de teste!, Where: SaveDownloadFileLocally},
         ErrorSaveEvidenceRun: {Type: Error, Msg: Erro ao salvar a evidência na Run!, Where: SaveEvidenceRun},
         ErrorSaveEvidenceTestCase: {Type: Error, Msg: Erro ao atualizar o arquivo baixado no caso de teste!, Where: SaveEvidenceTestCase},
@@ -359,6 +363,7 @@ directories:
 # List of other configurations.
 otherConfigs:
     {
+        APIStep: False,
         AskCT: {Type: Info, Msg: "Executar um caso de teste isolado? [Y/s] = Sim ou [N/n] = Não: ", Where: getTestCases},
         Bearer: 'rrkae8z2EMv_kfxXdCD-',
         BearerUpload: 'ozi6aReeDshf7cM6fHRY',
@@ -427,6 +432,7 @@ otherConfigs:
         StatusIDTestCase: {Type: Info, Msg: Point ID do caso de teste consultado com sucesso., Where: azureConnection},
         StatusTestCase: {Type: Info, Msg: Caso de teste consultado com sucesso., Where: azureConnection},
         SaveToken: {Type: Info, Msg: "GUARDAR TOKEN", Where: automationAux},
+        StatusCodeAPI: ,
         Step: {Type: Info, Msg: PASSO, Where: AutomationCore_Azure},
         StepName: Step,
         StepNotFound: {Type: Info, Msg: Bug encontrado neste passo!, Where: AutomationCore_Azure},
@@ -463,16 +469,7 @@ otherConfigs:
         TimeoutSession: '1',
         TranslateMessage: 'Messages translated with success!',
         Translating: 'Please wait, the translation is running. It could take some minutes...',
-        Token: '',
-        Token_GitHub: '<Vazio>',
-        TokenExpired: {Type: Info, Msg: "O token expirou, será necessário criar outro.", Where: getProjects},
-        TokenExpiredButton: {Type: Info, Msg: "LINK PARA GERAR NOVO TOKEN", Where: automationAux},
-        TokenTryAgain: {Type: Info, Msg: "TENTAR NOVAMENTE", Where: AppAutomation},
         UpdateButtonNo: {Type: Info, Msg: "Não", Where: AppAutomation},
         UpdateButtonYes: {Type: Info, Msg: "Sim", Where: AppAutomation},
-        TokenSavedSuccess: {Type: Info, Msg: "SALVO COM SUCESSO", Where: automationAux},
-        Update: {Type: Info, Msg: "Atualização disponível!", Where: MDDialogAppTest}, ###
-        UpdateMsg: {Type: Info, Msg: "Uma nova versão da Automação esta disponível! Deseja baixá-la? Se sim, a nova versão será instalada ao carregar novamente a automação.", Where: AppAutomation}, ###
-        UpdateAvailable: {Type: Info, Msg: "A Automação precisa baixar a nova versão", Where: check_Updates}, ###
         Verb: {Type: Info, Msg: VERBO, Where: AutomationCore_Azure}
     }

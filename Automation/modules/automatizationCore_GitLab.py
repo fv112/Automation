@@ -235,6 +235,7 @@ class Main:
                 print(f"=+=" * 30)
 
                 # Execute the test step.
+                Aux.otherConfigs['APIStep'] = False
                 if parameters1 is None:
                     status_step = eval(Aux.verbs[verb]['Function'])(self)
                 else:
@@ -252,8 +253,8 @@ class Main:
                 else:
                     status_steps.append("Passed")
 
-                # Take the screenshot of each step, except to the NoExecute step.
-                if verb not in ('NoExecute', 'Fechar', 'Cerrar', 'Close'):
+                # Take the screenshot of each step, except to the NoExecute step OR API Step.
+                if verb not in ('NoExecute', 'Fechar', 'Cerrar', 'Close') or Aux.otherConfigs['APIStep']:
 
                     # Image name file.
                     image_name = Aux.otherConfigs["EvidenceName"] + str(step_order).zfill(2)
@@ -263,8 +264,6 @@ class Main:
 
                     if not take_picture_status:
                         Aux.Main.addLogs(message="General", value=Aux.logs["ErrorScreenshot"], value1=step)
-
-                # step_order += 1
 
             # Set the test case status.
             status_counter = Aux.Counter(status_steps)

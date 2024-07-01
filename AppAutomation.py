@@ -7,19 +7,19 @@ class AutomationQA:
 
     def __init__(self):
 
-        localVersion = ''
-
+        local_version = ''
         os.system('cls')
 
         Aux.Main.setLanguage(language='pt_BR')
 
-        localVersion, dateVersion, releaseInfos = Aux.Main.releaseNotes(self)
+        local_version, date_version, release_infos = Aux.Main.releaseNotes(self)
 
-        print(f"{Aux.Textcolor.HIGHLIGHT}       Automation QA - Version: {localVersion} - Date: {dateVersion}     "
+        print(f"{Aux.Textcolor.HIGHLIGHT}       Automation QA - Version: {local_version} - Date: {date_version}     "
               f"{Aux.Textcolor.END}")
         print(f"{Aux.Textcolor.BOLD}Release notes:{Aux.Textcolor.END}")
-        for releaseInfo in releaseInfos:
+        for releaseInfo in release_infos:
             print(f"{releaseInfo}")
+        print("")
 
         Core.Main.main(self)
 

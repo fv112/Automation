@@ -30,6 +30,7 @@ move C:\QA-Automation\Automation\Automation_EXE\Automation\AutomationQA.exe C:\Q
 
 echo Move the Automation folder to outside from _internal.
 move C:\QA-Automation\Automation\Automation_EXE\Automation\_internal\Automation C:\QA-Automation\Automation\Automation_EXE\Automation
+move C:\QA-Automation\Automation\Automation_EXE\Automation\_internal\README.md C:\QA-Automation\Automation\Automation_EXE\Automation
 
 echo Move the hash files used by the translation.
 mkdir C:\QA-Automation\Automation\Hash

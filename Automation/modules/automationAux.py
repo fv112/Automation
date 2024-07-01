@@ -1,5 +1,7 @@
+import json
 import os
 import datetime
+import io
 import re
 import win32api                                         # Read the Windows login.
 import win32net                                         # Read the Windows login.
@@ -189,7 +191,7 @@ class Main:
 
             # Variables.
             tag_paragraf = [
-                {'pt_BR': 'Evidências dos passos', 'en_US': 'Evidence of the steps', 'es': 'Evidencia de los pasos'}
+                {'pt_BR': 'Evidência dos passos', 'en_US': 'Evidence of the steps', 'es': 'Evidencia de los pasos'}
             ]
             image_path = ""
 
@@ -250,7 +252,8 @@ class Main:
                     #     paragraf = document.add_paragraph(comment)
                     #     run_paragraf = paragraf.add_run()
 
-                    if verb not in ('Fechar', 'Cerrar', 'Close') and take_picture_status:
+                    if (verb not in ('Fechar', 'Cerrar', 'Close') and take_picture_status and
+                            otherConfigs['APIStep'] is False):
                         # Resize the image if it is not full screen.
                         run_paragraf.add_break()
                         if image_resize:
@@ -259,6 +262,10 @@ class Main:
                                                      height=eval(otherConfigs["EvidenceHeight"]))
                         else:
                             run_paragraf.add_picture(image_path, width=Inches(5))
+                    else:
+                        ### Retirar o negrito.
+                        paragraf = document.add_paragraph(json.dumps(otherConfigs['ResponseAPI'], indent=2))
+                        run_paragraf = paragraf.add_run()
 
                 else:
                     paragraf = document.add_paragraph(otherConfigs["StepName"] + " " + str(step_order) + " - " +
@@ -761,40 +768,6 @@ class Main:
             print(f"{Textcolor.FAIL}{logs['ErrorCompareFile']['Msg']}{Textcolor.END}", ex)
             Main.addLogs(message="General", value=logs["ErrorCompareFile"], value1=str(ex))
 
-    # Check if the process is running.
-    # def checkProcess(**kwargs):
-    #
-    #     # kwargs variables.
-    #     process = kwargs.get("process")
-    #
-    #     # List the running process.
-    #     output = os.popen('wmic process get description, processid').read()
-    #
-    #     if process in output:
-    #         return True
-    #     else:
-    #         return False
-    #
-    # # Load the session file.
-    # def _checkSessionBCFile(**kwargs):
-    #
-    #     # kwargs variable.
-    #     file = kwargs.get("baseline")
-    #
-    #     if file.upper().endswith('CSV'):
-    #         return 'CSVFiles'
-    #     elif file.upper().endswith('TXT'):
-    #         return 'TXTFiles'
-    #     elif file.upper().endswith('PDF'):
-    #         return 'PDFFiles'
-    #     elif file.upper().endswith('DOC') or file.upper().endswith('DOCX'):
-    #         return 'WordFiles'
-    #     elif file.upper().endswith('GIF') or file.upper().endswith('ICO') or file.upper().endswith('JPG') or \
-    #             file.upper().endswith('PNG') or file.upper().endswith('TIF') or file.upper().endswith('BMP'):
-    #         return 'ImageFiles'
-    #     elif file.upper().endswith('MP4'):
-    #         return 'VideoFiles'
-
     # Check if the test case is a Desktop test case.
     def _checkDesktop_TC(**kwargs):
 
@@ -809,147 +782,45 @@ class Main:
 
         return desktop_TC
 
-     # Inform the updates.
+    @staticmethod
+    # Inform the updates.
     def releaseNotes(self):
 
         path = os.path.join(os.getcwd(), 'README.md')
-        releaseInfos = []
+        release_infos = []
 
         if path:
-            with open(path, 'r') as readme:
+            with open(path, 'r', encoding='utf-8') as readme:
 
                 for line in readme:
                     if 'Version' in line:
-                        localVersion = (regex.search('Version(.*)\*\*', line).group(1)).strip()
+                        local_version = line[10:-3]
                     if '<em>' in line:
-                        dateVersion = line[4:-6]
+                        date_version = line[4:-6]
                     if '</font>' in line:
-                        releaseInfos.append(line[38:].strip())
+                        release_infos.append(line[38:].strip())
                     if '#' in line:
                         break
 
-        return localVersion, dateVersion, releaseInfos
+        return local_version, date_version, release_infos
 
-    #
-    #     try:
-    #         self.URL = 'https://' + otherConfigs['Token_GitHub'] + otherConfigs['GitHubReadMe']
-    #
-    #         headers = {
-    #             'Authorization': f"token {otherConfigs['Token_GitHub']}",
-    #             'Accept': 'application/vnd.github.v4+raw'
-    #         }
-    #
-    #         if os.path.exists(directories['ReadMeFile']):
-    #             with open(directories['ReadMeFile'], 'r') as readme:
-    #                 Main.addLogs(None, message="General", value=logs["UpdateNoNewVersion"], value1="ReadMe") ### Só para testar, pode retirar
-    #
-    #                 for line in readme:
-    #                     if 'Version' in line:
-    #                         LocalVersion = regex.search('Version(.*)\*\*', line).group(1)
-    #                         LocalVersion = LocalVersion.strip()
-    #                         break
-    #         else:
-    #             with open(directories['ReadMeFileEXEC'], 'r') as readme:
-    #                 Main.addLogs(None, message="General", value=logs["UpdateNoNewVersion"], value1="ReadMeEXEC") ### Só para testar, pode retirar
-    #
-    #                 for line in readme:
-    #                     if 'Version' in line:
-    #                         LocalVersion = regex.search('Version(.*)\*\*', line).group(1)
-    #                         LocalVersion = LocalVersion.strip()
-    #                         break
-    #
-    #         response = requests.get(self.URL, headers=headers)
-    #
-    #         if response.status_code == 200:
-    #             GitHubVersion = response.text
-    #             GitHubVersion = regex.search('Version(.*)\*\*', response.text).group(1)
-    #             GitHubVersion = GitHubVersion.strip()
-    #
-    #             # If the GitHub version is latest than local version.
-    #             if GitHubVersion > LocalVersion:
-    #                 # update.show_Update_input() # CORRIGIR
-    #                 # update.run() # CORRIGIR
-    #                 pass
-    #
-    #             else:
-    #                 print(f"{Textcolor.GREEN}{logs['UpdateNoNewVersion']['Msg']}{Textcolor.END}")
-    #                 Main.addLogs(message="General", value=logs["UpdateNoNewVersion"],
-    #                              value1=logs["UpdateNoNewVersion"]["Msg"])
-    #
-    #         else:
-    #             print(f"{Textcolor.FAIL}{logs['CouldNotCheckForUpdates']['Msg']}{Textcolor.END}")
-    #             Main.addLogs(message="General", value=logs["CouldNotCheckForUpdates"],
-    #                          value1=logs["CouldNotCheckForUpdates"]["Msg"])
-    #             #update.could_not_check_for_updates_msg() # CORRIGIR
-    #             #update.run() # CORRIGIR
-    #
-    #     except Exception as ex:
-    #         print(f"{Textcolor.FAIL}{logs['DownloadUpdateFunctionFailed']['Msg']}{Textcolor.END}", ex)
-    #         Main.addLogs(message="General", value=logs["ErrorStartAutomation"], value1=str(ex))
-    #
-    # # Check for new automation version.
-    # def download_Updates(self):
-    #     try:
-    #         headers = {
-    #             'Authorization': f"token {otherConfigs['Token_GitHub']}",
-    #             'Accept': 'application/vnd.github.v4+raw'
-    #         }
-    #
-    #         # Download folder.
-    #         DOWNLOAD_DIR = directories['UpdateFolder']
-    #         LINK_DOWNLOAD = 'https://' + otherConfigs['Token_GitHub'] + otherConfigs['GitHubContent']
-    #         local_filename = LINK_DOWNLOAD.split('/')[-1]
-    #
-    #         # Execute the new version download.
-    #         with requests.get(LINK_DOWNLOAD, stream=True, headers=headers) as r:
-    #             if r.status_code == 200:
-    #
-    #                 # Create the New Version directory.
-    #                 Main.createDirectory(path_folder=directories['UpdateFolder'])
-    #
-    #                 with open(DOWNLOAD_DIR + '\\' + local_filename, 'wb') as f:
-    #                     shutil.copyfileobj(r.raw, f)
-    #                     print(f"{Textcolor.GREEN}{logs['DownloadPackageCompleted']['Msg']}{Textcolor.END}")
-    #                     Main.addLogs(message="General", value=logs["DownloadPackageCompleted"],
-    #                                  value1=logs["DownloadPackageCompleted"]["Msg"])
-    #
-    #             else:
-    #                 print(f"{Textcolor.FAIL}{logs['ErrorDownloadUpdate']['Msg']}{Textcolor.END}", value1=r.status_code)
-    #                 # update.download_update_fail_msg() # CORRIGIR
-    #                 # update.run() # CORRIGIR
-    #
-    #         LINK_DOWNLOAD_BAT = 'https://' + otherConfigs['Token_GitHub'] + otherConfigs['GitHubBatFile']
-    #         local_filename = LINK_DOWNLOAD_BAT.split('/')[-1]
-    #
-    #         # Download the BAT file.
-    #         with requests.get(LINK_DOWNLOAD_BAT, stream=True, headers=headers) as r:
-    #             if r.status_code == 200:
-    #
-    #                 with open(DOWNLOAD_DIR + '\\' + local_filename, 'wb') as f:
-    #                     shutil.copyfileobj(r.raw, f)
-    #                     print(f"{Textcolor.GREEN}{logs['DownloadBATCompleted']['Msg']}{Textcolor.END}")
-    #                     Main.addLogs(message="General", value=logs["DownloadBATCompleted"],
-    #                                  value1=logs["DownloadBATCompleted"]["Msg"])
-    #             else:
-    #                 print(f"{Textcolor.FAIL}{logs['ErrorDownloadUpdate']['Msg']}{Textcolor.END}")
-    #                 # update.download_update_fail_msg() # CORRIGIR
-    #                 # update.run() # CORRIGIR
-    #
-    #         # update.download_update_completed_msg.run() # CORRIGIR
-    #
-    #     except Exception as ex:
-    #         print(f"{Textcolor.FAIL}{logs['DownloadUpdateFunctionFailed']['Msg']}{Textcolor.END}", ex)
-    #         Main.addLogs(message="General", value=logs["ErrorStartAutomation"], value1=str(ex))
-    #
-    # def install_Update(self):
-    #     try:
-    #         subprocess.Popen([directories['UpdateFolder'], otherConfigs["InstallBAT"]])
-    #
-    #         shutil.rmtree(os.path.join(directories['UpdateFolder']))
-    #
-    #         print(f"{Textcolor.GREEN}{logs['InstallNewVersion']['Msg']}{Textcolor.END}")
-    #         Main.addLogs(message="General", value=logs["InstallNewVersion"], value1=logs["InstallNewVersion"]["Msg"])
-    #
-    #     except Exception as ex:
-    #         print(f"{Textcolor.FAIL}{logs['ErrorInstallNewVersion']['Msg']}{Textcolor.END}", ex)
-    #         Main.addLogs(message="General", value=logs["ErrorInstallNewVersion"], value1=str(ex))
+    # Find content inside JSON content.
+    def find_content_json(self, **kwargs):
+
+        try:
+            # kwargs variable.
+            response = kwargs.get("response")
+            param = kwargs.get("param")
+
+            if isinstance(response, list):
+                for item in response:
+                    if Main.find_content_json(self, response=item, param=param):
+                        return "Passed"
+            else:
+                if param in str(response):
+                    return "Passed"
+            return "Failed"
+
+        except Exception as ex:
+            print(f"{Textcolor.FAIL}{logs['ErrorFindContentAPI']['Msg']}{Textcolor.END}", ex)
+            Main.addLogs(message="General", value=logs["ErrorFindContentAPI"], value1=str(ex))
