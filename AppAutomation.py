@@ -12,7 +12,7 @@ class AutomationQA:
 
         Aux.Main.setLanguage(language='pt_BR')
 
-        local_version, date_version, release_infos = Aux.Main.releaseNotes(self)
+        local_version, date_version, release_infos = Aux.Main.releaseNotes()
 
         print(f"{Aux.Textcolor.HIGHLIGHT}       Automation QA - Version: {local_version} - Date: {date_version}     "
               f"{Aux.Textcolor.END}")

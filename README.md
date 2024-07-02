@@ -1,11 +1,20 @@
 Automation QA - Release notes
 ----
-**Version 1.3.1**
+**Version 1.4.0**
 
 <em>01/07/2024</em>
-- <font color='red'>__[Novo]__</font> - Correção da leitura do Release Notes;
-- <font color='red'>__[Novo]__</font> - Correção da acentuação do Release Notes.
+- <font color='red'>__[Novo]__</font> - Removido o negrito da resposta da API na evidência .pdf;
+- <font color='red'>__[Novo]__</font> - Remoção de código não utilizado;
+- <font color='red'>__[Novo]__</font> - Correção da não evidência do browser para teste de API;
+- <font color='red'>__[Novo]__</font> - Correção da ação NO / NÃO para não executar o passo;
+- <font color='red'>__[Novo]__</font> - Correção da nomenclatura da evidência, quando aberta pela no navegador.
 #
+
+**Version 1.3.1**
+
+<em>01/07/2024</em> 
+- Correção da leitura do Release Notes;
+- Correção da acentuação do Release Notes.
 
 **Version 1.3.0**
 

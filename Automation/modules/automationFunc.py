@@ -94,12 +94,15 @@ class Main:
 
     # Don't execute the step.
     def noExecute(self, **kwargs):
+
+        # kwargs arguments.
+        step = kwargs.get('step')
+
         try:
-            # kwargs arguments.
-            step = kwargs.get('step')
             Aux.Main.addLogs(message="General", value=Aux.logs["NoExecute"], parameters1="'" + step + "'")
 
             return "Passed"
+
         except Exception as ex:
             Aux.Main.addLogs(message="General", value=Aux.logs["ErrorNoExecute"],
                              parameters1="'" + step + "' - " + str(ex))
@@ -954,7 +957,6 @@ class Main:
         try:
             # kwargs arguments.
             parameters1 = kwargs.get('parameters1')
-            change_download_config = kwargs.get('change_download_config')
             enable_cookie = kwargs.get('enable_cookie')
 
             global driver
@@ -1231,8 +1233,6 @@ class Main:
         test_set_path = kwargs.get("test_set_path")
         image_name = kwargs.get("image_name")
 
-        create = False
-
         try:
             # Alert print screen.
             if ec.alert_is_present()(driver):
@@ -1244,23 +1244,21 @@ class Main:
             else:
                 driver.save_screenshot(test_set_path + "\\" + image_name + ".png")
 
-            create = True
-
             Aux.Main.addLogs(message="General", value=Aux.logs["TakePicture"])
 
-        except AttributeError or requests.exceptions.RequestException or requests.exceptions.RetryError:
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorFindBrowser']['Msg']}{Aux.Textcolor.END}")
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorFindBrowser"])
+            return True
 
-            create = False
+        except AttributeError or requests.exceptions.RequestException or requests.exceptions.RetryError:
+            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorTakePicture']['Msg']}{Aux.Textcolor.END}")
+            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorTakePicture"])
+
+            return False
 
         except Exception as ex:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorTakePicture']['Msg']}{Aux.Textcolor.END}", ex)
             Aux.Main.addLogs(message="General", value=Aux.logs["ErrorTakePicture"])
 
-            create = False
-
-        return create
+            return False
 
 # --------------------------------------------- API Functions ----------------------------------------------------------
     def getAPI(self, **kwargs):
@@ -1337,9 +1335,8 @@ class Main:
                 status_code = "Passed"
             else:
                 status_code = None
-
-            if tag.upper() != "STATUS CODE":
-                find_content = Aux.Main.find_content_json(self, response=response, param=param)
+                if tag.upper() != "STATUS CODE":
+                    find_content = Aux.Main.find_content_json(self, response=response, param=param)
 
             if status_code and find_content:
                 return "Passed"

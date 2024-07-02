@@ -155,11 +155,13 @@ class Main:
                             Main.addLogs(message="General", value=logs["DeleteFile"],
                                          value1=os.path.join(path_folder, item))
 
+            return create
+
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorCreateDirectory']['Msg']}{Textcolor.END}", ex)
             Main.addLogs(message="General", value=logs["ErrorCreateDirectory"], value1=ex)
 
-        return create
+            return create
 
     # Delete the directories.
     def deleteDirectory(self, **kwargs):
@@ -191,7 +193,7 @@ class Main:
 
             # Variables.
             tag_paragraf = [
-                {'pt_BR': 'Evidência dos passos', 'en_US': 'Evidence of the steps', 'es': 'Evidencia de los pasos'}
+                {'pt_BR': 'Evidências dos passos', 'en_US': 'Evidence of the steps', 'es': 'Evidencia de los pasos'}
             ]
             image_path = ""
 
@@ -263,9 +265,9 @@ class Main:
                         else:
                             run_paragraf.add_picture(image_path, width=Inches(5))
                     else:
-                        ### Retirar o negrito.
                         paragraf = document.add_paragraph(json.dumps(otherConfigs['ResponseAPI'], indent=2))
-                        run_paragraf = paragraf.add_run()
+                        run_paragraf = paragraf.runs[0]
+                        run_paragraf.bold = False
 
                 else:
                     paragraf = document.add_paragraph(otherConfigs["StepName"] + " " + str(step_order) + " - " +
@@ -337,14 +339,16 @@ class Main:
 
     # Add the test case info in the Word file.
     def wordAddInfo(**kwargs):
+
+        # kwargs arguments.
+        document = kwargs.get('document')
+        test_case_id = kwargs.get('test_case_id')
+        name_testcase = kwargs.get('name_testcase')
+        step_number = kwargs.get('step_number')
+        executed_by = kwargs.get('executed_by')
+        completed_date = kwargs.get('completed_date')
+
         try:
-            # kwargs arguments.
-            document = kwargs.get('document')
-            test_case_id = kwargs.get('test_case_id')
-            name_testcase = kwargs.get('name_testcase')
-            step_number = kwargs.get('step_number')
-            executed_by = kwargs.get('executed_by')
-            completed_date = kwargs.get('completed_date')
 
             tag_language = [
                 {'pt_BR': 'ID do Caso de Teste: ', 'en_US': 'Test Case ID: ', 'es': 'ID del Prueba: '},
@@ -355,11 +359,11 @@ class Main:
                 {'pt_BR': 'Total de passos: ', 'en_US': 'Total steps: ', 'es': 'Pasos totales: '}
             ]
 
-            # CT id.
+            # Test case GitLab ID.
             control = Main.wordSeachText(document=document, text=tag_language[0][otherConfigs['Language']])
             control.add_run(str(test_case_id)).bold = True
 
-            # CT name.
+            # Test case name.
             control = Main.wordSeachText(document=document, text=tag_language[1][otherConfigs['Language']])
             control.add_run(name_testcase).bold = True
 
@@ -379,15 +383,13 @@ class Main:
             control = Main.wordSeachText(document=document, text=tag_language[5][otherConfigs['Language']])
             control.add_run(str(step_number)).bold = True
 
-            infoadd = True
+            return True
 
         except Exception as ex:
-            infoadd = False
-
             print(f"{Textcolor.FAIL}{logs['ErrorWordAddInfo']['Msg']}{Textcolor.END}", ex)
             Main.addLogs(message="General", value=logs["ErrorWordAddInfo"], value1=ex)
 
-        return infoadd
+            return False
 
     # Function to convert docx to pdf.
     def wordToPDF(**kwargs):
@@ -396,7 +398,7 @@ class Main:
             # kwargs variables.
             path = kwargs.get("path")
 
-            wdformatpdf = 17
+            word_format_pdf = 17
 
             # Initialize.
             pythoncom.CoInitialize()
@@ -405,21 +407,19 @@ class Main:
             document = word.Documents.Open(path)
 
             pdf_path = path.replace("docx", "pdf")
-            document.SaveAs(pdf_path, FileFormat=wdformatpdf)
+            document.SaveAs(pdf_path, FileFormat=word_format_pdf)
             document.Close()
 
             word.Quit()
 
-            createpdf = pdf_path
+            return pdf_path
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorWordToPDF']['Msg']}{Textcolor.END}", ex)
             Main.addLogs(message="General", value=logs["ErrorWordToPDF"], value1=ex)
-            createpdf = None
+            return None
 
-        return createpdf
-
-    # Delete the files.
+    # Delete files.
     def deleteFiles(**kwargs):
 
         try:
@@ -428,7 +428,7 @@ class Main:
             extension = kwargs.get('extension')
             exact_file = kwargs.get('exact_file')
 
-            # Delete all the files in a directory with the especific extension OR all if the extension is '*'.
+            # Delete all the files in a directory with the specific extension OR all if the extension is '*'.
             if file_path:
 
                 files = os.listdir(file_path)
@@ -471,7 +471,7 @@ class Main:
             with open(path, 'a+', encoding='utf-8') as log_file:
                 if message == 'NewConfig':  # Set the first line.
                     log_file.write("\n " + "*" * 61 + datetime_log + "*" * 61 + "\n")
-                    log_file.write("\nLOAD INFORMATIONS FROM AZURE\n")
+                    log_file.write("\nLOAD INFORMATION'S FROM GITLAB\n")
                 elif message == 'NewSession':
                     log_file.write(str(value) + "\n")  # Test case name.
                     log_file.write("")
@@ -531,29 +531,29 @@ class Main:
             new_hash = kwargs.get('new_hash')
 
             # Paths
-            path_Origin_Yml = os.path.join(os.getcwd(), 'Automation', 'configs', 'dictionary-pt.yml')
-            path_Translated_Yml = os.path.join(os.getcwd(), 'Automation', 'configs', 'dictionary-' + language + '.yml')
+            path_origin_yml = os.path.join(os.getcwd(), 'Automation', 'configs', 'dictionary-pt.yml')
+            path_translated_yml = os.path.join(os.getcwd(), 'Automation', 'configs', 'dictionary-' + language + '.yml')
 
             regex_pattern = regex.compile('(.*?,)(.*?,)(.*)')
 
             tag = 'Msg:'
 
-            if os.path.isfile(path_Translated_Yml):
-                Main.deleteFiles(exact_file=path_Translated_Yml)
+            if os.path.isfile(path_translated_yml):
+                Main.deleteFiles(exact_file=path_translated_yml)
 
-            with open(path_Origin_Yml, 'r') as yml_file:
+            with open(path_origin_yml, 'r') as yml_file:
                 lines = yml_file.readlines()
                 for line in lines:
                     if tag in line:
-                        with open(path_Translated_Yml, 'a', encoding='utf-8') as yml_new_file:
-                            groupType = regex.match(regex_pattern, line).group(1)
-                            groupMsg = regex.match(regex_pattern, line).group(2)
-                            msgTranslated = GoogleTranslator(source='pt', target=language).\
-                                translate((groupMsg[len(tag) + 1:len(groupMsg) - 1]).strip())
-                            groupWhere = regex.match(regex_pattern, line).group(3)
-                            yml_new_file.write(f'{groupType}{tag} {msgTranslated},{groupWhere}\n')
+                        with open(path_translated_yml, 'a', encoding='utf-8') as yml_new_file:
+                            group_type = regex.match(regex_pattern, line).group(1)
+                            group_msg = regex.match(regex_pattern, line).group(2)
+                            msg_translated = GoogleTranslator(source='pt', target=language).\
+                                translate((group_msg[len(tag) + 1:len(group_msg) - 1]).strip())
+                            group_where = regex.match(regex_pattern, line).group(3)
+                            yml_new_file.write(f'{group_type}{tag} {msg_translated},{group_where}\n')
                     else:
-                        with open(path_Translated_Yml, 'a') as yml_new_file:
+                        with open(path_translated_yml, 'a') as yml_new_file:
                             yml_new_file.write(f'{line}')
 
             Main.saveHash(new_hash=new_hash, path_part=language)
@@ -681,7 +681,7 @@ class Main:
             actual_number = kwargs.get('actual')
             total = kwargs.get('total')
 
-            line = "*" * 12
+            # line = "*" * 12
             percentage = "{0:.2f}".format((actual_number / total) * 100)
 
             print(f"{Textcolor.BLUE}{' '}"
@@ -774,17 +774,17 @@ class Main:
         # kwargs variable.
         list_steps = kwargs.get("list_steps")
 
-        desktop_TC = False
+        desktop_tc = False
 
         for cont, _ in enumerate(otherConfigs['DesktopFunctions']):
             if any(otherConfigs['DesktopFunctions'][cont] in desktop_verb for desktop_verb in list_steps):
-                desktop_TC = True
+                desktop_tc = True
 
-        return desktop_TC
+        return desktop_tc
 
     @staticmethod
     # Inform the updates.
-    def releaseNotes(self):
+    def releaseNotes():
 
         path = os.path.join(os.getcwd(), 'README.md')
         release_infos = []

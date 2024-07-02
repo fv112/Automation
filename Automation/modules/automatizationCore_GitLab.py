@@ -240,7 +240,7 @@ class Main:
                     status_step = eval(Aux.verbs[verb]['Function'])(self)
                 else:
                     status_step = eval(Aux.verbs[verb]['Function'])(self, verb=verb, parameters1=parameters1,
-                                                                    parameters2=parameters2)
+                                                                    parameters2=parameters2, step=step)
 
                 # Take the first step failed.
                 if status_step == "Failed" and step_failed is None:
@@ -254,7 +254,7 @@ class Main:
                     status_steps.append("Passed")
 
                 # Take the screenshot of each step, except to the NoExecute step OR API Step.
-                if verb not in ('NoExecute', 'Fechar', 'Cerrar', 'Close') or Aux.otherConfigs['APIStep']:
+                if verb not in ('NoExecute', 'Fechar', 'Cerrar', 'Close') and Aux.otherConfigs['APIStep'] is False:
 
                     # Image name file.
                     image_name = Aux.otherConfigs["EvidenceName"] + str(step_order).zfill(2)
