@@ -1,13 +1,23 @@
 Automation QA - Release notes
 ----
+**Version 1.5.0**
+
+<em>02/07/2024</em>
+- <font color='red'>__[Novo]__</font> - Inclusão do tempo da execução do teste na evidência;
+- <font color='red'>__[Novo]__</font> - Correção da apresentação dos passos da API na evidência;
+- <font color='red'>__[Novo]__</font> - Correção da validação do Status Code da API;
+- <font color='red'>__[Novo]__</font> - Alteração na ordem das perguntas do menu inicial;
+- <font color='red'>__[Novo]__</font> - Atualização do Token de upload do GitLab.
+#
+
 **Version 1.4.0**
 
 <em>01/07/2024</em>
-- <font color='red'>__[Novo]__</font> - Removido o negrito da resposta da API na evidência .pdf;
-- <font color='red'>__[Novo]__</font> - Remoção de código não utilizado;
-- <font color='red'>__[Novo]__</font> - Correção da não evidência do browser para teste de API;
-- <font color='red'>__[Novo]__</font> - Correção da ação NO / NÃO para não executar o passo;
-- <font color='red'>__[Novo]__</font> - Correção da nomenclatura da evidência, quando aberta pela no navegador.
+- Removido o negrito da resposta da API na evidência .pdf;
+- Remoção de código não utilizado;
+- Correção da não evidência do browser para teste de API;
+- Correção da ação NO / NÃO para não executar o passo;
+- Correção da nomenclatura da evidência, quando aberta pela no navegador.
 #
 
 **Version 1.3.1**

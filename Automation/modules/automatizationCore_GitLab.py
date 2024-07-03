@@ -108,8 +108,9 @@ class Main:
                     testcase_status = 'Closed'
 
                 # Set the test case duration.
-                duration = Aux.datetime.datetime.now() - initial_time
-                duration = int(duration.total_seconds() * 1000)
+                duration = Aux.Main.convert_seconds_to_string(self,
+                                                              time_spent=(Aux.datetime.datetime.now() - initial_time).
+                                                              total_seconds())
 
                 # Verify in the list if the iteration status for the test case.
                 if "Failed" in status_list:
@@ -121,6 +122,9 @@ class Main:
 
                 # If aborted do not create evidences.
                 if save_evidence and status != 'Aborted':
+
+                    print(f"{Aux.Textcolor.WARNING}{Aux.logs['SavingEvidence']['Msg']}{Aux.Textcolor.END}")
+
                     # Create an EST file.
                     word_path = Aux.directories["ESTFile"] + ' ' + Aux.otherConfigs["Language"] + '.docx'
 
@@ -133,7 +137,8 @@ class Main:
                                                 executed_by=executed_by,
                                                 take_picture_status=take_picture_status,
                                                 completed_date=str(Aux.datetime.datetime.now().
-                                                                   strftime("%d/%m/%Y %H:%M")))
+                                                                   strftime("%d/%m/%Y %H:%M")),
+                                                duration=duration)
                     pdf = Aux.Main.wordToPDF(path=est)
 
                     if est is None:
@@ -158,9 +163,9 @@ class Main:
                         GitLab.GitLabConnection.SaveEvidenceTestCase(self, project_id=project_id,
                                                                      test_case_id=test_case_id, status=status,
                                                                      evidence_folder=Aux.directories["EvidenceFolder"],
-                                                                     name_testcase=Aux.otherConfigs["ETSName"] +
-                                                                                   str(test_case_id) + " - " +
-                                                                                   name_testcase)
+                                                                     name_testcase=
+                                                                     Aux.otherConfigs["ETSName"] + str(test_case_id)
+                                                                     + " - " + name_testcase)
 
                     # Clear the evidences prints.
                     Aux.Main.deleteFiles(path_log=test_set_path, extension="png")
@@ -196,6 +201,13 @@ class Main:
 
         # Update the Run status.
         finally:
+            # Clear the API variables.
+            Aux.otherConfigs['GetAPI_Endpoint'] = ''
+            Aux.otherConfigs['GetAPI_Authorization'] = ''
+            Aux.otherConfigs['GetAPI_Headers'] = ''
+            Aux.otherConfigs['GetAPI_Body'] = ''
+            Aux.otherConfigs['GetAPI_Params'] = ''
+            Aux.otherConfigs['APIStep'] = False
             Aux.Main.addLogs(message="EndExecution")
 
     # Execute the test case steps.

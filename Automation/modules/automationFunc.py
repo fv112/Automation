@@ -239,11 +239,12 @@ class Main:
 
     # Type keyboard key.
     def pressButton(self, **kwargs):
-        try:
-            # kwargs arguments.
-            parameters1 = kwargs.get('parameters1')
-            parameters2 = kwargs.get('parameters2')
 
+        # kwargs arguments.
+        parameters1 = kwargs.get('parameters1')
+        parameters2 = kwargs.get('parameters2')
+
+        try:
             if parameters2 is None:
                 parameters2 = 1
             parameters1 = str(parameters1)
@@ -296,9 +297,11 @@ class Main:
 
     # Mouse Over.
     def mouseOver(self, **kwargs):
+
+        # kwargs arguments.
+        parameters1 = kwargs.get('parameters1')
+
         try:
-            # kwargs arguments.
-            parameters1 = kwargs.get('parameters1')
 
             actions = ActionChains(driver)
             element_field = Main.findElement(self, parameters1=parameters1)
@@ -359,8 +362,8 @@ class Main:
 
             if ObtainedText is None:
                 headers = {'User-Agent': Aux.otherConfigs['Agent']}
-                conteudo = Aux.request.get(driver.current_url, headers=headers).content
-                soup = BeautifulSoup(conteudo, 'html.parser')
+                content = Aux.request.get(driver.current_url, headers=headers).content
+                soup = BeautifulSoup(content, 'html.parser')
 
                 for tag in Aux.searchForAttribute:
                     for component in Aux.searchForComponent:
@@ -407,10 +410,12 @@ class Main:
 
         except Exception as ex:
             Aux.Main.addLogs(message="General", value=Aux.logs["ErrorGetURL"], parameters1=str(ex))
+
             return None, "Failed"
 
     # get Title
     def getTitle(self):
+
         try:
 
             title = driver.title
@@ -420,23 +425,28 @@ class Main:
 
         except Exception as ex:
             Aux.Main.addLogs(message="General", value=Aux.logs["ErrorGetTitle"], parameters1=str(ex))
+
             return None, "Failed"
 
     # Back Page
     def backPage(self):
+
         try:
 
             driver.back()
+
             Aux.Main.addLogs(message="General", value=Aux.logs["BackPage"])
 
             return driver, "Passed"
 
         except Exception as ex:
             Aux.Main.addLogs(message="General", value=Aux.logs["ErrorBackPage"], parameters1=str(ex))
+
             return "Failed"
 
     # Back Page.
     def forwardPage(self):
+
         try:
 
             driver.forward()
@@ -446,18 +456,21 @@ class Main:
 
         except Exception as ex:
             Aux.Main.addLogs(message="General", value=Aux.logs["ErrorForwardPage"], parameters1=str(ex))
+
             return "Failed"
 
     # Gets the attribute of an element (can be value, title or href).
     def getAttribute(self, **kwargs):
 
-        try:
-            # kwargs arguments.
-            element = kwargs.get('element')
-            parameters1 = kwargs.get('parameters1')
-            parameters2 = kwargs.get('parameters2')
+        # kwargs arguments.
+        element = kwargs.get('element')
+        parameters1 = kwargs.get('parameters1')
+        parameters2 = kwargs.get('parameters2')
 
-            ObtainedAttribute = ''
+        obtained_attribute = ''
+        text_found = None
+
+        try:
 
             if '(#value)' in parameters2:
                 page = Main.findElement(self, parameters1=parameters1)
@@ -484,6 +497,7 @@ class Main:
 
         except Exception as ex:
             Aux.Main.addLogs(message="General", value=Aux.logs["ErrorGetAttribute"], parameters1=str(ex))
+
             return text_found, "Failed"
 
     def getQuantityElements(self, **kwargs):
@@ -529,10 +543,11 @@ class Main:
 
     # Scroll Page
     def scrollPage(self, **kwargs):
-        try:
-            # kwargs arguments.
-            parameters1 = kwargs.get('parameters1')
 
+        # kwargs arguments.
+        parameters1 = kwargs.get('parameters1')
+
+        try:
             driver.execute_script('window.scrollTo(0, ' + parameters1 + ')')
             Aux.Main.addLogs(message="General", value=Aux.logs["ScrollPage"])
 
@@ -540,6 +555,7 @@ class Main:
 
         except Exception as ex:
             Aux.Main.addLogs(message="General", value=Aux.logs["ErrorScrollPage"], parameters1=str(ex))
+
             return "Failed"
 
     # Refresh Page
@@ -553,49 +569,57 @@ class Main:
 
         except Exception as ex:
             Aux.Main.addLogs(message="General", value=Aux.logs["ErrorRefreshPage"], parameters1=str(ex))
+
             return "Failed"
 
     # Checks whether the element is inactive.
     def isEnable(self, **kwargs):
-        try:
-            # kwargs arguments.
-            parameters1 = kwargs.get('parameters1')
 
-            statusElement = Main.findElement(self, parameters1=parameters1).is_enabled()
+        # kwargs arguments.
+        parameters1 = kwargs.get('parameters1')
+
+        try:
+            status_element = Main.findElement(self, parameters1=parameters1).is_enabled()
 
             Aux.Main.addLogs(message="General", value=Aux.logs["IsEnable"])
 
-            return statusElement, "Passed"
+            return status_element, "Passed"
 
         except Exception as ex:
             Aux.Main.addLogs(message="General", value=Aux.logs["ErrorIsEnable"])
-            return statusElement, "Failed"
+            return status_element, "Failed"
 
     # Checks whether the element is visible.
     def isDisplayed(self, **kwargs):
-        try:
-            # kwargs arguments.
-            parameters1 = kwargs.get('parameters1')
 
-            statusElement = Main.findElement(self, parameters1=parameters1).is_displayed()
+        # kwargs arguments.
+        parameters1 = kwargs.get('parameters1')
+
+        status_element = None
+
+        try:
+            status_element = Main.findElement(self, parameters1=parameters1).is_displayed()
 
             Aux.Main.addLogs(message="General", value=Aux.logs["IsDisplayed"])
 
-            return statusElement, "Passed"
+            return status_element, "Passed"
 
         except Exception as ex:
             Aux.Main.addLogs(message="General", value=Aux.logs["ErrorIsDisplayed"], parameters1=str(ex))
-            return statusElement, "Failed"
+
+            return status_element, "Failed"
 
     # Checks whether a checkbox or radio button is selected (returns True or False)
     def isSelected(self, **kwargs):
+
+        # kwargs arguments.
+        parameters1 = kwargs.get('parameters1')
+
         try:
-            # kwargs arguments.
-            parameters1 = kwargs.get('parameters1')
 
-            statusElement = Main.findElement(self, parameters1=parameters1).is_selected()
+            status_element = Main.findElement(self, parameters1=parameters1).is_selected()
 
-            if statusElement:
+            if status_element:
                 Aux.Main.addLogs(message="General", value=Aux.logs["IsSelected"])
                 return "True", "Passed"
             else:
@@ -605,7 +629,7 @@ class Main:
             Aux.Main.addLogs(message="General", value=Aux.logs["ErrorIsSelected"], parameters1=str(ex))
             return "False", "Failed"
 
-    # Validade data (With * validate the partial text).
+    # Validate data (With * validate the partial text).
     def validateData(self, **kwargs):
         try:
             # kwargs arguments.
@@ -628,7 +652,7 @@ class Main:
                         Aux.Main.addLogs(message="General", value=Aux.logs["ErrorValidateData"])
                         status = "Failed"
 
-                # Get the URL from the adress bar (getURL).
+                # Get the URL from the address bar (getURL).
                 elif '(url)' in parameters1:
                     text_found, status = Main.getURL(self)
                     parameters2 = parameters1.replace('(url)', '')
@@ -644,7 +668,7 @@ class Main:
                         status = "Failed"
 
                 # Check a part of the text was found.
-                elif '*' in parameters2:  # Check parto of the text.
+                elif '*' in parameters2:  # Check part of the text.
                     text_found, status = Main.getText(self, parameters1=parameters1)
 
                     # Remove new lines.
@@ -927,7 +951,7 @@ class Main:
             alert = wait.until(lambda d: d.switch_to.alert)
 
             # Validate de Alert content (Text).
-            if parameters2 != None:
+            if parameters2 is not None:
                 status = Main.validateData(self, alert='AlertScreen', parameters1=alert.text, parameters2=parameters2)
 
             # Actions inside de Alert.
@@ -1064,6 +1088,7 @@ class Main:
 
     # Verify is the browser is still opened.
     def verifyBrowser(self):
+
         try:
             if driver.current_url:
                 driver.close()
@@ -1076,6 +1101,7 @@ class Main:
 
     # Close (windows or the whole browser).
     def close(self, **kwargs):
+
         try:
             # kwargs arguments.
             parameters1 = kwargs.get('parameters1')
@@ -1095,10 +1121,11 @@ class Main:
 
     # Open page address.
     def openPage(self, **kwargs):
-        try:
-            # kwargs arguments.
-            parameters1 = kwargs.get('parameters1')
 
+        # kwargs arguments.
+        parameters1 = kwargs.get('parameters1')
+
+        try:
             driver.get(parameters1)
 
             Aux.Main.addLogs(message="General", value=Aux.logs["OpenPage"])
@@ -1106,11 +1133,11 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorOpenPage"])
+            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorOpenPage"], parameters1=str(ex))
 
             return "Failed"
 
-    # Hightlight the component during the execution.
+    # Highlight the component during the execution.
     def highlight(self, **kwargs):
 
         try:
@@ -1186,7 +1213,7 @@ class Main:
             Aux.pyautogui.typewrite(Aux.directories['DownloadFolderTemp'])
             Aux.pyautogui.typewrite(['enter', 'tab', 'enter'], interval=.2)
 
-            # Do not ask after finisht the download.
+            # Do not ask after finish the download.
             Aux.pyautogui.typewrite(['tab', 'space', 'esc'], interval=.2)
 
             Aux.Main.addLogs(message="General", value=Aux.logs["ConfigureSavePath"])
@@ -1306,13 +1333,6 @@ class Main:
                     if resp is not []:
                         Aux.otherConfigs['ResponseAPI'] = resp
 
-                # Clear the API variables.
-                Aux.otherConfigs['GetAPI_Endpoint'] = ''
-                Aux.otherConfigs['GetAPI_Authorization'] = ''
-                Aux.otherConfigs['GetAPI_Headers'] = ''
-                Aux.otherConfigs['GetAPI_Body'] = ''
-                Aux.otherConfigs['GetAPI_Params'] = ''
-
         except Exception as ex:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetAPI']['Msg']}{Aux.Textcolor.END}", ex)
             Aux.Main.addLogs(message="General", value=Aux.logs["ErrorGetAPI"])
@@ -1322,6 +1342,8 @@ class Main:
         # kwargs variables:
         parameters1 = kwargs.get("parameters1")
         find_content = None
+        status_code = None
+
         Aux.otherConfigs['APIStep'] = True
 
         try:
@@ -1333,15 +1355,21 @@ class Main:
             # Status Code.
             if tag.upper() == "STATUS CODE" and int(param) == Aux.otherConfigs['StatusCodeAPI']:
                 status_code = "Passed"
-            else:
-                status_code = None
-                if tag.upper() != "STATUS CODE":
-                    find_content = Aux.Main.find_content_json(self, response=response, param=param)
+            elif tag.upper() == "STATUS CODE" and int(param) != Aux.otherConfigs['StatusCodeAPI']:
+                status_code = "Failed"
 
-            if status_code and find_content:
-                return "Passed"
-            else:
+            if tag.upper() != "STATUS CODE":
+                find_content = Aux.Main.find_content_json(self, response=response, param=param)
+
+            if status_code == "Failed" or find_content == "Failed":
+                print(
+                    f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorResponseAPI']['Msg']}{Aux.Textcolor.END} - Expected: {tag} - Result {param}")
+                Aux.Main.addLogs(message="General", value=Aux.logs["ErrorResponseAPI"],
+                                 value1=f"Expected: {tag} - Result {param}")
+
                 return "Failed"
+            else:
+                return "Passed"
 
         except Exception as ex:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorResponseAPI']['Msg']}{Aux.Textcolor.END}", ex)

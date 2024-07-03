@@ -142,7 +142,7 @@ class GitLabConnection:
                     Aux.Main.addLogs(message="General", value=Aux.logs['ErrorInstance']['Msg'])
 
             elif t.status_code == 401:
-                text = Aux.regex.search('(?<=<title>).+?(?=</title>)', t.text, Aux.regex.DOTALL).group().strip()
+                # text = Aux.regex.search('(?<=<title>).+?(?=</title>)', t.text, Aux.regex.DOTALL).group().strip()
                 print(f"{Aux.Textcolor.FAIL}{Aux.otherConfigs['RunAgain']['Msg']}"
                       f"{Aux.Textcolor.UNDERLINE}\n")
                 Aux.Main.addLogs(message="General", value=Aux.otherConfigs['TokenExpired'])
@@ -290,12 +290,9 @@ class GitLabConnection:
                 json_str = json.dumps(s.json())
                 resp = json.loads(json_str)
                 if resp.__len__() != 0:
-                    print(f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['TestCaseList']['Msg']}{Aux.Textcolor.END}")
                     for id_test, testCase_id in enumerate(resp):
                         table.add_row([id_test + 1, str(testCase_id['iid']), testCase_id['title']])
                         test_case_id_list.append(testCase_id['iid'])
-
-                    print(table)
 
                     isolated_tc = None
 
@@ -303,7 +300,11 @@ class GitLabConnection:
                         if isolated_tc not in ["Y", "N"]:
                             print(f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['AskCT']['Msg']}{Aux.Textcolor.END}\n")
                             isolated_tc = input().upper()
+                            os.system('cls')
                             if isolated_tc.upper() in ["Y", "S"]:
+                                print(
+                                    f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['TestCaseList']['Msg']}{Aux.Textcolor.END}")
+                                print(table)
                                 print(f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['ChooseTestCase']['Msg']}{Aux.Textcolor.END}\n")
                                 tc_id = int(input())
                                 test_case_id_list.clear()
@@ -368,7 +369,7 @@ class GitLabConnection:
             return name_testcase, step_block
 
         except Exception as e:
-            print('\033[31m' + Aux.logs['ErrorExecuteTestCase']['Msg'] + '\033[0;0m', e)
+            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorExecuteTestCase']['Msg']}{Aux.Textcolor.END} - {e}")
             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorExecuteTestCase'], value1=str(e))
             #exit(1)
 
@@ -393,7 +394,7 @@ class GitLabConnection:
             return steps_list, order_steps_list
 
         except Exception as e:
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetSteps']['Msg']}{Aux.Textcolor.END}", e)
+            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetSteps']['Msg']}{Aux.Textcolor.END} - {e}")
             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetSteps'], value1=str(e))
             #exit(1)
 
@@ -434,7 +435,7 @@ class GitLabConnection:
             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorLineEmpty'])
 
         except Exception as e:
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorSliceDatas']['Msg']}{Aux.Textcolor.END}", e)
+            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorSliceDatas']['Msg']}{Aux.Textcolor.END} - {e}")
             Aux.Main.addLogs( message="General", value=Aux.logs['ErrorSliceDatas'], value1=str(e))
             #exit(1)
 
