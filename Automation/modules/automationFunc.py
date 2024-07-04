@@ -1,7 +1,7 @@
 import time
-
 import requests
 import json
+from jsonschema import validate, ValidationError
 
 from selenium.webdriver.support import expected_conditions as ec
 from selenium import webdriver
@@ -57,15 +57,15 @@ class Main:
         for tag in search_list:
             try:
                 driver.implicitly_wait(1)
-                newelement = driver.find_element(tag, parameters1)
+                new_element = driver.find_element(tag, parameters1)
 
-                if newelement is not None:
-                    Main.highlight(self, newelement=newelement, effect_time=1, color=color, border=3)
+                if new_element is not None:
+                    Main.highlight(self, newelement=new_element, effect_time=1, color=color, border=3)
 
                     Aux.Main.addLogs(message="General", value=Aux.logs["FindElement"], parameters1=tag,
                                      parameters2=parameters1)
 
-                    return newelement
+                    return new_element
 
             except NoSuchElementException:
                 Aux.Main.addLogs(message="General", value=Aux.logs["WarningFindElement"], parameters1=tag,
@@ -306,7 +306,7 @@ class Main:
             actions = ActionChains(driver)
             element_field = Main.findElement(self, parameters1=parameters1)
 
-            actions.move_to_element(element_field)  # Funcionou com XPath
+            actions.move_to_element(element_field)  # Worked with XPath.
             actions.perform()
 
             Aux.Main.addLogs(message="General", value=Aux.logs["MouseOver"])
@@ -319,10 +319,11 @@ class Main:
 
     # Wait.
     def wait(self, **kwargs):
-        try:
-            # kwargs arguments.
-            parameters1 = kwargs.get('parameters1')
 
+        # kwargs arguments.
+        parameters1 = kwargs.get('parameters1')
+
+        try:
             Aux.time.sleep(int(parameters1))
 
             Aux.Main.addLogs(message="General", value=Aux.logs["Wait"])
@@ -331,6 +332,7 @@ class Main:
 
         except Exception as ex:
             Aux.Main.addLogs(message="General", value=Aux.logs["ErrorWait"], parameters1=str(ex))
+
             return "Failed"
 
     # Select DropDownList.
@@ -358,9 +360,9 @@ class Main:
             # kwargs arguments.
             parameters1 = kwargs.get('parameters1')
 
-            ObtainedText = Main.findElement(self, parameters1=parameters1, color="green").text
+            obtained_text = Main.findElement(self, parameters1=parameters1, color="green").text
 
-            if ObtainedText is None:
+            if obtained_text is None:
                 headers = {'User-Agent': Aux.otherConfigs['Agent']}
                 content = Aux.request.get(driver.current_url, headers=headers).content
                 soup = BeautifulSoup(content, 'html.parser')
@@ -376,16 +378,17 @@ class Main:
                         else:
                             return Aux.logs["ErrorGetText"]["Msg"], "Failed"
             else:
-                return ObtainedText, "Passed"
+                return obtained_text, "Passed"
 
             Aux.Main.addLogs(message="General", value=Aux.logs["GetText"])
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorGetText"])
+            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorGetText"], parameters1=str(ex))
 
             return Aux.logs["ErrorGetText"]['Msg'], "Failed"
 
-    def openNewTab(self, **kwargs):
+    @staticmethod
+    def openNewTab():
         try:
 
             driver.execute_script("window.open('', '_blank')")
@@ -400,13 +403,14 @@ class Main:
             return "Failed"
 
     # Get current url
-    def getURL(self):
+    @staticmethod
+    def getURL():
         try:
 
-            URL = driver.current_url
+            url = driver.current_url
             Aux.Main.addLogs(message="General", value=Aux.logs["GetURL"])
 
-            return URL, "Passed"
+            return url, "Passed"
 
         except Exception as ex:
             Aux.Main.addLogs(message="General", value=Aux.logs["ErrorGetURL"], parameters1=str(ex))
@@ -414,7 +418,8 @@ class Main:
             return None, "Failed"
 
     # get Title
-    def getTitle(self):
+    @staticmethod
+    def getTitle():
 
         try:
 
@@ -429,7 +434,8 @@ class Main:
             return None, "Failed"
 
     # Back Page
-    def backPage(self):
+    @staticmethod
+    def backPage():
 
         try:
 
@@ -445,7 +451,8 @@ class Main:
             return "Failed"
 
     # Back Page.
-    def forwardPage(self):
+    @staticmethod
+    def forwardPage():
 
         try:
 
@@ -523,8 +530,8 @@ class Main:
             try:
 
                 driver.implicitly_wait(3)
-                newelement = driver.find_elements(tag, parameters1)
-                elements = len(newelement)
+                new_element = driver.find_elements(tag, parameters1)
+                elements = len(new_element)
 
                 if elements > 0:
                     Aux.Main.addLogs(message="General", value=Aux.logs["GetQuantityElements"], parameters1=tag,
@@ -578,6 +585,8 @@ class Main:
         # kwargs arguments.
         parameters1 = kwargs.get('parameters1')
 
+        status_element = None
+
         try:
             status_element = Main.findElement(self, parameters1=parameters1).is_enabled()
 
@@ -586,7 +595,7 @@ class Main:
             return status_element, "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorIsEnable"])
+            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorIsEnable"], parameters1=str(ex))
             return status_element, "Failed"
 
     # Checks whether the element is visible.
@@ -641,7 +650,7 @@ class Main:
 
                 # Get the title page.
                 if '(title)' in parameters1:
-                    text_found, status = Main.getTitle(self)
+                    text_found, status = Main.getTitle()
                     parameters2 = parameters1.replace('(title)', '')
 
                     if parameters2 == text_found:
@@ -1074,11 +1083,11 @@ class Main:
 
             return "Passed"
 
-        # except requests.exceptions.RequestException:
-        #     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorFindBrowser']['Msg']}{Aux.Textcolor.END}")
-        #     Aux.Main.addLogs(message="General", value=Aux.logs["ErrorFindBrowser"])
-        #
-        #     return "Failed"
+        except requests.exceptions.RequestException:
+            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorFindBrowser']['Msg']}{Aux.Textcolor.END}")
+            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorFindBrowser"])
+
+            return "Failed"
 
         except Exception as ex:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorOpenBrowser']['Msg']}{Aux.Textcolor.END}")
@@ -1142,15 +1151,15 @@ class Main:
 
         try:
             # kwargs variables.
-            newelement = kwargs.get('newelement')
+            new_element = kwargs.get('new_element')
             effect_time = kwargs.get('effect_time')
             color = kwargs.get('color')
             border = kwargs.get('border')
 
-            def apply_style(s):
-                driver.execute_script("arguments[0].setAttribute('style', arguments[1]);", newelement, s)
+            def apply_style(style):
+                driver.execute_script("arguments[0].setAttribute('style', arguments[1]);", new_element, style)
 
-            original_style = newelement.get_attribute('style')
+            original_style = new_element.get_attribute('style')
             apply_style("border: {0}px solid {1};".format(border, color))
             Aux.time.sleep(effect_time)
             apply_style(original_style)
@@ -1158,44 +1167,9 @@ class Main:
         except Exception as ex:
             Aux.Main.addLogs(message="General", value=Aux.logs["ErrorHighLight"], parameters1=str(ex))
 
-    # Reset the Edge Legacy configuration.
-    def _resetEdgeLegacy(self):
-        try:
-
-            # Open the MS-Settings.
-            Aux.os.system("start ms-settings:")
-
-            # Select the Application & Resources.
-            Aux.time.sleep(1)
-            Aux.pyautogui.typewrite("app")
-            Aux.pyautogui.typewrite(['enter', 'enter'], interval=2)
-
-            # Select the Edge Legacy.
-            Aux.time.sleep(3)
-            Aux.pyautogui.typewrite(['tab'], interval=1)
-            Aux.pyautogui.typewrite("Edge")
-            Aux.pyautogui.typewrite(['tab', 'tab', 'tab', 'enter', 'tab', 'enter'], interval=.2)
-
-            # Restore the Edge Legacy config.
-            Aux.time.sleep(1)
-            Aux.pyautogui.typewrite(['tab', 'tab', 'enter', 'enter'], interval=.5)
-
-            # Keyboard press Alt+F4 to close the browser Configuration.
-            Aux.pyautogui.keyDown('alt')
-            Aux.time.sleep(.2)
-            Aux.pyautogui.keyDown('F4')
-            Aux.time.sleep(.2)
-            Aux.pyautogui.keyUp('alt')
-
-            Aux.Main.addLogs(message="General", value=Aux.logs["ResetEdgeLegacy"])
-            print(f"{Aux.Textcolor.FAIL}{Aux.otherConfigs['ResetEdgeLegacy']['Msg']}{Aux.Textcolor.END}")
-
-        except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorResetEdgeLegacy"], parameters1=str(ex))
-            return "Failed"
-
     # Configure the save path - Only Edge Legacy.
-    def _configureSavePath(self):
+    @staticmethod
+    def _configureSavePath():
         try:
             # Keyboard press Alt+x and open the browser Configuration.
             Aux.pyautogui.keyDown('alt')
@@ -1288,48 +1262,56 @@ class Main:
             return False
 
 # --------------------------------------------- API Functions ----------------------------------------------------------
-    def getAPI(self, **kwargs):
+    def request_api(self, **kwargs):
 
         # kwargs variables:
         parameters1 = kwargs.get("parameters1")
+        api_action = kwargs.get("api_action")
 
         # Variables
         submit = False
         Aux.otherConfigs['APIStep'] = True
+        api_result = None
 
         try:
             if parameters1.upper() != 'SUBMIT':
                 tag = parameters1[:parameters1.find(':')]
                 if tag.upper() == 'ENDPOINT':
-                    Aux.otherConfigs['GetAPI_Endpoint'] = parameters1[parameters1.find(':') + 1:]
+                    Aux.otherConfigs['API_Endpoint'] = parameters1[parameters1.find(':') + 1:].strip()
                 elif tag.upper() == 'AUTHORIZATION':
-                    Aux.otherConfigs['GetAPI_Authorization'] = parameters1[parameters1.find(':') + 1:]
+                    Aux.otherConfigs['API_Authorization'] = parameters1[parameters1.find(':') + 1:].strip()
                 elif tag.upper() == 'HEADERS':
-                    Aux.otherConfigs['GetAPI_Headers'] = parameters1[parameters1.find(':') + 1:]
+                    Aux.otherConfigs['API_Headers'] = parameters1[parameters1.find(':') + 1:].strip()
                 elif tag.upper() == 'BODY':
-                    Aux.otherConfigs['GetAPI_Body'] = parameters1[parameters1.find(':') + 1:]
+                    Aux.otherConfigs['API_Body'] = parameters1[parameters1.find(':') + 1:parameters1.rfind('\"')].strip()
+                    ### ERRO ESTA RETORNANDO 401.
                 elif tag.upper() == 'PARAMS':
-                    Aux.otherConfigs['GetAPI_Params'] = parameters1[parameters1.find(':') + 1:]
+                    Aux.otherConfigs['API_Params'] = parameters1[parameters1.find(':') + 1:].strip()
 
-                if Aux.otherConfigs['GetAPI_Endpoint'] is None:
-                    print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorAPIGetMissingInfo']['Msg']}{Aux.Textcolor.END}")
-                    Aux.Main.addLogs(message="General", value=Aux.logs["ErrorAPIGetMissingInfo"])
-                    raise TypeError(Aux.logs['ErrorAPIGetMissingInfo']['Msg'])
+                if Aux.otherConfigs['API_Endpoint'] is None:
+                    print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorAPIMissingInfo']['Msg']}{Aux.Textcolor.END}")
+                    Aux.Main.addLogs(message="General", value=Aux.logs["ErrorAPIMissingInfo"])
+                    raise TypeError(Aux.logs['ErrorAPIMissingInfo']['Msg'])
             else:
                 submit = True
 
-            if submit:
-                get = requests.get(Aux.otherConfigs['GetAPI_Endpoint'],
-                                   params=Aux.otherConfigs['GetAPI_Params'],
-                                   headers={'Authorization': Aux.otherConfigs['GetAPI_Authorization']},
-                                   verify=False,
-                                   data=json.dumps(Aux.otherConfigs['GetAPI_Body']))
+            if submit and api_action.upper() == "GET":
+                api_result = requests.get(Aux.otherConfigs['API_Endpoint'],
+                                          params=Aux.otherConfigs['API_Params'],
+                                          headers={'Authorization': Aux.otherConfigs['API_Authorization']},
+                                          verify=False,
+                                          data=json.dumps(Aux.otherConfigs['API_Body']))
+            elif submit and api_action.upper() == "POST":
+                api_result = requests.post(Aux.otherConfigs['API_Endpoint'],
+                                           params=Aux.otherConfigs['API_Params'],
+                                           headers={'Authorization': Aux.otherConfigs['API_Authorization']},
+                                           verify=False,
+                                           data=json.dumps(Aux.otherConfigs['API_Body']))
 
-                Aux.otherConfigs['StatusCodeAPI'] = get.status_code
-                if get.status_code == 200:
+                Aux.otherConfigs['StatusCodeAPI'] = api_result.status_code
+                if api_result.status_code == 200:
                     # Filter some fields.
-                    json_str = json.dumps(get.json())
-                    resp = json.loads(json_str)
+                    resp = json.loads(api_result.text)
                     if resp is not []:
                         Aux.otherConfigs['ResponseAPI'] = resp
 
@@ -1343,12 +1325,11 @@ class Main:
         parameters1 = kwargs.get("parameters1")
         find_content = None
         status_code = None
+        schema = None
 
         Aux.otherConfigs['APIStep'] = True
 
         try:
-            response = Aux.otherConfigs['ResponseAPI']
-
             tag = parameters1[:parameters1.find(':')]
             param = parameters1[parameters1.find(':') + 1:]
 
@@ -1357,13 +1338,15 @@ class Main:
                 status_code = "Passed"
             elif tag.upper() == "STATUS CODE" and int(param) != Aux.otherConfigs['StatusCodeAPI']:
                 status_code = "Failed"
+            elif tag.upper() == "SCHEMA":
+                param = param.replace(" ", "")
+                validate(instance=Aux.otherConfigs['ResponseAPI'], schema=param)
+                ### Jogar a validação do SCHEMA na evidência.
 
-            if tag.upper() != "STATUS CODE":
-                find_content = Aux.Main.find_content_json(self, response=response, param=param)
+            else:  # tag.upper() != "STATUS CODE":
+                find_content = Aux.Main.find_content_json(self, tag=tag, param=param)
 
-            if status_code == "Failed" or find_content == "Failed":
-                print(
-                    f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorResponseAPI']['Msg']}{Aux.Textcolor.END} - Expected: {tag} - Result {param}")
+            if status_code == "Failed" or find_content == "Failed" or schema == "Failed":
                 Aux.Main.addLogs(message="General", value=Aux.logs["ErrorResponseAPI"],
                                  value1=f"Expected: {tag} - Result {param}")
 
@@ -1374,3 +1357,11 @@ class Main:
         except Exception as ex:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorResponseAPI']['Msg']}{Aux.Textcolor.END}", ex)
             Aux.Main.addLogs(message="General", value=Aux.logs["ErrorResponseAPI"])
+
+            return "Failed"
+
+        except ValidationError as ex:
+            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorResponseAPI']['Msg']}{Aux.Textcolor.END}", ex)
+            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorResponseAPI"])
+
+            return "Failed"

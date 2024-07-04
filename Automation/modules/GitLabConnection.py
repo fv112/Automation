@@ -415,14 +415,14 @@ class GitLabConnection:
 
             for step in steps_list:
                 count_character = step.count('\"')
-                if count_character > 0:
+                if count_character == 2:
                     parameters1_list.append(Aux.re.findall(r'"([^"]*)"', step)[0])
-                else:
-                    parameters1_list.append(None)
-
-                if count_character > 2:
+                    parameters2_list.append(None)
+                elif count_character == 4:
+                    parameters1_list.append(Aux.re.findall(r'"([^"]*)"', step)[0])
                     parameters2_list.append(Aux.re.findall(r'"([^"]*)"', step)[1])
-                else:
+                elif count_character > 4:  # API content.
+                    parameters1_list.append(step[step.find("\"")+1:-1])
                     parameters2_list.append(None)
 
             Aux.Main.addLogs(message="General", value=Aux.logs['SliceDatas'])
@@ -451,7 +451,7 @@ class GitLabConnection:
 
         try:
 
-            # Get the ID.
+            # Get Token.
             new_url = (url + 'projects/' + str(project_id) + '/uploads')
 
             if status == 'Failed':
@@ -468,8 +468,8 @@ class GitLabConnection:
                                   files=files, verify=False)
 
             if q.status_code == 201:
-                print(f"{Aux.Textcolor.WARNING}{Aux.logs['SaveEvidenceTestCase']['Msg']}{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(message="General", value=Aux.logs['SaveEvidenceTestCase'])
+                print(f"{Aux.Textcolor.WARNING}{Aux.logs['SaveEvidenceTestCaseUpload']['Msg']}{Aux.Textcolor.END}\n")
+                Aux.Main.addLogs(message="General", value=Aux.logs['SaveEvidenceTestCaseUpload'])
 
                 # Filter some fields.
                 json_str = json.dumps(q.json())
@@ -480,7 +480,7 @@ class GitLabConnection:
                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
                 Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'], 
                                  value1='Status code: ' + str(q.status_code) + ' - ' + str(q.text) + 
-                                        ' - SaveEvidenceTestCase - GetID')
+                                        ' - SaveEvidenceTestCase - GetToken')
                 #exit(1)
 
             new_url = (url + 'projects/' + str(project_id) + '/issues/' + str(test_case_id) + '/notes')

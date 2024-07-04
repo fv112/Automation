@@ -64,7 +64,6 @@ class Main:
                 # change_download_config: bool
                 order_steps_list, name_testcase, steps_list, verbs_list, parameters1_list, parameters2_list = \
                     GitLab.GitLabConnection.startSteps(self, project_id=project_id, test_case_id=test_case_id)
-                total_steps = len(order_steps_list)
 
                 # Execution Initial time.
                 initial_time = Aux.datetime.datetime.now()
@@ -240,11 +239,11 @@ class Main:
                 if verb in ('"No"', '"Não"', '"No"'.replace('"', ''), '"Não"'.replace('"', '')):
                     verb = 'NoExecute'
 
+                print(f"=+=" * 30)
                 print(f"{Aux.otherConfigs['Step']['Msg']}: {step}")
                 print(f"PARAM 1: {parameters1}")
                 if parameters2 is not None:
                     print(f"PARAM 2: {parameters2}")
-                print(f"=+=" * 30)
 
                 # Execute the test step.
                 Aux.otherConfigs['APIStep'] = False
@@ -252,7 +251,7 @@ class Main:
                     status_step = eval(Aux.verbs[verb]['Function'])(self)
                 else:
                     status_step = eval(Aux.verbs[verb]['Function'])(self, verb=verb, parameters1=parameters1,
-                                                                    parameters2=parameters2, step=step)
+                                                                    parameters2=parameters2, step=step, api_action=verb)
 
                 # Take the first step failed.
                 if status_step == "Failed" and step_failed is None:

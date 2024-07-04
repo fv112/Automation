@@ -249,7 +249,6 @@ class Main:
                     if step_failed == step_order:
                         # Add the error message in the document.
                         paragraf = document.add_paragraph(otherConfigs["StepNotFound"]['Msg'])
-                        #run_paragraf = paragraf.add_run()
                         run_paragraf = paragraf.runs[0]
                         run_paragraf.font.color.rgb = RGBColor(*(255, 0, 0))
 
@@ -271,15 +270,15 @@ class Main:
                             run_paragraf.add_picture(image_path, width=Inches(5))
                     else:
                         if "AUTHORIZATION" in step.upper():
-                            api_evidence_step = otherConfigs['GetAPI_Authorization']
+                            api_evidence_step = otherConfigs['API_Authorization']
                         elif "HEADERS" in step.upper():
-                            api_evidence_step = otherConfigs['GetAPI_Headers']
+                            api_evidence_step = otherConfigs['API_Headers']
                         elif "BODY" in step.upper():
-                            api_evidence_step = otherConfigs['GetAPI_Body']
+                            api_evidence_step = otherConfigs['API_Body']
                         elif "ENDPOINT" in step.upper():
-                            api_evidence_step = otherConfigs['GetAPI_Endpoint']
+                            api_evidence_step = otherConfigs['API_Endpoint']
                         elif "PARAMS" in step.upper():
-                            api_evidence_step = otherConfigs['GetAPI_Params']
+                            api_evidence_step = otherConfigs['API_Params']
                         elif "STATUS CODE" in step.upper():
                             api_evidence_step = str(otherConfigs['StatusCodeAPI'])
                         else:  # Response.
@@ -722,7 +721,7 @@ class Main:
             Main.addLogs(message="General", value=logs["ErrorPercentage"], value1=str(ex))
 
     # Verify if the file exist.
-    def verifyFile(**kwargs):
+    def verifyFile(self, **kwargs):
         try:
 
             # kwargs parameters.
@@ -830,36 +829,41 @@ class Main:
 
         return local_version, date_version, release_infos
 
-    # Find content inside JSON content.
+    # Validate content inside JSON content.
     def find_content_json(self, **kwargs):
 
         # kwargs variable.
-        response = kwargs.get("response")
         param = kwargs.get("param")
+        tag = kwargs.get("tag")
 
-        find_content_validation = None
+        validation = False
 
         try:
-            if isinstance(response, list):
-                for item in response:
-                    if Main.find_content_json(self, response=item, param=param):
-                        find_content_validation = "Passed"
-            else:
-                if param in str(response):
-                    find_content_validation = "Passed"
-                else:
-                    find_content_validation = "Failed"
+            response = otherConfigs['ResponseAPI']
 
-            return find_content_validation
+            # Tag's validation.
+            for dict_id, _ in enumerate(response):
+                if str(response[dict_id][tag]) == str(param):
+                    validation = (validation or True)
+                else:
+                    validation = (validation or False)
+
+                if validation:
+                    return "Passed"
+                else:
+                    print(f"{Textcolor.FAIL}{logs['ErrorValidationAPI']['Msg']}{Textcolor.END}")
+                    Main.addLogs(message="General", value=logs["ErrorValidationAPI"])
+                    return "Failed"
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorFindContentAPI']['Msg']}{Textcolor.END}", ex)
             Main.addLogs(message="General", value=logs["ErrorFindContentAPI"], value1=str(ex))
 
-            return find_content_validation
+            return "Failed"
 
     def convert_seconds_to_string(self, **kwargs):
 
+        # kwargs variable.
         time_spent = kwargs.get("time_spent")
 
         total_minutes = time_spent / 60.0
