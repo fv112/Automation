@@ -269,6 +269,7 @@ class Main:
                         else:
                             run_paragraf.add_picture(image_path, width=Inches(5))
                     else:
+                        api_evidence_step = None
                         if "AUTHORIZATION" in step.upper():
                             api_evidence_step = otherConfigs['API_Authorization']
                         elif "HEADERS" in step.upper():
@@ -281,6 +282,8 @@ class Main:
                             api_evidence_step = otherConfigs['API_Params']
                         elif "STATUS CODE" in step.upper():
                             api_evidence_step = str(otherConfigs['StatusCodeAPI'])
+                        elif "SCHEMA" in step.upper():
+                            api_evidence_step = otherConfigs['JsonValidate']
                         else:  # Response.
                             api_evidence_step = json.dumps(otherConfigs['ResponseAPI'], indent=2)
 

@@ -449,6 +449,8 @@ class GitLabConnection:
         name_testcase = kwargs.get("name_testcase")
         status = kwargs.get("status")
 
+        file_url = None
+
         try:
 
             # Get Token.
@@ -510,58 +512,53 @@ class GitLabConnection:
             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorSaveEvidenceTestCase'], value1=str(e))
             #exit(1)
 
-    def UpdateStatusAutomated(self, **kwargs):
-        """
-        Function: Update the status the Automated Test Status.
-
-        MS API Docs - Link:
-        https://docs.microsoft.com/en-us/rest/api/azure/devops/wit/work-items/update?view=azure-devops-rest-6.1
-        """
-        try:
-            # kwargs arguments.
-            project = kwargs.get('project')
-            test_case_id = kwargs.get('test_case_id')
-            automation_status = kwargs.get('automation_status')
-            workitem_status = kwargs.get('workitem_status')
-
-            version = '6.1-preview.3'
-
-            url = 'https://' + instance + project + '/_apis/wit/workitems/' + str(test_case_id) + '?api-version=' \
-                       + version
-
-            headers = {'content-type': 'application/json-patch+json'}
-
-            file_datas = [
-                {
-                    "op": "add",
-                    "path": "/fields/System.History",
-                    "value": "Update the automation status and Test Case status"
-                },
-                {
-                    "op": "add",
-                    "path": "/fields/Microsoft.VSTS.TCM.AutomationStatus",
-                    "value": automation_status
-                },
-                {
-                    "op": "add",
-                    "path": "/fields/System.State",
-                    "value": workitem_status
-                }
-            ]
-
-            # r = requests.patch(url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, json=file_datas, headers=headers,
-            #                    verify=False)
-            if r.status_code == 200:
-                print(f"{Aux.Textcolor.BLUE}{Aux.logs['UpdateStatusAutomated']['Msg']}{Aux.Textcolor.END}")
-                Aux.Main.addLogs(message="General", value=Aux.logs['UpdateStatusAutomated'])
-            else:
-                raise Exception
-
-        except Exception as e:
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorUpdateStatusAutomated']['Msg']}{Aux.Textcolor.END}", e)
-            Aux.Main.addLogs(message="General", value=Aux.logs['ErrorUpdateStatusAutomated'], 
-                             value1='Status code: ' + str(r.status_code) + " - UpdateStatusAutomated")
-            #exit(1)
+    # def UpdateStatusAutomated(self, **kwargs):
+    #
+    #     try:
+    #         # kwargs arguments.
+    #         project = kwargs.get('project')
+    #         test_case_id = kwargs.get('test_case_id')
+    #         automation_status = kwargs.get('automation_status')
+    #         workitem_status = kwargs.get('workitem_status')
+    #
+    #         version = '6.1-preview.3'
+    #
+    #         url = 'https://' + instance + project + '/_apis/wit/workitems/' + str(test_case_id) + '?api-version=' \
+    #                    + version
+    #
+    #         headers = {'content-type': 'application/json-patch+json'}
+    #
+    #         file_datas = [
+    #             {
+    #                 "op": "add",
+    #                 "path": "/fields/System.History",
+    #                 "value": "Update the automation status and Test Case status"
+    #             },
+    #             {
+    #                 "op": "add",
+    #                 "path": "/fields/Microsoft.VSTS.TCM.AutomationStatus",
+    #                 "value": automation_status
+    #             },
+    #             {
+    #                 "op": "add",
+    #                 "path": "/fields/System.State",
+    #                 "value": workitem_status
+    #             }
+    #         ]
+    #
+    #         # r = requests.patch(url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, json=file_datas, headers=headers,
+    #         #                    verify=False)
+    #         if r.status_code == 200:
+    #             print(f"{Aux.Textcolor.BLUE}{Aux.logs['UpdateStatusAutomated']['Msg']}{Aux.Textcolor.END}")
+    #             Aux.Main.addLogs(message="General", value=Aux.logs['UpdateStatusAutomated'])
+    #         else:
+    #             raise Exception
+    #
+    #     except Exception as e:
+    #         print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorUpdateStatusAutomated']['Msg']}{Aux.Textcolor.END}", e)
+    #         Aux.Main.addLogs(message="General", value=Aux.logs['ErrorUpdateStatusAutomated'],
+    #                          value1='Status code: ' + str(r.status_code) + " - UpdateStatusAutomated")
+    #         #exit(1)
 
     # Download de attachments when there are more than 100 in a WIT and upload a .zip file.
     # def _DownloadAttachment(self, **kwargs):

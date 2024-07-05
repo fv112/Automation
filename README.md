@@ -1,13 +1,18 @@
 Automation QA - Release notes
 ----
+**Version 1.7.0**
+
+<em>05/07/2024</em>
+- <font color='red'>__[Novo]__</font> - Apresentação da falha de validação do schema no log.
+#
+
 **Version 1.6.0**
 
-<em>03/07/2024</em>
-- <font color='red'>__[Novo]__</font> - Correção da duplicação da mensagem após gerar o arquivo de evidência;
-- <font color='red'>__[Novo]__</font> - Correção da validação do retorno da API;
-- <font color='red'>__[Novo]__</font> - Atualização de bibliotecas;
-- <font color='red'>__[Novo]__</font> - Início da validação da estrutura da API (schema).
-#
+<em>04/07/2024</em>
+- Correção da duplicação da mensagem após gerar o arquivo de evidência;
+- Correção da validação do retorno da API;
+- Atualização de bibliotecas;
+- Início da validação da estrutura da API (schema).
 
 **Version 1.5.0**
 

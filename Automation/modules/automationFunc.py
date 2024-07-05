@@ -1341,27 +1341,31 @@ class Main:
             elif tag.upper() == "SCHEMA":
                 param = param.replace(" ", "")
                 validate(instance=Aux.otherConfigs['ResponseAPI'], schema=param)
-                ### Jogar a validação do SCHEMA na evidência.
-
             else:  # tag.upper() != "STATUS CODE":
                 find_content = Aux.Main.find_content_json(self, tag=tag, param=param)
+                Aux.otherConfigs['JsonValidate'] = Aux.otherConfigs['JsonValidateSuccess']['Msg']
 
-            if status_code == "Failed" or find_content == "Failed" or schema == "Failed":
+            if status_code == "Passed" or find_content == "Passed" or schema == "Passed":
+                return "Passed"
+            else:
                 Aux.Main.addLogs(message="General", value=Aux.logs["ErrorResponseAPI"],
                                  value1=f"Expected: {tag} - Result {param}")
-
                 return "Failed"
-            else:
-                return "Passed"
 
         except Exception as ex:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorResponseAPI']['Msg']}{Aux.Textcolor.END}", ex)
             Aux.Main.addLogs(message="General", value=Aux.logs["ErrorResponseAPI"])
 
-            return "Failed"
+            if ex.schema['title'] == 'Core vocabulary meta-schema':
+                print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorResponseAPI']['Msg']}{Aux.Textcolor.END}", ex)
 
-        except ValidationError as ex:
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorResponseAPI']['Msg']}{Aux.Textcolor.END}", ex)
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorResponseAPI"])
+                Aux.Main.addLogs(message="General", value=Aux.logs["ErrorResponseAPI"],
+                                 value1=f"Validation error: {ex.message}"
+                                        f"Path error: {' -> '.join(map(str, ex.path))}"
+                                        f"Schema error: {' -> '.join(map(str, ex.schema_path))}"
+                                        f"Instance error: {ex.instance}"
+                                        f"Schema with error: {ex.schema}")
+
+                Aux.otherConfigs['JsonValidate'] = Aux.otherConfigs['ErrorJsonValidate']['Msg']
 
             return "Failed"

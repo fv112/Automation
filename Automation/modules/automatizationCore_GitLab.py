@@ -41,7 +41,7 @@ class Main:
         duration = 0
         status = None
         save_evidence = True
-        status_ct_automation = None
+        # status_ct_automation = None
         testcase_status = None
         status_list = []
 
@@ -102,9 +102,9 @@ class Main:
 
                 elif status == "Aborted" and save_evidence:
                     Func.Main.verifyBrowser(self)
-                    status_ct_automation = 'Failed'
-                else:
-                    testcase_status = 'Closed'
+                    # status_ct_automation = 'Failed'
+                # else:
+                    # testcase_status = 'Closed'
 
                 # Set the test case duration.
                 duration = Aux.Main.convert_seconds_to_string(self,
