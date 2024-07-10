@@ -1,10 +1,16 @@
 Automation QA - Release notes
 ----
+**Version 1.8.0**
+
+<em>10/07/2024</em>
+- <font color='red'>__[Novo]__</font> - Correção do erro no body da validação do POST;
+- <font color='red'>__[Novo]__</font> - Correção na validação do Response.
+#
+
 **Version 1.7.0**
 
 <em>05/07/2024</em>
-- <font color='red'>__[Novo]__</font> - Apresentação da falha de validação do schema no log.
-#
+- Apresentação da falha de validação do schema no log.
 
 **Version 1.6.0**
 
@@ -23,7 +29,6 @@ Automation QA - Release notes
 - Alteração na ordem das perguntas do menu inicial;
 - Atualização do Token de upload do GitLab.
 
-
 **Version 1.4.0**
 
 <em>01/07/2024</em>
@@ -32,7 +37,6 @@ Automation QA - Release notes
 - Correção da não evidência do browser para teste de API;
 - Correção da ação NO / NÃO para não executar o passo;
 - Correção da nomenclatura da evidência, quando aberta pela no navegador.
-
 
 **Version 1.3.1**
 

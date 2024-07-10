@@ -274,8 +274,10 @@ class Main:
                             api_evidence_step = otherConfigs['API_Authorization']
                         elif "HEADERS" in step.upper():
                             api_evidence_step = otherConfigs['API_Headers']
-                        elif "BODY" in step.upper():
+                        elif "BODY" in step.upper() and "RESPONSE" not in verb.upper():
                             api_evidence_step = otherConfigs['API_Body']
+                        elif "BODY" in step.upper() and "RESPONSE" in verb.upper():
+                            api_evidence_step = otherConfigs['ResponseAPI']['message']
                         elif "ENDPOINT" in step.upper():
                             api_evidence_step = otherConfigs['API_Endpoint']
                         elif "PARAMS" in step.upper():
@@ -844,19 +846,33 @@ class Main:
         try:
             response = otherConfigs['ResponseAPI']
 
-            # Tag's validation.
-            for dict_id, _ in enumerate(response):
-                if str(response[dict_id][tag]) == str(param):
-                    validation = (validation or True)
-                else:
-                    validation = (validation or False)
-
-                if validation:
+            # Simple message.
+            if 'message' in response:
+                param1 = regex.search(r'(?<=\:\")(.*?)(?=\"})', param)
+                if param1.group(0) == response['message']:
+                    otherConfigs['JsonValidate'] = otherConfigs['JsonValidateSuccess']['Msg']
                     return "Passed"
                 else:
                     print(f"{Textcolor.FAIL}{logs['ErrorValidationAPI']['Msg']}{Textcolor.END}")
                     Main.addLogs(message="General", value=logs["ErrorValidationAPI"])
+                    otherConfigs['JsonValidate'] = otherConfigs['JsonValidateFailed']['Msg']
                     return "Failed"
+            else:
+                # Tag's validation.
+                for dict_id, _ in enumerate(response):
+                    if str(response[dict_id][tag]) == str(param):
+                        validation = (validation or True)
+                    else:
+                        validation = (validation or False)
+
+                    if validation:
+                        otherConfigs['JsonValidate'] = otherConfigs['JsonValidateSuccess']['Msg']
+                        return "Passed"
+                    else:
+                        print(f"{Textcolor.FAIL}{logs['ErrorValidationAPI']['Msg']}{Textcolor.END}")
+                        Main.addLogs(message="General", value=logs["ErrorValidationAPI"])
+                        otherConfigs['JsonValidate'] = otherConfigs['JsonValidateFailed']['Msg']
+                        return "Failed"
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorFindContentAPI']['Msg']}{Textcolor.END}", ex)

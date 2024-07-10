@@ -1,7 +1,7 @@
 import time
 import requests
 import json
-from jsonschema import validate, ValidationError
+from jsonschema import validate
 
 from selenium.webdriver.support import expected_conditions as ec
 from selenium import webdriver
@@ -1271,7 +1271,6 @@ class Main:
         # Variables
         submit = False
         Aux.otherConfigs['APIStep'] = True
-        api_result = None
 
         try:
             if parameters1.upper() != 'SUBMIT':
@@ -1283,8 +1282,8 @@ class Main:
                 elif tag.upper() == 'HEADERS':
                     Aux.otherConfigs['API_Headers'] = parameters1[parameters1.find(':') + 1:].strip()
                 elif tag.upper() == 'BODY':
-                    Aux.otherConfigs['API_Body'] = parameters1[parameters1.find(':') + 1:parameters1.rfind('\"')].strip()
-                    ### ERRO ESTA RETORNANDO 401.
+                    Aux.otherConfigs['API_Body'] = (parameters1[parameters1.find(':') + 1:parameters1.rfind('\"')]
+                                                    .strip())
                 elif tag.upper() == 'PARAMS':
                     Aux.otherConfigs['API_Params'] = parameters1[parameters1.find(':') + 1:].strip()
 
@@ -1295,18 +1294,32 @@ class Main:
             else:
                 submit = True
 
+            api_result = None
+
+            if Aux.otherConfigs['API_Authorization'] != '': ### Quando for Bearer colocar o que está abaixo.
+                headers = {'Authorization': 'Bearer ' + Aux.otherConfigs["API_Headers"],
+                           'Content-Type': 'application/json'
+                           }
+
+            if 'Basic' in Aux.otherConfigs['API_Headers']:
+                headers = {
+                    'Basic': Aux.otherConfigs['API_Headers'][Aux.otherConfigs['API_Headers'].find(':') + 1:],
+                    'Content-Type': 'application/json'
+                }
+            elif 'Bearer' in Aux.otherConfigs['API_Headers']:
+                headers = {'Authorization': 'Bearer ' + Aux.otherConfigs["API_Headers"],
+                           'Content-Type': 'application/json'}
+
             if submit and api_action.upper() == "GET":
-                api_result = requests.get(Aux.otherConfigs['API_Endpoint'],
+                api_result = requests.get("https://api-after-sales-hml.mbcv-online.com/v1/marketing/part-orders/upload-file", #Aux.otherConfigs['API_Endpoint'],
                                           params=Aux.otherConfigs['API_Params'],
-                                          headers={'Authorization': Aux.otherConfigs['API_Authorization']},
-                                          verify=False,
+                                          headers=headers,
+                                          # verify=False,
                                           data=json.dumps(Aux.otherConfigs['API_Body']))
             elif submit and api_action.upper() == "POST":
                 api_result = requests.post(Aux.otherConfigs['API_Endpoint'],
-                                           params=Aux.otherConfigs['API_Params'],
-                                           headers={'Authorization': Aux.otherConfigs['API_Authorization']},
-                                           verify=False,
-                                           data=json.dumps(Aux.otherConfigs['API_Body']))
+                                           headers=headers,
+                                           data=Aux.otherConfigs['API_Body'])
 
                 Aux.otherConfigs['StatusCodeAPI'] = api_result.status_code
                 if api_result.status_code == 200:
@@ -1316,8 +1329,8 @@ class Main:
                         Aux.otherConfigs['ResponseAPI'] = resp
 
         except Exception as ex:
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetAPI']['Msg']}{Aux.Textcolor.END}", ex)
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorGetAPI"])
+            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequestAPI']['Msg']}{Aux.Textcolor.END}", ex)
+            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorRequestAPI"])
 
     def responseAPI(self, **kwargs):
 
@@ -1340,10 +1353,10 @@ class Main:
                 status_code = "Failed"
             elif tag.upper() == "SCHEMA":
                 param = param.replace(" ", "")
+                ### O Aux.otherConfigs['ResponseAPI'] não está trazendo da API corrente.
                 validate(instance=Aux.otherConfigs['ResponseAPI'], schema=param)
             else:  # tag.upper() != "STATUS CODE":
                 find_content = Aux.Main.find_content_json(self, tag=tag, param=param)
-                Aux.otherConfigs['JsonValidate'] = Aux.otherConfigs['JsonValidateSuccess']['Msg']
 
             if status_code == "Passed" or find_content == "Passed" or schema == "Passed":
                 return "Passed"
