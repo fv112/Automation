@@ -13,6 +13,8 @@ import win32com.client as win
 import socket
 import re as regex
 import yaml
+from jsonschema import validate, ValidationError
+from faker import Faker
 import hashlib
 import shutil
 import subprocess
@@ -890,3 +892,4 @@ class Main:
         remaining_seconds = total_minutes - (minutes * 60)
 
         return f"{minutes:02}:{remaining_seconds:06.3f}"
+

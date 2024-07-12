@@ -1,11 +1,22 @@
 Automation QA - Release notes
 ----
+**Version 1.10.0**
+
+<em>12/07/2024</em>
+- <font color='red'>__[Novo]__</font> - Automação para validação do tipo de dado do Schema da API.
+#
+
+**Version 1.9.0**
+
+<em>11/07/2024</em>
+- <font color='red'>__[Novo]__</font> - Atualização da sintaxe dos testes de API na documentação.
+
+
 **Version 1.8.0**
 
 <em>10/07/2024</em>
 - <font color='red'>__[Novo]__</font> - Correção do erro no body da validação do POST;
 - <font color='red'>__[Novo]__</font> - Correção na validação do Response.
-#
 
 **Version 1.7.0**
 

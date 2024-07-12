@@ -1,7 +1,7 @@
 import time
 import requests
 import json
-from jsonschema import validate
+# from jsonschema import validate
 
 from selenium.webdriver.support import expected_conditions as ec
 from selenium import webdriver
@@ -1271,6 +1271,8 @@ class Main:
         # Variables
         submit = False
         Aux.otherConfigs['APIStep'] = True
+        headers = None
+        api_result = None
 
         try:
             if parameters1.upper() != 'SUBMIT':
@@ -1287,6 +1289,12 @@ class Main:
                 elif tag.upper() == 'PARAMS':
                     Aux.otherConfigs['API_Params'] = parameters1[parameters1.find(':') + 1:].strip()
 
+                # elif tag.upper() == 'SCHEMA':
+                #     with open('C:\\Users\\fv112\\swagger.json') as f:
+                #         schema = json.load(f)
+
+                    # validate(instance=Aux.otherConfigs['API_Body'], schema=schema)
+
                 if Aux.otherConfigs['API_Endpoint'] is None:
                     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorAPIMissingInfo']['Msg']}{Aux.Textcolor.END}")
                     Aux.Main.addLogs(message="General", value=Aux.logs["ErrorAPIMissingInfo"])
@@ -1294,9 +1302,7 @@ class Main:
             else:
                 submit = True
 
-            api_result = None
-
-            if Aux.otherConfigs['API_Authorization'] != '': ### Quando for Bearer colocar o que está abaixo.
+            if Aux.otherConfigs['API_Authorization'] != '':
                 headers = {'Authorization': 'Bearer ' + Aux.otherConfigs["API_Headers"],
                            'Content-Type': 'application/json'
                            }
@@ -1311,10 +1317,9 @@ class Main:
                            'Content-Type': 'application/json'}
 
             if submit and api_action.upper() == "GET":
-                api_result = requests.get("https://api-after-sales-hml.mbcv-online.com/v1/marketing/part-orders/upload-file", #Aux.otherConfigs['API_Endpoint'],
+                api_result = requests.get(Aux.otherConfigs['API_Endpoint'],
                                           params=Aux.otherConfigs['API_Params'],
                                           headers=headers,
-                                          # verify=False,
                                           data=json.dumps(Aux.otherConfigs['API_Body']))
             elif submit and api_action.upper() == "POST":
                 api_result = requests.post(Aux.otherConfigs['API_Endpoint'],
@@ -1331,6 +1336,20 @@ class Main:
         except Exception as ex:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequestAPI']['Msg']}{Aux.Textcolor.END}", ex)
             Aux.Main.addLogs(message="General", value=Aux.logs["ErrorRequestAPI"])
+
+            # if ex.schema['title'] == 'Core vocabulary meta-schema':
+            #     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorResponseAPI']['Msg']}{Aux.Textcolor.END}", ex)
+            #
+            #     Aux.Main.addLogs(message="General", value=Aux.logs["ErrorResponseAPI"],
+            #                      value1=f"Validation error: {ex.message}"
+            #                             f"Path error: {' -> '.join(map(str, ex.path))}"
+            #                             f"Schema error: {' -> '.join(map(str, ex.schema_path))}"
+            #                             f"Instance error: {ex.instance}"
+            #                             f"Schema with error: {ex.schema}")
+            #
+            #     Aux.otherConfigs['JsonValidate'] = Aux.otherConfigs['ErrorJsonValidate']['Msg']
+
+            return "Failed"
 
     def responseAPI(self, **kwargs):
 
@@ -1351,10 +1370,9 @@ class Main:
                 status_code = "Passed"
             elif tag.upper() == "STATUS CODE" and int(param) != Aux.otherConfigs['StatusCodeAPI']:
                 status_code = "Failed"
-            elif tag.upper() == "SCHEMA":
-                param = param.replace(" ", "")
-                ### O Aux.otherConfigs['ResponseAPI'] não está trazendo da API corrente.
-                validate(instance=Aux.otherConfigs['ResponseAPI'], schema=param)
+            # elif tag.upper() == "SCHEMA":
+            #     param = param.replace(" ", "")
+            #     validate(instance=Aux.otherConfigs['ResponseAPI'], schema=param)
             else:  # tag.upper() != "STATUS CODE":
                 find_content = Aux.Main.find_content_json(self, tag=tag, param=param)
 
@@ -1369,16 +1387,16 @@ class Main:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorResponseAPI']['Msg']}{Aux.Textcolor.END}", ex)
             Aux.Main.addLogs(message="General", value=Aux.logs["ErrorResponseAPI"])
 
-            if ex.schema['title'] == 'Core vocabulary meta-schema':
-                print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorResponseAPI']['Msg']}{Aux.Textcolor.END}", ex)
-
-                Aux.Main.addLogs(message="General", value=Aux.logs["ErrorResponseAPI"],
-                                 value1=f"Validation error: {ex.message}"
-                                        f"Path error: {' -> '.join(map(str, ex.path))}"
-                                        f"Schema error: {' -> '.join(map(str, ex.schema_path))}"
-                                        f"Instance error: {ex.instance}"
-                                        f"Schema with error: {ex.schema}")
-
-                Aux.otherConfigs['JsonValidate'] = Aux.otherConfigs['ErrorJsonValidate']['Msg']
+            # if ex.schema['title'] == 'Core vocabulary meta-schema':
+            #     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorResponseAPI']['Msg']}{Aux.Textcolor.END}", ex)
+            #
+            #     Aux.Main.addLogs(message="General", value=Aux.logs["ErrorResponseAPI"],
+            #                      value1=f"Validation error: {ex.message}"
+            #                             f"Path error: {' -> '.join(map(str, ex.path))}"
+            #                             f"Schema error: {' -> '.join(map(str, ex.schema_path))}"
+            #                             f"Instance error: {ex.instance}"
+            #                             f"Schema with error: {ex.schema}")
+            #
+            #     Aux.otherConfigs['JsonValidate'] = Aux.otherConfigs['ErrorJsonValidate']['Msg']
 
             return "Failed"

@@ -81,9 +81,9 @@ verbs:
         Presionar: {Language: Spanish, Function: Func.Main.rightClick, Phrase: "Click derecho del mouse en el componente.", Syntax: "Presionar el \"<Componente>\""},
         Press: {Language: English, Function: Func.Main.rightClick, Phrase: "Press the right button of the mouse on the component.", Syntax: "Press the right button of the mouse on the \"<Component>\""},
 
-        Response: {Language: Portuguese, Function: Func.Main.responseAPI, Phrase: "Validar o retorno da API.", Syntax: "Response <tag:conteúdo da tag>"},
-        Response_: {Language: Spanish, Function: Func.Main.responseAPI, Phrase: "Validar o retorno da API.", Syntax: "Response <tag:contenido de la tag>"},
-        Response__: {Language: English, Function: Func.Main.responseAPI, Phrase: "Validar o retorno da API.", Syntax: "Response <tag:tag content>"},
+        Response: {Language: Portuguese, Function: Func.Main.responseAPI, Phrase: "Validar o retorno da API ou o schema da API.", Syntax: "Response <tag:conteúdo da tag> \n Response <schema:Toda a estrutura da schema da API>"},
+        Response_: {Language: Spanish, Function: Func.Main.responseAPI, Phrase: "Validar la devolución de API o el esquema de API.", Syntax: "Response <tag:contenido de la tag> \n Response <schema:Toda la estructura del esquema de la API>"},
+        Response__: {Language: English, Function: Func.Main.responseAPI, Phrase: "Validate de API return or the API schema.", Syntax: "Response <tag:tag content> \n Response <schema:All the schema structure>"},
 
         Retornar: {Language: Portuguese, Function: Func.Main.returnDefault, Phrase: "Retorna para a janela principal.", Syntax: "Retornar"},
         Retornar_: {Language: Spanish, Function: Func.Main.returnDefault, Phrase: "Regrese a la pantalla principal del navegador.", Syntax: "Retornar"},
@@ -358,7 +358,7 @@ directories:
         EvidenceFolderManual: C:\QA-Automation-Files\Repository\Automation\Evidences\Manual,
         HashFolder: C:\QA-Automation-Files\Repository\Automation\Hash,
         LogFolder: C:\QA-Automation-Files\Repository\Automation\Logs,
-        TokenExpiredUrl: https://kantarware.visualstudio.com/_usersSettings/tokens,
+        SwaggerFolder: C:\QA-Automation-Files\Repository\Automation\Swagger,
         Temp: C:\QA-Automation-Files\Repository\Automation\Temp\,
         UnavailablePrint: Unavailable.jpg,
         UpdateFolder: C:\QA-Automation-Files\Repository\NewVersion
@@ -430,7 +430,6 @@ otherConfigs:
         NoExecutions: {Type: Info, Msg: Não há execuções para este teste., Where: azureConnection},
         NoTranslating: 'The messages were not changed. A new translation was not necessary.',
         OptionInvalid: {Type: Info, Msg: não é uma opção válida., Where: azureConnection},
-        ##Parameters: {Type: Info, Msg: Erro ao extrair parâmetros do caso de teste!, Where: AutomationCore_Azure},
         Percentage: {Type: Info, Msg: Porcentagem da automação executada., Where: startAutomation},
         ProjectList: {Type: Info, Msg: "Lista de projetos:", Where: azureConnection},
         RequestOK: {Type: Info, Msg: Request realizada com sucesso!, Where: azureConnection},
