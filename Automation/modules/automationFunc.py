@@ -1288,13 +1288,8 @@ class Main:
                                                     .strip())
                 elif tag.upper() == 'PARAMS':
                     Aux.otherConfigs['API_Params'] = parameters1[parameters1.find(':') + 1:].strip()
-
-                # elif tag.upper() == 'SCHEMA':
-                #     with open('C:\\Users\\fv112\\swagger.json') as f:
-                #         schema = json.load(f)
-
-                    # validate(instance=Aux.otherConfigs['API_Body'], schema=schema)
-
+                elif tag.upper() == "SCHEMA":
+                    Aux.Api_schema(swagger_link=parameters1[parameters1.find(':') + 1:].strip())
                 if Aux.otherConfigs['API_Endpoint'] is None:
                     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorAPIMissingInfo']['Msg']}{Aux.Textcolor.END}")
                     Aux.Main.addLogs(message="General", value=Aux.logs["ErrorAPIMissingInfo"])
@@ -1337,18 +1332,6 @@ class Main:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequestAPI']['Msg']}{Aux.Textcolor.END}", ex)
             Aux.Main.addLogs(message="General", value=Aux.logs["ErrorRequestAPI"])
 
-            # if ex.schema['title'] == 'Core vocabulary meta-schema':
-            #     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorResponseAPI']['Msg']}{Aux.Textcolor.END}", ex)
-            #
-            #     Aux.Main.addLogs(message="General", value=Aux.logs["ErrorResponseAPI"],
-            #                      value1=f"Validation error: {ex.message}"
-            #                             f"Path error: {' -> '.join(map(str, ex.path))}"
-            #                             f"Schema error: {' -> '.join(map(str, ex.schema_path))}"
-            #                             f"Instance error: {ex.instance}"
-            #                             f"Schema with error: {ex.schema}")
-            #
-            #     Aux.otherConfigs['JsonValidate'] = Aux.otherConfigs['ErrorJsonValidate']['Msg']
-
             return "Failed"
 
     def responseAPI(self, **kwargs):
@@ -1370,9 +1353,6 @@ class Main:
                 status_code = "Passed"
             elif tag.upper() == "STATUS CODE" and int(param) != Aux.otherConfigs['StatusCodeAPI']:
                 status_code = "Failed"
-            # elif tag.upper() == "SCHEMA":
-            #     param = param.replace(" ", "")
-            #     validate(instance=Aux.otherConfigs['ResponseAPI'], schema=param)
             else:  # tag.upper() != "STATUS CODE":
                 find_content = Aux.Main.find_content_json(self, tag=tag, param=param)
 
@@ -1386,17 +1366,5 @@ class Main:
         except Exception as ex:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorResponseAPI']['Msg']}{Aux.Textcolor.END}", ex)
             Aux.Main.addLogs(message="General", value=Aux.logs["ErrorResponseAPI"])
-
-            # if ex.schema['title'] == 'Core vocabulary meta-schema':
-            #     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorResponseAPI']['Msg']}{Aux.Textcolor.END}", ex)
-            #
-            #     Aux.Main.addLogs(message="General", value=Aux.logs["ErrorResponseAPI"],
-            #                      value1=f"Validation error: {ex.message}"
-            #                             f"Path error: {' -> '.join(map(str, ex.path))}"
-            #                             f"Schema error: {' -> '.join(map(str, ex.schema_path))}"
-            #                             f"Instance error: {ex.instance}"
-            #                             f"Schema with error: {ex.schema}")
-            #
-            #     Aux.otherConfigs['JsonValidate'] = Aux.otherConfigs['ErrorJsonValidate']['Msg']
 
             return "Failed"

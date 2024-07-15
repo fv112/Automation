@@ -13,13 +13,14 @@ import win32com.client as win
 import socket
 import re as regex
 import yaml
-from jsonschema import validate, ValidationError
-from faker import Faker
 import hashlib
 import shutil
 import subprocess
 import pyautogui                                        # Press keyboard outside the browser.
+import random
 import pyscreenshot as pyscreenshot
+from jsonschema import validate, ValidationError
+from faker import Faker
 from deep_translator import GoogleTranslator
 from docx import Document
 from docx.shared import Inches                          # Used to insert image in .docx file.
@@ -27,9 +28,9 @@ from docx.shared import RGBColor
 from PIL import ImageGrab
 from collections import Counter                         # Used in automatizationCore_GitLab.
 
+
 verbs = None
 logs = None
-
 
 # Colored the text.
 class Textcolor:
@@ -892,4 +893,200 @@ class Main:
         remaining_seconds = total_minutes - (minutes * 60)
 
         return f"{minutes:02}:{remaining_seconds:06.3f}"
+
+# SCEHEMA VALIDATION
+########################################################################################################################
+# ---- Extract only the definition content from the JSON Swagger file --------------------------------------------------
+########################################################################################################################
+
+class Api_schema:
+
+    def __init__(self, **kwargs):
+        self.swagger_link = kwargs.get("swagger_link")
+        self.swagger_file = 'swagger.json'
+
+        # --- Preparing the file, directory and Swagger file download.
+
+        Main.createDirectory(path_folder=directories['SwaggerFolder'])
+
+        # Download the swagger file.
+        subprocess.run(
+            ['curl', '-o', os.path.join(directories['SwaggerFolder'], self.swagger_file), self.swagger_link])
+
+        swagger_data = Api_schema.load_swagger(self, os.path.join(directories['SwaggerFolder'], self.swagger_file))
+
+        Api_schema.extract_jsonschema_relevant_data(self, swagger_data)
+
+        print(f"Dados relevantes para JSON Schema extraídos e salvos como {self.swagger_file}")
+
+        with open(os.path.join(directories['SwaggerFolder'], self.swagger_file), 'r', encoding='utf-8') as file:
+            # with open(os.path.join('C:\\QA-Automation-Files\\Repository\\Automation\\Swagger', swagger_file), 'r', encoding='utf-8') as file:### Atualizar.
+            schema = json.load(file)
+
+        for key, value in schema.items():
+            if schema[key]['additionalProperties'] is False:
+                schema[key]['additionalProperties'] = True
+
+        with open(os.path.join(directories['SwaggerFolder'], self.swagger_file), 'w', encoding='utf-8') as file:
+            # with open(os.path.join('C:\\QA-Automation-Files\\Repository\\Automation\\Swagger', swagger_file), 'w', encoding='utf-8') as file: ### Atualizar
+            json.dump(schema, file, ensure_ascii=False, indent=2)
+
+        print(f"The 'additional properties was changed from 'False' to 'True'")
+
+        # ------------------------------------- Generate the fake dataa to the API fields ----------------------------------
+        # Gerar e imprimir dados fictícios para cada definição no esquema
+        for definition_name, definition_schema in schema.items():
+            data_list = Api_schema.generate_data(self, definition_schema, schema)
+            print(f"Dados gerados para {definition_name}:")
+            for data in data_list:
+                print(json.dumps(data, indent=2))
+            print("-" * 80)
+
+        # ------------------------------------- Teste de API fields for each schema tag ----------------------------------------
+
+        for key, values in data.items():
+            result = []
+            for value in values:
+                print(f"Key: {key}, Value: {value} \n")
+                json_data = {key: value}
+                result = Api_schema.run_validation(json_data)
+
+            print("-" * 90)
+
+        if os.path.isfile(directories['SwaggerFolder']):
+            # if os.path.isfile(os.path.join('C:\\QA-Automation-Files\\Repository\\Automation\\Swagger', swagger_file)): ### Atualizar
+            Main.deleteFiles(file_path=directories['SwaggerFolder'], extension='*')
+            # Main.deleteFiles(file_path='C:\\QA-Automation-Files\\Repository\\Automation\\Swagger', extension='*')  ### Atualizar
+
+    # -----------------------------------------------------------------------------------------------------------------
+
+    def load_swagger(self, file_path):
+        with open(file_path, 'r') as f:
+            if file_path.endswith('.json'):
+                return json.load(f)
+            else:
+                raise ValueError("O arquivo deve ser .json ou .yaml/.yml")
+
+    def extract_jsonschema_relevant_data(self, swagger_data):
+        if 'definitions' in swagger_data:
+            relevant_data = swagger_data['definitions']
+        elif 'components' in swagger_data and 'schemas' in swagger_data['components']:
+            relevant_data = swagger_data['components']['schemas']
+        else:
+            relevant_data = {}
+
+        with open(os.path.join(directories['SwaggerFolder'], self.swagger_file), 'w') as f:
+            json.dump(relevant_data, f, indent=2)
+
+    # ------------------------------------- Generate the fake dataa to the API fields ----------------------------------
+
+
+
+    # Função para gerar dados fictícios de tipos diferentes com base no tipo do esquema
+    def generate_data(self, schema, definitions):
+        if 'type' not in schema:
+            return None
+
+        data = []
+
+        fake = Faker()
+
+        # Função para adicionar variações de tipos de dados
+        def add_variations(base_type, value):
+            if base_type == 'string':
+                data.extend([
+                    value,  # Original value
+                    fake.random_int(),  # Integer variation
+                    fake.pyfloat(left_digits=5, right_digits=2),  # Float variation
+                    fake.boolean()  # Boolean variation
+                ])
+            elif base_type == 'integer':
+                data.extend([
+                    value,  # Original value
+                    fake.word(),  # String variation
+                    fake.pyfloat(left_digits=5, right_digits=2),  # Float variation
+                    fake.boolean()  # Boolean variation
+                ])
+            elif base_type == 'number':
+                data.extend([
+                    value,  # Original value
+                    fake.word(),  # String variation
+                    fake.random_int(),  # Integer variation
+                    fake.boolean()  # Boolean variation
+                ])
+            elif base_type == 'boolean':
+                data.extend([
+                    value,  # Original value
+                    fake.word(),  # String variation
+                    fake.random_int(),  # Integer variation
+                    fake.pyfloat(left_digits=5, right_digits=2)  # Float variation
+                ])
+
+        # Gerar dados com base no tipo do esquema
+        if schema['type'] == 'string':
+            value = fake.word() if not (schema.get('nullable', False) and random.choice([True, False])) else None
+            add_variations('string', value)
+        elif schema['type'] == 'number':
+            value = fake.pyfloat(left_digits=5, right_digits=2) if not (schema.get('nullable', False) and random.choice([True, False])) else None
+            add_variations('number', value)
+        elif schema['type'] == 'integer':
+            value = fake.random_int() if not (schema.get('nullable', False) and random.choice([True, False])) else None
+            add_variations('integer', value)
+        elif schema['type'] == 'boolean':
+            value = fake.boolean() if not (schema.get('nullable', False) and random.choice([True, False])) else None
+            add_variations('boolean', value)
+        elif schema['type'] == 'array':
+            if not (schema.get('nullable', False) and random.choice([True, False])):
+                array_data = [generate_data(self, schema['items'], definitions) for _ in range(3)]
+                if array_data not in data:
+                    data.append(array_data)
+        elif schema['type'] == 'object':
+            if not (schema.get('nullable', False) and random.choice([True, False])):
+                obj = {}
+                for prop, prop_schema in schema.get('properties', {}).items():
+                    if '$ref' in prop_schema:
+                        ref = prop_schema['$ref'].split('/')[-1]
+                        obj[prop] = generate_data(self, definitions[ref], definitions)
+                    else:
+                        obj[prop] = generate_data(self, prop_schema, definitions)
+                if obj not in data:
+                    data.append(obj)
+        return data
+
+
+    # ------------------------------------- Teste de API fields for each schema tag ----------------------------------------
+
+    # Função para resolver referências no esquema.
+    def resolve_refs(self, schema, definitions):
+        if isinstance(schema, dict):
+            if '$ref' in schema:
+                ref = schema['$ref'].split('/')[-1]
+                return resolve_refs(definitions[ref], definitions)
+            else:
+                return {k: resolve_refs(v, definitions) for k, v in schema.items()}
+        elif isinstance(schema, list):
+            return [resolve_refs(item, definitions) for item in schema]
+        else:
+            return schema
+
+    def run_validation(self, json_data):
+
+        errors = []
+
+        try:
+            # Resolvendo as referências no esquema.
+            resolved_schema = {k: resolve_refs(v, schema) for k, v in schema.items()}
+
+            for schema_item in resolved_schema.keys():
+                validate(instance=json_data, schema=resolved_schema[schema_item])
+            print("JSON válido.")
+            print("Failed")
+
+        except ValidationError as e:
+            print("JSON inválido:", e.message)
+            print("Passed")
+            errors.append(e.message)
+
+        return errors
+
 

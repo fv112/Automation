@@ -4,6 +4,7 @@ Automation QA - Release notes
 
 <em>15/07/2024</em>
 - <font color='red'>__[Novo]__</font> - Finalização da validação do schema no sandbox.
+- <font color='red'>__[Novo]__</font> - Adaptação da validação do schema para o módulo oficial.
 #
 
 **Version 1.10.0**
