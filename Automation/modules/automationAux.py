@@ -456,7 +456,7 @@ class Main:
 
         try:
             # kwargs arguments.
-            file_path = kwargs.get('path_log')
+            file_path = kwargs.get('file_path')
             extension = kwargs.get('extension')
             exact_file = kwargs.get('exact_file')
 

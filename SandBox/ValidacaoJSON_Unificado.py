@@ -3,6 +3,7 @@ import subprocess
 import json
 from faker import Faker
 import random
+import requests
 from jsonschema import validate, ValidationError
 
 import Automation.modules.automationAux as Aux
@@ -58,9 +59,20 @@ extract_jsonschema_relevant_data(swagger_data, swagger_file)
 
 print(f"Dados relevantes para JSON Schema extraídos e salvos como {swagger_file}")
 
-#schema = open(os.path.join(Aux.directories['SwaggerFolder'], swagger_file), 'r')
-file = open(os.path.join('C:\\QA-Automation-Files\\Repository\\Automation\\Swagger', swagger_file), 'r') ### Atualizar.
-schema = json.load(file)
+### with open(os.path.join(Aux.directories['SwaggerFolder'], swagger_file), 'r') as file:
+with open(os.path.join('C:\\QA-Automation-Files\\Repository\\Automation\\Swagger', swagger_file), 'r', encoding='utf-8') as file:### Atualizar.
+    schema = json.load(file)
+
+for key, value in schema.items():
+    if schema[key]['additionalProperties'] is False:
+        schema[key]['additionalProperties'] = True
+
+#with open(Aux.directories['SwaggerFolder'], swagger_file, 'w', encoding='utf-8') as file:
+with open(os.path.join('C:\\QA-Automation-Files\\Repository\\Automation\\Swagger', swagger_file), 'w', encoding='utf-8') as file: ### Atualizar
+    json.dump(schema, file, ensure_ascii=False, indent=2)
+
+
+print(f"The 'additional properties was changed from 'False' to 'True'")
 
 # ------------------------------------- Generate the fake dataa to the API fields --------------------------------------
 
@@ -130,12 +142,13 @@ def generate_data(schema, definitions):
             for prop, prop_schema in schema.get('properties', {}).items():
                 if '$ref' in prop_schema:
                     ref = prop_schema['$ref'].split('/')[-1]
-                    obj[prop] = generate_data(definitions[ref], definitions)#, include_variations=False)
+                    obj[prop] = generate_data(definitions[ref], definitions)
                 else:
-                    obj[prop] = generate_data(prop_schema, definitions)#, include_variations=False)
+                    obj[prop] = generate_data(prop_schema, definitions)
             if obj not in data:
                 data.append(obj)
     return data
+
 
 # Gerar e imprimir dados fictícios para cada definição no esquema
 for definition_name, definition_schema in schema.items():
@@ -146,6 +159,7 @@ for definition_name, definition_schema in schema.items():
     print("-" * 80)
 
 # ------------------------------------- Teste de API fields for each schema tag ----------------------------------------
+
 
 # Função para resolver referências no esquema.
 def resolve_refs(schema, definitions):
@@ -170,17 +184,15 @@ def run_validation(json_data):
     errors = []
 
     try:
-        # for count, json_data_items in enumerate(data.keys()):
-        #     print(data[json_data_items][count])
-
-        ### JSON data é o valor a se alterar.
         for schema_item in resolved_schema.keys():
             validate(instance=json_data, schema=resolved_schema[schema_item])
         print("JSON válido.")
+        print("Failed")
 
     except ValidationError as e:
         print("JSON inválido:", e.message)
-        errors.append((e.message))
+        print("Passed")
+        errors.append(e.message)
 
     return errors
 
@@ -188,14 +200,13 @@ def run_validation(json_data):
 for key, values in data.items():
     result = []
     for value in values:
-        print(f"Key: {key}, Value: {value}")
+        print(f"Key: {key}, Value: {value} \n")
         json_data = {key: value}
         result = run_validation(json_data)
 
     print("-" * 90)
-    print(result)
 
-
-
-# if os.path.isfile(Aux.directories['SwaggerFolder']): ### Descomentar
-#     Aux.Main.deleteFiles(exact_file=swagger_file) ### Descomentar
+#if os.path.isfile(Aux.directories['SwaggerFolder']):
+if os.path.isfile(os.path.join('C:\\QA-Automation-Files\\Repository\\Automation\\Swagger', swagger_file)): ### Atualizar
+    #Aux.Main.deleteFiles(file_path=Aux.directories['SwaggerFolder'], extension='*')
+    Aux.Main.deleteFiles(file_path='C:\\QA-Automation-Files\\Repository\\Automation\\Swagger', extension='*')  ### Atualizar

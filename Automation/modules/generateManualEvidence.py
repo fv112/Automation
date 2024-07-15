@@ -167,7 +167,7 @@ class Main:
                         del list_steps[0: step_final]
 
                     # Clear the evidences prints.
-                    Aux.Main.deleteFiles(self, path_log=test_set_path, extension="png")
+                    Aux.Main.deleteFiles(self, file_path=test_set_path, extension="png")
 
                 n_test_case += 1
 

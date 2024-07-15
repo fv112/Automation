@@ -68,8 +68,8 @@ class AutomationQA:
     #     Aux.Main.createDirectory(self, path_folder=Aux.directories['DownloadFolderTemp'])
     #
     #     # Clear the export folder, if already exist.
-    #     Aux.Main.deleteFiles(self, path_log=Aux.directories['DownloadFolder'], extension='*')
-    #     Aux.Main.deleteFiles(self, path_log=Aux.directories['DownloadFolderTemp'], extension='*')
+    #     Aux.Main.deleteFiles(self, file_path=Aux.directories['DownloadFolder'], extension='*')
+    #     Aux.Main.deleteFiles(self, file_path=Aux.directories['DownloadFolderTemp'], extension='*')
     #
     #     # Load the Windows DLL's to inform the computer language.
     #     windll = ctypes.windll.kernel32

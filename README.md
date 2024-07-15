@@ -1,10 +1,15 @@
 Automation QA - Release notes
 ----
+**Version 1.11.0**
+
+<em>15/07/2024</em>
+- <font color='red'>__[Novo]__</font> - Finalização da validação do schema no sandbox.
+#
+
 **Version 1.10.0**
 
 <em>12/07/2024</em>
 - <font color='red'>__[Novo]__</font> - Automação para validação do tipo de dado do Schema da API.
-#
 
 **Version 1.9.0**
 

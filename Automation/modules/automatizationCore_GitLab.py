@@ -4,6 +4,7 @@ import Automation.modules.automationAux as Aux
 import Automation.modules.automationFunc as Func
 import Automation.modules.GitLabConnection as GitLab
 
+
 class Main:
 
     def __init__(self, url):
@@ -167,7 +168,7 @@ class Main:
                                                                      + " - " + name_testcase)
 
                     # Clear the evidences prints.
-                    Aux.Main.deleteFiles(path_log=test_set_path, extension="png")
+                    Aux.Main.deleteFiles(file_path=test_set_path, extension="png")
 
                     # If there is file to download update to GitLab.
                     # if save_evidence and not status == "Aborted":
@@ -177,7 +178,7 @@ class Main:
                     #     testcase_status = "Design"
                     #     status = "Failed"
                     #     raise Exception
-                    #     Aux.Main.deleteFiles(path_log=Aux.directories["DownloadFolder"], extension='*')
+                    #     Aux.Main.deleteFiles(file_path=Aux.directories["DownloadFolder"], extension='*')
 
                     #### SOMENTE APÓS EXISTIR O TEST SUIT.
                     # if save_evidence:

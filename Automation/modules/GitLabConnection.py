@@ -581,7 +581,7 @@ class GitLabConnection:
     #         count_evidences_failed = ''
     # 
     #         Aux.Main.deleteDirectory(self, directory=evidence_folder)
-    #         Aux.Main.deleteFiles(self, path_log=Aux.os.path.join(Aux.directories['EvidenceFolder']), extension='.zip',
+    #         Aux.Main.deleteFiles(self, file_path=Aux.os.path.join(Aux.directories['EvidenceFolder']), extension='.zip',
     #                              exact_file=name_testcase + '.zip')
     # 
     #         url = 'https://' + instance + project + '/_apis/wit/workitems?ids=' + str(test_case_id) + \
