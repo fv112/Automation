@@ -1289,7 +1289,9 @@ class Main:
                 elif tag.upper() == 'PARAMS':
                     Aux.otherConfigs['API_Params'] = parameters1[parameters1.find(':') + 1:].strip()
                 elif tag.upper() == "SCHEMA":
-                    Aux.Api_schema(swagger_link=parameters1[parameters1.find(':') + 1:].strip())
+                    schema_errors, schema_status = Aux.ApiSchema(swagger_link=parameters1[parameters1.find(':') + 1:].strip())
+                    return schema_status
+
                 if Aux.otherConfigs['API_Endpoint'] is None:
                     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorAPIMissingInfo']['Msg']}{Aux.Textcolor.END}")
                     Aux.Main.addLogs(message="General", value=Aux.logs["ErrorAPIMissingInfo"])
