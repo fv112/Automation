@@ -30,7 +30,7 @@ from collections import Counter                         # Used in automatization
 
 
 verbs = None
-logs = None
+# logs = None
 
 
 # Colored the text.
@@ -908,82 +908,97 @@ PROCESS:
 
 class ApiSchema:
 
-    def __init__(self, **kwargs):
-        self.swagger_link = kwargs.get("swagger_link")
+    def __init__(self, swagger_link):
+        self.swagger_link = swagger_link
         self.swagger_file = 'swagger.json'
         self.resolved_schema = None
-        self.schema_status = False
-        self.api_check()
+        # self.json_fake_data = None
 
     def api_check(self):
 
-        Main.createDirectory(path_folder=directories['SwaggerFolder'])
+        try:
 
-        # Download the swagger file.
-        subprocess.run(
-            ['curl', '-o', os.path.join(directories['SwaggerFolder'], self.swagger_file), self.swagger_link])
+            Main.createDirectory(path_folder=directories['SwaggerFolder'])
 
-        swagger_data = ApiSchema.load_swagger(self, os.path.join(directories['SwaggerFolder'], self.swagger_file))
+            # Download the swagger file.
+            subprocess.run(
+                ['curl', '-o', os.path.join(directories['SwaggerFolder'], self.swagger_file), self.swagger_link])
 
-        ApiSchema.extract_jsonschema_relevant_data(self, swagger_data)
+            swagger_data = ApiSchema.load_swagger(self, os.path.join(directories['SwaggerFolder'], self.swagger_file))
 
-        print(f"Dados relevantes para JSON Schema extraídos e salvos como {self.swagger_file}")
+            ApiSchema.extract_jsonschema_relevant_data(self, swagger_data)
 
-        with open(os.path.join(directories['SwaggerFolder'], self.swagger_file), 'r', encoding='utf-8') as file:
-            schema = json.load(file)
+            print(f"Dados relevantes para JSON Schema extraídos e salvos como {self.swagger_file}")
 
-        # Enable the field to be possible validate one by one.
-        for key, value in schema.items():
-            if schema[key]['additionalProperties'] is False:
-                schema[key]['additionalProperties'] = True
+            with open(os.path.join(directories['SwaggerFolder'], self.swagger_file), 'r', encoding='utf-8') as file:
+                schema = json.load(file)
 
-        with open(os.path.join(directories['SwaggerFolder'], self.swagger_file), 'w', encoding='utf-8') as file:
-            json.dump(schema, file, ensure_ascii=False, indent=2)
+            # Enable the field to be possible validate one by one.
+            for key, value in schema.items():
+                if schema[key]['additionalProperties'] is False:
+                    schema[key]['additionalProperties'] = True
 
-        # print(f"The 'additional properties was changed from 'False' to 'True'")
+            with open(os.path.join(directories['SwaggerFolder'], self.swagger_file), 'w', encoding='utf-8') as file:
+                json.dump(schema, file, ensure_ascii=False, indent=2)
 
-        # Generate and print the fake data.
-        for definition_name, definition_schema in schema.items():
-            data_list = ApiSchema.generate_data(self, definition_schema, schema)
-            print(f"Data for '{definition_name}' tag:")
-            for data in data_list:
-                print(json.dumps(data, indent=2))
-            print("-" * 80)
+            # print(f"The 'additional properties was changed from 'False' to 'True'")
 
-        # Link between each fake info and the right tag.
-        self.resolved_schema = {k: ApiSchema.resolve_refs(self, v, schema) for k, v in schema.items()}
+            # Generate and print the fake data.
+            for definition_name, definition_schema in schema.items():
+                data_list = ApiSchema.generate_data(self, definition_schema, schema)
+                print(f"Data for '{definition_name}' tag:")
+                for self.json_fake_data in data_list:
+                    print(json.dumps(self.json_fake_data, indent=2))
+                print("-" * 80)
 
+            # Link between each fake info and the right tag. (Only to validate the schema response)
+            # self.resolved_schema = {k: ApiSchema.resolve_refs(self, v, schema) for k, v in schema.items()}
+            #
+            # for key, values in data.items():
+            #     for value in values:
+            #         print(f"TAG: {key} / VALUE: {value} \n")
+            #         json_fake_data = {key: value}
+            #         ApiSchema.run_validation(self, json_data)
+            #
+            #     print("-" * 90)
 
-        for key, values in data.items():
-            for value in values:
-                print(f"TAG: {key} / VALUE: {value} \n")
-                json_data = {key: value}
-                errors, actual_validation_status = ApiSchema.run_validation(self, json_data)
-                self.schema_status = (actual_validation_status and self.schema_status)
+            Main.deleteFiles(file_path=directories['SwaggerFolder'], extension='*')
 
-            print("-" * 90)
+            return self.json_fake_data
 
-        Main.deleteFiles(file_path=directories['SwaggerFolder'], extension='*')
-
-        if self.schema_status:
-            return "Failed"
-        else:
-            return "Passed"
+        except Exception as ex:
+            print(f"{Textcolor.FAIL}{logs['ErrorAPICheck']['Msg']}{Textcolor.END}", ex)
+            Main.addLogs(message="General", value=logs["ErrorAPICheck"], value1=str(ex))
 
     def load_swagger(self, file_path):
-        with open(file_path, 'r') as f:
-            return json.load(f)
+
+        try:
+            with open(file_path, 'r') as f:
+                # if '502 Bad Gateway' in f.readlines():
+                #     print("Erro de 502 Bad Gateway")
+                # else:
+                return json.load(f)
+
+        except Exception as ex:
+            print(f"{Textcolor.FAIL}{logs['ErrorLoadSwagger']['Msg']}{Textcolor.END}", ex)
+            Main.addLogs(message="General", value=logs["ErrorLoadSwagger"], value1=str(ex))
 
     def extract_jsonschema_relevant_data(self, swagger_data):
-        if 'definitions' in swagger_data:
-            relevant_data = swagger_data['definitions']
-        elif 'components' in swagger_data and 'schemas' in swagger_data['components']:
-            relevant_data = swagger_data['components']['schemas']
-        else:
-            relevant_data = {}
 
-        with open(os.path.join(directories['SwaggerFolder'], self.swagger_file), 'w') as f:
-            json.dump(relevant_data, f, indent=2)
+        try:
+            if 'definitions' in swagger_data:
+                relevant_data = swagger_data['definitions']
+            elif 'components' in swagger_data and 'schemas' in swagger_data['components']:
+                relevant_data = swagger_data['components']['schemas']
+            else:
+                relevant_data = {}
+
+            with open(os.path.join(directories['SwaggerFolder'], self.swagger_file), 'w') as f:
+                json.dump(relevant_data, f, indent=2)
+
+        except Exception as ex:
+            print(f"{Textcolor.FAIL}{logs['ErrorExtractJson']['Msg']}{Textcolor.END}", ex)
+            Main.addLogs(message="General", value=logs["ErrorExtractJson"], value1=str(ex))
 
     # Generate fake data.
     def generate_data(self, schema, definitions):
@@ -995,34 +1010,40 @@ class ApiSchema:
 
         # Generate different content type.
         def add_variations(base_type, value):
-            if base_type == 'string':
-                data.extend([
-                    value,  # Original value
-                    fake.random_int(),  # Integer variation
-                    fake.pyfloat(left_digits=5, right_digits=2),  # Float variation
-                    fake.boolean()  # Boolean variation
-                ])
-            elif base_type == 'integer':
-                data.extend([
-                    value,  # Original value
-                    fake.word(),  # String variation
-                    fake.pyfloat(left_digits=5, right_digits=2),  # Float variation
-                    fake.boolean()  # Boolean variation
-                ])
-            elif base_type == 'number':
-                data.extend([
-                    value,  # Original value
-                    fake.word(),  # String variation
-                    fake.random_int(),  # Integer variation
-                    fake.boolean()  # Boolean variation
-                ])
-            elif base_type == 'boolean':
-                data.extend([
-                    value,  # Original value
-                    fake.word(),  # String variation
-                    fake.random_int(),  # Integer variation
-                    fake.pyfloat(left_digits=5, right_digits=2)  # Float variation
-                ])
+
+            try:
+                if base_type == 'string':
+                    data.extend([
+                        value,  # Original value
+                        fake.random_int(),  # Integer variation
+                        fake.pyfloat(left_digits=5, right_digits=2),  # Float variation
+                        fake.boolean()  # Boolean variation
+                    ])
+                elif base_type == 'integer':
+                    data.extend([
+                        value,  # Original value
+                        fake.word(),  # String variation
+                        fake.pyfloat(left_digits=5, right_digits=2),  # Float variation
+                        fake.boolean()  # Boolean variation
+                    ])
+                elif base_type == 'number':
+                    data.extend([
+                        value,  # Original value
+                        fake.word(),  # String variation
+                        fake.random_int(),  # Integer variation
+                        fake.boolean()  # Boolean variation
+                    ])
+                elif base_type == 'boolean':
+                    data.extend([
+                        value,  # Original value
+                        fake.word(),  # String variation
+                        fake.random_int(),  # Integer variation
+                        fake.pyfloat(left_digits=5, right_digits=2)  # Float variation
+                    ])
+
+            except Exception as ex:
+                print(f"{Textcolor.FAIL}{logs['ErrorAddJsonVariation']['Msg']}{Textcolor.END}", ex)
+                Main.addLogs(message="General", value=logs["ErrorAddJsonVariation"], value1=str(ex))
 
         # Generate based on schema info.
         if schema['type'] == 'string':
@@ -1058,30 +1079,35 @@ class ApiSchema:
 
     # Read the schema references.
     def resolve_refs(self, schema, definitions):
-        if isinstance(schema, dict):
-            if '$ref' in schema:
-                ref = schema['$ref'].split('/')[-1]
-                return ApiSchema.resolve_refs(self, definitions[ref], definitions)
-            else:
-                return {k: ApiSchema.resolve_refs(self, v, definitions) for k, v in schema.items()}
-        elif isinstance(schema, list):
-            return [ApiSchema.resolve_refs(self, item, definitions) for item in schema]
-        else:
-            return schema
 
-    def run_validation(self, json_data): ### APRIMORAR
+        try:
+
+            if isinstance(schema, dict):
+                if '$ref' in schema:
+                    ref = schema['$ref'].split('/')[-1]
+                    return ApiSchema.resolve_refs(self, definitions[ref], definitions)
+                else:
+                    return {k: ApiSchema.resolve_refs(self, v, definitions) for k, v in schema.items()}
+            elif isinstance(schema, list):
+                return [ApiSchema.resolve_refs(self, item, definitions) for item in schema]
+            else:
+                return schema
+
+        except Exception as ex:
+            print(f"{Textcolor.FAIL}{logs['ErrorResolvedReference']['Msg']}{Textcolor.END}", ex)
+            Main.addLogs(message="General", value=logs["ErrorResolvedReference"], value1=str(ex))
+
+    def run_validation(self, json_data):  ### (Only to validate the schema response)
         errors = []
         try:
             for schema_item in self.resolved_schema.keys():
                 validate(instance=json_data, schema=self.resolved_schema[schema_item])
-            print("JSON válido.")
-            print("Failed")
-            validation_status = False
+            # print("JSON valid.")
+            # validation_status = False
 
         except ValidationError as e:
-            print("JSON inválido:", e.message)
-            print("Passed")
+            print(f"JSON invalid: Variable {type(e.instance)} {e.message}")
             errors.append(e.message)
-            validation_status = True
+            # validation_status = True
 
         return errors, validation_status

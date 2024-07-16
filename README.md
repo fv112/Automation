@@ -1,12 +1,19 @@
 Automation QA - Release notes
 ----
+**Version 1.12.0**
+
+<em>15/07/2024</em>
+- <font color='red'>__[Novo]__</font> - Alteração da frase ao encontrar um elemento na tela, estava ambíguo.
+- <font color='red'>__[Novo]__</font> - Criação do body para simular valores inválidos na request.
+#
+
 **Version 1.11.0**
 
 <em>15/07/2024</em>
 - <font color='red'>__[Novo]__</font> - Finalização da validação do schema no sandbox.
 - <font color='red'>__[Novo]__</font> - Adaptação da validação do schema para o módulo oficial.
 - <font color='red'>__[Novo]__</font> - Correção para migração ao módulo oficial.
-#
+
 
 **Version 1.10.0**
 

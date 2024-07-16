@@ -512,6 +512,48 @@ class GitLabConnection:
             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorSaveEvidenceTestCase'], value1=str(e))
             #exit(1)
 
+    def send_request(self, **kwargs):
+
+        api_action = kwargs.get('api_action')
+        headers = kwargs.get('headers')
+
+        try:
+            if Aux.otherConfigs['API_Authorization'] != '':
+                headers = {'Authorization': 'Bearer ' + Aux.otherConfigs["API_Headers"],
+                           'Content-Type': 'application/json'
+                           }
+
+            if 'Basic' in Aux.otherConfigs['API_Headers']:
+                headers = {
+                    'Basic': Aux.otherConfigs['API_Headers'][Aux.otherConfigs['API_Headers'].find(':') + 1:],
+                    'Content-Type': 'application/json'
+                }
+            elif 'Bearer' in Aux.otherConfigs['API_Headers']:
+                headers = {'Authorization': 'Bearer ' + Aux.otherConfigs["API_Headers"],
+                           'Content-Type': 'application/json'}
+
+            if api_action.upper() == "GET":
+                api_result = requests.get(Aux.otherConfigs['API_Endpoint'],
+                                          params=Aux.otherConfigs['API_Params'],
+                                          headers=headers,
+                                          data=json.dumps(Aux.otherConfigs['API_Body']))
+            elif api_action.upper() == "POST":
+                api_result = requests.post(Aux.otherConfigs['API_Endpoint'],
+                                           headers=headers,
+                                           data=Aux.otherConfigs['API_Body'])
+
+                Aux.otherConfigs['StatusCodeAPI'] = api_result.status_code
+                if api_result.status_code == 200:
+                    # Filter some fields.
+                    resp = json.loads(api_result.text)
+                    if resp is not []:
+                        Aux.otherConfigs['ResponseAPI'] = resp
+
+        except Exception as e:
+            print(f"{Aux.Textcolor.FAIL}{Aux.logs['Error???']['Msg']}{Aux.Textcolor.END}", e)
+            Aux.Main.addLogs(message="General", value=Aux.logs['Error???'], value1=str(e))
+            #exit(1)
+
     # def UpdateStatusAutomated(self, **kwargs):
     #
     #     try:
@@ -1151,57 +1193,57 @@ class GitLabConnection:
     #         #exit(1)
 
     # Save the images locally.
-    def saveManualPrintScreen(self, **kwargs):
-        try:
-
-            version = '6.0'
-
-            # kwargs arguments.
-            list_id_manual_print = kwargs.get('list_id_manual_print')
-            project = kwargs.get('project')
-            list_step_order = kwargs.get('list_num_print')
-            n_test_case = kwargs.get('n_test_case')
-            n_iteration = kwargs.get('n_iteration')
-            test_case_name = kwargs.get('test_case_name')
-
-            # Saving by the attachment ID order.
-            for index, id_manual_print in enumerate(list_id_manual_print):
-
-                order = str(list_step_order[index])
-                # Variable.
-                step_order = str(order).zfill(2)
-
-                file_name = 'CT' + str(n_test_case).zfill(2) + '-IT' + str(n_iteration).zfill(2) + '-' + \
-                            Aux.otherConfigs["EvidenceName"] + step_order + Aux.otherConfigs["EvidenceExtension"]
-
-                url = 'https://' + instance + project + '/_api/_testresult/DownloadAttachment?attachmentId=' + \
-                           str(id_manual_print[1]) + '&api-version=' + version
-
-                # Execute the Azure request.
-                q = requests.get(url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]},
-                                 verify=False)
-
-                if q.status_code == 200:
-                    evidence_image = Aux.os.path.join(Aux.directories['EvidenceFolderManual'], file_name)
-                    with open(evidence_image, 'wb') as print_screen:
-                        print_screen.write(q.content)
-
-                    print(f"{Aux.Textcolor.UNDERLINE}{Aux.logs['SaveManualPrintScreen']['Msg']}{Aux.Textcolor.END} "
-                          f"{test_case_name} ITERATION "
-                          f"{n_iteration} - Print {step_order}")
-
-                elif q.status_code == 401:
-                    print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorToken']['Msg']}{Aux.Textcolor.END}\n")
-                    Aux.Main.addLogs(message="General", value=Aux.logs['ErrorToken'],
-                                     value1='Status code: ' + str(q.status_code) + ' - saveManualPrintScreen')
-
-                else:
-                    print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
-                    Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'], 
-                                     value1='Status code: ' + str(q.status_code) + ' - saveManualPrintScreen')
-
-        except Exception as e:
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorSaveManualPrintScreen']['Msg']}"
-                  f"{Aux.Textcolor.END}", e)
-            Aux.Main.addLogs(message="General", value=Aux.logs['ErrorSaveManualPrintScreen'], value1=str(e))
-            #exit(1)
+    # def saveManualPrintScreen(self, **kwargs):
+    #     try:
+    #
+    #         version = '6.0'
+    #
+    #         # kwargs arguments.
+    #         list_id_manual_print = kwargs.get('list_id_manual_print')
+    #         project = kwargs.get('project')
+    #         list_step_order = kwargs.get('list_num_print')
+    #         n_test_case = kwargs.get('n_test_case')
+    #         n_iteration = kwargs.get('n_iteration')
+    #         test_case_name = kwargs.get('test_case_name')
+    #
+    #         # Saving by the attachment ID order.
+    #         for index, id_manual_print in enumerate(list_id_manual_print):
+    #
+    #             order = str(list_step_order[index])
+    #             # Variable.
+    #             step_order = str(order).zfill(2)
+    #
+    #             file_name = 'CT' + str(n_test_case).zfill(2) + '-IT' + str(n_iteration).zfill(2) + '-' + \
+    #                         Aux.otherConfigs["EvidenceName"] + step_order + Aux.otherConfigs["EvidenceExtension"]
+    #
+    #             url = 'https://' + instance + project + '/_api/_testresult/DownloadAttachment?attachmentId=' + \
+    #                        str(id_manual_print[1]) + '&api-version=' + version
+    #
+    #             # Execute the Azure request.
+    #             q = requests.get(url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]},
+    #                              verify=False)
+    #
+    #             if q.status_code == 200:
+    #                 evidence_image = Aux.os.path.join(Aux.directories['EvidenceFolderManual'], file_name)
+    #                 with open(evidence_image, 'wb') as print_screen:
+    #                     print_screen.write(q.content)
+    #
+    #                 print(f"{Aux.Textcolor.UNDERLINE}{Aux.logs['SaveManualPrintScreen']['Msg']}{Aux.Textcolor.END} "
+    #                       f"{test_case_name} ITERATION "
+    #                       f"{n_iteration} - Print {step_order}")
+    #
+    #             elif q.status_code == 401:
+    #                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorToken']['Msg']}{Aux.Textcolor.END}\n")
+    #                 Aux.Main.addLogs(message="General", value=Aux.logs['ErrorToken'],
+    #                                  value1='Status code: ' + str(q.status_code) + ' - saveManualPrintScreen')
+    #
+    #             else:
+    #                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
+    #                 Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'],
+    #                                  value1='Status code: ' + str(q.status_code) + ' - saveManualPrintScreen')
+    #
+    #     except Exception as e:
+    #         print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorSaveManualPrintScreen']['Msg']}"
+    #               f"{Aux.Textcolor.END}", e)
+    #         Aux.Main.addLogs(message="General", value=Aux.logs['ErrorSaveManualPrintScreen'], value1=str(e))
+    #         #exit(1)
