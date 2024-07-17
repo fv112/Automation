@@ -26,7 +26,7 @@ from selenium.webdriver.support.select import Select
 from bs4 import BeautifulSoup
 
 import Automation.modules.automationAux as Aux
-import Automation.modules.GitLabConnection as Con
+import Automation.modules.connections as Con
 
 driver = None
 
@@ -34,7 +34,7 @@ driver = None
 class Main:
 
     def __init__(self):
-        pass
+        self.connections = Con.Connections()
 
     # Function to search the element using the option above.
     def findElement(self, **kwargs):
@@ -1270,10 +1270,10 @@ class Main:
         api_action = kwargs.get("api_action")
 
         # Variables
-        # submit = False
-        Aux.otherConfigs['APIStep'] = True
+        Aux.otherConfigs['API_Step'] = True
         headers = None
-        api_result = None
+        api_status = None
+        api_status_final = None
 
         try:
             if parameters1.upper() != 'SUBMIT':
@@ -1293,7 +1293,9 @@ class Main:
                     if Aux.otherConfigs['API_Body']:
                         dict_body = ast.literal_eval(Aux.otherConfigs['API_Body'])
                     else:
-                        print("Body não informado.")  ###
+                        print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorAPIBodyMissing']['Msg']}{Aux.Textcolor.END}")
+                        Aux.Main.addLogs(message="General", value=Aux.logs["ErrorAPIBodyMissing"])
+                        raise TypeError(Aux.logs['ErrorAPIBodyMissing']['Msg'])
                     json_data = Aux.ApiSchema(parameters1[parameters1.find(':') + 1:].strip())
                     json_fake_data = json_data.api_check()
 
@@ -1301,49 +1303,29 @@ class Main:
                         for fake_order, _ in enumerate(json_fake_data[tag]):
                             dict_body[tag] = json_fake_data[tag][fake_order]
                             # Run the API request.
-                            api_run = Con.GitLabConnection(self)
-                            api_run.send_request(api_action=api_action, headers=headers) ### Parei aqui.
+
+                            self.connections.send_request(api_action=api_action, headers=Aux.otherConfigs['API_Headers']
+                                                          , body=dict_body)
+
+                            if Aux.otherConfigs['API_StatusCode'] == 400: ### Validar o erro que dá ao enviar o body errado.
+                                api_status = True
+                            else:
+                                api_status = False
+
+                            api_status_final = (api_status_final and api_status)
+                            if api_status_final:
+                                return "Passed"
+                            else:
+                                return "Failed"
 
                 if Aux.otherConfigs['API_Endpoint'] is None:
                     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorAPIMissingInfo']['Msg']}{Aux.Textcolor.END}")
                     Aux.Main.addLogs(message="General", value=Aux.logs["ErrorAPIMissingInfo"])
                     raise TypeError(Aux.logs['ErrorAPIMissingInfo']['Msg'])
             else:
-                # submit = True
                 # Run the API request.
-                api_run = Con.GitLabConnection(self)
-                api_run.send_request(api_action=api_action, headers=headers)
-
-            # if Aux.otherConfigs['API_Authorization'] != '':
-            #     headers = {'Authorization': 'Bearer ' + Aux.otherConfigs["API_Headers"],
-            #                'Content-Type': 'application/json'
-            #                }
-            #
-            # if 'Basic' in Aux.otherConfigs['API_Headers']:
-            #     headers = {
-            #         'Basic': Aux.otherConfigs['API_Headers'][Aux.otherConfigs['API_Headers'].find(':') + 1:],
-            #         'Content-Type': 'application/json'
-            #     }
-            # elif 'Bearer' in Aux.otherConfigs['API_Headers']:
-            #     headers = {'Authorization': 'Bearer ' + Aux.otherConfigs["API_Headers"],
-            #                'Content-Type': 'application/json'}
-            #
-            # if submit and api_action.upper() == "GET":
-            #     api_result = requests.get(Aux.otherConfigs['API_Endpoint'],
-            #                               params=Aux.otherConfigs['API_Params'],
-            #                               headers=headers,
-            #                               data=json.dumps(Aux.otherConfigs['API_Body']))
-            # elif submit and api_action.upper() == "POST":
-            #     api_result = requests.post(Aux.otherConfigs['API_Endpoint'],
-            #                                headers=headers,
-            #                                data=Aux.otherConfigs['API_Body'])
-            #
-            #     Aux.otherConfigs['StatusCodeAPI'] = api_result.status_code
-            #     if api_result.status_code == 200:
-            #         # Filter some fields.
-            #         resp = json.loads(api_result.text)
-            #         if resp is not []:
-            #             Aux.otherConfigs['ResponseAPI'] = resp
+                self.connections.send_request(api_action=api_action, headers=Aux.otherConfigs['API_Headers'],
+                                              body=Aux.otherConfigs['API_Body'])
 
         except Exception as ex:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequestAPI']['Msg']}{Aux.Textcolor.END}", ex)
@@ -1359,16 +1341,16 @@ class Main:
         status_code = None
         schema = None
 
-        Aux.otherConfigs['APIStep'] = True
+        Aux.otherConfigs['API_Step'] = True
 
         try:
             tag = parameters1[:parameters1.find(':')]
             param = parameters1[parameters1.find(':') + 1:]
 
             # Status Code.
-            if tag.upper() == "STATUS CODE" and int(param) == Aux.otherConfigs['StatusCodeAPI']:
+            if tag.upper() == "STATUS CODE" and int(param) == Aux.otherConfigs['API_StatusCode']:
                 status_code = "Passed"
-            elif tag.upper() == "STATUS CODE" and int(param) != Aux.otherConfigs['StatusCodeAPI']:
+            elif tag.upper() == "STATUS CODE" and int(param) != Aux.otherConfigs['API_StatusCode']:
                 status_code = "Failed"
             else:  # tag.upper() != "STATUS CODE":
                 find_content = Aux.Main.find_content_json(self, tag=tag, param=param)

@@ -263,7 +263,7 @@ class Main:
                     #     run_paragraf = paragraf.add_run()
 
                     if (verb not in ('Fechar', 'Cerrar', 'Close') and take_picture_status and
-                            otherConfigs['APIStep'] is False):
+                            otherConfigs['API_Step'] is False):
                         # Resize the image if it is not full screen.
                         run_paragraf.add_break()
                         if image_resize:
@@ -287,7 +287,7 @@ class Main:
                         elif "PARAMS" in step.upper():
                             api_evidence_step = otherConfigs['API_Params']
                         elif "STATUS CODE" in step.upper():
-                            api_evidence_step = str(otherConfigs['StatusCodeAPI'])
+                            api_evidence_step = str(otherConfigs['API_StatusCode'])
                         elif "SCHEMA" in step.upper():
                             api_evidence_step = otherConfigs['JsonValidate']
                         else:  # Response.
@@ -533,8 +533,8 @@ class Main:
                     log_file.write(datetime_log + " - Log       - " + value + " " + " - " + str(value1) + "\n")
 
         except Exception as ex:
-            Main.addLogs(message="General", value=logs["ErrorAddlog"]['Msg'], value1=str(ex))
-            print(f"{Textcolor.FAIL}{logs['ErrorAddlog']['Msg']}{Textcolor.END}", ex)
+            Main.addLogs(message="General", value=logs["ErrorAddLog"]['Msg'], value1=str(ex))
+            print(f"{Textcolor.FAIL}{logs['ErrorAddLog']['Msg']}{Textcolor.END}", ex)
 
     # Remove the HTML from the string.
     def removeHTML(**kwargs):

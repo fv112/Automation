@@ -16,9 +16,9 @@ PyInstaller.config.CONF['distpath'] = OUTPUT_DIR
 command = Analysis([
             'C:\\QA-Automation\\Automation\\AppAutomation.py',
             'C:\\QA-Automation\\Automation\\Automation\\modules\\automationAux.py',
+            'C:\\QA-Automation\\Automation\\Automation\\modules\\automationCore.py',
             'C:\\QA-Automation\\Automation\\Automation\\modules\\automationFunc.py',
-            'C:\\QA-Automation\\Automation\\Automation\\modules\\automatizationCore_GitLab.py',
-            'C:\\QA-Automation\\Automation\\Automation\\modules\\GitLabConnection.py',
+            'C:\\QA-Automation\\Automation\\Automation\\modules\\connections.py',
             'C:\\QA-Automation\\Automation\\Automation\\modules\\generateManualEvidence.py'
             ],
             pathex=[],

@@ -1,5 +1,5 @@
 import os
-import Automation.modules.automatizationCore_GitLab as Core
+import Automation.modules.automationCore as Core
 import Automation.modules.automationAux as Aux
 
 
@@ -7,7 +7,6 @@ class AutomationQA:
 
     def __init__(self):
 
-        local_version = ''
         os.system('cls')
 
         Aux.Main.setLanguage(language='pt_BR')
@@ -21,7 +20,8 @@ class AutomationQA:
             print(f"{releaseInfo}")
         print("")
 
-        Core.Main.main(self)
+        app_core = Core.Main(self)
+        app_core.main()
 
     #     self.cmdHelp()
     #

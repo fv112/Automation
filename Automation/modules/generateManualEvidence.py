@@ -1,5 +1,5 @@
 import Automation.Automation.modules.automationAux as Aux
-import Automation.Automation.modules.GitLabConnection as GitLab
+import Automation.Automation.modules.connections as GitLab
 
 instance = 'kantarware.visualstudio.com/'
 
@@ -29,7 +29,7 @@ class Main:
         finally:
             print(f"{Aux.Textcolor.FAIL}{Aux.otherConfigs['MsgFinishedEvidence']['Msg']}{Aux.Textcolor.END}")
 
-    # Generate de manual evidence.
+    #Generate de manual evidence.
     def startGenerateEvidence(self, **kwargs):
 
         # kwargs arguments.
@@ -58,12 +58,12 @@ class Main:
             # Execute the action to get the manual evidences.
             test_case_id_list, n_iterations_list, id_azure_list, n_test_case_list, failed_info_dict, \
             completed_date_list, full_name_run_test = (
-                GitLab.GitLabConnection.manualEvidences(self, project=project, test_run_id=test_run_id,
-                                                       id_test_case=id_test_case))
+                GitLab.Connections.manualEvidences(self, project=project, test_run_id=test_run_id,
+                                                   id_test_case=id_test_case))
 
             for test_case_id in test_case_id_list:
                 list_steps, name_testcase, summary, cont_steps, change_download_config = \
-                    GitLab.GitLabConnection.startSteps(self, project=project, test_case_id=test_case_id)
+                    GitLab.Connections.startSteps(self, project=project, test_case_id=test_case_id)
 
                 step_initial = 0
                 n_iterations = n_iterations_list.pop(0)  # Get the number of the iterations for the test order.
@@ -183,3 +183,4 @@ class Main:
             GitLab.AzureConnection.UpdateStatusAutomated(self, project=project, test_case_id=test_case_id,
                                                         workitem_status=workitem_status,
                                                         automation_status=status_ct_automation)
+

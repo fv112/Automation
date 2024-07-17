@@ -1,5 +1,5 @@
 import automationAux as Aux
-import GitLabConnection as GitLab
+import connections as GitLab
 
 
 class Main:

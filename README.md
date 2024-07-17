@@ -1,36 +1,44 @@
 Automation QA - Release notes
 ----
+**Version 1.13.0**
+
+<em>17/07/2024</em>
+- <font color='red'>__[Novo]__</font> - Execução da API com dados aleatórios baseado no schema.
+- <font color='red'>__[Novo]__</font> - Correção do bug gerado ao rodar um teste na web. Vinculado ao card [#155 Erro ao concluir teste](https://sbs.t-systems.com.br/gitlab/mercedes/qa/squad-qa/qa-sandbox/-/issues/155)
+- <font color='red'>__[Novo]__</font> - Correção da leitura das classes.
+- <font color='red'>__[Novo]__</font> - Validação dos campos informados.
+#
+
 **Version 1.12.0**
 
-<em>15/07/2024</em>
-- <font color='red'>__[Novo]__</font> - Alteração da frase ao encontrar um elemento na tela, estava ambíguo.
-- <font color='red'>__[Novo]__</font> - Criação do body para simular valores inválidos na request.
-#
+<em>16/07/2024</em>
+- Alteração da frase ao encontrar um elemento na tela, estava ambíguo.
+- Criação do body para simular valores inválidos na request.
 
 **Version 1.11.0**
 
 <em>15/07/2024</em>
-- <font color='red'>__[Novo]__</font> - Finalização da validação do schema no sandbox.
-- <font color='red'>__[Novo]__</font> - Adaptação da validação do schema para o módulo oficial.
-- <font color='red'>__[Novo]__</font> - Correção para migração ao módulo oficial.
+- Finalização da validação do schema no sandbox.
+- Adaptação da validação do schema para o módulo oficial.
+- Correção para migração ao módulo oficial.
 
 
 **Version 1.10.0**
 
 <em>12/07/2024</em>
-- <font color='red'>__[Novo]__</font> - Automação para validação do tipo de dado do Schema da API.
+- Automação para validação do tipo de dado do Schema da API.
 
 **Version 1.9.0**
 
 <em>11/07/2024</em>
-- <font color='red'>__[Novo]__</font> - Atualização da sintaxe dos testes de API na documentação.
+- Atualização da sintaxe dos testes de API na documentação.
 
 
 **Version 1.8.0**
 
 <em>10/07/2024</em>
-- <font color='red'>__[Novo]__</font> - Correção do erro no body da validação do POST;
-- <font color='red'>__[Novo]__</font> - Correção na validação do Response.
+- Correção do erro no body da validação do POST;
+- Correção na validação do Response.
 
 **Version 1.7.0**
 
