@@ -539,7 +539,8 @@ class Connections:
                     Aux.otherConfigs['API_Response'] = resp
 
                 if api_result.status_code == 400:
-                    return resp['errors']['$'][0]
+                    return_value = resp['errors']['$'][0]
+                    return return_value
                 elif api_result.status_code == 200:
                     return Aux.otherConfigs['API_Response']
 

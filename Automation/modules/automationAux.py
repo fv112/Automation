@@ -303,12 +303,18 @@ class Main:
                         with open(api_file, 'r') as api_evidence_file:
                             api_evidence_step = api_evidence_file.readlines()
 
-                        if api_evidence_step.__len__() == 0:
-                            paragraf = document.add_paragraph(otherConfigs['API_NoResponseNeeded'])
-                        else:
-                            paragraf = document.add_paragraph(api_evidence_step)
-                        run_paragraf = paragraf.runs[0]
-                        run_paragraf.bold = False
+                            if api_evidence_step.__len__() == 0:
+                                paragraf = document.add_paragraph(otherConfigs['API_NoResponseNeeded'])
+                                run_paragraf = paragraf.runs[0]
+                                run_paragraf.bold = False
+                            else:
+                                for line in api_evidence_step:
+                                    paragraf = document.add_paragraph(line)
+                                #run_paragraf = paragraf.runs[0]
+                                #run_paragraf.bold = False
+                                    #run_paragraf = paragraf.add_run()
+                                    run_paragraf = paragraf.runs[0]
+                                    run_paragraf.bold = False
 
                 else:
                     paragraf = document.add_paragraph(otherConfigs["StepName"] + " " + str(step_order) + " - " +

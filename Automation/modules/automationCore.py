@@ -285,12 +285,18 @@ class Main:
                                      Aux.otherConfigs["EvidenceExtensionAPI"])
                     api_file = os.path.join(Aux.directories['EvidenceFolder'], test_set_path, api_file_name)
 
-                    with open(api_file, 'w') as api_return:
+                    with (open(api_file, 'w') as api_return):
                         tag = parameters1[:parameters1.find(':')]
                         if tag.upper() == "STATUS CODE":
                             api_return.write(Aux.otherConfigs['API_StatusCode'].__str__())
-                        else: # Normal response.
-                            api_return.write(Aux.otherConfigs['API_Response'].__str__())
+                        else:  # Normal response.
+                            if (type(Aux.otherConfigs['API_Response']) is dict) and (Aux.otherConfigs['API_Response'].__len__() > 1):
+                                for tag, value in Aux.otherConfigs['API_Response'].items():
+                                    api_return.writelines(f"\nTAG AND NEW VALUE: {tag}\n")
+                                    api_return.writelines(f"RESULT:{value}\n")
+                                    api_return.writelines(f"-" * 120)
+                            else:
+                                api_return.write(Aux.otherConfigs['API_Response'].__str__())
 
             # Set the test case status.
             status_counter = Aux.Counter(status_steps)

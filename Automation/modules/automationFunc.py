@@ -1274,6 +1274,7 @@ class Main:
         headers = None
         api_status = None
         api_status_final = True
+        error_msg_list = {}
 
         try:
             if parameters1.upper() != 'SUBMIT':
@@ -1309,8 +1310,7 @@ class Main:
                                                               headers=Aux.otherConfigs['API_Headers'],
                                                               body=dict_body))
 
-                            Aux.otherConfigs['API_Response'] = (Aux.otherConfigs['API_Response']['errors']['$'][0] +
-                                                                error_msg + '\n')
+                            error_msg_list[tag + ' -> ' + str(dict_body[tag])] = error_msg
 
                             if Aux.otherConfigs['API_StatusCode'] == 400:
                                 api_status = True
@@ -1318,6 +1318,9 @@ class Main:
                                 api_status = False
 
                             api_status_final = (api_status_final and api_status)
+
+                    Aux.otherConfigs['API_Response'] = error_msg_list
+
                     if api_status_final:
                         return "Passed"
                     else:
@@ -1357,14 +1360,10 @@ class Main:
             # Status Code.
             if tag.upper() == "STATUS CODE" and int(param) == Aux.otherConfigs['API_StatusCode']:
                 status_code = "Passed"
-                #Aux.otherConfigs['API_Response'] = Aux.otherConfigs['API_StatusCode']
             elif tag.upper() == "STATUS CODE" and int(param) != Aux.otherConfigs['API_StatusCode']:
                 status_code = "Failed"
-                #Aux.otherConfigs['API_Response'] = Aux.otherConfigs['API_StatusCode']
             else:  # tag.upper() != "STATUS CODE":
                 find_content = Aux.Main.find_content_json(self, tag=tag, param=param)
-
-            #Aux.otherConfigs['API_Response'] = Aux.otherConfigs['API_StatusCode']
 
             if status_code == "Passed" or find_content == "Passed" or schema == "Passed":
                 return "Passed"
