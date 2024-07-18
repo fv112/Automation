@@ -1,13 +1,21 @@
 Automation QA - Release notes
 ----
+**Version 1.14.0**
+
+<em>18/07/2024</em>
+- <font color='red'>__[Novo]__</font> - Alterada a cor da mensagem de "Finalizado".
+- <font color='red'>__[Novo]__</font> - Geração da evidência da API com dados fake.
+- <font color='red'>__[Novo]__</font> - Correção na validação do status code.
+#
+
 **Version 1.13.0**
 
 <em>17/07/2024</em>
-- <font color='red'>__[Novo]__</font> - Execução da API com dados aleatórios baseado no schema.
-- <font color='red'>__[Novo]__</font> - Correção do bug gerado ao rodar um teste na web. Vinculado ao card [#155 Erro ao concluir teste](https://sbs.t-systems.com.br/gitlab/mercedes/qa/squad-qa/qa-sandbox/-/issues/155)
-- <font color='red'>__[Novo]__</font> - Correção da leitura das classes.
-- <font color='red'>__[Novo]__</font> - Validação dos campos informados.
-#
+- Execução da API com dados aleatórios baseado no schema.
+- Correção do bug gerado ao rodar um teste na web. Vinculado ao card [ID 155 - Erro ao concluir teste](https://sbs.t-systems.com.br/gitlab/mercedes/qa/squad-qa/qa-sandbox/-/issues/155)
+- Correção da leitura das classes.
+- Validação dos campos informados.
+
 
 **Version 1.12.0**
 

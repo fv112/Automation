@@ -1273,7 +1273,7 @@ class Main:
         Aux.otherConfigs['API_Step'] = True
         headers = None
         api_status = None
-        api_status_final = None
+        api_status_final = True
 
         try:
             if parameters1.upper() != 'SUBMIT':
@@ -1302,21 +1302,26 @@ class Main:
                     for tag in json_fake_data.keys():
                         for fake_order, _ in enumerate(json_fake_data[tag]):
                             dict_body[tag] = json_fake_data[tag][fake_order]
+
                             # Run the API request.
+                            error_msg = (
+                                self.connections.send_request(api_action=api_action,
+                                                              headers=Aux.otherConfigs['API_Headers'],
+                                                              body=dict_body))
 
-                            self.connections.send_request(api_action=api_action, headers=Aux.otherConfigs['API_Headers']
-                                                          , body=dict_body)
+                            Aux.otherConfigs['API_Response'] = (Aux.otherConfigs['API_Response']['errors']['$'][0] +
+                                                                error_msg + '\n')
 
-                            if Aux.otherConfigs['API_StatusCode'] == 400: ### Validar o erro que dá ao enviar o body errado.
+                            if Aux.otherConfigs['API_StatusCode'] == 400:
                                 api_status = True
                             else:
                                 api_status = False
 
                             api_status_final = (api_status_final and api_status)
-                            if api_status_final:
-                                return "Passed"
-                            else:
-                                return "Failed"
+                    if api_status_final:
+                        return "Passed"
+                    else:
+                        return "Failed"
 
                 if Aux.otherConfigs['API_Endpoint'] is None:
                     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorAPIMissingInfo']['Msg']}{Aux.Textcolor.END}")
@@ -1324,8 +1329,10 @@ class Main:
                     raise TypeError(Aux.logs['ErrorAPIMissingInfo']['Msg'])
             else:
                 # Run the API request.
-                self.connections.send_request(api_action=api_action, headers=Aux.otherConfigs['API_Headers'],
-                                              body=Aux.otherConfigs['API_Body'])
+                Aux.otherConfigs['API_Response'] = (
+                    self.connections.send_request(api_action=api_action,
+                                                  headers=Aux.otherConfigs['API_Headers'],
+                                                  body=Aux.otherConfigs['API_Body']))
 
         except Exception as ex:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequestAPI']['Msg']}{Aux.Textcolor.END}", ex)
@@ -1350,10 +1357,14 @@ class Main:
             # Status Code.
             if tag.upper() == "STATUS CODE" and int(param) == Aux.otherConfigs['API_StatusCode']:
                 status_code = "Passed"
+                #Aux.otherConfigs['API_Response'] = Aux.otherConfigs['API_StatusCode']
             elif tag.upper() == "STATUS CODE" and int(param) != Aux.otherConfigs['API_StatusCode']:
                 status_code = "Failed"
+                #Aux.otherConfigs['API_Response'] = Aux.otherConfigs['API_StatusCode']
             else:  # tag.upper() != "STATUS CODE":
                 find_content = Aux.Main.find_content_json(self, tag=tag, param=param)
+
+            #Aux.otherConfigs['API_Response'] = Aux.otherConfigs['API_StatusCode']
 
             if status_code == "Passed" or find_content == "Passed" or schema == "Passed":
                 return "Passed"

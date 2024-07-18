@@ -292,17 +292,15 @@ class Connections:
                                                   f"{Aux.Textcolor.END}\n", yesVal='y', noVal='n')
                     os.system('cls')
 
-                    print(
-                        f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['TestCaseList']['Msg']}"
-                        f"{Aux.Textcolor.END}")
-                    print(table)
-                    # print(f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['ChooseTestCase']['Msg']}"
-                    #       f"{Aux.Textcolor.END}\n")
-                    # tc_id = int(input())
-                    tc_id = pyip.inputInt(f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['ChooseTestCase']['Msg']}"
-                                          f"{Aux.Textcolor.END}\n")
-                    test_case_id_list.clear()
-                    test_case_id_list.append(int(tc_id))
+                    if isolated_tc.upper() == 'Y':
+                        print(
+                            f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['TestCaseList']['Msg']}"
+                            f"{Aux.Textcolor.END}")
+                        print(table)
+                        tc_id = pyip.inputInt(f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['ChooseTestCase']['Msg']}"
+                                              f"{Aux.Textcolor.END}\n")
+                        test_case_id_list.clear()
+                        test_case_id_list.append(int(tc_id))
 
                 else:
                     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetTestCase']['Msg']}{Aux.Textcolor.END}\n")
@@ -431,7 +429,7 @@ class Connections:
             Aux.Main.addLogs( message="General", value=Aux.logs['ErrorSliceDatas'], value1=str(e))
             #exit(1)
 
-    # Update the evidence in the TestCase.
+    # Upload the evidence in the TestCase.
     def SaveEvidenceTestCase(self, **kwargs):
 
         # kwargs variables.
@@ -536,14 +534,17 @@ class Connections:
                                            data=body)
 
                 Aux.otherConfigs['API_StatusCode'] = api_result.status_code
-                if api_result.status_code == 200:
-                    # Filter some fields.
-                    resp = json.loads(api_result.text)
-                    if resp is not []:
-                        Aux.otherConfigs['ResponseAPI'] = resp
+                resp = json.loads(api_result.text)
+                if resp is not []:
+                    Aux.otherConfigs['API_Response'] = resp
+
+                if api_result.status_code == 400:
+                    return resp['errors']['$'][0]
+                elif api_result.status_code == 200:
+                    return Aux.otherConfigs['API_Response']
 
         except Exception as e:
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['Error???']['Msg']}{Aux.Textcolor.END}", e)
+            print(f"{Aux.Textcolor.FAIL}{Aux.logs['Error???']['Msg']}{Aux.Textcolor.END}", e) ###
             Aux.Main.addLogs(message="General", value=Aux.logs['Error???'], value1=str(e))
             #exit(1)
 

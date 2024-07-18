@@ -274,26 +274,39 @@ class Main:
                             run_paragraf.add_picture(image_path, width=Inches(5))
                     else:
                         api_evidence_step = None
-                        if "AUTHORIZATION" in step.upper():
-                            api_evidence_step = otherConfigs['API_Authorization']
-                        elif "HEADERS" in step.upper():
-                            api_evidence_step = otherConfigs['API_Headers']
-                        elif "BODY" in step.upper() and "RESPONSE" not in verb.upper():
-                            api_evidence_step = otherConfigs['API_Body']
-                        elif "BODY" in step.upper() and "RESPONSE" in verb.upper():
-                            api_evidence_step = otherConfigs['ResponseAPI']['message']
-                        elif "ENDPOINT" in step.upper():
-                            api_evidence_step = otherConfigs['API_Endpoint']
-                        elif "PARAMS" in step.upper():
-                            api_evidence_step = otherConfigs['API_Params']
-                        elif "STATUS CODE" in step.upper():
-                            api_evidence_step = str(otherConfigs['API_StatusCode'])
-                        elif "SCHEMA" in step.upper():
-                            api_evidence_step = otherConfigs['JsonValidate']
-                        else:  # Response.
-                            api_evidence_step = json.dumps(otherConfigs['ResponseAPI'], indent=2)
+                        # if "AUTHORIZATION" in step.upper():
+                        #     api_evidence_step = otherConfigs['API_Authorization']
+                        # elif "HEADERS" in step.upper():
+                        #     api_evidence_step = otherConfigs['API_Headers']
+                        # elif "BODY" in step.upper() and "RESPONSE" not in verb.upper():
+                        #     api_evidence_step = otherConfigs['API_Body']
+                        # elif "BODY" in step.upper() and "RESPONSE" in verb.upper():
+                        #     if 'message' in otherConfigs['ResponseAPI']:
+                        #         api_evidence_step = otherConfigs['ResponseAPI']['message']
+                        #     elif 'errors' in otherConfigs['ResponseAPI']:
+                        #         api_evidence_step = otherConfigs['ResponseAPI']['errors']
+                        # elif "ENDPOINT" in step.upper():
+                        #     api_evidence_step = otherConfigs['API_Endpoint']
+                        # elif "PARAMS" in step.upper():
+                        #     api_evidence_step = otherConfigs['API_Params']
+                        # elif "STATUS CODE" in step.upper():
+                        #     api_evidence_step = str(otherConfigs['API_StatusCode'])
+                        # elif "SCHEMA" in step.upper():
+                        #     api_evidence_step = otherConfigs['API_ErrorMsg']
+                        # else:  # Response.
+                        #     api_evidence_step = json.dumps(otherConfigs['ResponseAPI'], indent=2)
 
-                        paragraf = document.add_paragraph(api_evidence_step)
+                        api_file_name = (otherConfigs["EvidenceNameAPI"] + str(step_order).zfill(2) +
+                                         otherConfigs["EvidenceExtensionAPI"])
+                        api_file = os.path.join(directories['EvidenceFolder'], test_set_path, api_file_name)
+
+                        with open(api_file, 'r') as api_evidence_file:
+                            api_evidence_step = api_evidence_file.readlines()
+
+                        if api_evidence_step.__len__() == 0:
+                            paragraf = document.add_paragraph(otherConfigs['API_NoResponseNeeded'])
+                        else:
+                            paragraf = document.add_paragraph(api_evidence_step)
                         run_paragraf = paragraf.runs[0]
                         run_paragraf.bold = False
 
@@ -848,10 +861,12 @@ class Main:
         validation = False
 
         try:
-            response = otherConfigs['ResponseAPI']
+            response = otherConfigs['API_Response']
 
-            # Simple message.
-            if 'message' in response:
+            # if 'STATUS CODE' in param:
+            #     pass
+
+            if 'message' in response:  # Simple message.
                 param1 = regex.search(r'(?<=\:\")(.*?)(?=\"})', param)
                 if param1.group(0) == response['message']:
                     otherConfigs['JsonValidate'] = otherConfigs['JsonValidateSuccess']['Msg']

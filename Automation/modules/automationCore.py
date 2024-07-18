@@ -29,7 +29,7 @@ class Main:
             Aux.Main.addLogs(message="General", value=Aux.logs["ErrorMain"]['Msg'], value1=str(ex))
 
         finally:
-            print(f"{Aux.Textcolor.FAIL}{Aux.otherConfigs['MsgFinishedEvidence']['Msg']}{Aux.Textcolor.END}")
+            print(f"{Aux.Textcolor.BLUE}{Aux.otherConfigs['MsgFinishedExecution']['Msg']}{Aux.Textcolor.END}")
 
     # Execute the test case iterations.
     def startAutomation(self, **kwargs):
@@ -169,6 +169,7 @@ class Main:
 
                     # Clear the evidences prints.
                     Aux.Main.deleteFiles(file_path=test_set_path, extension="png")
+                    Aux.Main.deleteFiles(file_path=test_set_path, extension="json")
 
                     # If there is file to download update to GitLab.
                     # if save_evidence and not status == "Aborted":
@@ -202,11 +203,13 @@ class Main:
         # Update the Run status.
         finally:
             # Clear the API variables.
-            Aux.otherConfigs['GetAPI_Endpoint'] = ''
-            Aux.otherConfigs['GetAPI_Authorization'] = ''
-            Aux.otherConfigs['GetAPI_Headers'] = ''
-            Aux.otherConfigs['GetAPI_Body'] = ''
-            Aux.otherConfigs['GetAPI_Params'] = ''
+
+            Aux.otherConfigs['API_Authorization'] = ''
+            Aux.otherConfigs['API_Body'] = ''
+            Aux.otherConfigs['API_Endpoint'] = ''
+            Aux.otherConfigs['API_Headers'] = ''
+            Aux.otherConfigs['API_Params'] = ''
+            Aux.otherConfigs['API_Response'] = ''
             Aux.otherConfigs['API_Step'] = False
             Aux.Main.addLogs(message="EndExecution")
 
@@ -276,6 +279,18 @@ class Main:
 
                     if not take_picture_status:
                         Aux.Main.addLogs(message="General", value=Aux.logs["ErrorScreenshot"], value1=step)
+
+                elif Aux.otherConfigs['API_Step']:
+                    api_file_name = (Aux.otherConfigs["EvidenceNameAPI"] + str(step_order).zfill(2) +
+                                     Aux.otherConfigs["EvidenceExtensionAPI"])
+                    api_file = os.path.join(Aux.directories['EvidenceFolder'], test_set_path, api_file_name)
+
+                    with open(api_file, 'w') as api_return:
+                        tag = parameters1[:parameters1.find(':')]
+                        if tag.upper() == "STATUS CODE":
+                            api_return.write(Aux.otherConfigs['API_StatusCode'].__str__())
+                        else: # Normal response.
+                            api_return.write(Aux.otherConfigs['API_Response'].__str__())
 
             # Set the test case status.
             status_counter = Aux.Counter(status_steps)
