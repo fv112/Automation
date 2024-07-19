@@ -3,7 +3,6 @@ import os.path
 import requests
 import urllib3
 from prettytable import PrettyTable
-import pyinputplus as pyip
 
 import Automation.modules.automationAux as Aux
 
@@ -111,7 +110,8 @@ class Connections:
     def getProjects(self):
 
         projects_dic = {}
-        project_selected = ''
+        project_selected = None
+        project_id = None
 
         try:
 
@@ -132,9 +132,16 @@ class Connections:
                         projects_dic[resp[order]['id']] = str(resp[order]['name'])
 
                     print(table.get_string(sortby="PROJECT ID"))
-                    project_selected = pyip.inputInt(prompt=f"{Aux.Textcolor.WARNING}"
-                                                            f"{Aux.otherConfigs['InformProject']['Msg']}"
-                                                            f"{Aux.Textcolor.END}\n")
+
+                    project_list = [str(project_id) for project_id in list(projects_dic.keys())]
+
+                    while True:
+                        print(f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['InformProject']['Msg']}{Aux.Textcolor.END}\n")
+                        project_selected = input()
+                        if Aux.Main.validate_selection(input_data=project_selected,
+                                                       search_list=project_list):
+                            break
+
                     project_name = projects_dic[int(project_selected)]
                     return project_selected, project_name
                 else:
@@ -159,6 +166,9 @@ class Connections:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetProjects']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetProjects'], value1=str(e))
             #exit(1)
+
+
+
 
     # Load the test plans.
     # def getTestPlans(self, **kwargs):
@@ -288,19 +298,31 @@ class Connections:
                         table.add_row([id_test + 1, str(testCase_id['iid']), testCase_id['title']])
                         test_case_id_list.append(testCase_id['iid'])
 
-                    isolated_tc = pyip.inputYesNo(f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['AskCT']['Msg']}"
-                                                  f"{Aux.Textcolor.END}\n", yesVal='y', noVal='n')
+                    while True:
+                        print(f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['AskCT']['Msg']}"
+                              f"{Aux.Textcolor.END}\n")
+                        isolated_tc = input()
+                        if Aux.Main.validate_selection(input_data=isolated_tc.upper(), search_list=['Y', 'S', 'N']):
+                            break
+
                     os.system('cls')
 
-                    if isolated_tc.upper() == 'Y':
-                        print(
-                            f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['TestCaseList']['Msg']}"
-                            f"{Aux.Textcolor.END}")
-                        print(table)
-                        tc_id = pyip.inputInt(f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['ChooseTestCase']['Msg']}"
-                                              f"{Aux.Textcolor.END}\n")
-                        test_case_id_list.clear()
-                        test_case_id_list.append(int(tc_id))
+                    print(
+                        f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['TestCaseList']['Msg']}"
+                        f"{Aux.Textcolor.END}")
+                    print(table)
+
+                    test_case_list = [str(testcase_id) for testcase_id in test_case_id_list]
+
+                    while True:
+                        print(f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['ChooseTestCase']['Msg']}"
+                              f"{Aux.Textcolor.END}\n")
+                        tc_id = input()
+                        if Aux.Main.validate_selection(input_data=tc_id, search_list=test_case_list):
+                            break
+
+                    test_case_id_list.clear()
+                    test_case_id_list.append(int(tc_id))
 
                 else:
                     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetTestCase']['Msg']}{Aux.Textcolor.END}\n")

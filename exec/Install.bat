@@ -45,5 +45,5 @@ echo ---------------------------------------------------------------------------
 echo  New version installed.
 echo -----------------------------------------------------------------------------------------------------------------------
 
-
-pause
+cd C:\QA-Automation\Automation\Automation_EXE\Automation
+AutomationQA.exe

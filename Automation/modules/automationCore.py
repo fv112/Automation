@@ -255,7 +255,9 @@ class Main:
                     status_step = eval(Aux.verbs[verb]['Function'])(self)
                 else:
                     status_step = eval(Aux.verbs[verb]['Function'])(self, verb=verb, parameters1=parameters1,
-                                                                    parameters2=parameters2, step=step, api_action=verb)
+                                                                    parameters2=parameters2, step=step, api_action=verb,
+                                                                    num_of_steps=order_steps_list,
+                                                                    actual_step=step_order)
 
                 # Take the first step failed.
                 if status_step == "Failed" and step_failed is None:
@@ -285,7 +287,7 @@ class Main:
                                      Aux.otherConfigs["EvidenceExtensionAPI"])
                     api_file = os.path.join(Aux.directories['EvidenceFolder'], test_set_path, api_file_name)
 
-                    with (open(api_file, 'w') as api_return):
+                    with open(api_file, 'w') as api_return:
                         tag = parameters1[:parameters1.find(':')]
                         if tag.upper() == "STATUS CODE":
                             api_return.write(Aux.otherConfigs['API_StatusCode'].__str__())

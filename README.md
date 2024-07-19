@@ -1,12 +1,25 @@
 Automation QA - Release notes
 ----
+**Version 1.15.1**
+
+<em>19/07/2024</em>
+- <font color='red'>__[Novo]__</font> - Possibilidade da tradução da mensagem "Não há retorno para ser validado neste passo.".
+- <font color='red'>__[Novo]__</font> - Correção do erro de não gerar evidência para um teste web.
+#
+
+**Version 1.15.0**
+
+<em>19/07/2024</em>
+- Validação das opções de entrada sem utilizar biblioteca específica.
+- Erro informativo que o passo do Schema deve ser o último no caso de teste.
+
+
 **Version 1.14.0**
 
 <em>18/07/2024</em>
-- <font color='red'>__[Novo]__</font> - Alterada a cor da mensagem de "Finalizado".
-- <font color='red'>__[Novo]__</font> - Geração da evidência da API com dados fake.
-- <font color='red'>__[Novo]__</font> - Correção na validação do status code.
-#
+- Alterada a cor da mensagem de "Finalizado".
+- Geração da evidência da API com dados fake.
+- Correção na validação do status code.
 
 **Version 1.13.0**
 

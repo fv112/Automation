@@ -224,10 +224,12 @@ class Main:
 
                 return None
 
-            step_order = 1
+            # step_order = 1
 
             # Read the test case steps and add them in the order.
-            for step in steps_list:
+            for step_order, step in enumerate(steps_list):
+
+                step_order += 1
 
                 verb = step.split()[0]
                 # Don't execute the step with No / Não.
@@ -272,30 +274,8 @@ class Main:
                                                      height=eval(otherConfigs["EvidenceHeight"]))
                         else:
                             run_paragraf.add_picture(image_path, width=Inches(5))
-                    else:
+                    elif otherConfigs['API_Step']:
                         api_evidence_step = None
-                        # if "AUTHORIZATION" in step.upper():
-                        #     api_evidence_step = otherConfigs['API_Authorization']
-                        # elif "HEADERS" in step.upper():
-                        #     api_evidence_step = otherConfigs['API_Headers']
-                        # elif "BODY" in step.upper() and "RESPONSE" not in verb.upper():
-                        #     api_evidence_step = otherConfigs['API_Body']
-                        # elif "BODY" in step.upper() and "RESPONSE" in verb.upper():
-                        #     if 'message' in otherConfigs['ResponseAPI']:
-                        #         api_evidence_step = otherConfigs['ResponseAPI']['message']
-                        #     elif 'errors' in otherConfigs['ResponseAPI']:
-                        #         api_evidence_step = otherConfigs['ResponseAPI']['errors']
-                        # elif "ENDPOINT" in step.upper():
-                        #     api_evidence_step = otherConfigs['API_Endpoint']
-                        # elif "PARAMS" in step.upper():
-                        #     api_evidence_step = otherConfigs['API_Params']
-                        # elif "STATUS CODE" in step.upper():
-                        #     api_evidence_step = str(otherConfigs['API_StatusCode'])
-                        # elif "SCHEMA" in step.upper():
-                        #     api_evidence_step = otherConfigs['API_ErrorMsg']
-                        # else:  # Response.
-                        #     api_evidence_step = json.dumps(otherConfigs['ResponseAPI'], indent=2)
-
                         api_file_name = (otherConfigs["EvidenceNameAPI"] + str(step_order).zfill(2) +
                                          otherConfigs["EvidenceExtensionAPI"])
                         api_file = os.path.join(directories['EvidenceFolder'], test_set_path, api_file_name)
@@ -304,15 +284,12 @@ class Main:
                             api_evidence_step = api_evidence_file.readlines()
 
                             if api_evidence_step.__len__() == 0:
-                                paragraf = document.add_paragraph(otherConfigs['API_NoResponseNeeded'])
+                                paragraf = document.add_paragraph(otherConfigs['API_NoResponseNeeded']['Msg'])
                                 run_paragraf = paragraf.runs[0]
                                 run_paragraf.bold = False
                             else:
                                 for line in api_evidence_step:
                                     paragraf = document.add_paragraph(line)
-                                #run_paragraf = paragraf.runs[0]
-                                #run_paragraf.bold = False
-                                    #run_paragraf = paragraf.add_run()
                                     run_paragraf = paragraf.runs[0]
                                     run_paragraf.bold = False
 
@@ -321,7 +298,7 @@ class Main:
                                                       otherConfigs["DisabledStep"]['Msg'])
                     run_paragraf = paragraf.add_run()
 
-                step_order += 1
+                # step_order += 1
 
             # Save the file.
             if step_failed:
@@ -916,6 +893,21 @@ class Main:
 
         return f"{minutes:02}:{remaining_seconds:06.3f}"
 
+    def validate_selection(**kwargs):
+
+        # kwargs variables.
+        input_data = kwargs.get("input_data")
+        search_list = kwargs.get("search_list")
+
+        try:
+            if input_data in search_list:
+                return True
+            else:
+                raise ValueError
+
+        except ValueError:
+            return False
+
 
 """---------------------------------------------------------------------------------------------------------------------
 CLASS: API Schema
@@ -933,7 +925,6 @@ class ApiSchema:
         self.swagger_link = swagger_link
         self.swagger_file = 'swagger.json'
         self.resolved_schema = None
-        # self.json_fake_data = None
 
     def api_check(self):
 
@@ -962,7 +953,6 @@ class ApiSchema:
             with open(os.path.join(directories['SwaggerFolder'], self.swagger_file), 'w', encoding='utf-8') as file:
                 json.dump(schema, file, ensure_ascii=False, indent=2)
 
-            # print(f"The 'additional properties was changed from 'False' to 'True'")
 
             # Generate and print the fake data.
             for definition_name, definition_schema in schema.items():
@@ -995,9 +985,6 @@ class ApiSchema:
 
         try:
             with open(file_path, 'r') as f:
-                # if '502 Bad Gateway' in f.readlines():
-                #     print("Erro de 502 Bad Gateway")
-                # else:
                 return json.load(f)
 
         except Exception as ex:

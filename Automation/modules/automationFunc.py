@@ -1268,6 +1268,8 @@ class Main:
         # kwargs variables:
         parameters1 = kwargs.get("parameters1")
         api_action = kwargs.get("api_action")
+        num_of_steps = kwargs.get("num_of_steps")
+        actual_step = kwargs.get("actual_step")
 
         # Variables
         Aux.otherConfigs['API_Step'] = True
@@ -1291,6 +1293,9 @@ class Main:
                 elif tag.upper() == 'PARAMS':
                     Aux.otherConfigs['API_Params'] = parameters1[parameters1.find(':') + 1:].strip()
                 elif tag.upper() == "SCHEMA":
+                    if num_of_steps.__len__() != actual_step:
+                        raise Exception(Aux.logs['ErrorAPISchema']['Msg'])
+
                     if Aux.otherConfigs['API_Body']:
                         dict_body = ast.literal_eval(Aux.otherConfigs['API_Body'])
                     else:
