@@ -227,7 +227,7 @@ logs:
         ErrorIsDisplayed: {Type: Error, Msg: Elemento NÃO localizado ou impossível de identificar se esta visivel!, Where: isDisplayed},
         ErrorIsEnable: {Type: Error, Msg: Elemento NÃO localizado ou impossível de identificar seu status!, Where: IsEnable},
         ErrorIsSelected: {Type: Error, Msg: Elemento NÃO localizado ou impossível de identificar seu status!, Where: isSelected},
-        ErrorHighLight: {Type: Error, Msg: Não foi possível destacar o componente!, Where: highlight},
+        ErrorHighLight: {Type: Error, Msg: Não foi possível destacar o componente!, Where: automationFunc - highlight},
         ErrorInstance: {Type: Warning, Msg: Esta instância não possui projetos!, Where: getProjects},
         ErrorLineEmpty: {Type: Error, Msg: Há uma célula em branco no caso de teste!, Where: sliceDatas},
         ErrorLoadConfigs: {Type: Error, Msg: Erro ao carregar as configurações!, Where: loadConfigs},

@@ -107,7 +107,8 @@ class Connections:
 
     # ===================================== Modules to extract info from GitLab ========================================
     # Load the project list from GitLab.
-    def getProjects(self):
+    @staticmethod
+    def getProjects():
 
         projects_dic = {}
         project_selected = None
@@ -166,9 +167,6 @@ class Connections:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetProjects']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetProjects'], value1=str(e))
             #exit(1)
-
-
-
 
     # Load the test plans.
     # def getTestPlans(self, **kwargs):
@@ -273,7 +271,9 @@ class Connections:
 
     # ------------------------------------------------------------------------------------------------------------------
     # Load the test cases.
+
     def getTestCases(self, **kwargs):
+
         try:
 
             # kwargs variables.
@@ -282,7 +282,7 @@ class Connections:
             # Variables.
             test_case_id_list = []
 
-            new_url = url + 'projects/' + str(project_id) + '/issues?labels=Test%20case'
+            new_url = url + 'projects/' + str(project_id) + '/issues?labels=Test%20case&per_page=1000&page=1'
 
             # Execute the request from Azure.
             s = requests.get(new_url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, verify=False)

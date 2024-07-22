@@ -60,7 +60,7 @@ class Main:
                 new_element = driver.find_element(tag, parameters1)
 
                 if new_element is not None:
-                    Main.highlight(self, newelement=new_element, effect_time=1, color=color, border=3)
+                    Main.highlight(self, new_element=new_element, effect_time=1, color=color, border=3)
 
                     Aux.Main.addLogs(message="General", value=Aux.logs["FindElement"], parameters1=tag,
                                      parameters2=parameters1)

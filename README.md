@@ -1,10 +1,17 @@
 Automation QA - Release notes
 ----
+**Version 1.15.3**
+
+<em>22/07/2024</em>
+- <font color='red'>__[Novo]__</font> - Correção do highlight.
+- <font color='red'>__[Novo]__</font> - Correção da página de 1000 casos de teste por página.
+#
+
 **Version 1.15.2**
 
-<em>19/07/2024</em>
-- <font color='red'>__[Novo]__</font> - Correção do erro ao alterar a página.
-#
+<em>22/07/2024</em>
+- Correção do erro ao alterar a página.
+
 
 **Version 1.15.1**
 
