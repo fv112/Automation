@@ -856,7 +856,7 @@ class Main:
     def alterWindow(self):
         try:
             for handle in driver.window_handles:
-                driver.switch_to_window(handle)
+                driver.switch_to.window(handle)
 
             Aux.Main.addLogs(message="General", value=Aux.logs["AlterWindow"])
 

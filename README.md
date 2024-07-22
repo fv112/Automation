@@ -1,11 +1,17 @@
 Automation QA - Release notes
 ----
+**Version 1.15.2**
+
+<em>19/07/2024</em>
+- <font color='red'>__[Novo]__</font> - Correção do erro ao alterar a página.
+#
+
 **Version 1.15.1**
 
 <em>19/07/2024</em>
-- <font color='red'>__[Novo]__</font> - Possibilidade da tradução da mensagem "Não há retorno para ser validado neste passo.".
-- <font color='red'>__[Novo]__</font> - Correção do erro de não gerar evidência para um teste web.
-#
+- Possibilidade da tradução da mensagem "Não há retorno para ser validado neste passo.".
+- Correção do erro de não gerar evidência para um teste web.
+
 
 **Version 1.15.0**
 
