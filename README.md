@@ -1,11 +1,16 @@
 Automation QA - Release notes
 ----
+**Version 1.17.0**
+
+<em>23/07/2024</em>
+- <font color='red'>__[Novo]__</font> - Opção para informar se deseja gerar a evidência ou não.
+#
+
 **Version 1.16.0**
 
 <em>23/07/2024</em>
-- <font color='red'>__[Novo]__</font> - Alteração da estrutura do Teclar com CTRL ou ALT.
-- <font color='red'>__[Novo]__</font> - Posicionar o componente, no centro da tela, antes de executar uma ação. 
-#
+- Alteração da estrutura do Teclar com CTRL ou ALT.
+- Posicionar o componente, no centro da tela, antes de executar uma ação. 
 
 **Version 1.15.3**
 

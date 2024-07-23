@@ -12,6 +12,9 @@ class Main:
         self.connections = Con.Connections()
 
     def main(self):
+
+        save_evidence = 'N'
+
         try:
             Aux.Main.deleteDirectory(self, directory=Aux.directories["Temp"])
 
@@ -19,10 +22,22 @@ class Main:
 
             os.system('cls')
 
+            while True:
+                print(f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['SaveEvidenceMsg']['Msg']}{Aux.Textcolor.END}")
+                evidence = input()
+                if evidence.upper() in ['Y', 'S']:
+                    save_evidence = True
+                    break
+                elif evidence.upper() in ['', 'N']:
+                    save_evidence = False
+                    break
+
+            os.system('cls')
+
             test_case_id_list = self.connections.getTestCases(project_id=project_id)
 
             Main.startAutomation(self, project_id=project_id, project_name=project_name,
-                                 test_case_id_list=test_case_id_list)
+                                 test_case_id_list=test_case_id_list, save_evidence=save_evidence)
 
         except Exception as ex:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorMain']['Msg']}{Aux.Textcolor.END}", ex)
@@ -38,12 +53,12 @@ class Main:
         project_id = kwargs.get("project_id")
         project_name = kwargs.get('project_name')
         test_case_id_list = kwargs.get("test_case_id_list")
+        save_evidence = kwargs.get("save_evidence")
 
         # Variables.
         duration = 0
         status = None
-        save_evidence = True
-        # status_ct_automation = None
+        #save_evidence = True
         testcase_status = None
         status_list = []
 
@@ -90,10 +105,11 @@ class Main:
                                        "\nPROJECT: " + project_name + "\n")
 
                 print(f"{Aux.Textcolor.BOLD}{name_testcase}{Aux.Textcolor.END}")
-                status, step_failed, save_evidence, take_picture_status =\
+                status, step_failed, take_picture_status =\
                     Main.executeStepByStep(self, order_steps_list=order_steps_list, steps_list=steps_list,
                                            verbs_list=verbs_list, test_set_path=test_set_path,
-                                           parameters1_list=parameters1_list, parameters2_list=parameters2_list)
+                                           save_evidence=save_evidence, parameters1_list=parameters1_list,
+                                           parameters2_list=parameters2_list)
 
                 # Set the list of iteration status for the test case.
                 status_list.append(status)
@@ -223,11 +239,11 @@ class Main:
         verbs_list = kwargs.get('verbs_list')
         parameters1_list = kwargs.get('parameters1_list')
         parameters2_list = kwargs.get('parameters2_list')
+        save_evidence = kwargs.get('save_evidence')
 
         # Variables.
         step_failed = None
         status_steps = []
-        save_evidence = True
         take_picture_status = None
 
         try:
@@ -271,7 +287,9 @@ class Main:
                     status_steps.append("Passed")
 
                 # Take the screenshot of each step, except to the NoExecute step OR API Step.
-                if verb not in ('NoExecute', 'Fechar', 'Cerrar', 'Close') and Aux.otherConfigs['API_Step'] is False:
+                if (verb not in ('NoExecute', 'Fechar', 'Cerrar', 'Close') and
+                        Aux.otherConfigs['API_Step'] is False and
+                        save_evidence):
 
                     # Image name file.
                     image_name = Aux.otherConfigs["EvidenceName"] + str(step_order).zfill(2)
@@ -282,7 +300,7 @@ class Main:
                     if not take_picture_status:
                         Aux.Main.addLogs(message="General", value=Aux.logs["ErrorScreenshot"], value1=step)
 
-                elif Aux.otherConfigs['API_Step']:
+                elif Aux.otherConfigs['API_Step'] and save_evidence:
                     api_file_name = (Aux.otherConfigs["EvidenceNameAPI"] + str(step_order).zfill(2) +
                                      Aux.otherConfigs["EvidenceExtensionAPI"])
                     api_file = os.path.join(Aux.directories['EvidenceFolder'], test_set_path, api_file_name)
@@ -292,7 +310,8 @@ class Main:
                         if tag.upper() == "STATUS CODE":
                             api_return.write(Aux.otherConfigs['API_StatusCode'].__str__())
                         else:  # Normal response.
-                            if (type(Aux.otherConfigs['API_Response']) is dict) and (Aux.otherConfigs['API_Response'].__len__() > 1):
+                            if (type(Aux.otherConfigs['API_Response']) is dict) and (
+                                    Aux.otherConfigs['API_Response'].__len__() > 1):
                                 for tag, value in Aux.otherConfigs['API_Response'].items():
                                     api_return.writelines(f"\nTAG AND NEW VALUE: {tag}\n")
                                     api_return.writelines(f"RESULT:{value}\n")
@@ -307,7 +326,7 @@ class Main:
             else:
                 status_ct = "Passed"
 
-            return status_ct, step_failed, save_evidence, take_picture_status
+            return status_ct, step_failed, take_picture_status
 
         except Exception as ex:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorExecuteStepByStep']['Msg']}{Aux.Textcolor.END}", ex)
