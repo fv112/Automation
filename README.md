@@ -1,11 +1,18 @@
 Automation QA - Release notes
 ----
+**Version 1.16.0**
+
+<em>23/07/2024</em>
+- <font color='red'>__[Novo]__</font> - Alteração da estrutura do Teclar com CTRL ou ALT.
+- <font color='red'>__[Novo]__</font> - Posicionar o componente, no centro da tela, antes de executar uma ação. 
+#
+
 **Version 1.15.3**
 
 <em>22/07/2024</em>
-- <font color='red'>__[Novo]__</font> - Correção do highlight.
-- <font color='red'>__[Novo]__</font> - Correção da página de 1000 casos de teste por página.
-#
+- Correção do highlight.
+- Correção da página de 1000 casos de teste por página.
+
 
 **Version 1.15.2**
 

@@ -298,8 +298,6 @@ class Main:
                                                       otherConfigs["DisabledStep"]['Msg'])
                     run_paragraf = paragraf.add_run()
 
-                # step_order += 1
-
             # Save the file.
             if step_failed:
                 path = os.path.join(test_set_path, '[BUG] - ' +

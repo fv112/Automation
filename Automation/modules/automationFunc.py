@@ -41,9 +41,10 @@ class Main:
 
         # kwargs variables.
         parameters1 = kwargs.get('parameters1')
+
         color = kwargs.get('color', 'blue')
 
-        search_list = (
+        search_list = [
             By.ID,
             By.NAME,
             By.XPATH,
@@ -52,14 +53,19 @@ class Main:
             By.TAG_NAME,
             By.LINK_TEXT,
             By.PARTIAL_LINK_TEXT
-        )
+        ]
 
         for tag in search_list:
+
             try:
                 driver.implicitly_wait(1)
+
                 new_element = driver.find_element(tag, parameters1)
 
                 if new_element is not None:
+                    # Set element focus.
+                    driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", new_element)
+
                     Main.highlight(self, new_element=new_element, effect_time=1, color=color, border=3)
 
                     Aux.Main.addLogs(message="General", value=Aux.logs["FindElement"], parameters1=tag,
@@ -88,8 +94,10 @@ class Main:
             Aux.Main.addLogs(message="General", value=Aux.logs["FillField"])
 
             return "Passed"
+
         except Exception as ex:
             Aux.Main.addLogs(message="General", value=Aux.logs["ErrorFillField"], parameters1=str(ex))
+
             return "Failed"
 
     # Don't execute the step.
@@ -275,13 +283,20 @@ class Main:
             elif parameters1.upper() == 'DELETE':
                 for _ in range(parameters2): actions.send_keys(Keys.DELETE)
             # Alt or Ctrl + <any other key>.
-            elif parameters1.upper().__contains__('CTRL') or parameters1.upper().__contains__('ALT'):
+            elif parameters1.upper().__contains__('CTRL'):
                 for _ in range(parameters2):
-                    Aux.pyautogui.keyDown(parameters1.upper().rsplit('+')[0])
+                    actions.key_down(Keys.CONTROL)
                     Aux.time.sleep(.2)
-                    Aux.pyautogui.keyDown(parameters1.upper().rsplit('+')[1])
+                    actions.send_keys(parameters1.upper().rsplit('+')[1].strip())
                     Aux.time.sleep(.2)
-                    Aux.pyautogui.keyUp(parameters1.upper().rsplit('+')[0])
+                    actions.key_up(Keys.CONTROL)
+            elif parameters1.upper().__contains__('ALT'):
+                for _ in range(parameters2):
+                    actions.key_down(Keys.ALT)
+                    Aux.time.sleep(.2)
+                    actions.send_keys(parameters1.upper().rsplit('+')[1].strip())
+                    Aux.time.sleep(.2)
+                    actions.key_up(Keys.ALT)
 
             actions.perform()
 
