@@ -266,6 +266,7 @@ logs:
         ErrorSaveFile: {Type: Error, Msg: Erro ao salvar o arquivo localmente!, Where: saveFile},
         ErrorScrollPage: {Type: Error, Msg: Erro ao rolar a página!, Where: ScrollPage},
         ErrorSetLanguage: {Type: Error, Msg: Erro ao configurar o idioma!, Where: setLanguage},
+        ErrorSendRequest: {Type: Error, Msg: Erro ao enviar a 'request' da API., Where: connection - send_request},
         ErrorSizeName: {Type: Error, Msg: O nome do caso de teste deve possuir 85 caracteres ou menos!, Where: validateTestName},
         ErrorSliceDatas: {Type: Error, Msg: Erro ao desmembrar os dados dos passos!, Where: sliceDatas},
         ErrorSliceDataBlank: {Type: Error, Msg: Verifique no Azure. Há pelo menos um campo em branco!, Where: sliceDatas},
@@ -356,17 +357,17 @@ directories:
         BeyondCompareSettings: Automation\configs\Settings.bcpkg,
         CompareDownloadFolder: C:\QA-Automation-Files\Repository\Automation\Compare_Download,
         ConfigFolder: Automation\configs,
-        DownloadFolder: C:\QA-Automation-Files\Repository\Automation\Download,
-        DownloadFolderTemp: C:\QA-Automation-Files\Repository\Automation\Download_Temp,
+        DownloadFolder: C:\ProgramData\QA-Automation-Files\Repository\Automation\Download,
+        DownloadFolderTemp: C:\ProgramData\QA-Automation-Files\Repository\Automation\Download_Temp,
         ESTFile: Automation\evidence\ETS - ,
-        EvidenceFolder: C:\QA-Automation-Files\Repository\Automation\Evidences,
-        EvidenceFolderManual: C:\QA-Automation-Files\Repository\Automation\Evidences\Manual,
-        HashFolder: C:\QA-Automation-Files\Repository\Automation\Hash,
-        LogFolder: C:\QA-Automation-Files\Repository\Automation\Logs,
-        SwaggerFolder: C:\QA-Automation-Files\Repository\Automation\Swagger,
-        Temp: C:\QA-Automation-Files\Repository\Automation\Temp\,
+        EvidenceFolder: C:\ProgramData\QA-Automation-Files\Repository\Automation\Evidences,
+        EvidenceFolderManual: C:\ProgramData\QA-Automation-Files\Repository\Automation\Evidences\Manual,
+        HashFolder: C:\ProgramData\QA-Automation-Files\Repository\Automation\Hash,
+        LogFolder: C:\ProgramData\QA-Automation-Files\Repository\Automation\Logs,
+        SwaggerFolder: C:\ProgramData\QA-Automation-Files\Repository\Automation\Swagger,
+        Temp: C:\ProgramData\QA-Automation-Files\Repository\Automation\Temp\,
         UnavailablePrint: Unavailable.jpg,
-        UpdateFolder: C:\QA-Automation-Files\Repository\NewVersion
+        UpdateFolder: C:\ProgramData\QA-Automation-Files\Repository\NewVersion
     }
 
 # List of other configurations.

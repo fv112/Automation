@@ -66,6 +66,7 @@ class Main:
             # Complete name (if it is using the VPN).
             executed_by = Aux.win32net.NetUserGetInfo(Aux.win32net.NetGetAnyDCName(),
                                                       Aux.win32api.GetUserName(), 2)["full_name"]
+
         except:
             # Windows login (if it is not using the VPN).
             executed_by = Aux.Main.get_display_name(self)

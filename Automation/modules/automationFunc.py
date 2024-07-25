@@ -28,7 +28,7 @@ from bs4 import BeautifulSoup
 import Automation.modules.automationAux as Aux
 import Automation.modules.connections as Con
 
-driver = None
+# driver = None
 
 
 class Main:
@@ -209,7 +209,7 @@ class Main:
             positiony = positions[1]
             positiony = positiony[1:]  # Only the numeric number.
 
-            # actions.drag_and_drop_by_offset(element_field, int(positionx) * 10, int(positiony) * 10)
+            #actions.drag_and_drop_by_offset(element_field, int(positionx) * 10, int(positiony) * 10)
             actions.perform()
 
             Aux.Main.addLogs(message="General", value=Aux.logs['DragDrop'])
@@ -678,7 +678,7 @@ class Main:
 
                 # Get the URL from the address bar (getURL).
                 elif '(url)' in parameters1:
-                    text_found, status = Main.getURL(self)
+                    text_found, status = Main.getURL()
                     parameters2 = parameters1.replace('(url)', '')
 
                     if parameters2 == text_found:
@@ -824,7 +824,7 @@ class Main:
                         status = "Failed"
 
             else:  # If Alert Element.
-                alert = driver.switch_to_alert()
+                alert = driver.switch_to.alert()
                 text_found = alert.text
 
                 if parameters2 == text_found:
@@ -1288,8 +1288,8 @@ class Main:
 
         # Variables
         Aux.otherConfigs['API_Step'] = True
-        headers = None
-        api_status = None
+        # headers = None
+        # api_status = None
         api_status_final = True
         error_msg_list = {}
 

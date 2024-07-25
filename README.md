@@ -1,10 +1,17 @@
 Automation QA - Release notes
 ----
+**Version 1.18.1**
+
+<em>24/07/2024</em>
+- <font color='red'>__[Novo]__</font> - Cor magenta atualizada nas evidências.
+- <font color='red'>__[Novo]__</font> - Alterado caminho para instalação da versão. Novo caminho ProgramData.
+#
+
 **Version 1.17.0**
 
 <em>23/07/2024</em>
-- <font color='red'>__[Novo]__</font> - Opção para informar se deseja gerar a evidência ou não.
-#
+- Opção para informar se deseja gerar a evidência ou não.
+
 
 **Version 1.16.0**
 

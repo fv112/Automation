@@ -111,8 +111,6 @@ class Connections:
     def getProjects():
 
         projects_dic = {}
-        project_selected = None
-        project_id = None
 
         try:
 
@@ -166,7 +164,7 @@ class Connections:
         except Exception as e:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetProjects']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetProjects'], value1=str(e))
-            #exit(1)
+            # exit(1)
 
     # Load the test plans.
     # def getTestPlans(self, **kwargs):
@@ -327,7 +325,7 @@ class Connections:
                 else:
                     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetTestCase']['Msg']}{Aux.Textcolor.END}\n")
                     Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetTestCase'])
-                    #exit(1)
+                    # exit(1)
 
                 return test_case_id_list
 
@@ -344,7 +342,7 @@ class Connections:
         except Exception as e:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetTestCases']['Msg']}{Aux.Textcolor.END}", e)
             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetTestCases'], value1=str(e))
-            #exit(1)
+            # exit(1)
 
     # ===================================================== TEST CASE ==================================================
     # Execute the Test Case from Azure.
@@ -380,7 +378,7 @@ class Connections:
         except Exception as e:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorExecuteTestCase']['Msg']}{Aux.Textcolor.END} - {e}")
             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorExecuteTestCase'], value1=str(e))
-            #exit(1)
+            # exit(1)
 
     # Extract the steps from Test Case.
     def getSteps(self, **kwargs):
@@ -405,7 +403,7 @@ class Connections:
         except Exception as e:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetSteps']['Msg']}{Aux.Textcolor.END} - {e}")
             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetSteps'], value1=str(e))
-            #exit(1)
+            # exit(1)
 
     # Dismember the variables from each test case.
     def sliceDatas(self, **kwargs):
@@ -449,7 +447,7 @@ class Connections:
         except Exception as e:
             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorSliceDatas']['Msg']}{Aux.Textcolor.END} - {e}")
             Aux.Main.addLogs( message="General", value=Aux.logs['ErrorSliceDatas'], value1=str(e))
-            #exit(1)
+            # exit(1)
 
     # Upload the evidence in the TestCase.
     def SaveEvidenceTestCase(self, **kwargs):
@@ -495,7 +493,7 @@ class Connections:
                 Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'], 
                                  value1='Status code: ' + str(q.status_code) + ' - ' + str(q.text) + 
                                         ' - SaveEvidenceTestCase - GetToken')
-                #exit(1)
+                # exit(1)
 
             new_url = (url + 'projects/' + str(project_id) + '/issues/' + str(test_case_id) + '/notes')
 
@@ -567,9 +565,9 @@ class Connections:
                     return Aux.otherConfigs['API_Response']
 
         except Exception as e:
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['Error???']['Msg']}{Aux.Textcolor.END}", e) ###
-            Aux.Main.addLogs(message="General", value=Aux.logs['Error???'], value1=str(e))
-            #exit(1)
+            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorSendRequest']['Msg']}{Aux.Textcolor.END}", e)
+            Aux.Main.addLogs(message="General", value=Aux.logs['ErrorSendRequest'], value1=str(e))
+            # exit(1)
 
     # def UpdateStatusAutomated(self, **kwargs):
     #
