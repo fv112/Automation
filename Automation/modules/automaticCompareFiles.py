@@ -1,5 +1,4 @@
-import automationAux as Aux
-import connections as GitLab
+import common_libs as Lib
 
 
 class Main:
@@ -31,21 +30,21 @@ class Main:
                 for _ in range(0, len(list_files_baseline)):
 
                     # Generate a hash for the actual baseline file.
-                    path_file = Aux.os.path.join(Aux.directories['CompareDownloadFolder'], test_name,
+                    path_file = Lib.Aux.os.path.join(Lib.Aux.directories['CompareDownloadFolder'], test_name,
                                                  list_files_baseline[0])
-                    baseline_actual_hash = Aux.Main.generateHash(self, path_file=path_file)
+                    baseline_actual_hash = Lib.Aux.Main.generateHash(self, path_file=path_file)
 
-                    Aux.Main.compareBeyondCompare(self, test_name=test_name, baseline=list_files_baseline[0],
+                    Lib.Aux.Main.compareBeyondCompare(self, test_name=test_name, baseline=list_files_baseline[0],
                                                   new_file=list_files_new[0])
 
                     # Generate a hash for the new baseline file.
-                    new_actual_hash = Aux.Main.generateHash(self, path_file=path_file)
+                    new_actual_hash = Lib.Aux.Main.generateHash(self, path_file=path_file)
 
                     # Compare hash and update the new baseline to GitLab.
                     if baseline_actual_hash != new_actual_hash:
                         GitLab.AzureConnection.CheckDownloadFile(self, project=project, test_case_id=str(id_testcase),
-                                                                evidence_folder=Aux.os.path.join(
-                                                                    Aux.directories['CompareDownloadFolder'], test_name)
+                                                                evidence_folder=Lib.Aux.os.path.join(
+                                                                    Lib.Aux.directories['CompareDownloadFolder'], test_name)
                                                                 , file_name=list_files_baseline[0],
                                                                 download_file_name=list_files_baseline[0], compare=True)
 
@@ -53,12 +52,12 @@ class Main:
                     list_files_new.pop(0)
 
             # Delete the Compare_Download_Temp directory.
-            Aux.Main.deleteDirectory(self, directory=Aux.directories['DownloadFolderTemp'])
+            Lib.Aux.Main.deleteDirectory(self, directory=Lib.Aux.directories['DownloadFolderTemp'])
 
         except Exception as ex:
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorMain']['Msg']}{Aux.Textcolor.END}", ex)
-            Aux.Main.addLogs(self, message="General", value=Aux.logs["ErrorMain"], value1=str(ex))
+            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorMain']['Msg']}{Lib.Aux.Textcolor.END}", ex)
+            Lib.Aux.Main.addLogs(self, message="General", value=Lib.Aux.logs["ErrorMain"], value1=str(ex))
             ###exit(1)
 
         finally:
-            print(f"{Aux.Textcolor.FAIL}{Aux.otherConfigs['MsgFinishedCompare']['Msg']}{Aux.Textcolor.END}")
+            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.otherConfigs['MsgFinishedCompare']['Msg']}{Lib.Aux.Textcolor.END}")

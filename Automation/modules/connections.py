@@ -1,14 +1,8 @@
-import json
-import os.path
-import requests
-import urllib3
-from prettytable import PrettyTable
-
-import Automation.modules.automationAux as Aux
+import common_libs as Lib
 
 url = 'https://sbs.t-systems.com.br/gitlab/api/v4/'
 
-urllib3.disable_warnings()
+Lib.urllib3.disable_warnings()
 
 
 class Connections:
@@ -97,8 +91,8 @@ class Connections:
     #             completed_date_list.append(completed_date)
     #
     #     except (TypeError, AttributeError):
-    #         print(f"{Aux.Textcolor.FAIL}{Aux.otherConfigs['IDRunInvalid']['Msg']} '{test_run_id}'"
-    #               f"{Aux.Textcolor.END}")
+    #         print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.otherConfigs['IDRunInvalid']['Msg']} '{test_run_id}'"
+    #               f"{Lib.Aux.Textcolor.END}")
     #         #exit(1)
     #
     #     else:
@@ -116,15 +110,16 @@ class Connections:
 
             new_url = url + 'projects?topic=QA-Automation'
 
-            t = requests.get(new_url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, verify=False)
+            t = Lib.requests.get(new_url, headers={'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["Bearer"]},
+                                 verify=False)
             if t.status_code == 200:
 
                 # Filter some fields.
-                json_str = json.dumps(t.json())
-                resp = json.loads(json_str)
+                json_str = Lib.json.dumps(t.json())
+                resp = Lib.json.loads(json_str)
                 if resp is not []:
 
-                    table = PrettyTable(['PROJECT ID', 'PROJECT'])
+                    table = Lib.PrettyTable(['PROJECT ID', 'PROJECT'])
 
                     for order in range(0, resp.__len__()):
                         table.add_row([str(resp[order]['id']), str(resp[order]['name'])])
@@ -135,35 +130,35 @@ class Connections:
                     project_list = [str(project_id) for project_id in list(projects_dic.keys())]
 
                     while True:
-                        print(f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['InformProject']['Msg']}{Aux.Textcolor.END}\n")
+                        print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['InformProject']['Msg']}{Lib.Aux.Textcolor.END}\n")
                         project_selected = input()
-                        if Aux.Main.validate_selection(input_data=project_selected,
+                        if Lib.Aux.Main.validate_selection(input_data=project_selected,
                                                        search_list=project_list):
                             break
 
                     project_name = projects_dic[int(project_selected)]
                     return project_selected, project_name
                 else:
-                    print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorInstance']['Msg']}{Aux.Textcolor.END}\n")
-                    Aux.Main.addLogs(message="General", value=Aux.logs['ErrorInstance']['Msg'])
+                    print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorInstance']['Msg']}{Lib.Aux.Textcolor.END}\n")
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorInstance']['Msg'])
 
             elif t.status_code == 401:
-                print(f"{Aux.Textcolor.FAIL}{Aux.otherConfigs['RunAgain']['Msg']}"
-                      f"{Aux.Textcolor.UNDERLINE}\n")
-                Aux.Main.addLogs(message="General", value=Aux.otherConfigs['TokenExpired'])
+                print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.otherConfigs['RunAgain']['Msg']}"
+                      f"{Lib.Aux.Textcolor.UNDERLINE}\n")
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.otherConfigs['TokenExpired'])
 
             else:
-                print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.UNDERLINE}\n")
-                Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'],
+                print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequest']['Msg']}{Lib.Aux.Textcolor.UNDERLINE}\n")
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorRequest'],
                                  value1='Status code: ' + str(t.status_code) + ' - getProjects')
 
-        except requests.exceptions.RequestException:
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorConnection']['Msg']}{Aux.Textcolor.END}")
-            Aux.Main.addLogs(message="General", value=Aux.logs['ErrorConnection'])
+        except Lib.requests.exceptions.RequestException:
+            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorConnection']['Msg']}{Lib.Aux.Textcolor.END}")
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorConnection'])
 
         except Exception as e:
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetProjects']['Msg']}{Aux.Textcolor.END}", e)
-            Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetProjects'], value1=str(e))
+            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorGetProjects']['Msg']}{Lib.Aux.Textcolor.END}", e)
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorGetProjects'], value1=str(e))
             # exit(1)
 
     # Load the test plans.
@@ -183,7 +178,7 @@ class Connections:
         #                + version
         #
         #     # Execute the request from Azure.
-        #     q = requests.get(url, auth=Aux.otherConfigs['HttpBasicAuth'], verify=False)
+        #     q = requests.get(url, auth=Lib.Aux.otherConfigs['HttpBasicAuth'], verify=False)
         #     if q.status_code == 200:
         #         # Filter some fields.
         #         json_str = json.dumps(q.json())
@@ -196,25 +191,25 @@ class Connections:
         #             return test_plans
         #
         #         else:
-        #             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetTestPlan']['Msg']}{Aux.Textcolor.END}\n")
-        #             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetTestPlan'])
+        #             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorGetTestPlan']['Msg']}{Lib.Aux.Textcolor.END}\n")
+        #             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorGetTestPlan'])
         #             #exit(1)
         #
         #     else:
-        #         print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
-        #         Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'],
+        #         print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequest']['Msg']}{Lib.Aux.Textcolor.END}\n")
+        #         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorRequest'],
         #                     value1='Status code: ' + str(q.status_code) +' - getTestPlans')
         #
         # except ValueError:
-        #     print(f"{Aux.Textcolor.FAIL}'{test_plan_selected}' {Aux.otherConfigs['OptionInvalid']['Msg']}"
-        #           f"{Aux.Textcolor.END}")
+        #     print(f"{Lib.Aux.Textcolor.FAIL}'{test_plan_selected}' {Lib.Aux.otherConfigs['OptionInvalid']['Msg']}"
+        #           f"{Lib.Aux.Textcolor.END}")
         #     #exit(0)
 
         #     return 0
         #
         # except Exception as e:
-        #     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetTestPlans']['Msg']}{Aux.Textcolor.END}", e)
-        #     Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetTestPlans'], value1=str(e))
+        #     print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorGetTestPlans']['Msg']}{Lib.Aux.Textcolor.END}", e)
+        #     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorGetTestPlans'], value1=str(e))
         #     # #exit(1)
 
     # Load the Test Suits.
@@ -235,7 +230,7 @@ class Connections:
             #            '?api-version=' + version
             #
             # # Execute the request from Azure.
-            # r = requests.get(url, auth=Aux.otherConfigs['HttpBasicAuth'], verify=False)
+            # r = requests.get(url, auth=Lib.Aux.otherConfigs['HttpBasicAuth'], verify=False)
             # if r.status_code == 200:
             #     # Filter some fields.
             #     json_str = json.dumps(r.json())
@@ -248,23 +243,23 @@ class Connections:
             #         return test_suit
             #
             #     else:
-            #         print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetTestSuit']['Msg']}{Aux.Textcolor.END}\n")
-            #         Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetTestSuit'])
+            #         print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorGetTestSuit']['Msg']}{Lib.Aux.Textcolor.END}\n")
+            #         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorGetTestSuit'])
             #
             # else:
-            #     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
-            #     Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'],
+            #     print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequest']['Msg']}{Lib.Aux.Textcolor.END}\n")
+            #     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorRequest'],
             #                 value1='Status code: ' + str(r.status_code) + ' - getTestSuits')
         #     return 0, 0
         #
         # except ValueError:
-        #     print(f"{Aux.Textcolor.FAIL}'{test_suit_selected}' {Aux.otherConfigs['OptionInvalid']['Msg']}"
-        #           f"{Aux.Textcolor.END}")
+        #     print(f"{Lib.Aux.Textcolor.FAIL}'{test_suit_selected}' {Lib.Aux.otherConfigs['OptionInvalid']['Msg']}"
+        #           f"{Lib.Aux.Textcolor.END}")
         #     #exit(0)
         #
         # except Exception as e:
-        #     print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetTestSuits']['Msg']}{Aux.Textcolor.END}", e)
-        #     Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetTestSuits'], value1=str(e))
+        #     print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorGetTestSuits']['Msg']}{Lib.Aux.Textcolor.END}", e)
+        #     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorGetTestSuits'], value1=str(e))
         #     #exit(1)
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -283,65 +278,65 @@ class Connections:
             new_url = url + 'projects/' + str(project_id) + '/issues?labels=Test%20case&per_page=1000&page=1'
 
             # Execute the request from Azure.
-            s = requests.get(new_url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, verify=False)
+            s = Lib.requests.get(new_url, headers={'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["Bearer"]}, verify=False)
             if s.status_code == 200:
 
-                table = PrettyTable(['ORDER', 'TEST CASE ID', 'TEST CASE'])
+                table = Lib.PrettyTable(['ORDER', 'TEST CASE ID', 'TEST CASE'])
 
                 # Filter some fields.
-                json_str = json.dumps(s.json())
-                resp = json.loads(json_str)
+                json_str = Lib.json.dumps(s.json())
+                resp = Lib.json.loads(json_str)
                 if resp.__len__() != 0:
                     for id_test, testCase_id in enumerate(resp):
                         table.add_row([id_test + 1, str(testCase_id['iid']), testCase_id['title']])
                         test_case_id_list.append(testCase_id['iid'])
 
                     while True:
-                        print(f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['AskCT']['Msg']}"
-                              f"{Aux.Textcolor.END}\n")
+                        print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['AskCT']['Msg']}"
+                              f"{Lib.Aux.Textcolor.END}\n")
                         isolated_tc = input()
-                        if Aux.Main.validate_selection(input_data=isolated_tc.upper(), search_list=['Y', 'S', 'N']):
+                        if Lib.Aux.Main.validate_selection(input_data=isolated_tc.upper(), search_list=['Y', 'S', 'N']):
                             break
 
-                    os.system('cls')
+                    Lib.os.system('cls')
 
                     print(
-                        f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['TestCaseList']['Msg']}"
-                        f"{Aux.Textcolor.END}")
+                        f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['TestCaseList']['Msg']}"
+                        f"{Lib.Aux.Textcolor.END}")
                     print(table)
 
                     test_case_list = [str(testcase_id) for testcase_id in test_case_id_list]
 
                     while True:
-                        print(f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['ChooseTestCase']['Msg']}"
-                              f"{Aux.Textcolor.END}\n")
+                        print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['ChooseTestCase']['Msg']}"
+                              f"{Lib.Aux.Textcolor.END}\n")
                         tc_id = input()
-                        if Aux.Main.validate_selection(input_data=tc_id, search_list=test_case_list):
+                        if Lib.Aux.Main.validate_selection(input_data=tc_id, search_list=test_case_list):
                             break
 
                     test_case_id_list.clear()
                     test_case_id_list.append(int(tc_id))
 
                 else:
-                    print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetTestCase']['Msg']}{Aux.Textcolor.END}\n")
-                    Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetTestCase'])
+                    print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorGetTestCase']['Msg']}{Lib.Aux.Textcolor.END}\n")
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorGetTestCase'])
                     # exit(1)
 
                 return test_case_id_list
 
             elif s.status_code == 401:
-                print(f"{Aux.Textcolor.FAIL}{Aux.otherConfigs['RunAgain']['Msg']}"
-                      f"{Aux.Textcolor.UNDERLINE}\n")
-                Aux.Main.addLogs(message="General", value=Aux.otherConfigs['TokenExpired'])
+                print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.otherConfigs['RunAgain']['Msg']}"
+                      f"{Lib.Aux.Textcolor.UNDERLINE}\n")
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.otherConfigs['TokenExpired'])
 
             else:
-                print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'],
+                print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequest']['Msg']}{Lib.Aux.Textcolor.END}\n")
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorRequest'],
                                  value1='Status code: ' + str(s.status_code) + ' - getTestCases')
 
         except Exception as e:
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetTestCases']['Msg']}{Aux.Textcolor.END}", e)
-            Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetTestCases'], value1=str(e))
+            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorGetTestCases']['Msg']}{Lib.Aux.Textcolor.END}", e)
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorGetTestCases'], value1=str(e))
             # exit(1)
 
     # ===================================================== TEST CASE ==================================================
@@ -358,26 +353,26 @@ class Connections:
             new_url = (url + 'projects/' + str(project_id) + '/issues?iids[]=' + str(test_case_id))
 
             # Execute the request from Azure.
-            q = requests.get(new_url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, verify=False)
+            q = Lib.requests.get(new_url, headers={'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["Bearer"]}, verify=False)
             if q.status_code == 200:
-                print(f"{Aux.Textcolor.WARNING}{Aux.otherConfigs['RequestOK']['Msg']}{Aux.Textcolor.END}\n")
+                print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['RequestOK']['Msg']}{Lib.Aux.Textcolor.END}\n")
                 # Filter some fields.
-                json_str = json.dumps(q.json())
-                resp = json.loads(json_str)
+                json_str = Lib.json.dumps(q.json())
+                resp = Lib.json.loads(json_str)
                 name_testcase = resp[0]['title']
                 step_block = resp[0]['description']
 
-                Aux.Main.addLogs(message="General", value=Aux.logs['ExecuteTestCase'])
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ExecuteTestCase'])
             else:
-                print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'],
+                print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequest']['Msg']}{Lib.Aux.Textcolor.END}\n")
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorRequest'],
                                  value1='Status code: ' + str(q.status_code) + ' - executeTestCase')
 
             return name_testcase, step_block
 
         except Exception as e:
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorExecuteTestCase']['Msg']}{Aux.Textcolor.END} - {e}")
-            Aux.Main.addLogs(message="General", value=Aux.logs['ErrorExecuteTestCase'], value1=str(e))
+            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorExecuteTestCase']['Msg']}{Lib.Aux.Textcolor.END} - {e}")
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorExecuteTestCase'], value1=str(e))
             # exit(1)
 
     # Extract the steps from Test Case.
@@ -396,13 +391,13 @@ class Connections:
                 order_steps_list.append(order_steps + 1)
                 steps_list.append(step)
 
-            Aux.Main.addLogs(message="General", value=Aux.logs['GetSteps'])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['GetSteps'])
 
             return steps_list, order_steps_list
 
         except Exception as e:
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetSteps']['Msg']}{Aux.Textcolor.END} - {e}")
-            Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetSteps'], value1=str(e))
+            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorGetSteps']['Msg']}{Lib.Aux.Textcolor.END} - {e}")
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorGetSteps'], value1=str(e))
             # exit(1)
 
     # Dismember the variables from each test case.
@@ -426,27 +421,27 @@ class Connections:
                     parameters1_list.append(None)
                     parameters2_list.append(None)
                 elif count_character == 2:
-                    parameters1_list.append(Aux.re.findall(r'"([^"]*)"', step)[0])
+                    parameters1_list.append(Lib.regex.findall(r'"([^"]*)"', step)[0])
                     parameters2_list.append(None)
                 elif count_character == 4:
-                    parameters1_list.append(Aux.re.findall(r'"([^"]*)"', step)[0])
-                    parameters2_list.append(Aux.re.findall(r'"([^"]*)"', step)[1])
+                    parameters1_list.append(Lib.regex.findall(r'"([^"]*)"', step)[0])
+                    parameters2_list.append(Lib.regex.findall(r'"([^"]*)"', step)[1])
                 elif count_character > 4:  # API content.
                     parameters1_list.append(step[step.find("\"")+1:-1])
                     parameters2_list.append(None)
 
-            Aux.Main.addLogs(message="General", value=Aux.logs['SliceDatas'])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['SliceDatas'])
 
             return verbs_list, parameters1_list, parameters2_list
 
         # When there is no variable.
         except ZeroDivisionError:
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorLineEmpty']['Msg']}{Aux.Textcolor.END}")
-            Aux.Main.addLogs(message="General", value=Aux.logs['ErrorLineEmpty'])
+            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorLineEmpty']['Msg']}{Lib.Aux.Textcolor.END}")
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorLineEmpty'])
 
         except Exception as e:
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorSliceDatas']['Msg']}{Aux.Textcolor.END} - {e}")
-            Aux.Main.addLogs( message="General", value=Aux.logs['ErrorSliceDatas'], value1=str(e))
+            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorSliceDatas']['Msg']}{Lib.Aux.Textcolor.END} - {e}")
+            Lib.Aux.Main.addLogs( message="General", value=Lib.Aux.logs['ErrorSliceDatas'], value1=str(e))
             # exit(1)
 
     # Upload the evidence in the TestCase.
@@ -471,26 +466,27 @@ class Connections:
             else:
                 status_name_testcase = name_testcase
 
-            file = os.path.join(evidence_folder, name_testcase, status_name_testcase) + ".pdf"
+            file = Lib.os.path.join(evidence_folder, name_testcase, status_name_testcase) + ".pdf"
 
             files = {'file': open(file, 'rb')}
 
             with open(file, 'rb') as f:
-                q = requests.post(new_url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["BearerUpload"]},
+                q = Lib.requests.post(new_url, headers={'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["BearerUpload"]},
                                   files=files, verify=False)
 
             if q.status_code == 201:
-                print(f"{Aux.Textcolor.WARNING}{Aux.logs['SaveEvidenceTestCaseUpload']['Msg']}{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(message="General", value=Aux.logs['SaveEvidenceTestCaseUpload'])
+                print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.logs['SaveEvidenceTestCaseUpload']['Msg']}"
+                      f"{Lib.Aux.Textcolor.END}\n")
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['SaveEvidenceTestCaseUpload'])
 
                 # Filter some fields.
-                json_str = json.dumps(q.json())
-                resp = json.loads(json_str)
+                json_str = Lib.json.dumps(q.json())
+                resp = Lib.json.loads(json_str)
                 file_url = resp['url']
 
             else:
-                print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'], 
+                print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequest']['Msg']}{Lib.Aux.Textcolor.END}\n")
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorRequest'], 
                                  value1='Status code: ' + str(q.status_code) + ' - ' + str(q.text) + 
                                         ' - SaveEvidenceTestCase - GetToken')
                 # exit(1)
@@ -504,22 +500,22 @@ class Connections:
                 "body": "[" + status_name_testcase + "](" + file_url + ")"
             }
 
-            p = requests.post(new_url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["BearerUpload"]},
+            p = Lib.requests.post(new_url, headers={'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["BearerUpload"]},
                               data=body, verify=False)
 
             if p.status_code == 201:
-                print(f"{Aux.Textcolor.WARNING}{Aux.logs['SaveEvidenceTestCase']['Msg']}{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(message="General", value=Aux.logs['SaveEvidenceTestCase'])
+                print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.logs['SaveEvidenceTestCase']['Msg']}{Lib.Aux.Textcolor.END}\n")
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['SaveEvidenceTestCase'])
 
             else:
-                print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
-                Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'],
+                print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequest']['Msg']}{Lib.Aux.Textcolor.END}\n")
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorRequest'],
                                  value1='Status code: ' + str(p.status_code) + ' - ' + str(p.text) +
                                         ' - SaveEvidenceTestCase - Upload File')
 
         except Exception as e:
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorSaveEvidenceTestCase']['Msg']}{Aux.Textcolor.END}", e)
-            Aux.Main.addLogs(message="General", value=Aux.logs['ErrorSaveEvidenceTestCase'], value1=str(e))
+            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorSaveEvidenceTestCase']['Msg']}{Lib.Aux.Textcolor.END}", e)
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorSaveEvidenceTestCase'], value1=str(e))
             #exit(1)
 
     def send_request(self, **kwargs):
@@ -529,44 +525,44 @@ class Connections:
         body = kwargs.get('body')
 
         try:
-            if Aux.otherConfigs['API_Authorization'] != '':
-                headers = {'Authorization': 'Bearer ' + Aux.otherConfigs["API_Headers"],
+            if Lib.Aux.otherConfigs['API_Authorization'] != '':
+                headers = {'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["API_Headers"],
                            'Content-Type': 'application/json'
                            }
 
-            if 'Basic' in Aux.otherConfigs['API_Headers']:
+            if 'Basic' in Lib.Aux.otherConfigs['API_Headers']:
                 headers = {
-                    'Basic': Aux.otherConfigs['API_Headers'][Aux.otherConfigs['API_Headers'].find(':') + 1:],
+                    'Basic': Lib.Aux.otherConfigs['API_Headers'][Lib.Aux.otherConfigs['API_Headers'].find(':') + 1:],
                     'Content-Type': 'application/json'
                 }
-            elif 'Bearer' in Aux.otherConfigs['API_Headers']:
-                headers = {'Authorization': 'Bearer ' + Aux.otherConfigs["API_Headers"],
+            elif 'Bearer' in Lib.Aux.otherConfigs['API_Headers']:
+                headers = {'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["API_Headers"],
                            'Content-Type': 'application/json'}
 
             if api_action.upper() == "GET":
-                api_result = requests.get(Aux.otherConfigs['API_Endpoint'],
-                                          params=Aux.otherConfigs['API_Params'],
+                api_result = Lib.requests.get(Lib.Aux.otherConfigs['API_Endpoint'],
+                                          params=Lib.Aux.otherConfigs['API_Params'],
                                           headers=headers,
-                                          data=json.dumps(body))
+                                          data=Lib.json.dumps(body))
             elif api_action.upper() == "POST":
-                api_result = requests.post(Aux.otherConfigs['API_Endpoint'],
-                                           headers=headers,
-                                           data=body)
+                api_result = Lib.requests.post(Lib.Aux.otherConfigs['API_Endpoint'],
+                                               headers=headers,
+                                               data=body)
 
-                Aux.otherConfigs['API_StatusCode'] = api_result.status_code
-                resp = json.loads(api_result.text)
+                Lib.Aux.otherConfigs['API_StatusCode'] = api_result.status_code
+                resp = Lib.json.loads(api_result.text)
                 if resp is not []:
-                    Aux.otherConfigs['API_Response'] = resp
+                    Lib.Aux.otherConfigs['API_Response'] = resp
 
                 if api_result.status_code == 400:
                     return_value = resp['errors']['$'][0]
                     return return_value
                 elif api_result.status_code == 200:
-                    return Aux.otherConfigs['API_Response']
+                    return Lib.Aux.otherConfigs['API_Response']
 
         except Exception as e:
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorSendRequest']['Msg']}{Aux.Textcolor.END}", e)
-            Aux.Main.addLogs(message="General", value=Aux.logs['ErrorSendRequest'], value1=str(e))
+            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorSendRequest']['Msg']}{Lib.Aux.Textcolor.END}", e)
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorSendRequest'], value1=str(e))
             # exit(1)
 
     # def UpdateStatusAutomated(self, **kwargs):
@@ -603,17 +599,17 @@ class Connections:
     #             }
     #         ]
     #
-    #         # r = requests.patch(url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, json=file_datas, headers=headers,
+    #         # r = requests.patch(url, headers={'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["Bearer"]}, json=file_datas, headers=headers,
     #         #                    verify=False)
     #         if r.status_code == 200:
-    #             print(f"{Aux.Textcolor.BLUE}{Aux.logs['UpdateStatusAutomated']['Msg']}{Aux.Textcolor.END}")
-    #             Aux.Main.addLogs(message="General", value=Aux.logs['UpdateStatusAutomated'])
+    #             print(f"{Lib.Aux.Textcolor.BLUE}{Lib.Aux.logs['UpdateStatusAutomated']['Msg']}{Lib.Aux.Textcolor.END}")
+    #             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['UpdateStatusAutomated'])
     #         else:
     #             raise Exception
     #
     #     except Exception as e:
-    #         print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorUpdateStatusAutomated']['Msg']}{Aux.Textcolor.END}", e)
-    #         Aux.Main.addLogs(message="General", value=Aux.logs['ErrorUpdateStatusAutomated'],
+    #         print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorUpdateStatusAutomated']['Msg']}{Lib.Aux.Textcolor.END}", e)
+    #         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorUpdateStatusAutomated'],
     #                          value1='Status code: ' + str(r.status_code) + " - UpdateStatusAutomated")
     #         #exit(1)
 
@@ -629,7 +625,7 @@ class Connections:
     #         count_evidences = 1
     #         order = 0
     #         version = '6.0'
-    #         evidence_folder = Aux.os.path.join(Aux.directories['EvidenceFolder'], name_testcase)
+    #         evidence_folder = Lib.Aux.os.path.join(Lib.Aux.directories['EvidenceFolder'], name_testcase)
     #         relation_list = []
     #         order_list = []
     #         count_evidences_list = []
@@ -637,14 +633,14 @@ class Connections:
     #         order_failed = ''
     #         count_evidences_failed = ''
     # 
-    #         Aux.Main.deleteDirectory(self, directory=evidence_folder)
-    #         Aux.Main.deleteFiles(self, file_path=Aux.os.path.join(Aux.directories['EvidenceFolder']), extension='.zip',
+    #         Lib.Aux.Main.deleteDirectory(self, directory=evidence_folder)
+    #         Lib.Aux.Main.deleteFiles(self, file_path=Lib.Aux.os.path.join(Lib.Aux.directories['EvidenceFolder']), extension='.zip',
     #                              exact_file=name_testcase + '.zip')
     # 
     #         url = 'https://' + instance + project + '/_apis/wit/workitems?ids=' + str(test_case_id) + \
     #                    '&$expand=Relations&api-version=' + version
     # 
-    #         r = requests.get(url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, verify=False)
+    #         r = requests.get(url, headers={'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["Bearer"]}, verify=False)
     #         if r.status_code == 200:
     #             # Filter some fields.
     #             json_str = json.dumps(r.json())
@@ -667,7 +663,7 @@ class Connections:
     #             if relation_failed != None:
     #                 for seconds in range(1, 15):
     #                     time.sleep(1)
-    #                     print(f"{Aux.Textcolor.BLUE}{Aux.logs['WaitTime']['Msg']}{seconds} / 15{Aux.Textcolor.END}")
+    #                     print(f"{Lib.Aux.Textcolor.BLUE}{Lib.Aux.logs['WaitTime']['Msg']}{seconds} / 15{Lib.Aux.Textcolor.END}")
     # 
     #             # If any download fail.
     #             while relation_list.__len__() != 0:
@@ -683,17 +679,17 @@ class Connections:
     #                         order_list.pop(0)
     #                         count_evidences_list.pop(0)
     # 
-    #             print(f"{Aux.Textcolor.BLUE}{Aux.logs['GenerateZIPFile']['Msg']}{Aux.Textcolor.END}")
-    #             Aux.Main.addLogs(message="General", value=Aux.logs['GenerateZIPFile']['Msg'])
-    #             Aux.shutil.make_archive(evidence_folder, 'zip', evidence_folder)
+    #             print(f"{Lib.Aux.Textcolor.BLUE}{Lib.Aux.logs['GenerateZIPFile']['Msg']}{Lib.Aux.Textcolor.END}")
+    #             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['GenerateZIPFile']['Msg'])
+    #             Lib.Aux.shutil.make_archive(evidence_folder, 'zip', evidence_folder)
     # 
     #             GitLabConnection.UploadDownloadFile(self, project=project, test_case_id=str(test_case_id),
-    #                                                evidence_folder=Aux.directories['EvidenceFolder'],
+    #                                                evidence_folder=Lib.Aux.directories['EvidenceFolder'],
     #                                                download_file_name=name_testcase + '.zip',
     #                                                file_name=name_testcase + '.zip')
     # 
     #     except Exception as e:
-    #         Aux.Main.addLogs(message="General", value=Aux.logs['ErrorDownloadAttachment'], value1=str(e))
+    #         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorDownloadAttachment'], value1=str(e))
     #         #exit(1)
 
     # Read the test case relation to upload the .zip file.
@@ -723,17 +719,17 @@ class Connections:
     #             id_point = relation['url'].split('/')[7]
     #             name = relation['attributes']['name']
     #
-    #             print(f"{Aux.Textcolor.FAIL}{Aux.logs['GenerateZIP']['Msg']} {count_evidences} / "
-    #                   f"{total}{Aux.Textcolor.END}")
+    #             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['GenerateZIP']['Msg']} {count_evidences} / "
+    #                   f"{total}{Lib.Aux.Textcolor.END}")
     #
-    #             Aux.Main.createDirectory(self, path_folder=Aux.os.path.join(Aux.directories['EvidenceFolder'],
+    #             Lib.Aux.Main.createDirectory(self, path_folder=Lib.Aux.os.path.join(Lib.Aux.directories['EvidenceFolder'],
     #                                                                         name_testcase, date_time_folder))
     #
     #             url = 'https://' + instance + project + '/_apis/wit/attachments/' + str(id_point) + \
     #                        '?api-version=' + version
-    #             s = requests.get(url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, timeout=10)
+    #             s = requests.get(url, headers={'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["Bearer"]}, timeout=10)
     #
-    #             download = Aux.os.path.join(Aux.directories['EvidenceFolder'], name_testcase, date_time_folder, name)
+    #             download = Lib.Aux.os.path.join(Lib.Aux.directories['EvidenceFolder'], name_testcase, date_time_folder, name)
     #             with open(download, 'wb') as f:
     #                 f.write(s.content)
     #
@@ -754,8 +750,8 @@ class Connections:
     #         count_evidences += 1
     #
     #     except Exception as e:
-    #         print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorDownloadAttachment']['Msg']}{Aux.Textcolor.END}", e)
-    #         Aux.Main.addLogs(message="General", value=Aux.logs['ErrorDownloadAttachment'], value1=str(e))
+    #         print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorDownloadAttachment']['Msg']}{Lib.Aux.Textcolor.END}", e)
+    #         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorDownloadAttachment'], value1=str(e))
     #         #exit(1)
     #
     #     finally:
@@ -777,7 +773,7 @@ class Connections:
     #         url = 'https://' + instance + project + '/_apis/wit/workitems/' + str(test_case_id) + \
     #                    '?$expand=all&api-version=' + version
     #
-    #         q = requests.get(url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, verify=False)
+    #         q = requests.get(url, headers={'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["Bearer"]}, verify=False)
     #
     #         if q.status_code == 200:
     #             flag_save_baseline = True
@@ -813,17 +809,17 @@ class Connections:
     #                                                test_case_id=str(test_case_id),
     #                                                download_file_name=download_file_name, file_name=file_name)
     #
-    #             print(f"{Aux.Textcolor.WARNING}{Aux.logs['CheckDownloadFile']['Msg']}{Aux.Textcolor.END}\n")
-    #             Aux.Main.addLogs(message="General", value=Aux.logs['CheckDownloadFile'])
+    #             print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.logs['CheckDownloadFile']['Msg']}{Lib.Aux.Textcolor.END}\n")
+    #             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['CheckDownloadFile'])
     #
     #         else:
-    #             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
-    #             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'],
+    #             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequest']['Msg']}{Lib.Aux.Textcolor.END}\n")
+    #             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorRequest'],
     #                              value1='Status code: ' + str(q.status_code) + ' - CheckDownloadFile')
     #
     #     except Exception as e:
-    #         print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorCheckDownloadFile']['Msg']}{Aux.Textcolor.END}", e)
-    #         Aux.Main.addLogs(message="General", value=Aux.logs['ErrorCheckDownloadFile'], value1=str(e))
+    #         print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorCheckDownloadFile']['Msg']}{Lib.Aux.Textcolor.END}", e)
+    #         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorCheckDownloadFile'], value1=str(e))
     #         #exit(1)
     #
     # # Delete the 'New' download file to the TestCase.
@@ -855,20 +851,20 @@ class Connections:
     #             }
     #         ]
     #
-    #         # q = requests.patch(url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, json=attachment_details,
+    #         # q = requests.patch(url, headers={'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["Bearer"]}, json=attachment_details,
     #         #                    headers=headers, verify=False)
     #
     #         if q.status_code == 200:
-    #             print(f"{Aux.Textcolor.WARNING}{Aux.logs['DeleteDownloadFile']['Msg']}{Aux.Textcolor.END}\n")
-    #             Aux.Main.addLogs(message="General", value=Aux.logs['DeleteDownloadFile'])
+    #             print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.logs['DeleteDownloadFile']['Msg']}{Lib.Aux.Textcolor.END}\n")
+    #             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['DeleteDownloadFile'])
     #         else:
-    #             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
-    #             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'],
+    #             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequest']['Msg']}{Lib.Aux.Textcolor.END}\n")
+    #             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorRequest'],
     #                              value1='Status code: ' + str(q.status_code) + ' - DeleteDownloadFile')
     #
     #     except Exception as e:
-    #         print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorDeleteDownloadFile']['Msg']}{Aux.Textcolor.END}", e)
-    #         Aux.Main.addLogs(message="General", value=Aux.logs['ErrorDeleteDownloadFile'], value1=str(e))
+    #         print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorDeleteDownloadFile']['Msg']}{Lib.Aux.Textcolor.END}", e)
+    #         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorDeleteDownloadFile'], value1=str(e))
     #         #exit(1)
 
     # Upload the download file in the TestCase.
@@ -887,23 +883,23 @@ class Connections:
     #         url = 'https://' + instance + project + '/_apis/wit/attachments?fileName=' + str(file_name) + \
     #                    '&api-version=' + version
     #
-    #         with open(Aux.os.path.join(evidence_folder, file_name), "rb") as file:
+    #         with open(Lib.Aux.os.path.join(evidence_folder, file_name), "rb") as file:
     #             data = file.read()
     #
     #         headers = {'Content-Type': 'application/octet-stream'}
     #
-    #         # p = requests.post(url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, data=data, headers=headers,
+    #         # p = requests.post(url, headers={'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["Bearer"]}, data=data, headers=headers,
     #         #                   verify=False)
     #         if p.status_code == 201:
     #             # Filter some fields.
     #             json_str = json.dumps(p.json())
     #             resp = json.loads(json_str)
     #             idAttachment = resp['id']
-    #             print(f"{Aux.Textcolor.WARNING}{Aux.logs['UploadDownloadFileID']['Msg']}{Aux.Textcolor.END}\n")
-    #             Aux.Main.addLogs(message="General", value=Aux.logs['UploadDownloadFileID'])
+    #             print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.logs['UploadDownloadFileID']['Msg']}{Lib.Aux.Textcolor.END}\n")
+    #             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['UploadDownloadFileID'])
     #         else:
-    #             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
-    #             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'],
+    #             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequest']['Msg']}{Lib.Aux.Textcolor.END}\n")
+    #             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorRequest'],
     #                              value1='Status code: ' + str(p.status_code) + ' - UploadDownloadFileID')
     #
     #         # ------------------------------------ Second API conection ------------------------------------------------
@@ -936,19 +932,19 @@ class Connections:
     #             }
     #         ]
     #
-    #         # q = requests.patch(url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, json=file_datas, headers=headers,
+    #         # q = requests.patch(url, headers={'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["Bearer"]}, json=file_datas, headers=headers,
     #         #                    verify=False)
     #         if q.status_code == 200:
-    #             print(f"{Aux.Textcolor.WARNING}{Aux.logs['UploadDownloadFile']['Msg']}{Aux.Textcolor.END}\n")
-    #             Aux.Main.addLogs(message="General", value=Aux.logs['UploadDownloadFile'])
+    #             print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.logs['UploadDownloadFile']['Msg']}{Lib.Aux.Textcolor.END}\n")
+    #             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['UploadDownloadFile'])
     #         else:
-    #             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
-    #             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'],
+    #             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequest']['Msg']}{Lib.Aux.Textcolor.END}\n")
+    #             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorRequest'],
     #                              value1='Status code: ' + str(q.status_code) + ' - UploadDownloadFile')
     #
     #     except Exception as e:
-    #         print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorUploadDownloadFile']['Msg']}{Aux.Textcolor.END}", e)
-    #         Aux.Main.addLogs(message="General", value=Aux.logs['ErrorUploadDownloadFile'], value1=str(e))
+    #         print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorUploadDownloadFile']['Msg']}{Lib.Aux.Textcolor.END}", e)
+    #         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorUploadDownloadFile'], value1=str(e))
     #         #exit(1)
     #
     # # Save the download file, from the test case locally.
@@ -968,7 +964,7 @@ class Connections:
     #         url = 'https://' + instance + project + '/_apis/wit/workitems?ids=' + str(id_testcase) + \
     #                    '&$expand=all&api-version=' + version
     #
-    #         p = requests.get(url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, verify=False)
+    #         p = requests.get(url, headers={'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["Bearer"]}, verify=False)
     #         if p.status_code == 200:
     #             # Filter some fields.
     #             json_str = json.dumps(p.json())
@@ -981,14 +977,14 @@ class Connections:
     #                 if any(x in download_name for x in list_names):
     #                     file_url = resp['value'][0]['relations'][order]['url']
     #
-    #                     r = requests.get(file_url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, verify=False)
+    #                     r = requests.get(file_url, headers={'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["Bearer"]}, verify=False)
     #
     #                     # Create the Compare directory.
-    #                     Aux.Main.createDirectory(self,
-    #                                              path_folder=Aux.os.path.join(Aux.directories['CompareDownloadFolder'],
+    #                     Lib.Aux.Main.createDirectory(self,
+    #                                              path_folder=Lib.Aux.os.path.join(Lib.Aux.directories['CompareDownloadFolder'],
     #                                                                           test_name))
     #
-    #                     download = Aux.os.path.join(Aux.directories['CompareDownloadFolder'], test_name, download_name)
+    #                     download = Lib.Aux.os.path.join(Lib.Aux.directories['CompareDownloadFolder'], test_name, download_name)
     #                     with open(download, 'wb') as file:
     #                         file.write(r.content)
     #
@@ -997,20 +993,20 @@ class Connections:
     #                     else:
     #                         list_files_new.append(download_name)
     #
-    #             print(f"{Aux.Textcolor.WARNING}{Aux.logs['SaveDownloadFileLocally']['Msg']}"
-    #                   f"{Aux.Textcolor.END}\n")
-    #             Aux.Main.addLogs(message="General", value=Aux.logs['SaveDownloadFileLocally'])
+    #             print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.logs['SaveDownloadFileLocally']['Msg']}"
+    #                   f"{Lib.Aux.Textcolor.END}\n")
+    #             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['SaveDownloadFileLocally'])
     #         else:
-    #             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
-    #             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'],
+    #             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequest']['Msg']}{Lib.Aux.Textcolor.END}\n")
+    #             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorRequest'],
     #                              value1='Status code: ' + str(p.status_code) + ' - ErrorSaveDownloadFileLocally')
     #
     #         return test_name, id_testcase, sorted(list_files_baseline), sorted(list_files_new)
     #
     #     except Exception as e:
-    #         print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorSaveDownloadFileLocally']['Msg']}"
-    #               f"{Aux.Textcolor.END}", e)
-    #         Aux.Main.addLogs(message="General", value=Aux.logs['ErrorSaveDownloadFileLocally'], value1=str(e))
+    #         print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorSaveDownloadFileLocally']['Msg']}"
+    #               f"{Lib.Aux.Textcolor.END}", e)
+    #         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorSaveDownloadFileLocally'], value1=str(e))
     #         #exit(1)
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -1031,7 +1027,7 @@ class Connections:
     #         url = 'https://' + instance + project + '/_apis/test/Runs/' + str(test_run_id) + \
     #                    '/results?api-version=' + version
     #
-    #         p = requests.get(url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, verify=False)
+    #         p = requests.get(url, headers={'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["Bearer"]}, verify=False)
     #         if p.status_code == 200:
     #             # Filter some fields.
     #             json_str = json.dumps(p.json())
@@ -1049,21 +1045,21 @@ class Connections:
     #                     amount_test_case = 1
     #
     #         else:
-    #             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
-    #             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'],
+    #             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequest']['Msg']}{Lib.Aux.Textcolor.END}\n")
+    #             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorRequest'],
     #                              value1='Status code: ' + str(p.status_code) + ' - getTestCaseRun')
     #
     #         if amount_test_case == 0:
     #             return None
     #         else:
-    #             print(f"{Aux.Textcolor.WARNING}{Aux.logs['GetTestCaseRun']['Msg']}{Aux.Textcolor.END}\n")
-    #             Aux.Main.addLogs(message="General", value=Aux.logs['GetTestCaseRun'])
+    #             print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.logs['GetTestCaseRun']['Msg']}{Lib.Aux.Textcolor.END}\n")
+    #             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['GetTestCaseRun'])
     #
     #             return amount_test_case, id_azure, full_name_run_test
     #
     #     except Exception as e:
-    #         print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorGetTestCaseRun']['Msg']}{Aux.Textcolor.END}", e)
-    #         Aux.Main.addLogs(message="General", value=Aux.logs['ErrorGetTestCaseRun'], value1=str(e))
+    #         print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorGetTestCaseRun']['Msg']}{Lib.Aux.Textcolor.END}", e)
+    #         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorGetTestCaseRun'], value1=str(e))
     #         #exit(1)
 
     # Load the attachment list in Run Result.
@@ -1091,7 +1087,7 @@ class Connections:
     #                    str(id_azure) + '/?detailsToInclude=iterations&?api-version=' + version
     #
     #         # Execute the Azure request.
-    #         q = requests.get(url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]}, verify=False)
+    #         q = requests.get(url, headers={'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["Bearer"]}, verify=False)
     #         if q.status_code == 200:
     #             # Filter some fields.
     #             json_str = json.dumps(q.json())
@@ -1099,7 +1095,7 @@ class Connections:
     #
     #             # Verify the test execution.
     #             # if not resp['iterationDetails']:
-    #             #     raise Exception(f"{Aux.Textcolor.FAIL}{Aux.logs['NoExecutions']['Msg']}{Aux.Textcolor.END}")
+    #             #     raise Exception(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['NoExecutions']['Msg']}{Lib.Aux.Textcolor.END}")
     #
     #             # Verify the number of test cases.
     #             # if resp['iterationDetails'] != 0:
@@ -1110,7 +1106,7 @@ class Connections:
     #             failed_info_dict[test_case_id] = {}
     #
     #                 # Validate the testcase name.
-    #                 # if Aux.Main.validateTestName(self, name_testcase=test_case_name):
+    #                 # if Lib.Aux.Main.validateTestName(self, name_testcase=test_case_name):
     #                 #     return test_case_id, None, failed_info_dict, None
     #
     #                 # Verify the number of iteration for each test case.
@@ -1122,12 +1118,12 @@ class Connections:
     #                 #
     #                 #     # Verify the prints.
     #                 #     if not resp['iterationDetails'][n_iteration]['attachments']:
-    #                 #         print(f"{Aux.Textcolor.FAIL}{Aux.otherConfigs['NoEvidences']['Msg']}"
-    #                 #               f"{Aux.Textcolor.END}")
-    #                 #         Aux.Main.addLogs(message="General", value=Aux.otherConfigs['NoEvidences'])
+    #                 #         print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.otherConfigs['NoEvidences']['Msg']}"
+    #                 #               f"{Lib.Aux.Textcolor.END}")
+    #                 #         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.otherConfigs['NoEvidences'])
     #                 #         return None, None, None
     #                 #
-    #                 #     print(f"{Aux.Textcolor.BOLD}{test_case_name}{Aux.Textcolor.END}")
+    #                 #     print(f"{Lib.Aux.Textcolor.BOLD}{test_case_name}{Lib.Aux.Textcolor.END}")
     #                 #     attachments = resp['iterationDetails'][n_iteration]['attachments']
     #                 #     status_step = resp['iterationDetails'][n_iteration]['actionResults']
     #                 #     completed_date = resp['iterationDetails'][n_iteration]['startedDate']
@@ -1173,7 +1169,7 @@ class Connections:
     #                 #     for order, _ in enumerate(list_id_manual_print):
     #                 #         if '_' in list_id_manual_print[order][0]:  # Treat the filename save by LightShot.
     #                 #             list_id_manual_print[order][0] = \
-    #                 #                 '0' + Aux.regex.search(r'\d+', list_id_manual_print[order][0]).group(0)
+    #                 #                 '0' + Lib.Aux.regex.search(r'\d+', list_id_manual_print[order][0]).group(0)
     #                 #             list_id_manual_print = sorted(list_id_manual_print)
     #                 #         else:  # Treat the filename save by Azure.
     #                 #             list_id_manual_print = sorted(list_id_manual_print)
@@ -1194,17 +1190,17 @@ class Connections:
     #
     #             test_case_id = resp['testCase']['id']
     #
-    #             print(f"{Aux.Textcolor.BLUE}{Aux.logs['AttachmentList']['Msg']}{Aux.Textcolor.END}")
+    #             print(f"{Lib.Aux.Textcolor.BLUE}{Lib.Aux.logs['AttachmentList']['Msg']}{Lib.Aux.Textcolor.END}")
     #
     #             # return test_case_id, n_iterations, failed_info_dict, completed_date
     #         else:
-    #             print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
-    #             Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'],
+    #             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequest']['Msg']}{Lib.Aux.Textcolor.END}\n")
+    #             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorRequest'],
     #                              value1='Status code: ' + str(q.status_code) + ' - attachmentList')
     #
     #     except Exception as e:
-    #         print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorAttachmentList']['Msg']}{Aux.Textcolor.END}", e)
-    #         Aux.Main.addLogs(message="General", value=Aux.logs['ErrorAttachmentList'], value1=str(e))
+    #         print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorAttachmentList']['Msg']}{Lib.Aux.Textcolor.END}", e)
+    #         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorAttachmentList'], value1=str(e))
     #         #exit(1)
 
     # Save the images locally.
@@ -1229,36 +1225,36 @@ class Connections:
     #             step_order = str(order).zfill(2)
     #
     #             file_name = 'CT' + str(n_test_case).zfill(2) + '-IT' + str(n_iteration).zfill(2) + '-' + \
-    #                         Aux.otherConfigs["EvidenceName"] + step_order + Aux.otherConfigs["EvidenceExtension"]
+    #                         Lib.Aux.otherConfigs["EvidenceName"] + step_order + Lib.Aux.otherConfigs["EvidenceExtension"]
     #
     #             url = 'https://' + instance + project + '/_api/_testresult/DownloadAttachment?attachmentId=' + \
     #                        str(id_manual_print[1]) + '&api-version=' + version
     #
     #             # Execute the Azure request.
-    #             q = requests.get(url, headers={'Authorization': 'Bearer ' + Aux.otherConfigs["Bearer"]},
+    #             q = requests.get(url, headers={'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["Bearer"]},
     #                              verify=False)
     #
     #             if q.status_code == 200:
-    #                 evidence_image = Aux.os.path.join(Aux.directories['EvidenceFolderManual'], file_name)
+    #                 evidence_image = Lib.Aux.os.path.join(Lib.Aux.directories['EvidenceFolderManual'], file_name)
     #                 with open(evidence_image, 'wb') as print_screen:
     #                     print_screen.write(q.content)
     #
-    #                 print(f"{Aux.Textcolor.UNDERLINE}{Aux.logs['SaveManualPrintScreen']['Msg']}{Aux.Textcolor.END} "
+    #                 print(f"{Lib.Aux.Textcolor.UNDERLINE}{Lib.Aux.logs['SaveManualPrintScreen']['Msg']}{Lib.Aux.Textcolor.END} "
     #                       f"{test_case_name} ITERATION "
     #                       f"{n_iteration} - Print {step_order}")
     #
     #             elif q.status_code == 401:
-    #                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorToken']['Msg']}{Aux.Textcolor.END}\n")
-    #                 Aux.Main.addLogs(message="General", value=Aux.logs['ErrorToken'],
+    #                 print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorToken']['Msg']}{Lib.Aux.Textcolor.END}\n")
+    #                 Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorToken'],
     #                                  value1='Status code: ' + str(q.status_code) + ' - saveManualPrintScreen')
     #
     #             else:
-    #                 print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequest']['Msg']}{Aux.Textcolor.END}\n")
-    #                 Aux.Main.addLogs(message="General", value=Aux.logs['ErrorRequest'],
+    #                 print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequest']['Msg']}{Lib.Aux.Textcolor.END}\n")
+    #                 Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorRequest'],
     #                                  value1='Status code: ' + str(q.status_code) + ' - saveManualPrintScreen')
     #
     #     except Exception as e:
-    #         print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorSaveManualPrintScreen']['Msg']}"
-    #               f"{Aux.Textcolor.END}", e)
-    #         Aux.Main.addLogs(message="General", value=Aux.logs['ErrorSaveManualPrintScreen'], value1=str(e))
+    #         print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorSaveManualPrintScreen']['Msg']}"
+    #               f"{Lib.Aux.Textcolor.END}", e)
+    #         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorSaveManualPrintScreen'], value1=str(e))
     #         #exit(1)

@@ -1,40 +1,12 @@
-import time
-import requests
-import ast
+import common_libs as Lib
 
-from selenium.webdriver.support import expected_conditions as ec
-from selenium import webdriver
-from selenium.webdriver.support.wait import WebDriverWait
-
-# Chrome
-from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
-
-# Edge
-from selenium.webdriver.edge.service import Service as EdgeService
-from webdriver_manager.microsoft import EdgeChromiumDriverManager
-
-# Firefox
-from selenium.webdriver.firefox.service import Service as FirefoxService
-from webdriver_manager.firefox import GeckoDriverManager
-
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.select import Select
-from bs4 import BeautifulSoup
-
-import Automation.modules.automationAux as Aux
-import Automation.modules.connections as Con
-
-# driver = None
+driver = None
 
 
 class Main:
 
     def __init__(self):
-        self.connections = Con.Connections()
+        self.connections = Lib.Con.Connections()
 
     # Function to search the element using the option above.
     def findElement(self, **kwargs):
@@ -45,14 +17,14 @@ class Main:
         color = kwargs.get('color', 'blue')
 
         search_list = [
-            By.ID,
-            By.NAME,
-            By.XPATH,
-            By.CSS_SELECTOR,
-            By.CLASS_NAME,
-            By.TAG_NAME,
-            By.LINK_TEXT,
-            By.PARTIAL_LINK_TEXT
+            Lib.By.ID,
+            Lib.By.NAME,
+            Lib.By.XPATH,
+            Lib.By.CSS_SELECTOR,
+            Lib.By.CLASS_NAME,
+            Lib.By.TAG_NAME,
+            Lib.By.LINK_TEXT,
+            Lib.By.PARTIAL_LINK_TEXT
         ]
 
         for tag in search_list:
@@ -68,14 +40,14 @@ class Main:
 
                     Main.highlight(self, new_element=new_element, effect_time=1, color=color, border=3)
 
-                    Aux.Main.addLogs(message="General", value=Aux.logs["FindElement"], parameters1=tag,
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["FindElement"], parameters1=tag,
                                      parameters2=parameters1)
 
                     return new_element
 
-            except NoSuchElementException:
-                Aux.Main.addLogs(message="General", value=Aux.logs["WarningFindElement"], parameters1=tag,
-                                 parameters2=parameters1)
+            except Lib.NoSuchElementException:
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningFindElement"], parameters1=tag,
+                                     parameters2=parameters1)
 
     # ---------------------- Action Elements ----------------------
     # Fill the fields.
@@ -91,12 +63,12 @@ class Main:
             if parameters2.upper() not in ('VAZIO', 'VACÍO', 'EMPTY'):
                 element_field.send_keys(parameters2)
 
-            Aux.Main.addLogs(message="General", value=Aux.logs["FillField"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["FillField"])
 
             return "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorFillField"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorFillField"], parameters1=str(ex))
 
             return "Failed"
 
@@ -107,12 +79,12 @@ class Main:
         step = kwargs.get('step')
 
         try:
-            Aux.Main.addLogs(message="General", value=Aux.logs["NoExecute"], parameters1="'" + step + "'")
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["NoExecute"], parameters1="'" + step + "'")
 
             return "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorNoExecute"],
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorNoExecute"],
                              parameters1="'" + step + "' - " + str(ex))
             return "Failed"
 
@@ -125,15 +97,15 @@ class Main:
             # kwargs arguments.
             path = kwargs.get('parameters1')
 
-            Aux.os.system('start "" "' + path + '"')
+            Lib.Aux.os.system('start "" "' + path + '"')
 
-            Aux.Main.addLogs(message="General", value=Aux.logs["Execute"], parameters1="'" + path + "'")
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["Execute"], parameters1="'" + path + "'")
 
             return path, "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorExecute"], parameters1="'" + path + "' - " +
-                                                                                            str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorExecute"],
+                                 parameters1="'" + path + "' - " + str(ex))
             return "Failed"
 
     # Click in an element.
@@ -145,12 +117,12 @@ class Main:
             element_field = Main.findElement(self, parameters1=parameters1)
             element_field.click()
 
-            Aux.Main.addLogs(message="General", value=Aux.logs["Click"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["Click"])
 
             return "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorClick"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorClick"], parameters1=str(ex))
             return "Failed"
 
     # Double click.
@@ -163,11 +135,11 @@ class Main:
             element_field.click()
             element_field.click()
 
-            Aux.Main.addLogs(message="General", value=Aux.logs["DoubleClick"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["DoubleClick"])
 
             return "Passed"
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorDoubleClick"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorDoubleClick"], parameters1=str(ex))
             return "Failed"
 
     # Right click (mouse).
@@ -176,17 +148,17 @@ class Main:
             # kwargs arguments.
             parameters1 = kwargs.get('parameters1')
 
-            actions = ActionChains(driver)
+            actions = Lib.ActionChains(driver)
             element_field = Main.findElement(self, parameters1=parameters1)
 
             actions.context_click(element_field)
             actions.perform()
 
-            Aux.Main.addLogs(message="General", value=Aux.logs["RightClick"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["RightClick"])
 
             return "Passed"
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorRightClick"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorRightClick"], parameters1=str(ex))
             return "Failed"
 
     # Drag and drop.
@@ -201,7 +173,7 @@ class Main:
             parameters1 = kwargs.get('parameters1')
             parameters2 = kwargs.get('parameters2')
 
-            actions = ActionChains(driver)
+            actions = Lib.ActionChains(driver)
 
             positions = parameters2.split(":")
             positionx = positions[0]
@@ -212,11 +184,11 @@ class Main:
             #actions.drag_and_drop_by_offset(element_field, int(positionx) * 10, int(positiony) * 10)
             actions.perform()
 
-            Aux.Main.addLogs(message="General", value=Aux.logs['DragDrop'])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['DragDrop'])
 
             return "Passed"
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorDragDrop"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorDragDrop"], parameters1=str(ex))
             return "Failed"
 
     # Drag and drop to the other component.
@@ -230,19 +202,19 @@ class Main:
             parameters1 = kwargs.get('parameters1')
             parameters2 = kwargs.get('parameters2')
 
-            actions = ActionChains(driver)
+            actions = Lib.ActionChains(driver)
             element_field1 = Main.findElement(self, parameters1=parameters1)
             element_field2 = Main.findElement(self, parameters1=parameters2)
 
             actions.drag_and_drop(element_field2, element_field1)
             actions.perform()
 
-            Aux.Main.addLogs(message="General", value=Aux.logs["DragDropToElement"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["DragDropToElement"])
 
             return "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorDragDropToElement"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorDragDropToElement"], parameters1=str(ex))
             return "Failed"
 
     # Type keyboard key.
@@ -258,56 +230,56 @@ class Main:
             parameters1 = str(parameters1)
             parameters2 = int(parameters2)
 
-            actions = ActionChains(driver)
+            actions = Lib.ActionChains(driver)
 
             if parameters1.upper() == 'RETURN' or parameters1.upper() == 'ENTER':
-                for _ in range(parameters2): actions.send_keys(Keys.RETURN)
+                for _ in range(parameters2): actions.send_keys(Lib.Keys.RETURN)
             elif parameters1.upper() == 'UP':
-                for _ in range(parameters2): actions.send_keys(Keys.UP)
+                for _ in range(parameters2): actions.send_keys(Lib.Keys.UP)
             elif parameters1.upper() == 'PAGE UP':
-                for _ in range(parameters2): actions.send_keys(Keys.PAGE_UP)
+                for _ in range(parameters2): actions.send_keys(Lib.Keys.PAGE_UP)
             elif parameters1.upper() == 'DOWN':
-                for _ in range(parameters2): actions.send_keys(Keys.DOWN)
+                for _ in range(parameters2): actions.send_keys(Lib.Keys.DOWN)
             elif parameters1.upper() == 'PAGE DOWN':
-                for _ in range(parameters2): actions.send_keys(Keys.PAGE_DOWN)
+                for _ in range(parameters2): actions.send_keys(Lib.Keys.PAGE_DOWN)
             elif parameters1.upper() == 'LEFT':
-                for _ in range(parameters2): actions.send_keys(Keys.LEFT)
+                for _ in range(parameters2): actions.send_keys(Lib.Keys.LEFT)
             elif parameters1.upper() == 'RIGHT':
-                for _ in range(parameters2): actions.send_keys(Keys.RIGHT)
+                for _ in range(parameters2): actions.send_keys(Lib.Keys.RIGHT)
             elif parameters1.upper() == 'TAB':
-                for _ in range(parameters2): actions.send_keys(Keys.TAB)
+                for _ in range(parameters2): actions.send_keys(Lib.Keys.TAB)
             elif parameters1.upper() == 'SPACE':
-                for _ in range(parameters2): actions.send_keys(Keys.SPACE)
+                for _ in range(parameters2): actions.send_keys(Lib.Keys.SPACE)
             elif parameters1.upper() == 'BACKSPACE':
-                for _ in range(parameters2): actions.send_keys(Keys.BACKSPACE)
+                for _ in range(parameters2): actions.send_keys(Lib.Keys.BACKSPACE)
             elif parameters1.upper() == 'DELETE':
-                for _ in range(parameters2): actions.send_keys(Keys.DELETE)
+                for _ in range(parameters2): actions.send_keys(Lib.Keys.DELETE)
             # Alt or Ctrl + <any other key>.
             elif parameters1.upper().__contains__('CTRL'):
                 for _ in range(parameters2):
-                    actions.key_down(Keys.CONTROL)
-                    Aux.time.sleep(.2)
+                    actions.key_down(Lib.Keys.CONTROL)
+                    Lib.Aux.time.sleep(.2)
                     actions.send_keys(parameters1.upper().rsplit('+')[1].strip())
-                    Aux.time.sleep(.2)
-                    actions.key_up(Keys.CONTROL)
+                    Lib.Aux.time.sleep(.2)
+                    actions.key_up(Lib.Keys.CONTROL)
             elif parameters1.upper().__contains__('ALT'):
                 for _ in range(parameters2):
-                    actions.key_down(Keys.ALT)
-                    Aux.time.sleep(.2)
+                    actions.key_down(Lib.Keys.ALT)
+                    Lib.Aux.time.sleep(.2)
                     actions.send_keys(parameters1.upper().rsplit('+')[1].strip())
-                    Aux.time.sleep(.2)
-                    actions.key_up(Keys.ALT)
+                    Lib.Aux.time.sleep(.2)
+                    actions.key_up(Lib.Keys.ALT)
 
             actions.perform()
 
-            Aux.Main.addLogs(message="General", value=Aux.logs["PressButton"],
-                             parameters1=parameters1 + " - " + str(parameters2) + "x")
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["PressButton"],
+                                 parameters1=parameters1 + " - " + str(parameters2) + "x")
 
             return "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorPressButton"],
-                             parameters1=parameters1 + " - " + str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorPressButton"],
+                                 parameters1=parameters1 + " - " + str(ex))
             return "Failed"
 
     # Mouse Over.
@@ -318,18 +290,18 @@ class Main:
 
         try:
 
-            actions = ActionChains(driver)
+            actions = Lib.ActionChains(driver)
             element_field = Main.findElement(self, parameters1=parameters1)
 
             actions.move_to_element(element_field)  # Worked with XPath.
             actions.perform()
 
-            Aux.Main.addLogs(message="General", value=Aux.logs["MouseOver"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["MouseOver"])
 
             return "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorMouseOver"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorMouseOver"], parameters1=str(ex))
             return "Failed"
 
     # Wait.
@@ -339,14 +311,14 @@ class Main:
         parameters1 = kwargs.get('parameters1')
 
         try:
-            Aux.time.sleep(int(parameters1))
+            Lib.Aux.time.sleep(int(parameters1))
 
-            Aux.Main.addLogs(message="General", value=Aux.logs["Wait"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["Wait"])
 
             return "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorWait"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorWait"], parameters1=str(ex))
 
             return "Failed"
 
@@ -357,15 +329,15 @@ class Main:
             parameters1 = kwargs.get('parameters1')
             parameters2 = kwargs.get('parameters2')
 
-            element_field = Select(Main.findElement(self, parameters1=parameters1))
+            element_field = Lib.Select(Main.findElement(self, parameters1=parameters1))
 
             element_field.select_by_visible_text(parameters2)
-            Aux.Main.addLogs(message="General", value=Aux.logs["SelectDropDownList"], parameters1=parameters2)
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["SelectDropDownList"], parameters1=parameters2)
 
             return "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorSelectDropDownList"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorSelectDropDownList"], parameters1=str(ex))
 
             return "Failed"
 
@@ -378,29 +350,29 @@ class Main:
             obtained_text = Main.findElement(self, parameters1=parameters1, color="green").text
 
             if obtained_text is None:
-                headers = {'User-Agent': Aux.otherConfigs['Agent']}
-                content = Aux.request.get(driver.current_url, headers=headers).content
-                soup = BeautifulSoup(content, 'html.parser')
+                headers = {'User-Agent': Lib.Aux.otherConfigs['Agent']}
+                content = Lib.Aux.request.get(driver.current_url, headers=headers).content
+                soup = Lib.BeautifulSoup(content, 'html.parser')
 
-                for tag in Aux.searchForAttribute:
-                    for component in Aux.searchForComponent:
-                        table = soup.findAll(Aux.searchForComponent[component],
-                                             attrs={Aux.searchForAttribute[tag]: parameters1})
+                for tag in Lib.Aux.searchForAttribute:
+                    for component in Lib.Aux.searchForComponent:
+                        table = soup.findAll(Lib.Aux.searchForComponent[component],
+                                             attrs={Lib.Aux.searchForAttribute[tag]: parameters1})
                         for textFound in table:
-                            Aux.Main.addLogs(message="General", value=Aux.logs["GetText"])
+                            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetText"])
                             Main.findElement(self, parameters1=parameters1, color="green")
                             return textFound.contents[0], "Passed"
                         else:
-                            return Aux.logs["ErrorGetText"]["Msg"], "Failed"
+                            return Lib.Aux.logs["ErrorGetText"]["Msg"], "Failed"
             else:
                 return obtained_text, "Passed"
 
-            Aux.Main.addLogs(message="General", value=Aux.logs["GetText"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetText"])
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorGetText"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetText"], parameters1=str(ex))
 
-            return Aux.logs["ErrorGetText"]['Msg'], "Failed"
+            return Lib.Aux.logs["ErrorGetText"]['Msg'], "Failed"
 
     @staticmethod
     def openNewTab():
@@ -408,12 +380,12 @@ class Main:
 
             driver.execute_script("window.open('', '_blank')")
 
-            Aux.Main.addLogs(message="General", value=Aux.logs["OpenNewTab"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["OpenNewTab"])
 
             return "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorOpenNewTab"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorOpenNewTab"], parameters1=str(ex))
 
             return "Failed"
 
@@ -423,12 +395,12 @@ class Main:
         try:
 
             url = driver.current_url
-            Aux.Main.addLogs(message="General", value=Aux.logs["GetURL"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetURL"])
 
             return url, "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorGetURL"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetURL"], parameters1=str(ex))
 
             return None, "Failed"
 
@@ -439,12 +411,12 @@ class Main:
         try:
 
             title = driver.title
-            Aux.Main.addLogs(message="General", value=Aux.logs["GetTitle"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetTitle"])
 
             return title, "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorGetTitle"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetTitle"], parameters1=str(ex))
 
             return None, "Failed"
 
@@ -456,12 +428,12 @@ class Main:
 
             driver.back()
 
-            Aux.Main.addLogs(message="General", value=Aux.logs["BackPage"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["BackPage"])
 
             return driver, "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorBackPage"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorBackPage"], parameters1=str(ex))
 
             return "Failed"
 
@@ -472,12 +444,12 @@ class Main:
         try:
 
             driver.forward()
-            Aux.Main.addLogs(message="General", value=Aux.logs["ForwardPage"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ForwardPage"])
 
             return driver, "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorForwardPage"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorForwardPage"], parameters1=str(ex))
 
             return "Failed"
 
@@ -513,12 +485,12 @@ class Main:
             else:
                 raise "Tag not correct."
 
-            Aux.Main.addLogs(message="General", value=Aux.logs["GetAttribute"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetAttribute"])
 
             return text_found, "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorGetAttribute"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetAttribute"], parameters1=str(ex))
 
             return text_found, "Failed"
 
@@ -528,14 +500,14 @@ class Main:
         parameters1 = kwargs.get('parameters1')
 
         search_list = (
-            By.ID,
-            By.NAME,
-            By.XPATH,
-            By.CSS_SELECTOR,
-            By.CLASS_NAME,
-            By.TAG_NAME,
-            By.LINK_TEXT,
-            By.PARTIAL_LINK_TEXT
+            Lib.By.ID,
+            Lib.By.NAME,
+            Lib.By.XPATH,
+            Lib.By.CSS_SELECTOR,
+            Lib.By.CLASS_NAME,
+            Lib.By.TAG_NAME,
+            Lib.By.LINK_TEXT,
+            Lib.By.PARTIAL_LINK_TEXT
         )
 
         x = 0
@@ -549,7 +521,7 @@ class Main:
                 elements = len(new_element)
 
                 if elements > 0:
-                    Aux.Main.addLogs(message="General", value=Aux.logs["GetQuantityElements"], parameters1=tag,
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetQuantityElements"], parameters1=tag,
                                      parameters2=parameters1)
                     return elements, "Passed"
 
@@ -558,8 +530,8 @@ class Main:
 
                 x += 1
 
-            except NoSuchElementException:
-                Aux.Main.addLogs(message="General", value=Aux.logs["ErrorGetQuantityElements"], parameters1=tag,
+            except Lib.NoSuchElementException:
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetQuantityElements"], parameters1=tag,
                                  parameters2=parameters1)
                 return None, "Failed"
 
@@ -571,12 +543,12 @@ class Main:
 
         try:
             driver.execute_script('window.scrollTo(0, ' + parameters1 + ')')
-            Aux.Main.addLogs(message="General", value=Aux.logs["ScrollPage"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ScrollPage"])
 
             return "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorScrollPage"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorScrollPage"], parameters1=str(ex))
 
             return "Failed"
 
@@ -585,12 +557,12 @@ class Main:
         try:
 
             driver.refresh()
-            Aux.Main.addLogs(message="General", value=Aux.logs["RefreshPage"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["RefreshPage"])
 
             return driver, "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorRefreshPage"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorRefreshPage"], parameters1=str(ex))
 
             return "Failed"
 
@@ -605,12 +577,12 @@ class Main:
         try:
             status_element = Main.findElement(self, parameters1=parameters1).is_enabled()
 
-            Aux.Main.addLogs(message="General", value=Aux.logs["IsEnable"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsEnable"])
 
             return status_element, "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorIsEnable"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsEnable"], parameters1=str(ex))
             return status_element, "Failed"
 
     # Checks whether the element is visible.
@@ -624,12 +596,12 @@ class Main:
         try:
             status_element = Main.findElement(self, parameters1=parameters1).is_displayed()
 
-            Aux.Main.addLogs(message="General", value=Aux.logs["IsDisplayed"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsDisplayed"])
 
             return status_element, "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorIsDisplayed"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsDisplayed"], parameters1=str(ex))
 
             return status_element, "Failed"
 
@@ -644,13 +616,13 @@ class Main:
             status_element = Main.findElement(self, parameters1=parameters1).is_selected()
 
             if status_element:
-                Aux.Main.addLogs(message="General", value=Aux.logs["IsSelected"])
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsSelected"])
                 return "True", "Passed"
             else:
                 return "False", "Failed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorIsSelected"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsSelected"], parameters1=str(ex))
             return "False", "Failed"
 
     # Validate data (With * validate the partial text).
@@ -669,11 +641,11 @@ class Main:
                     parameters2 = parameters1.replace('(title)', '')
 
                     if parameters2 == text_found:
-                        Aux.Main.addLogs(message="General", value=Aux.logs["ValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ValidateData"])
                         status = "Passed"
 
                     else:
-                        Aux.Main.addLogs(message="General", value=Aux.logs["ErrorValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorValidateData"])
                         status = "Failed"
 
                 # Get the URL from the address bar (getURL).
@@ -682,13 +654,13 @@ class Main:
                     parameters2 = parameters1.replace('(url)', '')
 
                     if parameters2 == text_found:
-                        Aux.Main.addLogs(message="General", value=Aux.logs["ValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ValidateData"])
 
                         parameters2 = parameters1.replace('(url)', '')
                         status = "Passed"
 
                     else:
-                        Aux.Main.addLogs(message="General", value=Aux.logs["ErrorValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorValidateData"])
                         status = "Failed"
 
                 # Check a part of the text was found.
@@ -700,11 +672,11 @@ class Main:
                         text_found = text_found.replace("\n", "")
 
                     if parameters2.replace('*', '') in text_found:
-                        Aux.Main.addLogs(message="General", value=Aux.logs["ValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ValidateData"])
                         status = "Passed"
 
                     else:
-                        Aux.Main.addLogs(message="General", value=Aux.logs["ErrorValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorValidateData"])
                         status = "Failed"
 
                 # Checks whether the element is active or inactive.
@@ -714,11 +686,11 @@ class Main:
                     parameters2 = parameters2.replace('(?)', '')
 
                     if text_found == parameters2:
-                        Aux.Main.addLogs(message="General", value=Aux.logs["ValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ValidateData"])
                         status = "Passed"
 
                     else:
-                        Aux.Main.addLogs(message="General", value=Aux.logs["ErrorValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorValidateData"])
                         status = "Failed"
 
                 # Checks whether the element is visible to the user.
@@ -728,11 +700,11 @@ class Main:
                     parameters2 = parameters2.replace('($)', '')
 
                     if text_found == parameters2:
-                        Aux.Main.addLogs(message="General", value=Aux.logs["ValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ValidateData"])
                         status = "Passed"
 
                     else:
-                        Aux.Main.addLogs(message="General", value=Aux.logs["ErrorValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorValidateData"])
                         status = "Failed"
 
                 # Checks whether a checkbox or radio button is selected.
@@ -741,11 +713,11 @@ class Main:
                     parameters2 = parameters2.replace('(.)', '')
 
                     if str(text_found) == parameters2:
-                        Aux.Main.addLogs(message="General", value=Aux.logs["ValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ValidateData"])
                         status = "Passed"
 
                     else:
-                        Aux.Main.addLogs(message="General", value=Aux.logs["ErrorValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorValidateData"])
                         status = "Failed"
 
                 # Checks if data is not available.
@@ -754,11 +726,11 @@ class Main:
                     parameters2 = parameters2.replace('(!=)', ' - ')
 
                     if parameters2 not in str(text_found):
-                        Aux.Main.addLogs(message="General", value=Aux.logs["ValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ValidateData"])
                         status = "Passed"
 
                     else:
-                        Aux.Main.addLogs(message="General", value=Aux.logs["ErrorValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorValidateData"])
                         status = "Failed"
 
                 # Checks if the data is available.
@@ -767,11 +739,11 @@ class Main:
                     parameters2 = parameters2.replace('(!)', '')
 
                     if parameters2 in str(text_found):
-                        Aux.Main.addLogs(message="General", value=Aux.logs["ValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ValidateData"])
                         status = "Passed"
 
                     else:
-                        Aux.Main.addLogs(message="General", value=Aux.logs["ErrorValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorValidateData"])
                         status = "Failed"
 
                 # Check some attributes.
@@ -784,11 +756,11 @@ class Main:
                     parameters2 = parameters2.replace('(#class)', '')
 
                     if parameters2 == text_found:
-                        Aux.Main.addLogs(message="General", value=Aux.logs["ValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ValidateData"])
                         status = "Passed"
 
                     else:
-                        Aux.Main.addLogs(message="General", value=Aux.logs["ErrorValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorValidateData"])
                         status = "Failed"
 
                 # Get the amount of elements. # ---> OK.
@@ -798,12 +770,12 @@ class Main:
                     parameters2 = parameters2.replace('>', '')
 
                     if int(parameters2) == text_found:
-                        Aux.Main.addLogs(message="General", value=Aux.logs["ValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ValidateData"])
                         status = "Passed"
                         text_found = str(text_found)
 
                     else:
-                        Aux.Main.addLogs(message="General", value=Aux.logs["ErrorValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorValidateData"])
                         status = "Failed"
                         text_found = str(text_found)
 
@@ -816,11 +788,11 @@ class Main:
                         text_found = text_found.replace("\n", "")
 
                     if text_found == parameters2:
-                        Aux.Main.addLogs(message="General", value=Aux.logs["ValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ValidateData"])
                         status = "Passed"
 
                     else:
-                        Aux.Main.addLogs(message="General", value=Aux.logs["ErrorValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorValidateData"])
                         status = "Failed"
 
             else:  # If Alert Element.
@@ -828,20 +800,22 @@ class Main:
                 text_found = alert.text
 
                 if parameters2 == text_found:
-                    Aux.Main.addLogs(message="General", value=Aux.logs["ValidateData"])
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ValidateData"])
                     status = "Passed"
 
                 else:
-                    Aux.Main.addLogs(message="General", value=Aux.logs["ErrorValidateData"])
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorValidateData"])
                     status = "Failed"
 
-            Aux.Main.addLogs(message="General", value=Aux.logs['ValidateDataExpected'], parameters1=parameters2)
-            Aux.Main.addLogs(message="General", value=Aux.logs['ValidateDataObtained'], parameters1=text_found)
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataExpected'],
+                                 value1=parameters2)
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataObtained'],
+                                 value1=text_found)
 
             return status
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorFunctionValidateData"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorFunctionValidateData"], parameters1=str(ex))
             return "Failed"
 
     # Alter (Verify iFrame or Windows).
@@ -864,7 +838,7 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorAlter"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAlter"], parameters1=str(ex))
             return "Failed"
 
     # Alter window.
@@ -873,12 +847,12 @@ class Main:
             for handle in driver.window_handles:
                 driver.switch_to.window(handle)
 
-            Aux.Main.addLogs(message="General", value=Aux.logs["AlterWindow"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["AlterWindow"])
 
             return "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorAlterWindow"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAlterWindow"], parameters1=str(ex))
             return "Failed"
 
     # Alter IFrame.
@@ -893,12 +867,12 @@ class Main:
             # switch to selected iframe
             driver.switch_to.frame(iframe)
 
-            Aux.Main.addLogs(message="General", value=Aux.logs["AlterIframe"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["AlterIframe"])
 
             return "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorAlterIframe"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAlterIframe"], parameters1=str(ex))
             return "Failed"
 
     # Alter Alert and Click OK.
@@ -908,12 +882,12 @@ class Main:
             alert = driver.switch_to.alert
             alert.accept()
 
-            Aux.Main.addLogs(message="General", value=Aux.logs["AlterAlert"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["AlterAlert"])
 
             return "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorAlterAlert"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAlterAlert"], parameters1=str(ex))
             return "Failed"
 
     # Return to default.
@@ -930,12 +904,12 @@ class Main:
 
                 Main.returnFrame(self)
 
-            Aux.Main.addLogs(message="General", value=Aux.logs["ReturnDefault"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ReturnDefault"])
 
             return "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorReturnDefault"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorReturnDefault"], parameters1=str(ex))
             return "Failed"
 
     # Return to window.
@@ -943,12 +917,12 @@ class Main:
         try:
             driver.switch_to.window(driver.window_handles[0])
 
-            Aux.Main.addLogs(message="General", value=Aux.logs["ReturnWindow"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ReturnWindow"])
 
             return "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorReturnWindow"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorReturnWindow"], parameters1=str(ex))
             return "Failed"
 
     # Return to default.
@@ -957,12 +931,12 @@ class Main:
 
             driver.switch_to.default_content()
 
-            Aux.Main.addLogs(message="General", value=Aux.logs["ReturnIframe"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ReturnIframe"])
 
             return "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorReturnIframe"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorReturnIframe"], parameters1=str(ex))
             return "Failed"
 
     # Choose an option in a browser alert screen.
@@ -972,7 +946,7 @@ class Main:
             parameters1 = kwargs.get('parameters1')
             parameters2 = kwargs.get('parameters2')
 
-            wait = WebDriverWait(driver, timeout=2)
+            wait = Lib.WebDriverWait(driver, timeout=2)
             alert = wait.until(lambda d: d.switch_to.alert)
 
             # Validate de Alert content (Text).
@@ -982,22 +956,22 @@ class Main:
             # Actions inside de Alert.
             if parameters1.upper() in ("OK", "ACEPTAR"):
                 alert.accept()
-                time.sleep(3)
+                Lib.time.sleep(3)
 
             elif parameters1.upper() in ("CANCELAR", "CANCEL"):
                 alert.dismiss()
-                time.sleep(3)
+                Lib.time.sleep(3)
 
             else:  # Fill the Alert textbox.
                 alert.send_keys(parameters1)
-                time.sleep(3)
+                Lib.time.sleep(3)
 
-            Aux.Main.addLogs(message="General", value=Aux.logs["Inform"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["Inform"])
 
             return "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorInform"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorInform"], parameters1=str(ex))
             return "Failed"
 
     # Function to create the browser object.
@@ -1014,29 +988,30 @@ class Main:
             if parameters1.upper() in ("CHROME", "GOOGLE", "GOOGLE CHROME"):
                 # Disable the Chrome logs in the .bat file and alter the download folder.
                 preferences = {
-                    "download.default_directory": Aux.directories['DownloadFolderTemp'],
+                    "download.default_directory": Lib.Aux.directories['DownloadFolderTemp'],
                     "download.prompt_for_download": False,
                     "download.directory_upgrade": True,
                     "safebrowsing.enabled": True,
                     "credentials_enable_service": False,
                     "profile.password_manager_enabled": False
                 }
-                options = webdriver.ChromeOptions()
+                options = Lib.webdriver.ChromeOptions()
 
                 # If cookies are enabled.
                 if enable_cookie:
                     options.add_argument('--profile-directory=Default')
-                    options.add_argument('--user-data-dir=' + Aux.directories["Temp"] + 'CHROME')
+                    options.add_argument('--user-data-dir=' + Lib.Aux.directories["Temp"] + 'CHROME')
 
                 options.add_experimental_option("excludeSwitches", ["enable-automation"])
                 options.add_experimental_option("prefs", preferences)
 
-                driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
+                driver = Lib.webdriver.Chrome(service=Lib.ChromeService(Lib.ChromeDriverManager().install()),
+                                              options=options)
 
             # Configure before open the browser.
             elif parameters1.upper() in ("MOZILLA", "FIREFOX"):
-                profile = webdriver.FirefoxProfile()
-                profile.set_preference("browser.download.dir", Aux.directories['DownloadFolderTemp'])
+                profile = Lib.webdriver.FirefoxProfile()
+                profile.set_preference("browser.download.dir", Lib.Aux.directories['DownloadFolderTemp'])
                 profile.set_preference("browser.download.manager.showWhenStarting", False)
                 profile.set_preference("browser.download.folderList", 2)
                 profile.set_preference("browser.download.panel.shown", True)
@@ -1058,12 +1033,12 @@ class Main:
                     'application/x-zip-compressed']
                 profile.set_preference("browser.helperApps.neverAsk.saveToDisk", ",".join(mime_types))
 
-                driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
+                driver = Lib.webdriver.Firefox(service=Lib.FirefoxService(Lib.GeckoDriverManager().install()))
 
             # Configure before open the browser.
             elif parameters1.upper() in "EDGE":  # Edge Chromium.
 
-                options = webdriver.EdgeOptions()
+                options = Lib.webdriver.EdgeOptions()
 
                 options.use_chromium = True
                 options.ensure_clean_session = True  # Set blank user.
@@ -1072,42 +1047,42 @@ class Main:
                 # If Cookies are enabled.
                 if enable_cookie:
                     options.add_argument('--profile-directory=Default')
-                    options.add_argument('--user-data-dir=' + Aux.directories["Temp"] + 'EDGE_CHROMIUM')
+                    options.add_argument('--user-data-dir=' + Lib.Aux.directories["Temp"] + 'EDGE_CHROMIUM')
 
                 preferences = {
-                    "download.default_directory": Aux.directories['DownloadFolderTemp'],
+                    "download.default_directory": Lib.Aux.directories['DownloadFolderTemp'],
                     "download.prompt_for_download": False,
                     "download.directory_upgrade": True,
                     "safebrowsing.enabled": True,
                 }
                 options.add_experimental_option('excludeSwitches', ['enable-logging'])
                 options.add_experimental_option("prefs", preferences)
-                driver = webdriver.Edge(service=EdgeService(EdgeChromiumDriverManager().install()), options=options)
+                driver = Lib.webdriver.Edge(service=Lib.EdgeService(Lib.EdgeChromiumDriverManager().install()), options=options)
 
             else:
-                Aux.Main.addLogs(message="General", value=Aux.logs["ErrorOpenBrowser"])
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorOpenBrowser"])
                 return "Failed"
 
-            Aux.otherConfigs['Browser'] = parameters1
+            Lib.Aux.otherConfigs['Browser'] = parameters1
             driver.maximize_window()
-            Main.openPage(self, parameters1=Aux.otherConfigs["HomePage"])
+            Main.openPage(self, parameters1=Lib.Aux.otherConfigs["HomePage"])
 
-            Aux.Main.addLogs(message="General", value=Aux.logs["OpenBrowser"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["OpenBrowser"])
 
             # Set the page load timeout (receive in minutes from interface).
-            driver.set_page_load_timeout(int(Aux.otherConfigs['TimeoutSession']) * 60)
+            driver.set_page_load_timeout(int(Lib.Aux.otherConfigs['TimeoutSession']) * 60)
 
             return "Passed"
 
-        except requests.exceptions.RequestException:
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorFindBrowser']['Msg']}{Aux.Textcolor.END}")
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorFindBrowser"])
+        except Lib.requests.exceptions.RequestException:
+            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorFindBrowser']['Msg']}{Lib.Aux.Textcolor.END}")
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorFindBrowser"])
 
             return "Failed"
 
         except Exception as ex:
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorOpenBrowser']['Msg']}{Aux.Textcolor.END}")
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorOpenBrowser"], parameters1=str(ex))
+            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorOpenBrowser']['Msg']}{Lib.Aux.Textcolor.END}")
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorOpenBrowser"], parameters1=str(ex))
 
             return "Failed"
 
@@ -1121,7 +1096,7 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorVerifyBrowser"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorVerifyBrowser"], parameters1=str(ex))
             return "Failed"
 
     # Close (windows or the whole browser).
@@ -1133,15 +1108,15 @@ class Main:
 
             if parameters1 is None:  # If none was informed = Close Windows.
                 driver.close()
-                Aux.Main.addLogs(message="General", value=Aux.logs["CloseWindow"])
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["CloseWindow"])
             else:  # If something was informed = Close Browser.
                 driver.quit()
-                Aux.Main.addLogs(message="General", value=Aux.logs["CloseBrowser"])
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["CloseBrowser"])
 
             return "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorClose"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorClose"], parameters1=str(ex))
             return "Failed"
 
     # Open page address.
@@ -1153,12 +1128,12 @@ class Main:
         try:
             driver.get(parameters1)
 
-            Aux.Main.addLogs(message="General", value=Aux.logs["OpenPage"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["OpenPage"])
 
             return "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorOpenPage"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorOpenPage"], parameters1=str(ex))
 
             return "Failed"
 
@@ -1177,39 +1152,39 @@ class Main:
 
             original_style = new_element.get_attribute('style')
             apply_style("border: {0}px solid {1};".format(border, color))
-            Aux.time.sleep(effect_time)
+            Lib.time.sleep(effect_time)
             apply_style(original_style)
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorHighLight"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorHighLight"], parameters1=str(ex))
 
     # Configure the save path - Only Edge Legacy.
     @staticmethod
     def _configureSavePath():
         try:
             # Keyboard press Alt+x and open the browser Configuration.
-            Aux.pyautogui.keyDown('alt')
-            Aux.time.sleep(.2)
-            Aux.pyautogui.keyDown('x')
-            Aux.time.sleep(.2)
-            Aux.pyautogui.keyUp('alt')
+            Lib.Aux.pyautogui.keyDown('alt')
+            Lib.Aux.time.sleep(.2)
+            Lib.Aux.pyautogui.keyDown('x')
+            Lib.Aux.time.sleep(.2)
+            Lib.Aux.pyautogui.keyUp('alt')
 
             # Navigate to the browser download folder.
-            Aux.pyautogui.typewrite(['up', 'Enter', 'tab', 'tab', 'tab', 'tab', 'tab', 'tab', 'tab', 'tab', 'tab',
+            Lib.Aux.pyautogui.typewrite(['up', 'Enter', 'tab', 'tab', 'tab', 'tab', 'tab', 'tab', 'tab', 'tab', 'tab',
                                      'enter', 'tab', 'tab', 'tab', 'tab', 'tab', 'tab', 'Enter'], interval=.2)
 
             # Type the new path.
-            Aux.time.sleep(2)
-            Aux.pyautogui.typewrite(Aux.directories['DownloadFolderTemp'])
-            Aux.pyautogui.typewrite(['enter', 'tab', 'enter'], interval=.2)
+            Lib.Aux.time.sleep(2)
+            Lib.Aux.pyautogui.typewrite(Lib.Aux.directories['DownloadFolderTemp'])
+            Lib.Aux.pyautogui.typewrite(['enter', 'tab', 'enter'], interval=.2)
 
             # Do not ask after finish the download.
-            Aux.pyautogui.typewrite(['tab', 'space', 'esc'], interval=.2)
+            Lib.Aux.pyautogui.typewrite(['tab', 'space', 'esc'], interval=.2)
 
-            Aux.Main.addLogs(message="General", value=Aux.logs["ConfigureSavePath"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ConfigureSavePath"])
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorConfigureSavePath"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorConfigureSavePath"], parameters1=str(ex))
             return "Failed"
 
     # Save the file locally.
@@ -1218,29 +1193,29 @@ class Main:
         cont_iteration = kwargs.get("cont_iteration")
 
         try:
-            Aux.time.sleep(5)
+            Lib.Aux.time.sleep(5)
             while True:
                 # The file found means it is still downloading.
-                if Aux.Main.verifyFile(self, path=Aux.directories['DownloadFolderTemp'], extension='crdownload',
-                                       msg_not_found=Aux.otherConfigs['DownloadFinished']['Msg'],
-                                       msg_found=Aux.otherConfigs['DownloadingFile']['Msg']):
-                    Aux.time.sleep(1)
+                if Lib.Aux.Main.verifyFile(self, path=Lib.Aux.directories['DownloadFolderTemp'], extension='crdownload',
+                                       msg_not_found=Lib.Aux.otherConfigs['DownloadFinished']['Msg'],
+                                       msg_found=Lib.Aux.otherConfigs['DownloadingFile']['Msg']):
+                    Lib.time.sleep(1)
                     continue
                 else:
                     # Rename de file.
-                    files = Aux.os.listdir(Aux.directories['DownloadFolderTemp'])
+                    files = Lib.os.listdir(Lib.Aux.directories['DownloadFolderTemp'])
                     for file in files:
                         new_name = 'IT' + str(cont_iteration).zfill(2) + ' - ' + file
-                        Aux.os.rename(Aux.os.path.join(Aux.directories['DownloadFolderTemp'], file),
-                                      Aux.os.path.join(Aux.directories['DownloadFolderTemp'], new_name))
-                        Aux.shutil.move(Aux.os.path.join(Aux.directories['DownloadFolderTemp'], new_name),
-                                        Aux.os.path.join(Aux.directories['DownloadFolder'], new_name))
+                        Lib.os.rename(Lib.os.path.join(Lib.Aux.directories['DownloadFolderTemp'], file),
+                                      Lib.os.path.join(Lib.Aux.directories['DownloadFolderTemp'], new_name))
+                        Lib.shutil.move(Lib.os.path.join(Lib.Aux.directories['DownloadFolderTemp'], new_name),
+                                        Lib.os.path.join(Lib.Aux.directories['DownloadFolder'], new_name))
                     break
 
             return "Passed"
 
         except Exception as ex:
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorSaveFile"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorSaveFile"], parameters1=str(ex))
             return "Failed"
 
     # Save the screenshots.
@@ -1252,28 +1227,28 @@ class Main:
 
         try:
             # Alert print screen.
-            if ec.alert_is_present()(driver):
-                Aux.time.sleep(1)
-                Aux.shutil.copyfile(Aux.os.path.join(Aux.os.getcwd(), 'Automation', 'images',
-                                                     Aux.directories['UnavailablePrint']),
+            if Lib.ec.alert_is_present()(driver):
+                Lib.time.sleep(1)
+                Lib.shutil.copyfile(Lib.os.path.join(Lib.Aux.os.getcwd(), 'Automation', 'images',
+                                                     Lib.Aux.directories['UnavailablePrint']),
                                     test_set_path + "\\" + image_name + ".png")
 
             else:
                 driver.save_screenshot(test_set_path + "\\" + image_name + ".png")
 
-            Aux.Main.addLogs(message="General", value=Aux.logs["TakePicture"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["TakePicture"])
 
             return True
 
-        except AttributeError or requests.exceptions.RequestException or requests.exceptions.RetryError:
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorTakePicture']['Msg']}{Aux.Textcolor.END}")
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorTakePicture"])
+        except AttributeError or Lib.requests.exceptions.RequestException or Lib.requests.exceptions.RetryError:
+            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorTakePicture']['Msg']}{Lib.Aux.Textcolor.END}")
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorTakePicture"])
 
             return False
 
         except Exception as ex:
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorTakePicture']['Msg']}{Aux.Textcolor.END}", ex)
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorTakePicture"])
+            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorTakePicture']['Msg']}{Lib.Aux.Textcolor.END}", ex)
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorTakePicture"])
 
             return False
 
@@ -1287,9 +1262,7 @@ class Main:
         actual_step = kwargs.get("actual_step")
 
         # Variables
-        Aux.otherConfigs['API_Step'] = True
-        # headers = None
-        # api_status = None
+        Lib.Aux.otherConfigs['API_Step'] = True
         api_status_final = True
         error_msg_list = {}
 
@@ -1297,27 +1270,28 @@ class Main:
             if parameters1.upper() != 'SUBMIT':
                 tag = parameters1[:parameters1.find(':')]
                 if tag.upper() == 'ENDPOINT':
-                    Aux.otherConfigs['API_Endpoint'] = parameters1[parameters1.find(':') + 1:].strip()
+                    Lib.Aux.otherConfigs['API_Endpoint'] = parameters1[parameters1.find(':') + 1:].strip()
                 elif tag.upper() == 'AUTHORIZATION':
-                    Aux.otherConfigs['API_Authorization'] = parameters1[parameters1.find(':') + 1:].strip()
+                    Lib.Aux.otherConfigs['API_Authorization'] = parameters1[parameters1.find(':') + 1:].strip()
                 elif tag.upper() == 'HEADERS':
-                    Aux.otherConfigs['API_Headers'] = parameters1[parameters1.find(':') + 1:].strip()
+                    Lib.Aux.otherConfigs['API_Headers'] = parameters1[parameters1.find(':') + 1:].strip()
                 elif tag.upper() == 'BODY':
-                    Aux.otherConfigs['API_Body'] = (parameters1[parameters1.find(':') + 1:parameters1.rfind('\"')]
+                    Lib.Aux.otherConfigs['API_Body'] = (parameters1[parameters1.find(':') + 1:parameters1.rfind('\"')]
                                                     .strip())
                 elif tag.upper() == 'PARAMS':
-                    Aux.otherConfigs['API_Params'] = parameters1[parameters1.find(':') + 1:].strip()
+                    Lib.Aux.otherConfigs['API_Params'] = parameters1[parameters1.find(':') + 1:].strip()
                 elif tag.upper() == "SCHEMA":
                     if num_of_steps.__len__() != actual_step:
-                        raise Exception(Aux.logs['ErrorAPISchema']['Msg'])
+                        raise Exception(Lib.Aux.logs['ErrorAPISchema']['Msg'])
 
-                    if Aux.otherConfigs['API_Body']:
-                        dict_body = ast.literal_eval(Aux.otherConfigs['API_Body'])
+                    if Lib.Aux.otherConfigs['API_Body']:
+                        dict_body = Lib.ast.literal_eval(Lib.Aux.otherConfigs['API_Body'])
                     else:
-                        print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorAPIBodyMissing']['Msg']}{Aux.Textcolor.END}")
-                        Aux.Main.addLogs(message="General", value=Aux.logs["ErrorAPIBodyMissing"])
-                        raise TypeError(Aux.logs['ErrorAPIBodyMissing']['Msg'])
-                    json_data = Aux.ApiSchema(parameters1[parameters1.find(':') + 1:].strip())
+                        print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorAPIBodyMissing']['Msg']}"
+                              f"{Lib.Aux.Textcolor.END}")
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAPIBodyMissing"])
+                        raise TypeError(Lib.Aux.logs['ErrorAPIBodyMissing']['Msg'])
+                    json_data = Lib.Aux.ApiSchema(parameters1[parameters1.find(':') + 1:].strip())
                     json_fake_data = json_data.api_check()
 
                     for tag in json_fake_data.keys():
@@ -1327,39 +1301,40 @@ class Main:
                             # Run the API request.
                             error_msg = (
                                 self.connections.send_request(api_action=api_action,
-                                                              headers=Aux.otherConfigs['API_Headers'],
+                                                              headers=Lib.Aux.otherConfigs['API_Headers'],
                                                               body=dict_body))
 
                             error_msg_list[tag + ' -> ' + str(dict_body[tag])] = error_msg
 
-                            if Aux.otherConfigs['API_StatusCode'] == 400:
+                            if Lib.Aux.otherConfigs['API_StatusCode'] == 400:
                                 api_status = True
                             else:
                                 api_status = False
 
                             api_status_final = (api_status_final and api_status)
 
-                    Aux.otherConfigs['API_Response'] = error_msg_list
+                    Lib.Aux.otherConfigs['API_Response'] = error_msg_list
 
                     if api_status_final:
                         return "Passed"
                     else:
                         return "Failed"
 
-                if Aux.otherConfigs['API_Endpoint'] is None:
-                    print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorAPIMissingInfo']['Msg']}{Aux.Textcolor.END}")
-                    Aux.Main.addLogs(message="General", value=Aux.logs["ErrorAPIMissingInfo"])
-                    raise TypeError(Aux.logs['ErrorAPIMissingInfo']['Msg'])
+                if Lib.Aux.otherConfigs['API_Endpoint'] is None:
+                    print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorAPIMissingInfo']['Msg']}"
+                          f"{Lib.Aux.Textcolor.END}")
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAPIMissingInfo"])
+                    raise TypeError(Lib.Aux.logs['ErrorAPIMissingInfo']['Msg'])
             else:
                 # Run the API request.
-                Aux.otherConfigs['API_Response'] = (
+                Lib.Aux.otherConfigs['API_Response'] = (
                     self.connections.send_request(api_action=api_action,
-                                                  headers=Aux.otherConfigs['API_Headers'],
-                                                  body=Aux.otherConfigs['API_Body']))
+                                                  headers=Lib.Aux.otherConfigs['API_Headers'],
+                                                  body=Lib.Aux.otherConfigs['API_Body']))
 
         except Exception as ex:
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorRequestAPI']['Msg']}{Aux.Textcolor.END}", ex)
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorRequestAPI"])
+            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequestAPI']['Msg']}{Lib.Aux.Textcolor.END}", str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorRequestAPI"])
 
             return "Failed"
 
@@ -1371,29 +1346,29 @@ class Main:
         status_code = None
         schema = None
 
-        Aux.otherConfigs['API_Step'] = True
+        Lib.Aux.otherConfigs['API_Step'] = True
 
         try:
             tag = parameters1[:parameters1.find(':')]
             param = parameters1[parameters1.find(':') + 1:]
 
             # Status Code.
-            if tag.upper() == "STATUS CODE" and int(param) == Aux.otherConfigs['API_StatusCode']:
+            if tag.upper() == "STATUS CODE" and int(param) == Lib.Aux.otherConfigs['API_StatusCode']:
                 status_code = "Passed"
-            elif tag.upper() == "STATUS CODE" and int(param) != Aux.otherConfigs['API_StatusCode']:
+            elif tag.upper() == "STATUS CODE" and int(param) != Lib.Aux.otherConfigs['API_StatusCode']:
                 status_code = "Failed"
             else:  # tag.upper() != "STATUS CODE":
-                find_content = Aux.Main.find_content_json(self, tag=tag, param=param)
+                find_content = Lib.Aux.Main.find_content_json(self, tag=tag, param=param)
 
             if status_code == "Passed" or find_content == "Passed" or schema == "Passed":
                 return "Passed"
             else:
-                Aux.Main.addLogs(message="General", value=Aux.logs["ErrorResponseAPI"],
-                                 value1=f"Expected: {tag} - Result {param}")
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorResponseAPI"],
+                                     value1=f"Expected: {tag} - Result {param}")
                 return "Failed"
 
         except Exception as ex:
-            print(f"{Aux.Textcolor.FAIL}{Aux.logs['ErrorResponseAPI']['Msg']}{Aux.Textcolor.END}", ex)
-            Aux.Main.addLogs(message="General", value=Aux.logs["ErrorResponseAPI"])
+            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorResponseAPI']['Msg']}{Lib.Aux.Textcolor.END}", str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorResponseAPI"])
 
             return "Failed"

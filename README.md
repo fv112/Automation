@@ -1,11 +1,19 @@
 Automation QA - Release notes
 ----
+**Version 1.19.0**
+
+<em>25/07/2024</em>
+- <font color='red'>__[Novo]__</font> - Centralização das bibliotecas em um arquivo.
+- <font color='red'>__[Novo]__</font> - Correção na abertura do browser.
+- <font color='red'>__[Novo]__</font> - Correção de uma mensagem que não estava na lista de tradução.
+- <font color='red'>__[Novo]__</font> - Correção na comparação das mensagens na função Validate.
+#
+
 **Version 1.18.1**
 
 <em>24/07/2024</em>
-- <font color='red'>__[Novo]__</font> - Cor magenta atualizada nas evidências.
-- <font color='red'>__[Novo]__</font> - Alterado caminho para instalação da versão. Novo caminho ProgramData.
-#
+- Cor magenta atualizada nas evidências.
+- Alterado caminho para instalação da versão. Novo caminho ProgramData.
 
 **Version 1.17.0**
 

@@ -1,26 +1,28 @@
-import os
-import Automation.modules.automationCore as Core
-import Automation.modules.automationAux as Aux
+import os.path
+import sys
+
+sys.path.append(os.path.abspath('./Automation/modules'))
+import common_libs as Lib
 
 
 class AutomationQA:
 
     def __init__(self):
 
-        os.system('cls')
+        Lib.os.system('cls')
 
-        Aux.Main.setLanguage(language='pt_BR')
+        Lib.Aux.Main.setLanguage(language='pt_BR')
 
-        local_version, date_version, release_infos = Aux.Main.releaseNotes()
+        local_version, date_version, release_infos = Lib.Aux.Main.releaseNotes()
 
-        print(f"{Aux.Textcolor.HIGHLIGHT}       Automation QA - Version: {local_version} - Date: {date_version}     "
-              f"{Aux.Textcolor.END}")
-        print(f"{Aux.Textcolor.BOLD}Release notes:{Aux.Textcolor.END}")
+        print(f"{Lib.Aux.Textcolor.HIGHLIGHT}       Automation QA - Version: {local_version} - Date: {date_version}     "
+              f"{Lib.Aux.Textcolor.END}")
+        print(f"{Lib.Aux.Textcolor.BOLD}Release notes:{Lib.Aux.Textcolor.END}")
         for releaseInfo in release_infos:
             print(f"{releaseInfo}")
         print("")
 
-        app_core = Core.Main(self)
+        app_core = Lib.Core.Main(self)
         app_core.main()
 
     #     self.cmdHelp()

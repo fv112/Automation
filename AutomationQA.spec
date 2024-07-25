@@ -19,6 +19,7 @@ command = Analysis([
             'C:\\QA-Automation\\Automation\\Automation\\modules\\automationCore.py',
             'C:\\QA-Automation\\Automation\\Automation\\modules\\automationFunc.py',
             'C:\\QA-Automation\\Automation\\Automation\\modules\\connections.py',
+            'C:\\QA-Automation\\Automation\\Automation\\modules\\common_libs.py',
             'C:\\QA-Automation\\Automation\\Automation\\modules\\automaticCompareFiles.py',
             'C:\\QA-Automation\\Automation\\Automation\\modules\\generateManualEvidence.py'
             ],

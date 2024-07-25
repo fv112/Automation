@@ -1,36 +1,6 @@
-import json
-import os
-import datetime
-import io
-import re
-import win32api                                         # Read the Windows login.
-import win32net                                         # Read the Windows login.
-import sys
-import ctypes
-import time
-import pythoncom
-import win32com.client as win
-import socket
-import re as regex
-import yaml
-import hashlib
-import shutil
-import subprocess
-import pyautogui                                        # Press keyboard outside the browser.
-import random
-import pyscreenshot as pyscreenshot
-from jsonschema import validate, ValidationError
-from faker import Faker
-from deep_translator import GoogleTranslator
-from docx import Document
-from docx.shared import Inches                          # Used to insert image in .docx file.
-from docx.shared import RGBColor
-from PIL import ImageGrab
-from collections import Counter                         # Used in automatizationCore_GitLab.
-
+import common_libs as Lib
 
 verbs = None
-# logs = None
 
 
 # Colored the text.
@@ -52,8 +22,8 @@ class Main:
 
     # Called to clean the file 'Tokens.txt'
     def clean_token_file(self):
-        name = os.getlogin()
-        file_path = os.path.join(directories["TokensFile"], 'Tokens.txt')
+        name = Lib.os.getlogin()
+        file_path = Lib.os.path.join(directories["TokensFile"], 'Tokens.txt')
         file = open(file_path, 'w')
         file.close()
 
@@ -136,37 +106,35 @@ class Main:
             # kwargs variables.
             path_folder = kwargs.get("path_folder")
 
-            create = False
-
-            if not os.path.exists(path_folder):
-                os.makedirs(path_folder)
-                create = True
+            if not Lib.os.path.exists(path_folder):
+                Lib.os.makedirs(path_folder)
+                return True
             else:
                 # Clear the old logs and evidences (Older than 30 days).
-                current_time = time.time()
-                for item in os.listdir(path_folder):
+                current_time = Lib.time.time()
+                for item in Lib.os.listdir(path_folder):
 
                     # Delete folders or files.
-                    if os.path.isdir(os.path.join(path_folder, item)):
-                        creation_time = os.path.getmtime(os.path.join(path_folder, item))
+                    if Lib.os.path.isdir(Lib.os.path.join(path_folder, item)):
+                        creation_time = Lib.os.path.getmtime(Lib.os.path.join(path_folder, item))
                         if (current_time - creation_time) // (24 * 3600) >= 30:
-                            shutil.rmtree(os.path.join(path_folder, item), ignore_errors=True)
+                            Lib.shutil.rmtree(Lib.os.path.join(path_folder, item), ignore_errors=True)
                             Main.addLogs(message="General", value=logs["DeleteFolder"],
                                          value1=path_folder, value2=item)
                     else:
-                        creation_time = os.path.getmtime(os.path.join(path_folder, item))
+                        creation_time = Lib.os.path.getmtime(Lib.os.path.join(path_folder, item))
                         if (current_time - creation_time) // (24 * 3600) >= 30:
-                            os.remove(os.path.join(path_folder, item))
+                            Lib.os.remove(Lib.os.path.join(path_folder, item))
                             Main.addLogs(message="General", value=logs["DeleteFile"],
-                                         value1=os.path.join(path_folder, item))
+                                         value1=Lib.os.path.join(path_folder, item))
 
-            return create
+            return True
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorCreateDirectory']['Msg']}{Textcolor.END}", ex)
             Main.addLogs(message="General", value=logs["ErrorCreateDirectory"], value1=ex)
 
-            return create
+            return False
 
     # Delete the directories.
     def deleteDirectory(self, **kwargs):
@@ -174,8 +142,8 @@ class Main:
             # kwargs variables.
             path_folder = kwargs.get('directory')
 
-            if os.path.exists(path_folder):
-                shutil.rmtree(path_folder)
+            if Lib.os.path.exists(path_folder):
+                Lib.shutil.rmtree(path_folder)
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorDeleteDirectory']['Msg']}{Textcolor.END}", ex)
@@ -204,7 +172,7 @@ class Main:
             image_path = ""
 
             # Open the document.
-            document = Document(word_path)
+            document = Lib.Document(word_path)
             # Search the correct paragraph.
             paragraf = Main.wordSeachText(document=document, text=tag_paragraf[0][otherConfigs['Language']])
             # Set the variable.
@@ -224,8 +192,6 @@ class Main:
 
                 return None
 
-            # step_order = 1
-
             # Read the test case steps and add them in the order.
             for step_order, step in enumerate(steps_list):
 
@@ -239,9 +205,9 @@ class Main:
                     # Last step or take_picture_status is true.
                     if verb not in ('Fechar', 'Cerrar', 'Close') and take_picture_status:
                         # Check the image size.
-                        image_path = os.path.join(test_set_path, otherConfigs["EvidenceName"] +
-                                                  str(step_order).zfill(2) + otherConfigs["EvidenceExtension"])
-                        image = ImageGrab.Image.open(image_path)
+                        image_path = Lib.os.path.join(test_set_path, otherConfigs["EvidenceName"] +
+                                                      str(step_order).zfill(2) + otherConfigs["EvidenceExtension"])
+                        image = Lib.ImageGrab.Image.open(image_path)
 
                         if image.size[0] <= 1500:
                             image_resize = False
@@ -256,7 +222,7 @@ class Main:
                         # Add the error message in the document.
                         paragraf = document.add_paragraph(otherConfigs["StepNotFound"]['Msg'])
                         run_paragraf = paragraf.runs[0]
-                        run_paragraf.font.color.rgb = RGBColor(*(255, 0, 0))
+                        run_paragraf.font.color.rgb = Lib.RGBColor(*(255, 0, 0))
 
                     # Add the comment to the Manual Evidence.
                     # if (comment is not None) and (step_failed == step_order):
@@ -273,12 +239,12 @@ class Main:
                             run_paragraf.add_picture(image_path, width=eval(otherConfigs["EvidenceWidth"]),
                                                      height=eval(otherConfigs["EvidenceHeight"]))
                         else:
-                            run_paragraf.add_picture(image_path, width=Inches(5))
+                            run_paragraf.add_picture(image_path, width=Lib.Inches(5))
                     elif otherConfigs['API_Step']:
                         api_evidence_step = None
                         api_file_name = (otherConfigs["EvidenceNameAPI"] + str(step_order).zfill(2) +
                                          otherConfigs["EvidenceExtensionAPI"])
-                        api_file = os.path.join(directories['EvidenceFolder'], test_set_path, api_file_name)
+                        api_file = Lib.os.path.join(directories['EvidenceFolder'], test_set_path, api_file_name)
 
                         with open(api_file, 'r') as api_evidence_file:
                             api_evidence_step = api_evidence_file.readlines()
@@ -300,11 +266,11 @@ class Main:
 
             # Save the file.
             if step_failed:
-                path = os.path.join(test_set_path, '[BUG] - ' +
+                path = Lib.os.path.join(test_set_path, '[BUG] - ' +
                                     otherConfigs["ETSName"] + str(test_case_id) + " - " + str(name_testcase)
                                     + otherConfigs["ETSExtension"])
             else:
-                path = os.path.join(test_set_path, otherConfigs["ETSName"] + str(test_case_id) + " - " +
+                path = Lib.os.path.join(test_set_path, otherConfigs["ETSName"] + str(test_case_id) + " - " +
                                     str(name_testcase) + otherConfigs["ETSExtension"])
             document.save(path)
 
@@ -429,9 +395,9 @@ class Main:
             word_format_pdf = 17
 
             # Initialize.
-            pythoncom.CoInitialize()
+            Lib.pythoncom.CoInitialize()
 
-            word = win.Dispatch('Word.Application')
+            word = Lib.win.Dispatch('Word.Application')
             document = word.Documents.Open(path)
 
             pdf_path = path.replace("docx", "pdf")
@@ -459,14 +425,14 @@ class Main:
             # Delete all the files in a directory with the specific extension OR all if the extension is '*'.
             if file_path:
 
-                files = os.listdir(file_path)
+                files = Lib.os.listdir(file_path)
 
                 for item in files:
                     if item.endswith(extension) or extension == '*':
-                        os.remove(os.path.join(file_path, item))
+                        Lib.os.remove(Lib.os.path.join(file_path, item))
 
             else:
-                os.remove(exact_file)
+                Lib.os.remove(exact_file)
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorDeleteFiles']['Msg']}{Textcolor.END}", ex)
@@ -482,17 +448,17 @@ class Main:
             value1 = kwargs.get("value1")
             value2 = kwargs.get("value2")
 
-            datetime_log: str = datetime.datetime.now().strftime("%d/%m/%y %H:%M:%S")
+            datetime_log: str = Lib.datetime.datetime.now().strftime("%d/%m/%y %H:%M:%S")
 
             # Get the hostname.
-            otherConfigs["ComputerName"] = socket.gethostname()
+            otherConfigs["ComputerName"] = Lib.socket.gethostname()
             hostname = otherConfigs["ComputerName"]
             # Get the datetime.
-            date_log = str(datetime.datetime.now().strftime("%d.%m.%Y"))
+            date_log = str(Lib.datetime.datetime.now().strftime("%d.%m.%Y"))
             # Set the file name.
-            path = os.path.join(directories["LogFolder"], hostname + " - " + date_log + ".log")
+            path = Lib.os.path.join(directories["LogFolder"], hostname + " - " + date_log + ".log")
 
-            if not os.path.isdir(directories["LogFolder"]):
+            if not Lib.os.path.isdir(directories["LogFolder"]):
                 Main.createDirectory(path_folder=directories["LogFolder"])
 
             # Append the log file.
@@ -514,7 +480,8 @@ class Main:
                     # Change the error origin if informed.
                     if value1 is not None and value2 is None:
                         msg_format = "{:<15}"
-                        log_file.write(datetime_log + " - " + type_log + " - " + msg_format.format(message_log) + " - " + value1 + "\n")
+                        log_file.write(datetime_log + " - " + type_log + " - " + msg_format.format(message_log) + " - "
+                                       + value1 + "\n")
                     elif value1 is not None and value2 is not None:
                         log_file.write(datetime_log + " - " + type_log + " - '" + value1 + "' " + message_log + " '" +
                                        value2 + "' - " + local_log + "\n")
@@ -537,8 +504,8 @@ class Main:
             # kwargs variables.
             value = kwargs.get("value")
 
-            pattern = regex.compile('<.*?>')
-            value = regex.sub(pattern, '', value).strip()
+            pattern = Lib.regex.compile('<.*?>')
+            value = Lib.regex.sub(pattern, '', value).strip()
 
             value = value.replace('&nbsp;', ' ')
             value = value.replace('&lt;', '<')
@@ -559,14 +526,15 @@ class Main:
             new_hash = kwargs.get('new_hash')
 
             # Paths
-            path_origin_yml = os.path.join(os.getcwd(), 'Automation', 'configs', 'dictionary-pt.yml')
-            path_translated_yml = os.path.join(os.getcwd(), 'Automation', 'configs', 'dictionary-' + language + '.yml')
+            path_origin_yml = Lib.os.path.join(Lib.os.getcwd(), 'Automation', 'configs', 'dictionary-pt.yml')
+            path_translated_yml = Lib.os.path.join(Lib.os.getcwd(), 'Automation', 'configs', 'dictionary-' +
+                                                   language + '.yml')
 
-            regex_pattern = regex.compile('(.*?,)(.*?,)(.*)')
+            Lib.regex_pattern = Lib.regex.compile('(.*?,)(.*?,)(.*)')
 
             tag = 'Msg:'
 
-            if os.path.isfile(path_translated_yml):
+            if Lib.os.path.isfile(path_translated_yml):
                 Main.deleteFiles(exact_file=path_translated_yml)
 
             with open(path_origin_yml, 'r') as yml_file:
@@ -574,11 +542,11 @@ class Main:
                 for line in lines:
                     if tag in line:
                         with open(path_translated_yml, 'a', encoding='utf-8') as yml_new_file:
-                            group_type = regex.match(regex_pattern, line).group(1)
-                            group_msg = regex.match(regex_pattern, line).group(2)
+                            group_type = Lib.regex.match(regex_pattern, line).group(1)
+                            group_msg = Lib.regex.match(regex_pattern, line).group(2)
                             msg_translated = GoogleTranslator(source='pt', target=language).\
                                 translate((group_msg[len(tag) + 1:len(group_msg) - 1]).strip())
-                            group_where = regex.match(regex_pattern, line).group(3)
+                            group_where = Lib.regex.match(regex_pattern, line).group(3)
                             yml_new_file.write(f'{group_type}{tag} {msg_translated},{group_where}\n')
                     else:
                         with open(path_translated_yml, 'a') as yml_new_file:
@@ -597,7 +565,7 @@ class Main:
             need_translation = False
             language = kwargs.get('language')
 
-            path_file = os.path.join(os.getcwd(), directories["ConfigFolder"], 'dictionary-pt.yml')
+            path_file = Lib.os.path.join(Lib.os.getcwd(), directories["ConfigFolder"], 'dictionary-pt.yml')
             new_hash = Main.generateHash(path_file=path_file)
             actual_hash = Main.readHash(directory=directories["HashFolder"], language=language,
                                         actual_file='hash_dictionary.txt')
@@ -639,9 +607,9 @@ class Main:
             language = kwargs.get('language')
             actual_file = kwargs.get('actual_file')
 
-            file_read = os.path.join(directory, language + '-' + actual_file)
+            file_read = Lib.os.path.join(directory, language + '-' + actual_file)
 
-            if os.path.exists(file_read):
+            if Lib.os.path.exists(file_read):
 
                 with open(file_read, 'r') as file:
                     content = file.readline()
@@ -662,9 +630,9 @@ class Main:
             path_part = kwargs.get('path_part')
 
             # Variables.
-            hash_file_path = os.path.join(directories["HashFolder"], path_part + '-hash_dictionary.txt')
+            hash_file_path = Lib.os.path.join(directories["HashFolder"], path_part + '-hash_dictionary.txt')
 
-            if not os.path.exists(directories['HashFolder']):
+            if not Lib.os.path.exists(directories['HashFolder']):
                 Main.createDirectory(path_folder=directories['HashFolder'])
             with open(hash_file_path, 'w') as hash_file:
                 hash_file.write(new_hash)
@@ -683,12 +651,12 @@ class Main:
             global verbs, logs, directories, otherConfigs, searchForAttribute, searchForComponent
 
             # yml path.
-            path = os.path.join(os.getcwd(), 'Automation', 'configs', 'dictionary-' + language + '.yml')
-            if not os.path.exists(path):  # For the exe file.
-                path = os.path.join(os.getcwd(), 'configs', 'dictionary-' + language + '.yml')
+            path = Lib.os.path.join(Lib.os.getcwd(), 'Automation', 'configs', 'dictionary-' + language + '.yml')
+            if not Lib.os.path.exists(path):  # For the exe file.
+                path = Lib.os.path.join(Lib.os.getcwd(), 'configs', 'dictionary-' + language + '.yml')
 
             with open(path, encoding='utf-8') as configFile:
-                config = yaml.safe_load(configFile)
+                config = Lib.yaml.safe_load(configFile)
 
             # Add the sections.
             verbs = config['verbs']
@@ -733,7 +701,7 @@ class Main:
             msg_not_found = kwargs.get('msg_not_found')
             msg_found = kwargs.get('msg_found')
 
-            files = os.listdir(path)
+            files = Lib.os.listdir(path)
             for file in files:
                 if file.endswith(extension):
                     print(f"{Textcolor.GREEN}{msg_found}{Textcolor.END}")
@@ -754,16 +722,16 @@ class Main:
             new_file = kwargs.get('new_file')
             test_name = kwargs.get('test_name')
 
-            baseline = os.path.join(directories['CompareDownloadFolder'], test_name, baseline)
-            new_file = os.path.join(directories['CompareDownloadFolder'], test_name, new_file)
+            baseline = Lib.os.path.join(directories['CompareDownloadFolder'], test_name, baseline)
+            new_file = Lib.os.path.join(directories['CompareDownloadFolder'], test_name, new_file)
 
             # Update the Settings.
-            subprocess.Popen([directories['BeyondCompare'], directories['BeyondCompareSettings'], '/silent'])
+            Lib.subprocess.Popen([directories['BeyondCompare'], directories['BeyondCompareSettings'], '/silent'])
 
             file_session = Main._checkSessionBCFile(baseline=baseline)
 
             # Open the session.
-            subprocess.Popen([directories['BeyondCompare'], file_session, '/silent'])
+            Lib.subprocess.Popen([directories['BeyondCompare'], file_session, '/silent'])
 
             # Disable the mouse.
             pyautogui.FAILSAFE = False
@@ -814,7 +782,7 @@ class Main:
     # Inform the updates.
     def releaseNotes():
 
-        path = os.path.join(os.getcwd(), 'README.md')
+        path = Lib.os.path.join(Lib.os.getcwd(), 'README.md')
         release_infos = []
 
         if path:
@@ -844,11 +812,8 @@ class Main:
         try:
             response = otherConfigs['API_Response']
 
-            # if 'STATUS CODE' in param:
-            #     pass
-
             if 'message' in response:  # Simple message.
-                param1 = regex.search(r'(?<=\:\")(.*?)(?=\"})', param)
+                param1 = Lib.regex.search(r'(?<=\:\")(.*?)(?=\"})', param)
                 if param1.group(0) == response['message']:
                     otherConfigs['JsonValidate'] = otherConfigs['JsonValidateSuccess']['Msg']
                     return "Passed"
@@ -931,33 +896,33 @@ class ApiSchema:
             Main.createDirectory(path_folder=directories['SwaggerFolder'])
 
             # Download the swagger file.
-            subprocess.run(
-                ['curl', '-o', os.path.join(directories['SwaggerFolder'], self.swagger_file), self.swagger_link])
+            Lib.subprocess.run(
+                ['curl', '-o', Lib.os.path.join(directories['SwaggerFolder'], self.swagger_file), self.swagger_link])
 
-            swagger_data = ApiSchema.load_swagger(self, os.path.join(directories['SwaggerFolder'], self.swagger_file))
+            swagger_data = ApiSchema.load_swagger(self, Lib.os.path.join(directories['SwaggerFolder'],
+                                                                         self.swagger_file))
 
             ApiSchema.extract_jsonschema_relevant_data(self, swagger_data)
 
-            print(f"Dados relevantes para JSON Schema extraídos e salvos como {self.swagger_file}")
+            print(f"{Textcolor.WARNING}{otherConfigs['API_ExtractInfo']['Msg']} {self.swagger_file}{Textcolor.END}")
 
-            with open(os.path.join(directories['SwaggerFolder'], self.swagger_file), 'r', encoding='utf-8') as file:
-                schema = json.load(file)
+            with open(Lib.os.path.join(directories['SwaggerFolder'], self.swagger_file), 'r', encoding='utf-8') as file:
+                schema = Lib.json.load(file)
 
             # Enable the field to be possible validate one by one.
             for key, value in schema.items():
                 if schema[key]['additionalProperties'] is False:
                     schema[key]['additionalProperties'] = True
 
-            with open(os.path.join(directories['SwaggerFolder'], self.swagger_file), 'w', encoding='utf-8') as file:
-                json.dump(schema, file, ensure_ascii=False, indent=2)
-
+            with open(Lib.os.path.join(directories['SwaggerFolder'], self.swagger_file), 'w', encoding='utf-8') as file:
+                Lib.json.dump(schema, file, ensure_ascii=False, indent=2)
 
             # Generate and print the fake data.
             for definition_name, definition_schema in schema.items():
                 data_list = ApiSchema.generate_data(self, definition_schema, schema)
                 print(f"Data for '{definition_name}' tag:")
                 for self.json_fake_data in data_list:
-                    print(json.dumps(self.json_fake_data, indent=2))
+                    print(Lib.json.dumps(self.json_fake_data, indent=2))
                 print("-" * 80)
 
             # Link between each fake info and the right tag. (Only to validate the schema response)
@@ -983,7 +948,7 @@ class ApiSchema:
 
         try:
             with open(file_path, 'r') as f:
-                return json.load(f)
+                return Lib.json.load(f)
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorLoadSwagger']['Msg']}{Textcolor.END}", ex)
@@ -999,8 +964,8 @@ class ApiSchema:
             else:
                 relevant_data = {}
 
-            with open(os.path.join(directories['SwaggerFolder'], self.swagger_file), 'w') as f:
-                json.dump(relevant_data, f, indent=2)
+            with open(Lib.os.path.join(directories['SwaggerFolder'], self.swagger_file), 'w') as f:
+                Lib.json.dump(relevant_data, f, indent=2)
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorExtractJson']['Msg']}{Textcolor.END}", ex)
@@ -1012,7 +977,7 @@ class ApiSchema:
             return None
         data = []
 
-        fake = Faker()
+        fake = Lib.Faker()
 
         # Generate different content type.
         def add_variations(base_type, value):
@@ -1053,25 +1018,26 @@ class ApiSchema:
 
         # Generate based on schema info.
         if schema['type'] == 'string':
-            value = fake.word() if not (schema.get('nullable', False) and random.choice([True, False])) else None
+            value = fake.word() if not (schema.get('nullable', False) and Lib.random.choice([True, False])) else None
             add_variations('string', value)
         elif schema['type'] == 'number':
             value = fake.pyfloat(left_digits=5, right_digits=2) if not (schema.get('nullable', False) and
-                                                                        random.choice([True, False])) else None
+                                                                        Lib.random.choice([True, False])) else None
             add_variations('number', value)
         elif schema['type'] == 'integer':
-            value = fake.random_int() if not (schema.get('nullable', False) and random.choice([True, False])) else None
+            value = fake.random_int() if not (schema.get('nullable', False) and Lib.random.choice([True, False])) \
+                else None
             add_variations('integer', value)
         elif schema['type'] == 'boolean':
-            value = fake.boolean() if not (schema.get('nullable', False) and random.choice([True, False])) else None
+            value = fake.boolean() if not (schema.get('nullable', False) and Lib.random.choice([True, False])) else None
             add_variations('boolean', value)
         elif schema['type'] == 'array':
-            if not (schema.get('nullable', False) and random.choice([True, False])):
+            if not (schema.get('nullable', False) and Lib.random.choice([True, False])):
                 array_data = [generate_data(self, schema['items'], definitions) for _ in range(3)]
                 if array_data not in data:
                     data.append(array_data)
         elif schema['type'] == 'object':
-            if not (schema.get('nullable', False) and random.choice([True, False])):
+            if not (schema.get('nullable', False) and Lib.random.choice([True, False])):
                 obj = {}
                 for prop, prop_schema in schema.get('properties', {}).items():
                     if '$ref' in prop_schema:
