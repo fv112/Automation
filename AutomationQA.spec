@@ -27,8 +27,8 @@ command = Analysis([
             binaries=None,
             datas=[
 			('C:\\QA-Automation\\Automation\\README.md','.'),
-			('C:\\QA-Automation-Files\\Repository\\Automation\\Hash\\en-hash_dictionary.txt', 'Repository\\Hash'),
-			('C:\\QA-Automation-Files\\Repository\\Automation\\Hash\\es-hash_dictionary.txt', 'Repository\\Hash'),
+			('C:\\ProgramData\\QA-Automation-Files\\Repository\\Automation\\Hash\\en-hash_dictionary.txt', 'Repository\\Hash'),
+			('C:\\ProgramData\\QA-Automation-Files\\Repository\\Automation\\Hash\\es-hash_dictionary.txt', 'Repository\\Hash'),
             ('C:\\QA-Automation\\Automation\\Automation\\images\\Robot.ico', 'Automation\\images'),
             ('C:\\QA-Automation\\Automation\\Automation\\images\\Robot.png', 'Automation\\images'),
             ('C:\\QA-Automation\\Automation\\Automation\\images\\Unavailable.jpg', 'Automation\\images'),
