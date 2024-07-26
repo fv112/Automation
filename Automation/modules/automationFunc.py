@@ -85,7 +85,7 @@ class Main:
 
         except Exception as ex:
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorNoExecute"],
-                             parameters1="'" + step + "' - " + str(ex))
+                                 parameters1="'" + step + "' - " + str(ex))
             return "Failed"
 
     # Execute a MS-DOS command line.
@@ -302,6 +302,7 @@ class Main:
 
         except Exception as ex:
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorMouseOver"], parameters1=str(ex))
+
             return "Failed"
 
     # Wait.
@@ -444,6 +445,7 @@ class Main:
         try:
 
             driver.forward()
+
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ForwardPage"])
 
             return driver, "Passed"
@@ -522,7 +524,7 @@ class Main:
 
                 if elements > 0:
                     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetQuantityElements"], parameters1=tag,
-                                     parameters2=parameters1)
+                                         parameters2=parameters1)
                     return elements, "Passed"
 
                 elif x > 8:
@@ -532,7 +534,7 @@ class Main:
 
             except Lib.NoSuchElementException:
                 Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetQuantityElements"], parameters1=tag,
-                                 parameters2=parameters1)
+                                     parameters2=parameters1)
                 return None, "Failed"
 
     # Scroll Page
@@ -1197,8 +1199,8 @@ class Main:
             while True:
                 # The file found means it is still downloading.
                 if Lib.Aux.Main.verifyFile(self, path=Lib.Aux.directories['DownloadFolderTemp'], extension='crdownload',
-                                       msg_not_found=Lib.Aux.otherConfigs['DownloadFinished']['Msg'],
-                                       msg_found=Lib.Aux.otherConfigs['DownloadingFile']['Msg']):
+                                           msg_not_found=Lib.Aux.otherConfigs['DownloadFinished']['Msg'],
+                                           msg_found=Lib.Aux.otherConfigs['DownloadingFile']['Msg']):
                     Lib.time.sleep(1)
                     continue
                 else:

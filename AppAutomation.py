@@ -13,9 +13,10 @@ class AutomationQA:
 
         Lib.Aux.Main.setLanguage(language='pt_BR')
 
-        local_version, date_version, release_infos = Lib.Aux.Main.releaseNotes()
+        local_version, date_version, release_infos = Lib.Aux.Main.releaseNotes(path=Lib.os.path.join(Lib.os.getcwd(),
+                                                                                                     'README.md'))
 
-        print(f"{Lib.Aux.Textcolor.HIGHLIGHT}       Automation QA - Version: {local_version} - Date: {date_version}     "
+        print(f"{Lib.Aux.Textcolor.HIGHLIGHT}       Automation QA - Version: {local_version} - Date: {date_version}    "
               f"{Lib.Aux.Textcolor.END}")
         print(f"{Lib.Aux.Textcolor.BOLD}Release notes:{Lib.Aux.Textcolor.END}")
         for releaseInfo in release_infos:

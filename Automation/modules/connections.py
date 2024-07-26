@@ -310,15 +310,16 @@ class Connections:
 
                     test_case_list = [str(testcase_id) for testcase_id in test_case_id_list]
 
-                    while True:
-                        print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['ChooseTestCase']['Msg']}"
-                              f"{Lib.Aux.Textcolor.END}\n")
-                        tc_id = input()
-                        if Lib.Aux.Main.validate_selection(input_data=tc_id, search_list=test_case_list):
-                            break
+                    if isolated_tc.upper() in ['Y', 'S', '']:
+                        while True:
+                            print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['ChooseTestCase']['Msg']}"
+                                  f"{Lib.Aux.Textcolor.END}\n")
+                            tc_id = input()
+                            if Lib.Aux.Main.validate_selection(input_data=tc_id, search_list=test_case_list):
+                                break
 
-                    test_case_id_list.clear()
-                    test_case_id_list.append(int(tc_id))
+                        test_case_id_list.clear()
+                        test_case_id_list.append(int(tc_id))
 
                 else:
                     print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorGetTestCase']['Msg']}{Lib.Aux.Textcolor.END}\n")

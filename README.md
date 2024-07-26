@@ -1,12 +1,19 @@
 Automation QA - Release notes
 ----
+**Version 1.19.2**
+
+<em>26/07/2024</em>
+:bug: - Correção da mensagem padrão para executar teste isolado.
+:bug: - Correção da execução de todos os casos de teste do plano.
+#
+
 **Version 1.19.1**
 
 <em>26/07/2024</em>
-- <font color='red'>__[Novo]__</font> - Correção ao ler o nome do usuário fora e dentro da VPN.
-- <font color='red'>__[Novo]__</font> - Padrão para opção de teste isolado = SIM quando teclar ENTER.
-- <font color='red'>__[Novo]__</font> - Corrigido falha no verbo Aguardar.
-#
+:bug: - Correção ao ler o nome do usuário fora e dentro da VPN.
+:sparkles: - Padrão para opção de teste isolado = SIM quando teclar ENTER.
+:bug: - Corrigido falha no verbo Aguardar.
+
 
 **Version 1.19.0**
 

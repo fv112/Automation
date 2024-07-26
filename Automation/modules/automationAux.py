@@ -1,7 +1,7 @@
 import common_libs as Lib
 
 verbs = None
-
+logs = None
 
 # Colored the text.
 class Textcolor:
@@ -780,25 +780,30 @@ class Main:
 
     @staticmethod
     # Inform the updates.
-    def releaseNotes():
+    def releaseNotes(**kwargs):
 
-        path = Lib.os.path.join(Lib.os.getcwd(), 'README.md')
+        # kwargs variables.
+        path = kwargs.get('path')
+        readme = kwargs.get('readme')
+
         release_infos = []
+        local_version = []
+        date_version = []
 
         if path:
-            with open(path, 'r', encoding='utf-8') as readme:
+            readme = open(path, 'r', encoding='utf-8')
 
-                for line in readme:
-                    if 'Version' in line:
-                        local_version = line[10:-3]
-                    if '<em>' in line:
-                        date_version = line[4:-6]
-                    if '</font>' in line:
-                        release_infos.append(line[38:].strip())
-                    if '#' in line:
-                        break
+        for line in readme:
+            if 'Version' in line.__str__():
+                local_version = Lib.regex.findall(r'\*\*(.*?)\*\*', line)
+            if '<em>' in line.__str__():
+                date_version = Lib.regex.findall(r'<em>(.*?)</em>', line.__str__(), Lib.regex.DOTALL)
+            if ':' in line.__str__():
+                release_infos.append(Lib.regex.findall(r' - (.*?)\.', line.__str__(), Lib.regex.DOTALL)[0])
+            if '#' in line:
+                break
 
-        return local_version, date_version, release_infos
+        return local_version[0], date_version[0], release_infos
 
     # Validate content inside JSON content.
     def find_content_json(self, **kwargs):
