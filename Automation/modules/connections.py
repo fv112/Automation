@@ -130,10 +130,10 @@ class Connections:
                     project_list = [str(project_id) for project_id in list(projects_dic.keys())]
 
                     while True:
-                        print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['InformProject']['Msg']}{Lib.Aux.Textcolor.END}\n")
+                        print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['InformProject']['Msg']}"
+                              f"{Lib.Aux.Textcolor.END}\n")
                         project_selected = input()
-                        if Lib.Aux.Main.validate_selection(input_data=project_selected,
-                                                       search_list=project_list):
+                        if Lib.Aux.Main.validate_selection(input_data=project_selected, search_list=project_list):
                             break
 
                     project_name = projects_dic[int(project_selected)]
@@ -150,7 +150,7 @@ class Connections:
             else:
                 print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequest']['Msg']}{Lib.Aux.Textcolor.UNDERLINE}\n")
                 Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorRequest'],
-                                 value1='Status code: ' + str(t.status_code) + ' - getProjects')
+                                     value1='Status code: ' + str(t.status_code) + ' - getProjects')
 
         except Lib.requests.exceptions.RequestException:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorConnection']['Msg']}{Lib.Aux.Textcolor.END}")
@@ -274,11 +274,13 @@ class Connections:
 
             # Variables.
             test_case_id_list = []
+            isolated_tc = 'S'
 
             new_url = url + 'projects/' + str(project_id) + '/issues?labels=Test%20case&per_page=1000&page=1'
 
             # Execute the request from Azure.
-            s = Lib.requests.get(new_url, headers={'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["Bearer"]}, verify=False)
+            s = Lib.requests.get(new_url, headers={'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["Bearer"]},
+                                 verify=False)
             if s.status_code == 200:
 
                 table = Lib.PrettyTable(['ORDER', 'TEST CASE ID', 'TEST CASE'])
@@ -295,7 +297,8 @@ class Connections:
                         print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['AskCT']['Msg']}"
                               f"{Lib.Aux.Textcolor.END}\n")
                         isolated_tc = input()
-                        if Lib.Aux.Main.validate_selection(input_data=isolated_tc.upper(), search_list=['Y', 'S', 'N']):
+                        if Lib.Aux.Main.validate_selection(input_data=isolated_tc.upper(),
+                                                           search_list=['Y', 'S', 'N', '']):
                             break
 
                     Lib.os.system('cls')

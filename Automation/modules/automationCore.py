@@ -65,7 +65,7 @@ class Main:
 
         except:
             # Windows login (if it is not using the VPN).
-            executed_by = Lib.Aux.get_display_name(self)
+            executed_by = Lib.Aux.Main.get_display_name(self)
 
         try:
 

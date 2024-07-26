@@ -1,13 +1,20 @@
 Automation QA - Release notes
 ----
+**Version 1.19.1**
+
+<em>26/07/2024</em>
+- <font color='red'>__[Novo]__</font> - Correção ao ler o nome do usuário fora e dentro da VPN.
+- <font color='red'>__[Novo]__</font> - Padrão para opção de teste isolado = SIM quando teclar ENTER.
+- <font color='red'>__[Novo]__</font> - Corrigido falha no verbo Aguardar.
+#
+
 **Version 1.19.0**
 
 <em>25/07/2024</em>
-- <font color='red'>__[Novo]__</font> - Centralização das bibliotecas em um arquivo.
-- <font color='red'>__[Novo]__</font> - Correção na abertura do browser.
-- <font color='red'>__[Novo]__</font> - Correção de uma mensagem que não estava na lista de tradução.
-- <font color='red'>__[Novo]__</font> - Correção na comparação das mensagens na função Validate.
-#
+- Centralização das bibliotecas em um arquivo.
+- Correção na abertura do browser.
+- Correção de uma mensagem que não estava na lista de tradução.
+- Correção na comparação das mensagens na função Validate.
 
 **Version 1.18.1**
 

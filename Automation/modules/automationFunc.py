@@ -41,7 +41,7 @@ class Main:
                     Main.highlight(self, new_element=new_element, effect_time=1, color=color, border=3)
 
                     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["FindElement"], parameters1=tag,
-                                     parameters2=parameters1)
+                                         parameters2=parameters1)
 
                     return new_element
 
@@ -311,7 +311,7 @@ class Main:
         parameters1 = kwargs.get('parameters1')
 
         try:
-            Lib.Aux.time.sleep(int(parameters1))
+            Lib.time.sleep(int(parameters1))
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["Wait"])
 
