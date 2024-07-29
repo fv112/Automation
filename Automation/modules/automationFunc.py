@@ -40,14 +40,14 @@ class Main:
 
                     Main.highlight(self, new_element=new_element, effect_time=1, color=color, border=3)
 
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["FindElement"], parameters1=tag,
-                                         parameters2=parameters1)
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["FindElement"], value1=tag,
+                                         value2=parameters1)
 
                     return new_element
 
             except Lib.NoSuchElementException:
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningFindElement"], parameters1=tag,
-                                     parameters2=parameters1)
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningFindElement"], value1=tag,
+                                     value2=parameters1)
 
     # ---------------------- Action Elements ----------------------
     # Fill the fields.
@@ -68,7 +68,7 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorFillField"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorFillField"], value1=str(ex))
 
             return "Failed"
 
@@ -79,13 +79,13 @@ class Main:
         step = kwargs.get('step')
 
         try:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["NoExecute"], parameters1="'" + step + "'")
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["NoExecute"], value1="'" + step + "'")
 
             return "Passed"
 
         except Exception as ex:
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorNoExecute"],
-                                 parameters1="'" + step + "' - " + str(ex))
+                                 value1="'" + step + "' - " + str(ex))
             return "Failed"
 
     # Execute a MS-DOS command line.
@@ -99,13 +99,13 @@ class Main:
 
             Lib.Aux.os.system('start "" "' + path + '"')
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["Execute"], parameters1="'" + path + "'")
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["Execute"], value1="'" + path + "'")
 
             return path, "Passed"
 
         except Exception as ex:
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorExecute"],
-                                 parameters1="'" + path + "' - " + str(ex))
+                                 value1="'" + path + "' - " + str(ex))
             return "Failed"
 
     # Click in an element.
@@ -122,7 +122,7 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorClick"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorClick"], value1=str(ex))
             return "Failed"
 
     # Double click.
@@ -139,7 +139,7 @@ class Main:
 
             return "Passed"
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorDoubleClick"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorDoubleClick"], value1=str(ex))
             return "Failed"
 
     # Right click (mouse).
@@ -158,7 +158,7 @@ class Main:
 
             return "Passed"
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorRightClick"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorRightClick"], value1=str(ex))
             return "Failed"
 
     # Drag and drop.
@@ -188,7 +188,7 @@ class Main:
 
             return "Passed"
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorDragDrop"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorDragDrop"], value1=str(ex))
             return "Failed"
 
     # Drag and drop to the other component.
@@ -214,7 +214,7 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorDragDropToElement"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorDragDropToElement"], value1=str(ex))
             return "Failed"
 
     # Type keyboard key.
@@ -273,13 +273,13 @@ class Main:
             actions.perform()
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["PressButton"],
-                                 parameters1=parameters1 + " - " + str(parameters2) + "x")
+                                 value1=parameters1 + " - " + str(parameters2) + "x")
 
             return "Passed"
 
         except Exception as ex:
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorPressButton"],
-                                 parameters1=parameters1 + " - " + str(ex))
+                                 value1=parameters1 + " - " + str(ex))
             return "Failed"
 
     # Mouse Over.
@@ -301,7 +301,7 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorMouseOver"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorMouseOver"], value1=str(ex))
 
             return "Failed"
 
@@ -319,7 +319,7 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorWait"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorWait"], value1=str(ex))
 
             return "Failed"
 
@@ -333,12 +333,12 @@ class Main:
             element_field = Lib.Select(Main.findElement(self, parameters1=parameters1))
 
             element_field.select_by_visible_text(parameters2)
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["SelectDropDownList"], parameters1=parameters2)
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["SelectDropDownList"], value1=parameters2)
 
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorSelectDropDownList"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorSelectDropDownList"], value1=str(ex))
 
             return "Failed"
 
@@ -371,7 +371,7 @@ class Main:
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetText"])
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetText"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetText"], value1=str(ex))
 
             return Lib.Aux.logs["ErrorGetText"]['Msg'], "Failed"
 
@@ -386,7 +386,7 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorOpenNewTab"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorOpenNewTab"], value1=str(ex))
 
             return "Failed"
 
@@ -401,7 +401,7 @@ class Main:
             return url, "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetURL"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetURL"], value1=str(ex))
 
             return None, "Failed"
 
@@ -417,7 +417,7 @@ class Main:
             return title, "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetTitle"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetTitle"], value1=str(ex))
 
             return None, "Failed"
 
@@ -434,7 +434,7 @@ class Main:
             return driver, "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorBackPage"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorBackPage"], value1=str(ex))
 
             return "Failed"
 
@@ -451,7 +451,7 @@ class Main:
             return driver, "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorForwardPage"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorForwardPage"], value1=str(ex))
 
             return "Failed"
 
@@ -492,7 +492,7 @@ class Main:
             return text_found, "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetAttribute"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetAttribute"], value1=str(ex))
 
             return text_found, "Failed"
 
@@ -523,8 +523,8 @@ class Main:
                 elements = len(new_element)
 
                 if elements > 0:
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetQuantityElements"], parameters1=tag,
-                                         parameters2=parameters1)
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetQuantityElements"], value1=tag,
+                                         value2=parameters1)
                     return elements, "Passed"
 
                 elif x > 8:
@@ -533,8 +533,8 @@ class Main:
                 x += 1
 
             except Lib.NoSuchElementException:
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetQuantityElements"], parameters1=tag,
-                                     parameters2=parameters1)
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetQuantityElements"], value1=tag,
+                                     value2=parameters1)
                 return None, "Failed"
 
     # Scroll Page
@@ -550,7 +550,7 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorScrollPage"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorScrollPage"], value1=str(ex))
 
             return "Failed"
 
@@ -564,7 +564,7 @@ class Main:
             return driver, "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorRefreshPage"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorRefreshPage"], value1=str(ex))
 
             return "Failed"
 
@@ -584,7 +584,7 @@ class Main:
             return status_element, "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsEnable"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsEnable"], value1=str(ex))
             return status_element, "Failed"
 
     # Checks whether the element is visible.
@@ -603,7 +603,7 @@ class Main:
             return status_element, "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsDisplayed"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsDisplayed"], value1=str(ex))
 
             return status_element, "Failed"
 
@@ -624,7 +624,7 @@ class Main:
                 return "False", "Failed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsSelected"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsSelected"], value1=str(ex))
             return "False", "Failed"
 
     # Validate data (With * validate the partial text).
@@ -683,7 +683,7 @@ class Main:
 
                 # Checks whether the element is active or inactive.
                 elif '(?)' in parameters2:
-                    text_found, status = Main.isEnable(self, parameters1=parameters1)
+                    text_found, status = Main.isEnable(self, value1=parameters1)
                     text_found = str(text_found)
                     parameters2 = parameters2.replace('(?)', '')
 
@@ -697,7 +697,7 @@ class Main:
 
                 # Checks whether the element is visible to the user.
                 elif '($)' in parameters2:
-                    text_found, status = Main.isDisplayed(self, parameters1=parameters1)
+                    text_found, status = Main.isDisplayed(self, value1=parameters1)
                     text_found = str(text_found)
                     parameters2 = parameters2.replace('($)', '')
 
@@ -711,7 +711,7 @@ class Main:
 
                 # Checks whether a checkbox or radio button is selected.
                 elif '(.)' in parameters2:
-                    text_found, status = Main.isSelected(self, parameters1=parameters1)
+                    text_found, status = Main.isSelected(self, value1=parameters1)
                     parameters2 = parameters2.replace('(.)', '')
 
                     if str(text_found) == parameters2:
@@ -751,7 +751,7 @@ class Main:
                 # Check some attributes.
                 elif ('(#title)' in parameters2 or '(#href)' in parameters2 or '(#value)' in parameters2 or '(#class)'
                       in parameters2):
-                    text_found, status = Main.getAttribute(self, parameters1=parameters1, parameters2=parameters2)
+                    text_found, status = Main.getAttribute(self, value1=parameters1, value2=parameters2)
                     parameters2 = parameters2.replace('(#title)', '')
                     parameters2 = parameters2.replace('(#href)', '')
                     parameters2 = parameters2.replace('(#value)', '')
@@ -767,7 +767,7 @@ class Main:
 
                 # Get the amount of elements. # ---> OK.
                 elif '<' and '>' in parameters2:
-                    text_found, status = Main.getQuantityElements(self, parameters1=parameters1)
+                    text_found, status = Main.getQuantityElements(self, value1=parameters1)
                     parameters2 = parameters2.replace('<', '')
                     parameters2 = parameters2.replace('>', '')
 
@@ -817,7 +817,7 @@ class Main:
             return status
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorFunctionValidateData"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorFunctionValidateData"], value1=str(ex))
             return "Failed"
 
     # Alter (Verify iFrame or Windows).
@@ -832,7 +832,7 @@ class Main:
                 Main.alterWindow(self)
 
             elif parameters1.upper() == 'IFRAME':
-                Main.alterFrame(self, parameters2=parameters2)
+                Main.alterFrame(self, value2=parameters2)
 
             elif parameters1.upper() == 'ALERT':
                 Main.alterAlertOK(self)
@@ -840,7 +840,7 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAlter"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAlter"], value1=str(ex))
             return "Failed"
 
     # Alter window.
@@ -854,7 +854,7 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAlterWindow"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAlterWindow"], value1=str(ex))
             return "Failed"
 
     # Alter IFrame.
@@ -874,7 +874,7 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAlterIframe"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAlterIframe"], value1=str(ex))
             return "Failed"
 
     # Alter Alert and Click OK.
@@ -889,7 +889,7 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAlterAlert"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAlterAlert"], value1=str(ex))
             return "Failed"
 
     # Return to default.
@@ -911,7 +911,7 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorReturnDefault"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorReturnDefault"], value1=str(ex))
             return "Failed"
 
     # Return to window.
@@ -924,7 +924,7 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorReturnWindow"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorReturnWindow"], value1=str(ex))
             return "Failed"
 
     # Return to default.
@@ -938,7 +938,7 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorReturnIframe"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorReturnIframe"], value1=str(ex))
             return "Failed"
 
     # Choose an option in a browser alert screen.
@@ -973,7 +973,7 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorInform"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorInform"], value1=str(ex))
             return "Failed"
 
     # Function to create the browser object.
@@ -1059,7 +1059,8 @@ class Main:
                 }
                 options.add_experimental_option('excludeSwitches', ['enable-logging'])
                 options.add_experimental_option("prefs", preferences)
-                driver = Lib.webdriver.Edge(service=Lib.EdgeService(Lib.EdgeChromiumDriverManager().install()), options=options)
+                driver = Lib.webdriver.Edge(service=Lib.EdgeService(Lib.EdgeChromiumDriverManager().install()),
+                                            options=options)
 
             else:
                 Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorOpenBrowser"])
@@ -1084,7 +1085,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorOpenBrowser']['Msg']}{Lib.Aux.Textcolor.END}")
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorOpenBrowser"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorOpenBrowser"], value1=str(ex))
 
             return "Failed"
 
@@ -1098,7 +1099,7 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorVerifyBrowser"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorVerifyBrowser"], value1=str(ex))
             return "Failed"
 
     # Close (windows or the whole browser).
@@ -1118,7 +1119,7 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorClose"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorClose"], value1=str(ex))
             return "Failed"
 
     # Open page address.
@@ -1135,7 +1136,7 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorOpenPage"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorOpenPage"], value1=str(ex))
 
             return "Failed"
 
@@ -1158,7 +1159,7 @@ class Main:
             apply_style(original_style)
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorHighLight"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorHighLight"], value1=str(ex))
 
     # Configure the save path - Only Edge Legacy.
     @staticmethod
@@ -1186,7 +1187,7 @@ class Main:
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ConfigureSavePath"])
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorConfigureSavePath"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorConfigureSavePath"], value1=str(ex))
             return "Failed"
 
     # Save the file locally.
@@ -1217,7 +1218,7 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorSaveFile"], parameters1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorSaveFile"], value1=str(ex))
             return "Failed"
 
     # Save the screenshots.

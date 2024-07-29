@@ -45,8 +45,8 @@ class Update:
         if self.version_distributed > self.version_actual:
             print("Nova versão disponível")
 
-            if not os.path.exists(Lib.Aux.directories['DownloadFolder']):
-                os.makedirs(Lib.Aux.directories['DownloadFolder'])
+            if not Lib.os.path.exists(Lib.Aux.directories['DownloadFolder']):
+                Lib.os.makedirs(Lib.Aux.directories['DownloadFolder'])
 
             output_filepath = os.path.join(Lib.Aux.directories['DownloadFolder'], 'Automation_EXE.zip')
             ### Falta colocar o installer também.

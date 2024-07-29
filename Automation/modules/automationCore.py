@@ -102,6 +102,10 @@ class Main:
                                      value="\nID: " + str(test_case_id) + " - TEST CASE: " + name_testcase +
                                            "\nPROJECT: " + project_name + "\n")
 
+                # Validate the testcase name.
+                if Lib.Aux.Main.validateTestName(self, name_testcase=name_testcase):
+                    continue
+
                 print(f"{Lib.Aux.Textcolor.BOLD}{name_testcase}{Lib.Aux.Textcolor.END}")
                 status, step_failed, take_picture_status =\
                     Main.executeStepByStep(self, order_steps_list=order_steps_list, steps_list=steps_list,
@@ -124,8 +128,8 @@ class Main:
 
                 # Set the test case duration.
                 duration = (
-                    Lib.Aux.Main.convert_seconds_to_string(self, time_spent=(Lib.datetime.datetime.now()
-                                                                             - initial_time).total_seconds()))
+                    Lib.Aux.Main.convert_seconds_to_string(
+                        self, time_spent=(Lib.datetime.datetime.now() - initial_time).total_seconds()))
 
                 # Verify in the list if the iteration status for the test case.
                 if "Failed" in status_list:
@@ -152,7 +156,7 @@ class Main:
                                                     executed_by=executed_by,
                                                     take_picture_status=take_picture_status,
                                                     completed_date=str(Lib.datetime.datetime.now().
-                                                                       strftime("%d/%m/%Y %H:%M")),
+                                                                       strftime("%d/%m/%Y %H:%M:%S")),
                                                     duration=duration)
                     pdf = Lib.Aux.Main.wordToPDF(path=est)
 

@@ -20,6 +20,36 @@ class Main:
     def __init__(self):
         pass
 
+    # Validate test case name.
+    def validateTestName(self, **kwargs):
+
+        # kwargs variables.
+        name_testcase = kwargs.get("name_testcase")
+
+        validation_status = None
+
+        try:
+            validation = Lib.regex.match(r'.*[\.@!#$%^&*<>?\\\/|\"}{:].*', name_testcase)
+            if validation:
+                print(f"{Textcolor.FAIL}{logs['ErrorSpecialCharacter']['Msg']} "
+                      f"{otherConfigs['InvalidCharacter']} {Textcolor.END}")
+                Main.addLogs(message="General", value=logs["ErrorSpecialCharacter"],
+                             value1=f"{otherConfigs['InvalidCharacter']}")
+                validation_status = True
+
+            if len(name_testcase) >= 104:
+                print(f"{Textcolor.FAIL}{logs['ErrorSizeName']['Msg']}{Textcolor.END}")
+                Main.addLogs(message="General", value=logs["ErrorSizeName"])
+                validation_status = True
+
+        except Exception as ex:
+            print(f"{Textcolor.FAIL}{logs['ErrorTestCaseValidation']['Msg']}{Textcolor.END}", str(ex))
+            Main.addLogs(message="General", value=logs["ErrorTestCaseValidation"], value1=str(ex))
+            validation_status = False
+
+        finally:
+            return validation_status
+
     # Called to clean the file 'Tokens.txt'
     def clean_token_file(self):
         name = Lib.os.getlogin()
@@ -170,6 +200,7 @@ class Main:
                 {'pt_BR': 'Evidências dos passos', 'en_US': 'Evidence of the steps', 'es': 'Evidencia de los pasos'}
             ]
             image_path = ""
+            path = []
 
             # Open the document.
             document = Lib.Document(word_path)
@@ -266,20 +297,25 @@ class Main:
 
             # Save the file.
             if step_failed:
-                path = Lib.os.path.join(test_set_path, '[BUG] - ' +
-                                    otherConfigs["ETSName"] + str(test_case_id) + " - " + str(name_testcase)
-                                    + otherConfigs["ETSExtension"])
+                test_id = '[BUG] - ' + otherConfigs["ETSName"] + str(test_case_id)
             else:
-                path = Lib.os.path.join(test_set_path, otherConfigs["ETSName"] + str(test_case_id) + " - " +
-                                    str(name_testcase) + otherConfigs["ETSExtension"])
+                test_id = otherConfigs["ETSName"] + str(test_case_id)
+
+            path.append(test_set_path)
+            path.append(test_id)
+            path.append(str(name_testcase))
+            path.append(otherConfigs["ETSExtension"])
+
+            path = Lib.os.path.join(path[0], path[1]) + " - " + path[2] + path[3]
             document.save(path)
+
+            return path
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorWordAddSteps']['Msg']}{Textcolor.END}", ex)
             Main.addLogs(message="General", value=logs["ErrorWordAddSteps"], value1=ex)
-            path = None
 
-        return path
+        return None
 
     # Replace the password in the evidence file.
     def ReplacePasswordEvidence(**kwargs):
@@ -299,7 +335,6 @@ class Main:
                         print(f"{Textcolor.FAIL}{logs['ErrorReplacePasswordPosition']['Msg']}"
                               f"{Textcolor.END}")
                         Main.addLogs(message="General", value=logs["ErrorReplacePasswordPosition"])
-                        ####exit(1)
                     step = step.replace(password_string, '*******')
 
             return step
@@ -853,11 +888,10 @@ class Main:
     def convert_seconds_to_string(self, **kwargs):
 
         # kwargs variable.
-        time_spent = kwargs.get("time_spent")
+        time_spent = kwargs.get("time_spent",0)
 
-        total_minutes = time_spent / 60.0
-        minutes = int(total_minutes)
-        remaining_seconds = total_minutes - (minutes * 60)
+        minutes = int(time_spent // 60)
+        remaining_seconds = time_spent % 60
 
         return f"{minutes:02}:{remaining_seconds:06.3f}"
 
