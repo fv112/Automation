@@ -798,7 +798,7 @@ class Main:
                 local_version = Lib.regex.findall(r'\*\*(.*?)\*\*', line)
             if '<em>' in line.__str__():
                 date_version = Lib.regex.findall(r'<em>(.*?)</em>', line.__str__(), Lib.regex.DOTALL)
-            if ':' in line.__str__():
+            if ': - ' in line.__str__():
                 release_infos.append(Lib.regex.findall(r' - (.*?)\.', line.__str__(), Lib.regex.DOTALL)[0])
             if '#' in line:
                 break

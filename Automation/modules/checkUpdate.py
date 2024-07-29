@@ -19,7 +19,7 @@ class Update:
         self.version_actual, _, _ = Lib.Aux.Main.releaseNotes(readme=self.readme_content)
 
         reference_file = 'README.md'
-        current_directory = Path(__file__).resolve().parent
+        current_directory = Lib.Path(__file__).resolve().parent
 
         # Subir os diretórios até encontrar o arquivo de referência
         for parent in current_directory.parents:
@@ -29,7 +29,7 @@ class Update:
         else:
             raise FileNotFoundError(f"{reference_file} não encontrado na árvore de diretórios.")
 
-        path = os.path.abspath('README.md')
+        path = Lib.os.path.join(project_root, 'README.md')
         self.version_distributed, _, _ = Lib.Aux.Main.releaseNotes(path=path)
 
         Update.check(self)
