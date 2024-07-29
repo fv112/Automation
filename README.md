@@ -1,19 +1,24 @@
 Automation QA - Release notes
 ----
+ :bookmark: **Version 1.19.3**
+
+<em>29/07/2024</em>
+:bug: - Correção do problema de não abrir o browser corretamente.  
+:books: - Melhoria na formatação do ReadMe no markdown.  
+#
+
 **Version 1.19.2**
 
 <em>26/07/2024</em>
-:bug: - Correção da mensagem padrão para executar teste isolado.
-:bug: - Correção da execução de todos os casos de teste do plano.
-#
+:bug: - Correção da mensagem padrão para executar teste isolado.  
+:bug: - Correção da execução de todos os casos de teste do plano.  
 
 **Version 1.19.1**
 
 <em>26/07/2024</em>
-:bug: - Correção ao ler o nome do usuário fora e dentro da VPN.
-:sparkles: - Padrão para opção de teste isolado = SIM quando teclar ENTER.
-:bug: - Corrigido falha no verbo Aguardar.
-
+:bug: - Correção ao ler o nome do usuário fora e dentro da VPN.  
+:sparkles: - Padrão para opção de teste isolado = SIM quando teclar ENTER.  
+:bug: - Corrigido falha no verbo Aguardar.  
 
 **Version 1.19.0**
 

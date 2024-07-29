@@ -990,7 +990,7 @@ class Main:
             if parameters1.upper() in ("CHROME", "GOOGLE", "GOOGLE CHROME"):
                 # Disable the Chrome logs in the .bat file and alter the download folder.
                 preferences = {
-                    "download.default_directory": Lib.Aux.directories['DownloadFolderTemp'],
+                    "download.default_directory": Lib.Aux.directories['DownloadFolder'],
                     "download.prompt_for_download": False,
                     "download.directory_upgrade": True,
                     "safebrowsing.enabled": True,
@@ -1013,7 +1013,7 @@ class Main:
             # Configure before open the browser.
             elif parameters1.upper() in ("MOZILLA", "FIREFOX"):
                 profile = Lib.webdriver.FirefoxProfile()
-                profile.set_preference("browser.download.dir", Lib.Aux.directories['DownloadFolderTemp'])
+                profile.set_preference("browser.download.dir", Lib.Aux.directories['DownloadFolder'])
                 profile.set_preference("browser.download.manager.showWhenStarting", False)
                 profile.set_preference("browser.download.folderList", 2)
                 profile.set_preference("browser.download.panel.shown", True)
@@ -1052,7 +1052,7 @@ class Main:
                     options.add_argument('--user-data-dir=' + Lib.Aux.directories["Temp"] + 'EDGE_CHROMIUM')
 
                 preferences = {
-                    "download.default_directory": Lib.Aux.directories['DownloadFolderTemp'],
+                    "download.default_directory": Lib.Aux.directories['DownloadFolder'],
                     "download.prompt_for_download": False,
                     "download.directory_upgrade": True,
                     "safebrowsing.enabled": True,
@@ -1177,7 +1177,7 @@ class Main:
 
             # Type the new path.
             Lib.Aux.time.sleep(2)
-            Lib.Aux.pyautogui.typewrite(Lib.Aux.directories['DownloadFolderTemp'])
+            Lib.Aux.pyautogui.typewrite(Lib.Aux.directories['DownloadFolder'])
             Lib.Aux.pyautogui.typewrite(['enter', 'tab', 'enter'], interval=.2)
 
             # Do not ask after finish the download.
@@ -1198,19 +1198,19 @@ class Main:
             Lib.Aux.time.sleep(5)
             while True:
                 # The file found means it is still downloading.
-                if Lib.Aux.Main.verifyFile(self, path=Lib.Aux.directories['DownloadFolderTemp'], extension='crdownload',
+                if Lib.Aux.Main.verifyFile(self, path=Lib.Aux.directories['DownloadFolder'], extension='crdownload',
                                            msg_not_found=Lib.Aux.otherConfigs['DownloadFinished']['Msg'],
                                            msg_found=Lib.Aux.otherConfigs['DownloadingFile']['Msg']):
                     Lib.time.sleep(1)
                     continue
                 else:
                     # Rename de file.
-                    files = Lib.os.listdir(Lib.Aux.directories['DownloadFolderTemp'])
+                    files = Lib.os.listdir(Lib.Aux.directories['DownloadFolder'])
                     for file in files:
                         new_name = 'IT' + str(cont_iteration).zfill(2) + ' - ' + file
-                        Lib.os.rename(Lib.os.path.join(Lib.Aux.directories['DownloadFolderTemp'], file),
-                                      Lib.os.path.join(Lib.Aux.directories['DownloadFolderTemp'], new_name))
-                        Lib.shutil.move(Lib.os.path.join(Lib.Aux.directories['DownloadFolderTemp'], new_name),
+                        Lib.os.rename(Lib.os.path.join(Lib.Aux.directories['DownloadFolder'], file),
+                                      Lib.os.path.join(Lib.Aux.directories['DownloadFolder'], new_name))
+                        Lib.shutil.move(Lib.os.path.join(Lib.Aux.directories['DownloadFolder'], new_name),
                                         Lib.os.path.join(Lib.Aux.directories['DownloadFolder'], new_name))
                     break
 
