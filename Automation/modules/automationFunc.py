@@ -765,7 +765,7 @@ class Main:
                         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorValidateData"])
                         status = "Failed"
 
-                # Get the amount of elements. # ---> OK.
+                # Get the amount of elements.
                 elif '<' and '>' in parameters2:
                     text_found, status = Main.getQuantityElements(self, value1=parameters1)
                     parameters2 = parameters2.replace('<', '')

@@ -1,4 +1,10 @@
 @echo off
+
+REM Set the fullpath file path.
+setlocal
+set "scriptPath=%~dp0"
+set "scriptPath=%scriptPath:~0,-1%"
+
 echo ########################################################################################################################
 echo 		   				ATTENTION / ATENCAO / AVISO
 echo.                                                                                                                                                         
@@ -10,20 +16,20 @@ echo (Español) Esta actualizacion eliminara su version actual dentro de la carp
 echo.                                                                                                                                                             
 echo ########################################################################################################################
 
-echo Removing the latest version.
-rmdir /s /q C:\ProgramData\QA-Automation
+REM echo Removing the latest version.
+REM rmdir /s /q C:\ProgramData\QA-Automation
 
 echo Creating the destination folder.
 mkdir C:\ProgramData\QA-Automation\Automation
 
 echo Unzip the Automation package and installing the new version.
-powershell Expand-Archive -path Automation_EXE.zip -DestinationPath C:\ProgramData\QA-Automation\Automation\ -Force
+powershell Expand-Archive -path  %scriptPath%\Automation_EXE.zip -DestinationPath C:\ProgramData\QA-Automation\Automation\ -Force
 
 cd C:\ProgramData\QA-Automation\Automation\
-powershell Expand-Archive -path TestEnvironment.zip -DestinationPath C:\ProgramData\QA-Automation\Automation\ -Force
+powershell Expand-Archive -path C:\ProgramData\QA-Automation\Automation\TestEnvironment.zip -DestinationPath C:\ProgramData\QA-Automation\Automation\ -Force
 
 cd C:\ProgramData\QA-Automation\Automation\
-powershell Expand-Archive -path Automation.zip -DestinationPath C:\ProgramData\QA-Automation\Automation\ -Force
+powershell Expand-Archive -path C:\ProgramData\QA-Automation\Automation\Automation.zip -DestinationPath C:\ProgramData\QA-Automation\Automation\ -Force
 
 echo Move the file AutomationQA.exe to the AutomationCMD folder.
 move C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation\AutomationQA.exe C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation
@@ -37,13 +43,13 @@ mkdir C:\ProgramData\QA-Automation\Automation\Hash
 move C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation\Repository\Hash\en-hash_dictionary.txt C:\ProgramData\QA-Automation-Files\Hash
 move C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation\Repository\Hash\es-hash_dictionary.txt C:\ProgramData\QA-Automation-Files\Hash
 
-echo Deleting the temp .zip files.
-DEL /F /Q C:\ProgramData\QA-Automation\Automation\Automation.zip
-DEL /F /Q C:\ProgramData\QA-Automation\Automation\TestEnvironment.zip
+REM echo Deleting the temp .zip files.
+REM DEL /F /Q C:\ProgramData\QA-Automation\Automation\Automation.zip
+REM DEL /F /Q C:\ProgramData\QA-Automation\Automation\TestEnvironment.zip
 
 echo -----------------------------------------------------------------------------------------------------------------------
 echo  New version installed.
 echo -----------------------------------------------------------------------------------------------------------------------
 
-cd C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation
-AutomationQA.exe
+REM cd C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation
+REM %scriptPath%\..\AutomationQA.exe

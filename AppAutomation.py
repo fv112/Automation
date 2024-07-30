@@ -8,10 +8,25 @@ import common_libs as Lib
 class AutomationQA:
 
     def __init__(self):
+        # ------ Check the version ----------
+        self.git_url_package = 'https://github.com/fv112/Automation/tree/CommandLine/exec/Automation_EXE.zip'
+        self.git_url_install = 'https://github.com/fv112/Automation/tree/CommandLine/exec/Install.bat'
+        self.git_url_readme = 'https://raw.githubusercontent.com/fv112/Automation/CommandLine/README.md'
+
+        self.readme_content = Lib.Aux.Main.read_html_content(self)
+
+        self.version_actual, _, _ = Lib.Aux.Main.releaseNotes(readme=self.readme_content)
+
+        path = os.path.abspath('README.md')
+        self.version_distributed, _, _ = Lib.Aux.Main.releaseNotes(path=path)
 
         Lib.os.system('cls')
 
         Lib.Aux.Main.setLanguage(language='pt_BR')
+
+        Lib.Aux.Main.checkNewVersion(self)
+
+        # ------ Run the menu ----------
 
         local_version, date_version, release_infos = Lib.Aux.Main.releaseNotes(path=Lib.os.path.join(Lib.os.getcwd(),
                                                                                                      'README.md'))

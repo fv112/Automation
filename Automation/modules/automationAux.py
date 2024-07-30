@@ -594,6 +594,50 @@ class Main:
             print(f"{Textcolor.FAIL}{logs['ErrorTranslateMessage']['Msg']}{Textcolor.END}", ex)
             Main.addLogs(message="General", value=logs["ErrorTranslateMessage"], value1=ex)
 
+    def checkNewVersion(self):
+        if self.version_distributed > self.version_actual:
+            while True:
+                option = input(f"{Textcolor.BOLD}{Textcolor.HIGHLIGHT}"
+                               f"Nova versão disponível. Deseja instalar [Y/S] = SIM ou [N/n/Enter] = Não"
+                               f"{Textcolor.END}{Textcolor.END}")
+                if option.upper() in ['Y', 'S']:
+                    install = True
+                    break
+                elif option.upper() in ['', 'N']:
+                    install = False
+                    break
+
+            if install:
+                Main.createDirectory(path_folder=directories['DownloadFolder'])
+
+                for down_file in ['Automation_EXE.zip', 'Install.bat']:
+                    output_file = Lib.os.path.join(directories['DownloadFolder'], down_file)
+
+                    response = Lib.requests.get('https://raw.githubusercontent.com/fv112/Automation/CommandLine/exec/' +
+                                                down_file, verify=False)
+                    if response.status_code == 200:
+                        with open(output_file, 'wb') as file:
+                            file.write(response.content)
+                        print(f"Arquivo baixado com sucesso: {output_file}")
+
+                    else:
+                        print(f"Falha ao baixar o arquivo: {response.status_code}")
+
+                install_filepath = Lib.os.path.join(directories['DownloadFolder'], 'Install.bat')
+                if install_filepath:
+                    Lib.shutil.rmtree(r'C:\ProgramData\QA-Automation')
+                    #result = ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, f'"{install_filepath}"', None, 1)
+                    result = Lib.subprocess.run("cmd.exe /c " + install_filepath, capture_output=True, text=True,
+                                                 shell=True)
+                    Main.deleteFiles(exact_file=r'C:\ProgramData\QA-Automation\Automation\TestEnvironment.zip')
+                    Main.deleteFiles(exact_file=r'C:\ProgramData\QA-Automation\Automation\Automation.zip')
+
+                    print("Saída:", result.stdout)
+                    print("Erros:", result.stderr)
+
+        else:
+            print("Versão mais atual já instalada")
+
     # Configure the language for the automation.
     def configureLanguage(**kwargs):
         try:
@@ -675,6 +719,13 @@ class Main:
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorSaveHash']['Msg']}{Textcolor.END}", ex)
             Main.addLogs(message="General", value=logs["ErrorSaveHash"], value1=ex)
+
+    def read_html_content(self):
+
+        response = Lib.requests.get(self.git_url_readme, verify=False).text
+        soup = Lib.BeautifulSoup(response, 'html.parser').contents
+
+        return soup
 
     # Load the configuration file.
     def loadConfigs(**kwargs):

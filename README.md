@@ -1,14 +1,19 @@
 Automation QA - Release notes
 ----
+:bookmark: **Version 1.20.0**  
+
+<em>30/07/2024</em>  
+:sparkles: - Inclusão da verificação e atualização automática.  
+#
 
 :bookmark: **Version 1.19.4**  
 
 <em>29/07/2024</em>  
-:bug: - Correção na leitura do README.md.
+:bug: - Correção na leitura do README.md.  
 :bug: - Correção na ortografia de frases no log.  
 :bug: - Correção do tempo de execução no arquivo de evidência.  
 :sparkles: - Valida o tamanho do nome do caso de teste.  
-:sparkles: - Informações mais detalhadas no log.
+:sparkles: - Informações mais detalhadas no log.  
 #  
 
 :bookmark: **Version 1.19.3**  

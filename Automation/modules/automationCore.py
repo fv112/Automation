@@ -19,9 +19,8 @@ class Main:
             Lib.os.system('cls')
 
             while True:
-                print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['SaveEvidenceMsg']['Msg']}"
-                      f"{Lib.Aux.Textcolor.END}")
-                evidence = input()
+                evidence = input(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['SaveEvidenceMsg']['Msg']}"
+                                 f"{Lib.Aux.Textcolor.END}")
                 if evidence.upper() in ['Y', 'S']:
                     save_evidence = True
                     break
@@ -41,7 +40,8 @@ class Main:
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorMain"]['Msg'], value1=str(ex))
 
         finally:
-            print(f"{Lib.Aux.Textcolor.BLUE}{Lib.Aux.otherConfigs['MsgFinishedExecution']['Msg']}{Lib.Aux.Textcolor.END}")
+            print(f"{Lib.Aux.Textcolor.BLUE}{Lib.Aux.otherConfigs['MsgFinishedExecution']['Msg']}"
+                  f"{Lib.Aux.Textcolor.END}")
 
     # Execute the test case iterations.
     def startAutomation(self, **kwargs):
