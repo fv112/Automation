@@ -1,5 +1,12 @@
 Automation QA - Release notes
 ----
+:bookmark: **Version 1.20.1**  
+
+<em>31/07/2024</em>  
+:sparkles: - Ajustes das mensagens sobre a atualização da versão.  
+:bug: - Correção do Install.bat.  
+#
+
 :bookmark: **Version 1.20.0**  
 
 <em>30/07/2024</em>  

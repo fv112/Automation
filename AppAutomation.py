@@ -26,6 +26,8 @@ class AutomationQA:
 
         Lib.Aux.Main.checkNewVersion(self)
 
+        Lib.os.system('cls')
+
         # ------ Run the menu ----------
 
         local_version, date_version, release_infos = Lib.Aux.Main.releaseNotes(path=Lib.os.path.join(Lib.os.getcwd(),

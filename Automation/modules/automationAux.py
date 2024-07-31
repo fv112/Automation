@@ -598,7 +598,7 @@ class Main:
         if self.version_distributed > self.version_actual:
             while True:
                 option = input(f"{Textcolor.BOLD}{Textcolor.HIGHLIGHT}"
-                               f"Nova versão disponível. Deseja instalar [Y/S] = SIM ou [N/n/Enter] = Não"
+                               f"{otherConfigs['NewVersionAvailable']['Msg']}"
                                f"{Textcolor.END}{Textcolor.END}")
                 if option.upper() in ['Y', 'S']:
                     install = True
@@ -613,30 +613,32 @@ class Main:
                 for down_file in ['Automation_EXE.zip', 'Install.bat']:
                     output_file = Lib.os.path.join(directories['DownloadFolder'], down_file)
 
-                    response = Lib.requests.get('https://raw.githubusercontent.com/fv112/Automation/CommandLine/exec/' +
-                                                down_file, verify=False)
+                    response = Lib.requests.get(otherConfigs['GitLabPackage'] + down_file, verify=False)
                     if response.status_code == 200:
                         with open(output_file, 'wb') as file:
                             file.write(response.content)
-                        print(f"Arquivo baixado com sucesso: {output_file}")
+                        print(f"{logs['DownloadPackageCompleted']['Msg']}: {output_file}")
+                        Main.addLogs(message="General", value=logs["DownloadPackageCompleted"], value1=str(output_file))
 
                     else:
-                        print(f"Falha ao baixar o arquivo: {response.status_code}")
+                        print(f"{logs['ErrorDownloadUpdate']['Msg']}: {response.status_code}")
+                        Main.addLogs(message="General", value=logs["ErrorDownloadUpdate"],
+                                     value1=str(response.status_code))
 
                 install_filepath = Lib.os.path.join(directories['DownloadFolder'], 'Install.bat')
                 if install_filepath:
                     Lib.shutil.rmtree(r'C:\ProgramData\QA-Automation')
-                    #result = ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, f'"{install_filepath}"', None, 1)
                     result = Lib.subprocess.run("cmd.exe /c " + install_filepath, capture_output=True, text=True,
                                                  shell=True)
-                    Main.deleteFiles(exact_file=r'C:\ProgramData\QA-Automation\Automation\TestEnvironment.zip')
-                    Main.deleteFiles(exact_file=r'C:\ProgramData\QA-Automation\Automation\Automation.zip')
+                    # Main.deleteFiles(exact_file=r'C:\ProgramData\QA-Automation\Automation\TestEnvironment.zip')
+                    # Main.deleteFiles(exact_file=r'C:\ProgramData\QA-Automation\Automation\Automation.zip')
+                    Main.deleteFiles(exact_file=directories['ZipFile1'])
+                    Main.deleteFiles(exact_file=directories['ZipFile2'])
 
-                    print("Saída:", result.stdout)
-                    print("Erros:", result.stderr)
-
-        else:
-            print("Versão mais atual já instalada")
+                    # print("Saída:", result.stdout)
+                    Main.addLogs(message="General", value=logs["ErrorDownloadUpdate"], value1=str(result.stdout))
+                    # print("Erros:", result.stderr)
+                    Main.addLogs(message="General", value=logs["ErrorDownloadUpdate"], value1=str(result.stderr))
 
     # Configure the language for the automation.
     def configureLanguage(**kwargs):
@@ -880,7 +882,7 @@ class Main:
             readme = open(path, 'r', encoding='utf-8')
 
         for line in readme:
-            if 'Version' in line.__str__():
+            if 'Version' in line.__str__() and local_version.__len__() == 0:
                 local_version = Lib.regex.findall(r'\*\*(.*?)\*\*', line)
             if '<em>' in line.__str__():
                 date_version = Lib.regex.findall(r'<em>(.*?)</em>', line.__str__(), Lib.regex.DOTALL)

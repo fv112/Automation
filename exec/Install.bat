@@ -16,9 +16,6 @@ echo (Español) Esta actualizacion eliminara su version actual dentro de la carp
 echo.                                                                                                                                                             
 echo ########################################################################################################################
 
-REM echo Removing the latest version.
-REM rmdir /s /q C:\ProgramData\QA-Automation
-
 echo Creating the destination folder.
 mkdir C:\ProgramData\QA-Automation\Automation
 
@@ -31,25 +28,22 @@ powershell Expand-Archive -path C:\ProgramData\QA-Automation\Automation\TestEnvi
 cd C:\ProgramData\QA-Automation\Automation\
 powershell Expand-Archive -path C:\ProgramData\QA-Automation\Automation\Automation.zip -DestinationPath C:\ProgramData\QA-Automation\Automation\ -Force
 
+echo Move the Automation folder to Automation from _internal.
+xcopy C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation\_internal\Automation\* C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation\ /E /H /C /I
+copy C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation\_internal\README.md C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation
+
 echo Move the file AutomationQA.exe to the AutomationCMD folder.
 move C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation\AutomationQA.exe C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation
 
-echo Move the Automation folder to outside from _internal.
-move C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation\_internal\Automation C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation
-move C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation\_internal\README.md C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation
+echo Delete temporary files.
+rmdir /S /Q C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation\_internal\Automation
+del C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation\_internal\README.md
 
 echo Move the hash files used by the translation.
 mkdir C:\ProgramData\QA-Automation\Automation\Hash
 move C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation\Repository\Hash\en-hash_dictionary.txt C:\ProgramData\QA-Automation-Files\Hash
 move C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation\Repository\Hash\es-hash_dictionary.txt C:\ProgramData\QA-Automation-Files\Hash
 
-REM echo Deleting the temp .zip files.
-REM DEL /F /Q C:\ProgramData\QA-Automation\Automation\Automation.zip
-REM DEL /F /Q C:\ProgramData\QA-Automation\Automation\TestEnvironment.zip
-
 echo -----------------------------------------------------------------------------------------------------------------------
 echo  New version installed.
 echo -----------------------------------------------------------------------------------------------------------------------
-
-REM cd C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation
-REM %scriptPath%\..\AutomationQA.exe
