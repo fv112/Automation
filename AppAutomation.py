@@ -8,6 +8,8 @@ import common_libs as Lib
 class AutomationQA:
 
     def __init__(self):
+        Lib.Aux.Main.setLanguage(language='pt_BR')
+
         # ------ Check the version ----------
         self.readme_content = Lib.Aux.Main.read_html_content(self)
 
@@ -17,8 +19,6 @@ class AutomationQA:
         self.version_distributed, _, _ = Lib.Aux.Main.releaseNotes(path=path)
 
         Lib.os.system('cls')
-
-        Lib.Aux.Main.setLanguage(language='pt_BR')
 
         Lib.Aux.Main.checkNewVersion(self)
 

@@ -29,7 +29,7 @@ cd C:\ProgramData\QA-Automation\Automation\
 powershell Expand-Archive -path C:\ProgramData\QA-Automation\Automation\Automation.zip -DestinationPath C:\ProgramData\QA-Automation\Automation\ -Force
 
 echo Move the Automation folder to Automation from _internal.
-xcopy C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation\_internal\Automation\* C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation\ /E /H /C /I
+xcopy C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation\_internal\Automation\* C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation\ /E /H /C /I /Y
 copy C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation\_internal\README.md C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation
 
 echo Move the file AutomationQA.exe to the AutomationCMD folder.

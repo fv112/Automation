@@ -21,9 +21,4 @@ copy C:\QA-Automation\Automation\exec\Automation_EXE\Automation_EXE.zip C:\QA-Au
 
 echo Deleting the Automation_EXE folder.
 rmdir /s /q C:\QA-Automation\Automation\exec\Automation_EXE
-
-echo Deleting the Automation_EXE .zip files.
-DEL /F /Q C:\QA-Automation\Automation\exec\Automation_EXE\Automation.zip
-DEL /F /Q C:\QA-Automation\Automation\exec\Automation_EXE\TestEnvironment.zip
-
 pause

@@ -3,6 +3,7 @@ import common_libs as Lib
 verbs = None
 logs = None
 
+
 # Colored the text.
 class Textcolor:
     BLUE = '\033[1;34;47m'  # Blue

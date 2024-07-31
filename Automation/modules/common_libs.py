@@ -37,6 +37,7 @@ from prettytable import PrettyTable
 from selenium.webdriver.support import expected_conditions as ec
 from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
+from selenium.common.exceptions import NoAlertPresentException
 
 # Chrome
 from selenium.webdriver.chrome.service import Service as ChromeService

@@ -314,7 +314,7 @@ class Main:
         try:
             Lib.time.sleep(int(parameters1))
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["Wait"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["Wait"], value1=parameters1)
 
             return "Passed"
 
@@ -751,7 +751,7 @@ class Main:
                 # Check some attributes.
                 elif ('(#title)' in parameters2 or '(#href)' in parameters2 or '(#value)' in parameters2 or '(#class)'
                       in parameters2):
-                    text_found, status = Main.getAttribute(self, value1=parameters1, value2=parameters2)
+                    text_found, status = Main.getAttribute(self, parameters1=parameters1, parameters2=parameters2)
                     parameters2 = parameters2.replace('(#title)', '')
                     parameters2 = parameters2.replace('(#href)', '')
                     parameters2 = parameters2.replace('(#value)', '')
@@ -767,7 +767,7 @@ class Main:
 
                 # Get the amount of elements.
                 elif '<' and '>' in parameters2:
-                    text_found, status = Main.getQuantityElements(self, value1=parameters1)
+                    text_found, status = Main.getQuantityElements(self, parameters1=parameters1)
                     parameters2 = parameters2.replace('<', '')
                     parameters2 = parameters2.replace('>', '')
 
@@ -798,7 +798,9 @@ class Main:
                         status = "Failed"
 
             else:  # If Alert Element.
-                alert = driver.switch_to.alert()
+                wait = Lib.WebDriverWait(driver, timeout=2)
+                alert = wait.until(lambda driver: driver.switch_to.alert)
+
                 text_found = alert.text
 
                 if parameters2 == text_found:
@@ -949,23 +951,23 @@ class Main:
             parameters2 = kwargs.get('parameters2')
 
             wait = Lib.WebDriverWait(driver, timeout=2)
-            alert = wait.until(lambda d: d.switch_to.alert)
+            alert = wait.until(lambda driver: driver.switch_to.alert)
 
             # Validate de Alert content (Text).
-            if parameters2 is not None:
-                status = Main.validateData(self, alert='AlertScreen', parameters1=alert.text, parameters2=parameters2)
+            if parameters1 is not None:
+                status = Main.validateData(self, alert='AlertScreen', parameters1=parameters1, parameters2=alert.text)
 
             # Actions inside de Alert.
-            if parameters1.upper() in ("OK", "ACEPTAR"):
+            if parameters2.upper() in ("OK", "ACEPTAR"):
                 alert.accept()
                 Lib.time.sleep(3)
 
-            elif parameters1.upper() in ("CANCELAR", "CANCEL"):
+            elif parameters2.upper() in ("CANCELAR", "CANCEL"):
                 alert.dismiss()
                 Lib.time.sleep(3)
 
             else:  # Fill the Alert textbox.
-                alert.send_keys(parameters1)
+                alert.send_keys(parameters2)
                 Lib.time.sleep(3)
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["Inform"])
@@ -1230,14 +1232,17 @@ class Main:
 
         try:
             # Alert print screen.
-            if Lib.ec.alert_is_present()(driver):
-                Lib.time.sleep(1)
-                Lib.shutil.copyfile(Lib.os.path.join(Lib.Aux.os.getcwd(), 'Automation', 'images',
+            # if Lib.ec.alert_is_present()(driver):
+            wait = Lib.WebDriverWait(driver, 1)
+            if wait.until(lambda driver: driver.switch_to.alert):
+                # Lib.time.sleep(1)
+                Lib.shutil.copyfile(Lib.os.path.join(Lib.os.getcwd(), 'Automation', 'images',
                                                      Lib.Aux.directories['UnavailablePrint']),
                                     test_set_path + "\\" + image_name + ".png")
 
-            else:
-                driver.save_screenshot(test_set_path + "\\" + image_name + ".png")
+        except Lib.NoAlertPresentException:
+
+            driver.save_screenshot(test_set_path + "\\" + image_name + ".png")
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["TakePicture"])
 
