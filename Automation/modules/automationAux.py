@@ -724,7 +724,9 @@ class Main:
 
     def read_html_content(self):
 
-        response = Lib.requests.get(self.git_url_readme, verify=False).text
+        git_url_readme = directories['GitUrlReadme']
+
+        response = Lib.requests.get(git_url_readme, verify=False).text
         soup = Lib.BeautifulSoup(response, 'html.parser').contents
 
         return soup
@@ -877,6 +879,10 @@ class Main:
         release_infos = []
         local_version = []
         date_version = []
+
+        #git_url_package = directories['GitUrlPackage'] #'https://github.com/fv112/Automation/tree/CommandLine/exec/Automation_EXE.zip'
+        #git_url_install = directories['GitUrlInstall'] # 'https://github.com/fv112/Automation/tree/CommandLine/exec/Install.bat'
+        git_url_readme = directories['GitUrlReadme'] # 'https://raw.githubusercontent.com/fv112/Automation/CommandLine/README.md'
 
         if path:
             readme = open(path, 'r', encoding='utf-8')

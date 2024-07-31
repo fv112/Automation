@@ -5,6 +5,7 @@ Automation QA - Release notes
 <em>31/07/2024</em>  
 :sparkles: - Ajustes das mensagens sobre a atualização da versão.  
 :bug: - Correção do Install.bat.  
+:sparkles: - Remoção de variáveis inutilizadas.
 #
 
 :bookmark: **Version 1.20.0**  
