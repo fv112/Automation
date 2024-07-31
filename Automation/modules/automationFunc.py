@@ -1005,6 +1005,7 @@ class Main:
                 if enable_cookie:
                     options.add_argument('--profile-directory=Default')
                     options.add_argument('--user-data-dir=' + Lib.Aux.directories["Temp"] + 'CHROME')
+                    options.add_argument("--log-level=3")
 
                 options.add_experimental_option("excludeSwitches", ["enable-automation"])
                 options.add_experimental_option("prefs", preferences)

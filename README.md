@@ -1,5 +1,11 @@
 Automation QA - Release notes
 ----
+:bookmark: **Version 1.20.2**  
+
+<em>31/07/2024</em>
+:ok_hand: - Remoção do log de erro do Chrome no log.  
+#
+
 :bookmark: **Version 1.20.1**  
 
 <em>31/07/2024</em>  
