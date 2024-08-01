@@ -878,18 +878,17 @@ class Main:
         readme = kwargs.get('readme')
 
         release_infos = []
-        version = 0
+        version_int = 0
         date_version = []
-        # int_version = None
+        version = None
 
         if path:
             readme = open(path, 'r', encoding='utf-8')
 
         for line in readme:
-            if 'Version' in line.__str__() and version == 0:
+            if 'Version' in line.__str__() and version_int == 0:
                 version = Lib.regex.findall(r'\*\*Version (.*?)\*\*', line)
-                version = int(version[0].replace(".", ""))
-                # int_version = Lib.regex.search(r'Version (\d+)', version[0]) ### Deve ser inteiro.
+                version_int = int(version[0].replace(".", ""))
 
             if '<em>' in line.__str__():
                 date_version = Lib.regex.findall(r'<em>(.*?)</em>', line.__str__(), Lib.regex.DOTALL)
@@ -898,7 +897,7 @@ class Main:
             if '#' in line:
                 break
 
-        return version, date_version[0], release_infos
+        return version_int, version, date_version[0], release_infos
 
     # Validate content inside JSON content.
     def find_content_json(self, **kwargs):

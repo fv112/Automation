@@ -13,10 +13,10 @@ class AutomationQA:
         # ------ Check the version ----------
         self.readme_content = Lib.Aux.Main.read_html_content(self)
 
-        self.version_distributed, _, _ = Lib.Aux.Main.releaseNotes(readme=self.readme_content)
+        self.version_distributed, _, _, _ = Lib.Aux.Main.releaseNotes(readme=self.readme_content)
 
         path = os.path.abspath('README.md')
-        self.version_local, _, _ = Lib.Aux.Main.releaseNotes(path=path)
+        self.version_local, _, _, _ = Lib.Aux.Main.releaseNotes(path=path)
 
         Lib.os.system('cls')
 
@@ -26,8 +26,8 @@ class AutomationQA:
 
         # ------ Run the menu ----------
 
-        local_version, date_version, release_infos = Lib.Aux.Main.releaseNotes(path=Lib.os.path.join(Lib.os.getcwd(),
-                                                                                                     'README.md'))
+        local_version, _, date_version, release_infos = Lib.Aux.Main.releaseNotes(path=Lib.os.path.join(Lib.os.getcwd(),
+                                                                                                        'README.md'))
 
         print(f"{Lib.Aux.Textcolor.HIGHLIGHT}       Automation QA - Version: {local_version} - Date: {date_version}    "
               f"{Lib.Aux.Textcolor.END}")
