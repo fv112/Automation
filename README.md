@@ -1,5 +1,11 @@
 Automation QA - Release notes
 ---------
+:bookmark: **Version 1.20.18**  
+
+<em>01/08/2024</em>
+:construction: - Incluindo o Install.bat no Python para atualizar versões já existentes.
+#
+
 :bookmark: **Version 1.20.17**  
 
 <em>01/08/2024</em>

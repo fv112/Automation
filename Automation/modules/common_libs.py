@@ -18,6 +18,7 @@ import subprocess
 import sys
 import time
 import urllib3
+import zipfile
 import win32api                                         # Read the Windows login.
 import win32com.client as win
 import win32net                                         # Read the Windows login.
