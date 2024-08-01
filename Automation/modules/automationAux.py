@@ -631,14 +631,12 @@ class Main:
                     Lib.shutil.rmtree(r'C:\ProgramData\QA-Automation')
                     result = Lib.subprocess.run("cmd.exe /c " + install_filepath, capture_output=True, text=True,
                                                  shell=True)
-                    # Main.deleteFiles(exact_file=r'C:\ProgramData\QA-Automation\Automation\TestEnvironment.zip')
-                    # Main.deleteFiles(exact_file=r'C:\ProgramData\QA-Automation\Automation\Automation.zip')
                     Main.deleteFiles(exact_file=directories['ZipFile1'])
                     Main.deleteFiles(exact_file=directories['ZipFile2'])
 
-                    # print("Saída:", result.stdout)
+                    print("Saída:", result.stdout)
                     Main.addLogs(message="General", value=logs["ErrorDownloadUpdate"], value1=str(result.stdout))
-                    # print("Erros:", result.stderr)
+                    print("Erros:", result.stderr)
                     Main.addLogs(message="General", value=logs["ErrorDownloadUpdate"], value1=str(result.stderr))
 
     # Configure the language for the automation.
