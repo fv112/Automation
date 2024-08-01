@@ -222,7 +222,6 @@ class Main:
         # Update the Run status.
         finally:
             # Clear the API variables.
-
             Lib.Aux.otherConfigs['API_Authorization'] = ''
             Lib.Aux.otherConfigs['API_Body'] = ''
             Lib.Aux.otherConfigs['API_Endpoint'] = ''
