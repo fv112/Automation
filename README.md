@@ -1,5 +1,11 @@
 Automation QA - Release notes
 ---------
+:bookmark: **Version 1.20.14**  
+
+<em>01/08/2024</em>
+:bug: - Correção da atualização da versão.
+#
+
 :bookmark: **Version 1.20.13**  
 
 <em>01/08/2024</em>
