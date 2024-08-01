@@ -598,8 +598,6 @@ class Main:
     def checkNewVersion(self):
 
         try:
-            print(f"self.version_distributed: {self.version_distributed}")
-            print(f"self.version_local: {self.version_local}")
 
             if self.version_distributed > self.version_local:
                 while True:

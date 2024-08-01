@@ -30,6 +30,9 @@ class AutomationQA:
 
         Lib.os.system('cls')
 
+        print(f"self.version_distributed: {self.version_distributed}")
+        print(f"self.version_local: {self.version_local}")
+
         # ------ Run the menu ----------
 
         _, local_version, date_version, release_infos = Lib.Aux.Main.releaseNotes(path=Lib.os.path.join(Lib.os.getcwd(),
