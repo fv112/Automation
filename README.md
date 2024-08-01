@@ -1,5 +1,11 @@
 Automation QA - Release notes
 ---------
+:bookmark: **Version 1.20.9**  
+
+<em>01/08/2024</em>
+:ok_hand: - Remoção dos comentários.
+#
+
 :bookmark: **Version 1.20.8**  
 
 <em>01/08/2024</em>
