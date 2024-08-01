@@ -897,7 +897,7 @@ class Main:
             if '#' in line:
                 break
 
-        return version_int, version, date_version[0], release_infos
+        return version_int, version[0], date_version[0], release_infos
 
     # Validate content inside JSON content.
     def find_content_json(self, **kwargs):

@@ -33,7 +33,7 @@ class AutomationQA:
 
         # ------ Run the menu ----------
 
-        local_version, _, date_version, release_infos = Lib.Aux.Main.releaseNotes(path=Lib.os.path.join(Lib.os.getcwd(),
+        _, local_version, date_version, release_infos = Lib.Aux.Main.releaseNotes(path=Lib.os.path.join(Lib.os.getcwd(),
                                                                                                         'README.md'))
 
         print(f"{Lib.Aux.Textcolor.HIGHLIGHT}       Automation QA - Version: {local_version} - Date: {date_version}    "
