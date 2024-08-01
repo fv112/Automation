@@ -102,7 +102,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorSetLanguage']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(message="setLanguage", value=logs["ErrorSetLanguage"]['Msg'], value1=ex)
+            Main.addLogs(message="setLanguage", value=logs["ErrorSetLanguage"]['Msg'], value1=str(ex))
 
     # Ask and save the Token in a file.
     def saveToken(**kwargs):
@@ -128,7 +128,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorSaveToken']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(message="General", value=logs["ErrorSaveToken"], value1=ex)
+            Main.addLogs(message="General", value=logs["ErrorSaveToken"], value1=str(ex))
 
     # Create the directories.
     def createDirectory(**kwargs):
@@ -163,7 +163,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorCreateDirectory']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(message="General", value=logs["ErrorCreateDirectory"], value1=ex)
+            Main.addLogs(message="General", value=logs["ErrorCreateDirectory"], value1=str(ex))
 
             return False
 
@@ -178,7 +178,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorDeleteDirectory']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(message="General", value=logs["ErrorDeleteDirectory"], value1=ex)
+            Main.addLogs(message="General", value=logs["ErrorDeleteDirectory"], value1=str(ex))
 
     # Add the screenshots in the Word file.
     def wordAddSteps(**kwargs):
@@ -314,7 +314,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorWordAddSteps']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(message="General", value=logs["ErrorWordAddSteps"], value1=ex)
+            Main.addLogs(message="General", value=logs["ErrorWordAddSteps"], value1=str(ex))
 
         return None
 
@@ -342,7 +342,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorReplacePasswordEvidence']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(message="General", value=logs["ErrorReplacePasswordEvidence"], value1=ex)
+            Main.addLogs(message="General", value=logs["ErrorReplacePasswordEvidence"], value1=str(ex))
 
     # Search the text in the file.
     def wordSeachText(**kwargs):
@@ -357,7 +357,7 @@ class Main:
                     return p
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorWordSeachText']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(message="General", value=logs["ErrorWordSeachText"], value1=ex)
+            Main.addLogs(message="General", value=logs["ErrorWordSeachText"], value1=str(ex))
 
         return None
 
@@ -417,7 +417,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorWordAddInfo']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(message="General", value=logs["ErrorWordAddInfo"], value1=ex)
+            Main.addLogs(message="General", value=logs["ErrorWordAddInfo"], value1=str(ex))
 
             return False
 
@@ -446,7 +446,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorWordToPDF']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(message="General", value=logs["ErrorWordToPDF"], value1=ex)
+            Main.addLogs(message="General", value=logs["ErrorWordToPDF"], value1=str(ex))
             return None
 
     # Delete files.
@@ -472,7 +472,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorDeleteFiles']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(message="General", value=logs["ErrorDeleteFiles"], value1=ex)
+            Main.addLogs(message="General", value=logs["ErrorDeleteFiles"], value1=str(ex))
 
     # Add the log in the file.
     def addLogs(**kwargs):
@@ -530,8 +530,9 @@ class Main:
                     log_file.write(datetime_log + " - Log       - " + value + " " + " - " + str(value1) + "\n")
 
         except Exception as ex:
+            print(f"{Textcolor.FAIL}{logs['ErrorAddLog']['Msg']}{Textcolor.END}", str(ex))
             Main.addLogs(message="General", value=logs["ErrorAddLog"]['Msg'], value1=str(ex))
-            print(f"{Textcolor.FAIL}{logs['ErrorAddLog']['Msg']}{Textcolor.END}", ex)
+
 
     # Remove the HTML from the string.
     def removeHTML(**kwargs):
@@ -593,7 +594,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorTranslateMessage']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(message="General", value=logs["ErrorTranslateMessage"], value1=ex)
+            Main.addLogs(message="General", value=logs["ErrorTranslateMessage"], value1=str(ex))
 
     def checkNewVersion(self):
 
@@ -637,14 +638,17 @@ class Main:
                         Main.deleteFiles(exact_file=directories['ZipFile1'])
                         Main.deleteFiles(exact_file=directories['ZipFile2'])
 
-                        print("Saída:", result.stdout)
+                        # print("Saída:", result.stdout)
+                        print(f"{result.stdout}", result.stdout)
                         Main.addLogs(message="General", value=logs["ErrorDownloadUpdate"], value1=str(result.stdout))
-                        print("Erros:", result.stderr)
+
+                        # print("Erros:", result.stderr)
+                        print(f"{result.stderr}", result.stderr)
                         Main.addLogs(message="General", value=logs["ErrorDownloadUpdate"], value1=str(result.stderr))
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorDownloadUpdate']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(message="General", value=logs["ErrorDownloadUpdate"], value1=ex)
+            Main.addLogs(message="General", value=logs["ErrorDownloadUpdate"], value1=str(ex))
 
     # Configure the language for the automation.
     def configureLanguage(**kwargs):
@@ -664,7 +668,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorConfigureLanguage']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(message="General", value=logs["ErrorConfigureLanguage"], value1=ex)
+            Main.addLogs(message="General", value=logs["ErrorConfigureLanguage"], value1=str(ex))
 
     # Generate the hash for a file.
     def generateHash(**kwargs):
@@ -684,7 +688,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorGenerateHash']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(message="General", value=logs["ErrorGenerateHash"], value1=ex)
+            Main.addLogs(message="General", value=logs["ErrorGenerateHash"], value1=str(ex))
 
     # Read the hash in a file.
     def readHash(**kwargs):
@@ -707,7 +711,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorReadHash']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(message="General", value=logs["ErrorReadHash"], value1=ex)
+            Main.addLogs(message="General", value=logs["ErrorReadHash"], value1=str(ex))
 
     # Save the hash in a file.
     def saveHash(**kwargs):
@@ -726,16 +730,22 @@ class Main:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorSaveHash']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(message="General", value=logs["ErrorSaveHash"], value1=ex)
+            Main.addLogs(message="General", value=logs["ErrorSaveHash"], value1=str(ex))
 
     def read_html_content(self):
 
-        git_url_readme = directories['GitUrlReadme']
+        try:
 
-        response = Lib.requests.get(git_url_readme, verify=False).text
-        soup = Lib.BeautifulSoup(response, 'html.parser').contents
+            git_url_readme = directories['GitUrlReadme']
 
-        return soup
+            response = Lib.requests.get(git_url_readme, verify=False).text
+            soup = Lib.BeautifulSoup(response, 'html.parser').contents
+
+            return soup
+
+        except Exception as ex:
+            print(f"{Textcolor.FAIL}{logs['ErrorReadHTMLContent']['Msg']}{Textcolor.END}", ex)
+            Main.addLogs(message="General", value=logs["ErrorReadHTMLContent"], value1=str(ex))
 
     # Load the configuration file.
     def loadConfigs(**kwargs):
@@ -874,35 +884,39 @@ class Main:
 
         return desktop_tc
 
-    @staticmethod
     # Inform the updates.
     def releaseNotes(**kwargs):
 
-        # kwargs variables.
-        path = kwargs.get('path')
-        readme = kwargs.get('readme')
+        try:
+            # kwargs variables.
+            path = kwargs.get('path')
+            readme = kwargs.get('readme')
 
-        release_infos = []
-        version_int = 0
-        date_version = []
-        version = None
+            release_infos = []
+            version_int = 0
+            date_version = []
+            version = None
 
-        if path:
-            readme = open(path, 'r', encoding='utf-8')
+            if path:
+                readme = open(path, 'r', encoding='utf-8')
 
-        for line in readme:
-            if 'Version' in line.__str__() and version_int == 0:
-                version = Lib.regex.findall(r'\*\*Version (.*?)\*\*', line)
-                version_int = int(version[0].replace(".", ""))
+            for line in readme:
+                if 'Version' in line.__str__() and version_int == 0:
+                    version = Lib.regex.findall(r'\*\*Version (.*?)\*\*', line)
+                    version_int = int(version[0].replace(".", ""))
 
-            if '<em>' in line.__str__():
-                date_version = Lib.regex.findall(r'<em>(.*?)</em>', line.__str__(), Lib.regex.DOTALL)
-            if ': - ' in line.__str__():
-                release_infos.append(Lib.regex.findall(r' - (.*?)\.', line.__str__(), Lib.regex.DOTALL)[0])
-            if '#' in line:
-                break
+                if '<em>' in line.__str__():
+                    date_version = Lib.regex.findall(r'<em>(.*?)</em>', line.__str__(), Lib.regex.DOTALL)
+                if ': - ' in line.__str__():
+                    release_infos.append(Lib.regex.findall(r' - (.*?)\.', line.__str__(), Lib.regex.DOTALL)[0])
+                if '#' in line:
+                    break
 
-        return version_int, version[0], date_version[0], release_infos
+            return version_int, version[0], date_version[0], release_infos
+
+        except Exception as ex:
+            print(f"{Textcolor.FAIL}{logs['ErrorReleaseNotes']['Msg']}{Textcolor.END}", ex)
+            Main.addLogs(message="General", value=logs["ErrorReleaseNotes"], value1=str(ex))
 
     # Validate content inside JSON content.
     def find_content_json(self, **kwargs):

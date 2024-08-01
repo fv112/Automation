@@ -1,5 +1,11 @@
 Automation QA - Release notes
 ---------
+:bookmark: **Version 1.20.16**  
+
+<em>01/08/2024</em>
+:bug: - Correção da gravação dos logs.
+#
+
 :bookmark: **Version 1.20.15**  
 
 <em>01/08/2024</em>

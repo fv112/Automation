@@ -275,6 +275,8 @@ logs:
         ErrorStep: {Type: Error, Msg: Erro no passo!, Where: mainFunction},
         ErrorStepFor: {Type: Error, Msg: Erro na execução dos passos!, Where: mainFunction},
         ErrorPressButton: {Type: Error, Msg: A tecla informada é inválida!, Where: pressButton},
+        ErrorReadHTMLContent: {Type: Error, Msg: Erro ao ler o HTML, Where: automationAux - read_html_content},
+        ErrorReleaseNotes: {Type: Error, Msg: Erro ao ler o ReadMe e obter o Release Notes., Where: automationAux - releaseNotes},
         ErrorTakePicture: {Type: Error, Msg: Erro ao executar o PrintScreen do passo!, Where: automationFunc - takePicture},
         ErrorTestNameValidation: {Type: Error, Msg: Falha na validação do nome do caso de teste!, Where: automationAux - validateTestName},
         ErrorTranslateMessage: {Type: Error, Msg: Erro ao realizar a tradução das mensagens!, Where: translateMsg},
