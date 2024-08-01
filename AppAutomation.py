@@ -1,7 +1,14 @@
 import os.path
 import sys
 
-sys.path.append(os.path.abspath('./Automation/modules'))
+
+for root, dirs, files in os.walk(os.getcwd()):
+    if 'common_libs.py' in files:
+        sys.path.append(os.path.abspath(root))
+        # print(os.path.abspath(os.path.join(root, 'common_libs.py')))
+        break
+
+
 import common_libs as Lib
 
 

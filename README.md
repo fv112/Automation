@@ -1,5 +1,11 @@
 Automation QA - Release notes
 ----
+:bookmark: **Version 1.20.5**  
+
+<em>01/08/2024</em>
+:bug: - Correção do caminho do common_libs.  
+#
+
 :bookmark: **Version 1.20.4**  
 
 <em>01/08/2024</em>

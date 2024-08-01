@@ -35,6 +35,10 @@ copy C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation\_internal
 echo Move the file AutomationQA.exe to the AutomationCMD folder.
 move C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation\AutomationQA.exe C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation
 
+REM echo Move the file AutomationQA.exe to the AutomationCMD folder.
+REM mkdir C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation\modules
+REM move C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation\_internal\common_libs.py C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation\modules
+
 echo Delete temporary files.
 rmdir /S /Q C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation\_internal\Automation
 del C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation\_internal\README.md

@@ -289,7 +289,7 @@ class Main:
                 else:
                     status_steps.append("Passed")
 
-                # Take the screenshot of each step, except to the NoExecute step OR API Step.
+                # Take the screenshot of each step, except to the NoExecute step OR API Step OR Close.
                 if (verb not in ('NoExecute', 'Fechar', 'Cerrar', 'Close') and
                         Lib.Aux.otherConfigs['API_Step'] is False and
                         save_evidence):
