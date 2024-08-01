@@ -19,12 +19,12 @@ class Main:
 
             # Start the automation.
             project, test_case_id_list, test_run_id = (
-                GitLab.AzureConnection.startRun(self, project=project_id, id_test_plan=id_test_plan,
-                                                id_test_suit=id_test_suit, test_case_id_list_all=test_case_id_list_all))
+                Lib.Con.startRun(self, project=project_id, id_test_plan=id_test_plan,
+                                 id_test_suit=id_test_suit, test_case_id_list_all=test_case_id_list_all))
 
             for id_testcase in test_case_id_list:
                 test_name, id_testcase, list_files_baseline, list_files_new = \
-                    GitLab.AzureConnection.SaveDownloadFileLocally(self, project=project, id_testcase=id_testcase)
+                    Lib.Con.SaveDownloadFileLocally(self, project=project, id_testcase=id_testcase)
 
                 # Compare 'Baseline' file to 'New' file -> Iteration counts.
                 for _ in range(0, len(list_files_baseline)):
@@ -42,11 +42,11 @@ class Main:
 
                     # Compare hash and update the new baseline to GitLab.
                     if baseline_actual_hash != new_actual_hash:
-                        GitLab.AzureConnection.CheckDownloadFile(self, project=project, test_case_id=str(id_testcase),
-                                                                evidence_folder=Lib.Aux.os.path.join(
-                                                                    Lib.Aux.directories['CompareDownloadFolder'], test_name)
-                                                                , file_name=list_files_baseline[0],
-                                                                download_file_name=list_files_baseline[0], compare=True)
+                        Lib.Con.CheckDownloadFile(self, project=project, test_case_id=str(id_testcase),
+                                                  evidence_folder=Lib.Aux.os.path.join(
+                                                      Lib.Aux.directories['CompareDownloadFolder'], test_name)
+                                                  , file_name=list_files_baseline[0],
+                                                  download_file_name=list_files_baseline[0], compare=True)
 
                     list_files_baseline.pop(0)
                     list_files_new.pop(0)
