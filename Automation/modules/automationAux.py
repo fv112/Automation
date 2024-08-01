@@ -596,7 +596,7 @@ class Main:
             Main.addLogs(message="General", value=logs["ErrorTranslateMessage"], value1=ex)
 
     def checkNewVersion(self):
-        if self.version_distributed > self.version_actual:
+        if self.version_distributed > self.version_local:
             while True:
                 option = input(f"{Textcolor.BOLD}{Textcolor.HIGHLIGHT}"
                                f"{otherConfigs['NewVersionAvailable']['Msg']}"
@@ -878,19 +878,19 @@ class Main:
         readme = kwargs.get('readme')
 
         release_infos = []
-        local_version = []
+        version = 0
         date_version = []
-
-        #git_url_package = directories['GitUrlPackage'] #'https://github.com/fv112/Automation/tree/CommandLine/exec/Automation_EXE.zip'
-        #git_url_install = directories['GitUrlInstall'] # 'https://github.com/fv112/Automation/tree/CommandLine/exec/Install.bat'
-        git_url_readme = directories['GitUrlReadme'] # 'https://raw.githubusercontent.com/fv112/Automation/CommandLine/README.md'
+        # int_version = None
 
         if path:
             readme = open(path, 'r', encoding='utf-8')
 
         for line in readme:
-            if 'Version' in line.__str__() and local_version.__len__() == 0:
-                local_version = Lib.regex.findall(r'\*\*(.*?)\*\*', line)
+            if 'Version' in line.__str__() and version == 0:
+                version = Lib.regex.findall(r'\*\*Version (.*?)\*\*', line)
+                version = int(version[0].replace(".", ""))
+                # int_version = Lib.regex.search(r'Version (\d+)', version[0]) ### Deve ser inteiro.
+
             if '<em>' in line.__str__():
                 date_version = Lib.regex.findall(r'<em>(.*?)</em>', line.__str__(), Lib.regex.DOTALL)
             if ': - ' in line.__str__():
@@ -898,7 +898,7 @@ class Main:
             if '#' in line:
                 break
 
-        return local_version[0], date_version[0], release_infos
+        return version, date_version[0], release_infos
 
     # Validate content inside JSON content.
     def find_content_json(self, **kwargs):

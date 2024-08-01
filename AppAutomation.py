@@ -13,10 +13,10 @@ class AutomationQA:
         # ------ Check the version ----------
         self.readme_content = Lib.Aux.Main.read_html_content(self)
 
-        self.version_actual, _, _ = Lib.Aux.Main.releaseNotes(readme=self.readme_content)
+        self.version_distributed, _, _ = Lib.Aux.Main.releaseNotes(readme=self.readme_content)
 
         path = os.path.abspath('README.md')
-        self.version_distributed, _, _ = Lib.Aux.Main.releaseNotes(path=path)
+        self.version_local, _, _ = Lib.Aux.Main.releaseNotes(path=path)
 
         Lib.os.system('cls')
 
