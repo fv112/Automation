@@ -1,5 +1,11 @@
 Automation QA - Release notes
 ---------
+:bookmark: **Version 1.20.15**  
+
+<em>01/08/2024</em>
+:ok_hand: - Remoção de um "Quit" do código.
+#
+
 :bookmark: **Version 1.20.14**  
 
 <em>01/08/2024</em>

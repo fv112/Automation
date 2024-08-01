@@ -57,7 +57,6 @@ class Main:
         except Exception as ex:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorMain']['Msg']}{Lib.Aux.Textcolor.END}", ex)
             Lib.Aux.Main.addLogs(self, message="General", value=Lib.Aux.logs["ErrorMain"], value1=str(ex))
-            ###exit(1)
 
         finally:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.otherConfigs['MsgFinishedCompare']['Msg']}{Lib.Aux.Textcolor.END}")
