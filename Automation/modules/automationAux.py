@@ -596,48 +596,54 @@ class Main:
             Main.addLogs(message="General", value=logs["ErrorTranslateMessage"], value1=ex)
 
     def checkNewVersion(self):
-        if self.version_distributed > self.version_local:
-            while True:
-                option = input(f"{Textcolor.BOLD}{Textcolor.HIGHLIGHT}"
-                               f"{otherConfigs['NewVersionAvailable']['Msg']}"
-                               f"{Textcolor.END}{Textcolor.END}")
-                if option.upper() in ['Y', 'S']:
-                    install = True
-                    break
-                elif option.upper() in ['', 'N']:
-                    install = False
-                    break
 
-            if install:
-                Main.createDirectory(path_folder=directories['DownloadFolder'])
+        try:
+            if self.version_distributed > self.version_local:
+                while True:
+                    option = input(f"{Textcolor.BOLD}{Textcolor.HIGHLIGHT}"
+                                   f"{otherConfigs['NewVersionAvailable']['Msg']}"
+                                   f"{Textcolor.END}{Textcolor.END}")
+                    if option.upper() in ['Y', 'S']:
+                        install = True
+                        break
+                    elif option.upper() in ['', 'N']:
+                        install = False
+                        break
 
-                for down_file in ['Automation_EXE.zip', 'Install.bat']:
-                    output_file = Lib.os.path.join(directories['DownloadFolder'], down_file)
+                if install:
+                    Main.createDirectory(path_folder=directories['DownloadFolder'])
 
-                    response = Lib.requests.get(otherConfigs['GitLabPackage'] + down_file, verify=False)
-                    if response.status_code == 200:
-                        with open(output_file, 'wb') as file:
-                            file.write(response.content)
-                        print(f"{logs['DownloadPackageCompleted']['Msg']}: {output_file}")
-                        Main.addLogs(message="General", value=logs["DownloadPackageCompleted"], value1=str(output_file))
+                    for down_file in ['Automation_EXE.zip', 'Install.bat']:
+                        output_file = Lib.os.path.join(directories['DownloadFolder'], down_file)
 
-                    else:
-                        print(f"{logs['ErrorDownloadUpdate']['Msg']}: {response.status_code}")
-                        Main.addLogs(message="General", value=logs["ErrorDownloadUpdate"],
-                                     value1=str(response.status_code))
+                        response = Lib.requests.get(otherConfigs['GitLabPackage'] + down_file, verify=False)
+                        if response.status_code == 200:
+                            with open(output_file, 'wb') as file:
+                                file.write(response.content)
+                            print(f"{logs['DownloadPackageCompleted']['Msg']}: {output_file}")
+                            Main.addLogs(message="General", value=logs["DownloadPackageCompleted"], value1=str(output_file))
 
-                install_filepath = Lib.os.path.join(directories['DownloadFolder'], 'Install.bat')
-                if install_filepath:
-                    Lib.shutil.rmtree(r'C:\ProgramData\QA-Automation')
-                    result = Lib.subprocess.run("cmd.exe /c " + install_filepath, capture_output=True, text=True,
-                                                 shell=True)
-                    Main.deleteFiles(exact_file=directories['ZipFile1'])
-                    Main.deleteFiles(exact_file=directories['ZipFile2'])
+                        else:
+                            print(f"{logs['ErrorDownloadUpdate']['Msg']}: {response.status_code}")
+                            Main.addLogs(message="General", value=logs["ErrorDownloadUpdate"],
+                                         value1=str(response.status_code))
 
-                    print("Saída:", result.stdout)
-                    Main.addLogs(message="General", value=logs["ErrorDownloadUpdate"], value1=str(result.stdout))
-                    print("Erros:", result.stderr)
-                    Main.addLogs(message="General", value=logs["ErrorDownloadUpdate"], value1=str(result.stderr))
+                    install_filepath = Lib.os.path.join(directories['DownloadFolder'], 'Install.bat')
+                    if install_filepath:
+                        Lib.shutil.rmtree(r'C:\ProgramData\QA-Automation')
+                        result = Lib.subprocess.run("cmd.exe /c " + install_filepath, capture_output=True, text=True,
+                                                     shell=True)
+                        Main.deleteFiles(exact_file=directories['ZipFile1'])
+                        Main.deleteFiles(exact_file=directories['ZipFile2'])
+
+                        print("Saída:", result.stdout)
+                        Main.addLogs(message="General", value=logs["ErrorDownloadUpdate"], value1=str(result.stdout))
+                        print("Erros:", result.stderr)
+                        Main.addLogs(message="General", value=logs["ErrorDownloadUpdate"], value1=str(result.stderr))
+
+        except Exception as ex:
+            print(f"{Textcolor.FAIL}{logs['ErrorDownloadUpdate']['Msg']}{Textcolor.END}", ex)
+            Main.addLogs(message="General", value=logs["ErrorDownloadUpdate"], value1=ex)
 
     # Configure the language for the automation.
     def configureLanguage(**kwargs):
