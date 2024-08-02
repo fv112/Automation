@@ -1,5 +1,11 @@
 Automation QA - Release notes
 ---------
+:bookmark: **Version 1.20.26**  
+
+<em>02/08/2024</em>
+:ok_hand: - Correção do gerador de pacotes.
+#
+
 :bookmark: **Version 1.20.25**  
 
 <em>02/08/2024</em>
