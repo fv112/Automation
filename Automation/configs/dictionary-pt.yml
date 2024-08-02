@@ -175,6 +175,7 @@ logs:
         ErrorAPISchema: {Type: Error, Msg: "O passo com SCHEMA deve se o último passo do caso de teste", Where: automationFunc - request_api},
         ErrorBackPage: {Type: Error, Msg: Falha ao voltar a página!, Where: BackPage},
         ErrorCheckDownloadFile: {Type: Error, Msg: Erro ao verificar se arquivo de download já está no Workitem!, Where: CheckDownloadFile},
+        ErrorCheckNewVersion:{Type: Error, Msg: Erro ao atualizar a nova versão, Where: automationAux - CheckDownloadFile},
         ErrorClick: {Type: Error, Msg: Erro ao clicar no elemento!, Where: click},
         ErrorClose: {Type: Error, Msg: Erro ao fechar!, Where: close},
         ErrorConfigureLanguage: {Type: Error, Msg: Ocorreu um erro na configuração do idioma!, Where: configureLanguage},

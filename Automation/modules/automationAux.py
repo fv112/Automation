@@ -647,7 +647,6 @@ class Main:
                                  value1=str(response.status_code))
 
                 Lib.shutil.rmtree(directories['QA-AutomationFolder'])
-                # Lib.shutil.rmtree(directories['DownloadFolder'])
 
                 print(f"Creating the destination folder.")
                 Main.createDirectory(path_folder=directories['DestinationFolder'])
@@ -684,8 +683,8 @@ class Main:
                 print("-" * 30)
 
         except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['ErrorDownloadUpdate']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(message="General", value=logs["ErrorDownloadUpdate"], value1=str(ex))
+            print(f"{Textcolor.FAIL}{logs['ErrorCheckNewVersion']['Msg']}{Textcolor.END}", ex)
+            Main.addLogs(message="General", value=logs["ErrorCheckNewVersion"], value1=str(ex))
 
     # Configure the language for the automation.
     def configureLanguage(**kwargs):
