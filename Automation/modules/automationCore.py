@@ -145,7 +145,8 @@ class Main:
                     print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.logs['SavingEvidence']['Msg']}{Lib.Aux.Textcolor.END}")
 
                     # Create an EST file.
-                    word_path = Lib.Aux.directories["ESTFile"] + ' ' + Lib.Aux.otherConfigs["Language"] + '.docx'
+                    word_path = (Lib.os.path.join(Lib.os.getcwd(), Lib.Aux.directories["ESTFile"])
+                                 + ' ' + Lib.Aux.otherConfigs["Language"] + '.docx')
 
                     est = Lib.Aux.Main.wordAddSteps(test_case_id=test_case_id,
                                                     name_testcase=name_testcase,
