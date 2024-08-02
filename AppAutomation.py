@@ -28,11 +28,11 @@ class AutomationQA:
 
         self.version_local, _, _, _ = Lib.Aux.Main.releaseNotes(path=path)
 
-        Lib.os.system('cls')
+        # Lib.os.system('cls')
 
         Lib.Aux.Main.checkNewVersion(self)
 
-        Lib.os.system('cls')
+        #Lib.os.system('cls')
 
         print(f"self.version_distributed: {self.version_distributed}")
         print(f"self.version_local: {self.version_local}")

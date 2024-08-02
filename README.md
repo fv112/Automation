@@ -1,5 +1,11 @@
 Automation QA - Release notes
 ---------
+:bookmark: **Version 1.20.23**  
+
+<em>02/08/2024</em>
+:ok_hand: - Retirando a limpeza de tela
+#
+
 :bookmark: **Version 1.20.22**  
 
 <em>02/08/2024</em>

@@ -679,8 +679,10 @@ class Main:
                 Main.deleteFiles(exact_file=directories['ZipFile2'])
 
                 print("-" * 30)
-                print("New version installed.")
+                print("New version installed. Press any key to close and run the Automation again.")
                 print("-" * 30)
+                any_key = input()
+                exit(99)
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorCheckNewVersion']['Msg']}{Textcolor.END}", ex)
