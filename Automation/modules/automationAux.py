@@ -646,7 +646,7 @@ class Main:
                     Main.addLogs(message="General", value=logs["ErrorDownloadUpdate"],
                                  value1=str(response.status_code))
 
-                Lib.shutil.rmtree(directories['QA-AutomationFolder'])
+                # Lib.shutil.rmtree(directories['QA-AutomationFolder'])
 
                 print(f"Creating the destination folder.")
                 Main.createDirectory(path_folder=directories['DestinationFolder'])
