@@ -24,6 +24,7 @@ class AutomationQA:
         for root, dirs, files in os.walk(os.getcwd()):
             if 'README.md' in files:
                 path = os.path.join(os.path.abspath(root), 'README.md')
+                print(path)
                 break
 
         self.version_local, _, _, _ = Lib.Aux.Main.releaseNotes(path=path)
