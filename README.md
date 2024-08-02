@@ -1,5 +1,11 @@
 Automation QA - Release notes
 ---------
+:bookmark: **Version 1.20.28**  
+
+<em>02/08/2024</em>
+:boom: - Retornando o gerador de pacotes para versão original.
+#
+
 :bookmark: **Version 1.20.27**  
 
 <em>02/08/2024</em>
