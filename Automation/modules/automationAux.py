@@ -631,7 +631,6 @@ class Main:
                 Lib.shutil.rmtree(directories['DownloadFolder'])
                 Main.createDirectory(path_folder=directories['DownloadFolder'])
 
-                # for down_file in ['Automation_EXE.zip', 'Install.bat']:
                 output_file = Lib.os.path.join(directories['DownloadFolder'], 'Automation_EXE.zip')
 
                 response = Lib.requests.get(otherConfigs['GitLabPackage'] + 'Automation_EXE.zip', verify=False)

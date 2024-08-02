@@ -21,7 +21,6 @@ class AutomationQA:
 
         self.version_distributed, _, _, _ = Lib.Aux.Main.releaseNotes(readme=self.readme_content)
 
-        # path = os.path.abspath('README.md')
         for root, dirs, files in os.walk(os.getcwd()):
             if 'README.md' in files:
                 path = os.path.join(os.path.abspath(root), 'README.md')
@@ -40,8 +39,7 @@ class AutomationQA:
 
         # ------ Run the menu ----------
 
-        _, local_version, date_version, release_infos = Lib.Aux.Main.releaseNotes(path=Lib.os.path.join(Lib.os.getcwd(),
-                                                                                                        'README.md'))
+        _, local_version, date_version, release_infos = Lib.Aux.Main.releaseNotes(path=path)
 
         print(f"{Lib.Aux.Textcolor.HIGHLIGHT}       Automation QA - Version: {local_version} - Date: {date_version}    "
               f"{Lib.Aux.Textcolor.END}")

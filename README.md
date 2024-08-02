@@ -1,5 +1,11 @@
 Automation QA - Release notes
 ---------
+:bookmark: **Version 1.20.20**  
+
+<em>02/08/2024</em>
+:bug: - Correção do caminho do ReadMe.md.
+#
+
 :bookmark: **Version 1.20.19**  
 
 <em>02/08/2024</em>
