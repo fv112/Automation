@@ -13,6 +13,7 @@ import common_libs as Lib
 class AutomationQA:
 
     def __init__(self):
+        path = None
         Lib.Aux.Main.setLanguage(language='pt_BR')
 
         # ------ Check the version ----------
@@ -20,7 +21,12 @@ class AutomationQA:
 
         self.version_distributed, _, _, _ = Lib.Aux.Main.releaseNotes(readme=self.readme_content)
 
-        path = os.path.abspath('README.md')
+        # path = os.path.abspath('README.md')
+        for root, dirs, files in os.walk(os.getcwd()):
+            if 'README.md' in files:
+                path = os.path.join(os.path.abspath(root), 'README.md')
+                break
+
         self.version_local, _, _, _ = Lib.Aux.Main.releaseNotes(path=path)
 
         Lib.os.system('cls')

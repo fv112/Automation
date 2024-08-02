@@ -600,6 +600,21 @@ class Main:
 
         try:
 
+            print("#" * 30)
+            print(f"""
+            ATTENTION / ATENCAO / AVISO
+
+            (English) This update will delete your current version inside the folder
+            C:\\ProgramData\\QA-Automation. If you DO NOT want to continue, close this window.
+
+            (Português) Este update irá apagar a sua versão atual dentro da pasta
+            C:\\ProgramData\\QA-Automation. Se NÃO deseja continuar, feche esta janela.
+
+            (Español) Esta actualización eliminará su versión actual dentro de la carpeta
+            C:\\ProgramData\\QA-Automation. Si NO desea continuar, cierre esta ventana.
+            """)
+            print("#" * 30)
+
             # if self.version_distributed > self.version_local: #### Habilitar.
             while True:
                 option = input(f"{Textcolor.BOLD}{Textcolor.HIGHLIGHT}"
@@ -613,6 +628,7 @@ class Main:
                     break
 
             if install:
+                Lib.shutil.rmtree(directories['DownloadFolder'])
                 Main.createDirectory(path_folder=directories['DownloadFolder'])
 
                 # for down_file in ['Automation_EXE.zip', 'Install.bat']:
@@ -631,45 +647,35 @@ class Main:
                     Main.addLogs(message="General", value=logs["ErrorDownloadUpdate"],
                                  value1=str(response.status_code))
 
-                Lib.shutil.rmtree(r'C:\ProgramData\QA-Automation')
-
-                print("#" * 30)
-                print(f"""
-                ATTENTION / ATENCAO / AVISO
-
-                (English) This update will delete your current version inside the folder
-                C:\\ProgramData\\QA-Automation. If you DO NOT want to continue, close this window.
-
-                (Português) Este update irá apagar a sua versão atual dentro da pasta
-                C:\\ProgramData\\QA-Automation. Se NÃO deseja continuar, feche esta janela.
-
-                (Español) Esta actualización eliminará su versión actual dentro de la carpeta
-                C:\\ProgramData\\QA-Automation. Si NO desea continuar, cierre esta ventana.
-                """)
-                print("#" * 30)
+                Lib.shutil.rmtree(directories['QA-AutomationFolder'])
+                # Lib.shutil.rmtree(directories['DownloadFolder'])
 
                 print(f"Creating the destination folder.")
                 Main.createDirectory(path_folder=directories['DestinationFolder'])
 
-                print(f"Unzip the Automation package and installing the new version.")
+                print(f"Unzip the 'Automation_EXE.zip' package.")
+                with Lib.zipfile.ZipFile(Lib.os.path.join(directories['DownloadFolder'], 'Automation_EXE.zip'),
+                                         'r') as zip_ref:
+                    zip_ref.extractall(directories['DestinationFolder'])
 
-                for down_file in ['Automation_EXE.zip', 'TestEnvironment.zip']:
-                    with Lib.zipfile.ZipFile(Lib.os.path.join(directories['DownloadFolder'], down_file), ### Erro aqui.
+                print(f"Unzip the 'Automation' and 'TestEnvironment' packages.")
+                for down_file in ['Automation.zip', 'TestEnvironment.zip']:
+                    with Lib.zipfile.ZipFile(Lib.os.path.join(directories['DestinationFolder'], down_file),
                                              'r') as zip_ref:
                         zip_ref.extractall(directories['DestinationFolder'])
 
                 print(f"Move the Automation folder to Automation from _internal.")
-                Lib.shutil.copytree(directories['InternalPath'], directores['DestinationPathEXE'],
+                Lib.shutil.copytree(directories['InternalAutomationPath'], directories['AutomationPath'],
                                     dirs_exist_ok=True)
-                Lib.shutil.copyfile(Lib.os.path.join(directories['InternalPath'], 'README.md'),
-                                    directories['DestinationPathEXE'])
+                # Lib.shutil.copyfile(Lib.os.path.join(directories['InternalPath'], 'README.md'),
+                #                     directories['DestinationPathEXE'])
 
-                print(f"Move the file AutomationQA.exe to the AutomationCMD folder.")
-                Lib.shutil.move(Lib.os.path.join(directories['InternalPath'], 'AutomationQA.exe'),
-                                dictories['DestinationPathEXE'])
+                # print(f"Move the file AutomationQA.exe to the AutomationCMD folder.")
+                # Lib.shutil.move(Lib.os.path.join(directories['InternalPath'], 'AutomationQA.exe'),
+                #                 directories['DestinationPathEXE'])
 
-                print(f"Delete temporary files.")
-                Lib.shutil.rmtree(directories['InternalPath'])
+                # print(f"Delete temporary files.")
+                # Lib.shutil.rmtree(directories['InternalPath'])
 
                 Main.deleteFiles(exact_file=directories['ZipFile1'])
                 Main.deleteFiles(exact_file=directories['ZipFile2'])
