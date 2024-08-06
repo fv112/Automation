@@ -4,7 +4,7 @@ import PyInstaller.config
 block_cipher = None
 
 # Variables.
-OUTPUT_DIR = "C:\\QA-Automation\\Automation\\exec\\Automation_EXE"
+OUTPUT_DIR = "C:\\QA-Automation\\Automation\\exec\\Green"
 
 # Create the folder to save the token.
 if not os.path.exists(os.path.join(OUTPUT_DIR)):

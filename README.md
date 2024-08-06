@@ -1,5 +1,11 @@
 Automation QA - Release notes
 ---------
+:bookmark: **Version 1.21.00**  
+
+<em>05/08/2024</em>
+:ok_hand: - Nova estrutura de instalação de versão (Blue / Green).
+#
+
 :bookmark: **Version 1.20.28**  
 
 <em>02/08/2024</em>

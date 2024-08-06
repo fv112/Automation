@@ -10,36 +10,6 @@ class Connections:
     def __init__(self):
         pass
 
-    # Start reading the information from Azure (API).
-    # def startRun(self):
-    #     # # Get the kwargs variables.
-    #     # project = kwargs.get("project")
-    #     # id_test_plan = kwargs.get("id_test_plan")
-    #     # id_test_suit = kwargs.get("id_test_suit")
-    #     # id_test_case = kwargs.get("test_case_id_list_all")
-    #
-    #     test_case_id_list_all = []
-    #
-    #     # if project is None:
-    #
-    #     # Projects list.
-    #     project = GitLabConnection.getProjects(self)
-    #     # Test Plan list.
-    #     # id_test_plan = GitLabConnection.getTestPlans(self, project=project)
-    #     # Test Suit list.
-    #     # id_test_plan, id_test_suit = GitLabConnection.getTestSuits(self, project=project, id_test_plan=id_test_plan)
-    #
-    #     # Get the test case id.
-    #     test_case_id_list_all, test_suit = \
-    #         GitLabConnection.getTestCases(self, project=project, id_test_plan=id_test_plan, id_test_suit=id_test_suit,
-    #                                      id_test_case=id_test_case)
-    #
-    #     # Create the Test Run ID.
-    #     # test_run_id = \
-    #     #     GitLabConnection.createTestRunID(self, project=project, test_suit=test_suit, id_test_plan=id_test_plan)
-    #
-    #     return project, test_case_id_list_all
-
     # Execute each step.
     def startSteps(self, **kwargs):
 
@@ -475,8 +445,9 @@ class Connections:
             files = {'file': open(file, 'rb')}
 
             with open(file, 'rb') as f:
-                q = Lib.requests.post(new_url, headers={'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["BearerUpload"]},
-                                  files=files, verify=False)
+                q = Lib.requests.post(new_url, headers={'Authorization': 'Bearer ' +
+                                                                         Lib.Aux.otherConfigs["BearerUpload"]},
+                                      files=files, verify=False)
 
             if q.status_code == 201:
                 print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.logs['SaveEvidenceTestCaseUpload']['Msg']}"
@@ -490,9 +461,9 @@ class Connections:
 
             else:
                 print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequest']['Msg']}{Lib.Aux.Textcolor.END}\n")
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorRequest'], 
-                                 value1='Status code: ' + str(q.status_code) + ' - ' + str(q.text) + 
-                                        ' - SaveEvidenceTestCase - GetToken')
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorRequest'],
+                                     value1='Status code: ' + str(q.status_code) + ' - ' + str(q.text) +
+                                            ' - SaveEvidenceTestCase - GetToken')
                 # exit(1)
 
             new_url = (url + 'projects/' + str(project_id) + '/issues/' + str(test_case_id) + '/notes')
@@ -508,7 +479,8 @@ class Connections:
                               data=body, verify=False)
 
             if p.status_code == 201:
-                print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.logs['SaveEvidenceTestCase']['Msg']}{Lib.Aux.Textcolor.END}\n")
+                print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.logs['SaveEvidenceTestCase']['Msg']}"
+                      f"{Lib.Aux.Textcolor.END}\n")
                 Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['SaveEvidenceTestCase'])
 
             else:

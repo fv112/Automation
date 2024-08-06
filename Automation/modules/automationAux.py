@@ -599,90 +599,44 @@ class Main:
     def checkNewVersion(self):
 
         try:
+            if self.version_distributed > self.version_local:
+                print("#" * 100)
+                print(f"Downloading new version. It could take some minutes.")
+                print("#" * 100)
 
-            print("#" * 30)
-            print(f"""
-            ATTENTION / ATENCAO / AVISO
+                while True:
+                    option = input(f"{Textcolor.BOLD}{Textcolor.HIGHLIGHT}"
+                                   f"{otherConfigs['NewVersionAvailable']['Msg']}"
+                                   f"{Textcolor.END}{Textcolor.END}")
+                    if option.upper() in ['Y', 'S']:
+                        install = True
+                        break
+                    elif option.upper() in ['', 'N']:
+                        install = False
+                        break
 
-            (English) This update will delete your current version inside the folder
-            C:\\ProgramData\\QA-Automation. If you DO NOT want to continue, close this window.
+                if install:
+                    Lib.shutil.rmtree(directories['DownloadFolder'])
+                    Main.createDirectory(path_folder=directories['DownloadFolder'])
 
-            (Português) Este update irá apagar a sua versão atual dentro da pasta
-            C:\\ProgramData\\QA-Automation. Se NÃO deseja continuar, feche esta janela.
+                    output_file = Lib.os.path.join(directories['DownloadFolder'], 'Green.zip')
 
-            (Español) Esta actualización eliminará su versión actual dentro de la carpeta
-            C:\\ProgramData\\QA-Automation. Si NO desea continuar, cierre esta ventana.
-            """)
-            print("#" * 30)
+                    response = Lib.requests.get(otherConfigs['GitLabPackage'] + 'Green.zip', verify=False)
+                    if response.status_code == 200:
+                        with open(output_file, 'wb') as file:
+                            file.write(response.content)
+                        print(f"{logs['DownloadPackageCompleted']['Msg']}: {output_file}")
+                        Main.addLogs(message="General", value=logs["DownloadPackageCompleted"],
+                                     value1=str(output_file))
 
-            # if self.version_distributed > self.version_local: #### Habilitar.
-            while True:
-                option = input(f"{Textcolor.BOLD}{Textcolor.HIGHLIGHT}"
-                               f"{otherConfigs['NewVersionAvailable']['Msg']}"
-                               f"{Textcolor.END}{Textcolor.END}")
-                if option.upper() in ['Y', 'S']:
-                    install = True
-                    break
-                elif option.upper() in ['', 'N']:
-                    install = False
-                    break
+                    else:
+                        print(f"{logs['ErrorDownloadUpdate']['Msg']}: {response.status_code}")
+                        Main.addLogs(message="General", value=logs["ErrorDownloadUpdate"],
+                                     value1=str(response.status_code))
 
-            if install:
-                Lib.shutil.rmtree(directories['DownloadFolder'])
-                Main.createDirectory(path_folder=directories['DownloadFolder'])
-
-                output_file = Lib.os.path.join(directories['DownloadFolder'], 'Automation_EXE.zip')
-
-                response = Lib.requests.get(otherConfigs['GitLabPackage'] + 'Automation_EXE.zip', verify=False)
-                if response.status_code == 200:
-                    with open(output_file, 'wb') as file:
-                        file.write(response.content)
-                    print(f"{logs['DownloadPackageCompleted']['Msg']}: {output_file}")
-                    Main.addLogs(message="General", value=logs["DownloadPackageCompleted"],
-                                 value1=str(output_file))
-
-                else:
-                    print(f"{logs['ErrorDownloadUpdate']['Msg']}: {response.status_code}")
-                    Main.addLogs(message="General", value=logs["ErrorDownloadUpdate"],
-                                 value1=str(response.status_code))
-
-                # Lib.shutil.rmtree(directories['QA-AutomationFolder'])
-
-                print(f"Creating the destination folder.")
-                Main.createDirectory(path_folder=directories['DestinationFolder'])
-
-                print(f"Unzip the 'Automation_EXE.zip' package.")
-                with Lib.zipfile.ZipFile(Lib.os.path.join(directories['DownloadFolder'], 'Automation_EXE.zip'),
-                                         'r') as zip_ref:
-                    zip_ref.extractall(directories['DestinationFolder'])
-
-                print(f"Unzip the 'Automation' and 'TestEnvironment' packages.")
-                for down_file in ['Automation.zip', 'TestEnvironment.zip']:
-                    with Lib.zipfile.ZipFile(Lib.os.path.join(directories['DestinationFolder'], down_file),
-                                             'r') as zip_ref:
-                        zip_ref.extractall(directories['DestinationFolder'])
-
-                print(f"Move the Automation folder to Automation from _internal.")
-                Lib.shutil.copytree(directories['InternalAutomationPath'], directories['AutomationPath'],
-                                    dirs_exist_ok=True)
-                # Lib.shutil.copyfile(Lib.os.path.join(directories['InternalPath'], 'README.md'),
-                #                     directories['DestinationPathEXE'])
-
-                # print(f"Move the file AutomationQA.exe to the AutomationCMD folder.")
-                # Lib.shutil.move(Lib.os.path.join(directories['InternalPath'], 'AutomationQA.exe'),
-                #                 directories['DestinationPathEXE'])
-
-                # print(f"Delete temporary files.")
-                # Lib.shutil.rmtree(directories['InternalPath'])
-
-                Main.deleteFiles(exact_file=directories['ZipFile1'])
-                Main.deleteFiles(exact_file=directories['ZipFile2'])
-
-                print("-" * 30)
-                print("New version installed. Press any key to close and run the Automation again.")
-                print("-" * 30)
-                any_key = input()
-                exit(99)
+                    print("-" * 30)
+                    print("New version downloaded.")
+                    print("-" * 30)
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorCheckNewVersion']['Msg']}{Textcolor.END}", ex)

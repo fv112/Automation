@@ -358,29 +358,23 @@ logs:
 #Folder list.
 directories:
     {
-        AutomationPath: C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation,
+        AutomationPath: C:\ProgramData\QA-Automation\Automation\Blue\Automation,
         BeyondCompare: C:\Program Files\Beyond Compare 4\BComp.com,
         BeyondCompareSettings: Automation\configs\Settings.bcpkg,
         CompareDownloadFolder: C:\QA-Automation-Files\Repository\Compare_Download,
         ConfigFolder: Automation\configs,
-        DestinationFolder: C:\ProgramData\QA-Automation\Automation,
-        DestinationPathEXE: C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation,
         DownloadFolder: C:\ProgramData\QA-Automation-Files\Repository\Download,
         ESTFile: Automation\evidence\ETS - ,
         EvidenceFolder: C:\ProgramData\QA-Automation-Files\Repository\Evidences,
         EvidenceFolderManual: C:\ProgramData\QA-Automation-Files\Repository\Evidences\Manual,
         GitUrlReadme: https://raw.githubusercontent.com/fv112/Automation/CommandLine/README.md,
         HashFolder: C:\ProgramData\QA-Automation-Files\Repository\Hash,
-        InternalAutomationPath: C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation\_internal\Automation\,
         LogFolder: C:\ProgramData\QA-Automation-Files\Repository\Logs,
         QA-AutomationFolder: C:\ProgramData\QA-Automation,
-        InternalPath: C:\ProgramData\QA-Automation\Automation\Automation_EXE\Automation\_internal\,
         SwaggerFolder: C:\ProgramData\QA-Automation-Files\Repository\Swagger,
         Temp: C:\ProgramData\QA-Automation-Files\Repository\Temp\,
         UnavailablePrint: Unavailable.jpg,
-        UpdateFolder: C:\ProgramData\QA-Automation-Files\Repository\NewVersion,
-        ZipFile1: C:\ProgramData\QA-Automation\Automation\TestEnvironment.zip,
-        ZipFile2: C:\ProgramData\QA-Automation\Automation\Automation.zip
+        UpdateFolder: C:\ProgramData\QA-Automation-Files\Repository\NewVersion
     }
 
 # List of other configurations.
