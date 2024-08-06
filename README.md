@@ -1,5 +1,13 @@
 Automation QA - Release notes
 ---------
+:bookmark: **Version 1.21.01**  
+
+<em>06/08/2024</em>
+:ok_hand: - Finalização da atualização da versão automaticamente.
+:bug: - Correção no erro de geração da evidência.
+:construction: - Correção da geração da evidência desincronizada.
+#
+
 :bookmark: **Version 1.21.00**  
 
 <em>05/08/2024</em>

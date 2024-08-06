@@ -13,6 +13,9 @@ class Main:
 
         # kwargs variables.
         parameters1 = kwargs.get('parameters1')
+        save_evidence = kwargs.get('save_evidence')
+        step = kwargs.get('step')
+        step_order = kwargs.get('step_order')
 
         color = kwargs.get('color', 'blue')
 
@@ -27,27 +30,35 @@ class Main:
             Lib.By.PARTIAL_LINK_TEXT
         ]
 
-        for tag in search_list:
+        if parameters1 == 'full_screen':
+            Main.highlight(self, new_element=parameters1, effect_time=1, color=color, border=3,
+                           save_evidence=save_evidence, step=step, step_order=step_order)
 
-            try:
-                driver.implicitly_wait(1)
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["FindElement"], value1='full_screen')
 
-                new_element = driver.find_element(tag, parameters1)
+        else:
+            for tag in search_list:
 
-                if new_element is not None:
-                    # Set element focus.
-                    driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", new_element)
+                try:
+                    driver.implicitly_wait(1)
 
-                    Main.highlight(self, new_element=new_element, effect_time=1, color=color, border=3)
+                    new_element = driver.find_element(tag, parameters1)
+
+                    if new_element is not None:
+                        # Set element focus.
+                        driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", new_element)
+
+                        Main.highlight(self, new_element=new_element, effect_time=1, color=color, border=3,
+                                       save_evidence=save_evidence, step=step, step_order=step_order)
 
                     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["FindElement"], value1=tag,
                                          value2=parameters1)
 
                     return new_element
 
-            except Lib.NoSuchElementException:
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningFindElement"], value1=tag,
-                                     value2=parameters1)
+                except Lib.NoSuchElementException:
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningFindElement"], value1=tag,
+                                         value2=parameters1)
 
     # ---------------------- Action Elements ----------------------
     # Fill the fields.
@@ -56,8 +67,12 @@ class Main:
             # kwargs arguments.
             parameters1 = kwargs.get('parameters1')
             parameters2 = kwargs.get('parameters2')
+            save_evidence = kwargs.get('save_evidence')
+            step = kwargs.get('step')
+            step_order = kwargs.get('step_order')
 
-            element_field = Main.findElement(self, parameters1=parameters1)
+            element_field = Main.findElement(self, parameters1=parameters1, save_evidence=save_evidence,
+                                             step=step, step_order=step_order)
             element_field.clear()
 
             if parameters2.upper() not in ('VAZIO', 'VACÍO', 'EMPTY'):
@@ -113,8 +128,12 @@ class Main:
         try:
             # kwargs arguments.
             parameters1 = kwargs.get('parameters1')
+            save_evidence = kwargs.get('save_evidence')
+            step = kwargs.get('step')
+            step_order = kwargs.get('step_order')
 
-            element_field = Main.findElement(self, parameters1=parameters1)
+            element_field = Main.findElement(self, parameters1=parameters1, save_evidence=save_evidence,
+                                             step=step, step_order=step_order)
             element_field.click()
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["Click"])
@@ -130,8 +149,12 @@ class Main:
         try:
             # kwargs arguments.
             parameters1 = kwargs.get('parameters1')
+            save_evidence = kwargs.get('save_evidence')
+            step = kwargs.get('step')
+            step_order = kwargs.get('step_order')
 
-            element_field = Main.findElement(self, parameters1=parameters1)
+            element_field = Main.findElement(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
+                                             step_order=step_order)
             element_field.click()
             element_field.click()
 
@@ -147,9 +170,13 @@ class Main:
         try:
             # kwargs arguments.
             parameters1 = kwargs.get('parameters1')
+            save_evidence = kwargs.get('save_evidence')
+            step = kwargs.get('step')
+            step_order = kwargs.get('step_order')
 
             actions = Lib.ActionChains(driver)
-            element_field = Main.findElement(self, parameters1=parameters1)
+            element_field = Main.findElement(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
+                                             step_order=step_order)
 
             actions.context_click(element_field)
             actions.perform()
@@ -172,6 +199,9 @@ class Main:
             # kwargs arguments.
             parameters1 = kwargs.get('parameters1')
             parameters2 = kwargs.get('parameters2')
+            save_evidence = kwargs.get('save_evidence')
+            step = kwargs.get('step')
+            step_order = kwargs.get('step_order')
 
             actions = Lib.ActionChains(driver)
 
@@ -201,10 +231,14 @@ class Main:
             # kwargs arguments.
             parameters1 = kwargs.get('parameters1')
             parameters2 = kwargs.get('parameters2')
+            save_evidence = kwargs.get('save_evidence')
+            step = kwargs.get('step')
+            step_order = kwargs.get('step_order')
 
             actions = Lib.ActionChains(driver)
             element_field1 = Main.findElement(self, parameters1=parameters1)
-            element_field2 = Main.findElement(self, parameters1=parameters2)
+            element_field2 = Main.findElement(self, parameters1=parameters2, save_evidence=save_evidence, step=step,
+                                              step_order=step_order)
 
             actions.drag_and_drop(element_field2, element_field1)
             actions.perform()
@@ -223,6 +257,9 @@ class Main:
         # kwargs arguments.
         parameters1 = kwargs.get('parameters1')
         parameters2 = kwargs.get('parameters2')
+        save_evidence = kwargs.get('save_evidence')
+        step = kwargs.get('step')
+        step_order = kwargs.get('step_order')
 
         try:
             if parameters2 is None:
@@ -270,6 +307,9 @@ class Main:
                     Lib.Aux.time.sleep(.2)
                     actions.key_up(Lib.Keys.ALT)
 
+            _ = Main.findElement(self, parameters1='full_screen', save_evidence=save_evidence, step=step,
+                                 step_order=step_order)
+
             actions.perform()
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["PressButton"],
@@ -287,11 +327,15 @@ class Main:
 
         # kwargs arguments.
         parameters1 = kwargs.get('parameters1')
+        save_evidence = kwargs.get('save_evidence')
+        step = kwargs.get('step')
+        step_order = kwargs.get('step_order')
 
         try:
 
             actions = Lib.ActionChains(driver)
-            element_field = Main.findElement(self, parameters1=parameters1)
+            element_field = Main.findElement(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
+                                             step_order=step_order)
 
             actions.move_to_element(element_field)  # Worked with XPath.
             actions.perform()
@@ -308,10 +352,16 @@ class Main:
     # Wait.
     def wait(self, **kwargs):
 
-        # kwargs arguments.
-        parameters1 = kwargs.get('parameters1')
-
         try:
+            # kwargs arguments.
+            parameters1 = kwargs.get('parameters1')
+            save_evidence = kwargs.get('save_evidence')
+            step = kwargs.get('step')
+            step_order = kwargs.get('step_order')
+
+            _ = Main.findElement(self, parameters1='full_screen', save_evidence=save_evidence, step=step,
+                                 step_order=step_order)
+
             Lib.time.sleep(int(parameters1))
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["Wait"], value1=parameters1)
@@ -325,12 +375,19 @@ class Main:
 
     # Select DropDownList.
     def selectDropDownList(self, **kwargs):
+
         try:
             # kwargs arguments.
             parameters1 = kwargs.get('parameters1')
             parameters2 = kwargs.get('parameters2')
+            save_evidence = kwargs.get('save_evidence')
+            step = kwargs.get('step')
+            step_order = kwargs.get('step_order')
 
-            element_field = Lib.Select(Main.findElement(self, parameters1=parameters1))
+            select_drop = Main.findElement(self, parameters1=parameters1, save_evidence=save_evidence,
+                                           step=step, step_order=step_order)
+
+            element_field = Lib.Select(select_drop)
 
             element_field.select_by_visible_text(parameters2)
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["SelectDropDownList"], value1=parameters2)
@@ -344,11 +401,16 @@ class Main:
 
     # Get the text from an elements.
     def getText(self, **kwargs):
+
         try:
             # kwargs arguments.
             parameters1 = kwargs.get('parameters1')
+            save_evidence = kwargs.get('save_evidence')
+            step = kwargs.get('step')
+            step_order = kwargs.get('step_order')
 
-            obtained_text = Main.findElement(self, parameters1=parameters1, color="green").text
+            obtained_text = Main.findElement(self, parameters1=parameters1, color="green", save_evidence=save_evidence,
+                                             step=step, step_order=step_order).text
 
             if obtained_text is None:
                 headers = {'User-Agent': Lib.Aux.otherConfigs['Agent']}
@@ -361,7 +423,8 @@ class Main:
                                              attrs={Lib.Aux.searchForAttribute[tag]: parameters1})
                         for textFound in table:
                             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetText"])
-                            Main.findElement(self, parameters1=parameters1, color="green")
+                            Main.findElement(self, parameters1=parameters1, color="green", save_evidence=save_evidence,
+                                             step=step, step_order=step_order)
                             return textFound.contents[0], "Passed"
                         else:
                             return Lib.Aux.logs["ErrorGetText"]["Msg"], "Failed"
@@ -375,10 +438,15 @@ class Main:
 
             return Lib.Aux.logs["ErrorGetText"]['Msg'], "Failed"
 
-    @staticmethod
-    def openNewTab():
+    def openNewTab(self, **kwargs):
         try:
+            # kwargs arguments.
+            save_evidence = kwargs.get('save_evidence')
+            step = kwargs.get('step')
+            step_order = kwargs.get('step_order')
 
+            _ = Main.findElement(self, parameters1='full_screen', color="blue", save_evidence=save_evidence, step=step,
+                                 step_order=step_order)
             driver.execute_script("window.open('', '_blank')")
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["OpenNewTab"])
@@ -393,6 +461,7 @@ class Main:
     # Get current url
     @staticmethod
     def getURL():
+
         try:
 
             url = driver.current_url
@@ -422,12 +491,17 @@ class Main:
             return None, "Failed"
 
     # Back Page
-    @staticmethod
-    def backPage():
+    def backPage(self, **kwargs):
 
         try:
+            # kwargs arguments.
+            save_evidence = kwargs.get('save_evidence')
+            step = kwargs.get('step')
+            step_order = kwargs.get('step_order')
 
             driver.back()
+            _ = Main.findElement(self, parameters1='full_screen', color="blue", save_evidence=save_evidence, step=step,
+                                 step_order=step_order)
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["BackPage"])
 
@@ -439,12 +513,17 @@ class Main:
             return "Failed"
 
     # Back Page.
-    @staticmethod
-    def forwardPage():
+    def forwardPage(self, **kwargs):
 
         try:
+            # kwargs arguments.
+            save_evidence = kwargs.get('save_evidence')
+            step = kwargs.get('step')
+            step_order = kwargs.get('step_order')
 
             driver.forward()
+            _ = Main.findElement(self, parameters1='full_screen', color="blue", save_evidence=save_evidence, step=step,
+                                 step_order=step_order)
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ForwardPage"])
 
@@ -458,30 +537,35 @@ class Main:
     # Gets the attribute of an element (can be value, title or href).
     def getAttribute(self, **kwargs):
 
-        # kwargs arguments.
-        element = kwargs.get('element')
-        parameters1 = kwargs.get('parameters1')
-        parameters2 = kwargs.get('parameters2')
-
-        obtained_attribute = ''
-        text_found = None
-
         try:
+            # kwargs arguments.
+            parameters1 = kwargs.get('parameters1')
+            parameters2 = kwargs.get('parameters2')
+            save_evidence = kwargs.get('save_evidence')
+            step = kwargs.get('step')
+            step_order = kwargs.get('step_order')
+
+            obtained_attribute = ''
+            text_found = None
 
             if '(#value)' in parameters2:
-                page = Main.findElement(self, parameters1=parameters1)
+                page = Main.findElement(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
+                                        step_order=step_order)
                 text_found = page.get_attribute('value')
 
             elif '(#title)' in parameters2:
-                page = Main.findElement(self, parameters1=parameters1)
+                page = Main.findElement(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
+                                        step_order=step_order)
                 text_found = page.get_attribute('title')
 
             elif '(#href)' in parameters2:
-                page = Main.findElement(self, parameters1=parameters1)
+                page = Main.findElement(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
+                                        step_order=step_order)
                 text_found = page.get_attribute('href')
 
             elif '(#class)' in parameters2:
-                page = Main.findElement(self, parameters1=parameters1)
+                page = Main.findElement(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
+                                        step_order=step_order)
                 text_found = page.get_attribute('class')
 
             else:
@@ -500,6 +584,7 @@ class Main:
 
         # kwargs arguments.
         parameters1 = kwargs.get('parameters1')
+        save_evidence = kwargs.get('save_evidence')
 
         search_list = (
             Lib.By.ID,
@@ -540,11 +625,18 @@ class Main:
     # Scroll Page
     def scrollPage(self, **kwargs):
 
-        # kwargs arguments.
-        parameters1 = kwargs.get('parameters1')
-
         try:
+            # kwargs arguments.
+            parameters1 = kwargs.get('parameters1')
+            save_evidence = kwargs.get('save_evidence')
+            step = kwargs.get('step')
+            step_order = kwargs.get('step_order')
+
             driver.execute_script('window.scrollTo(0, ' + parameters1 + ')')
+
+            _ = Main.findElement(self, parameters1='full_screen', color="blue", save_evidence=save_evidence, step=step,
+                                 step_order=step_order)
+
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ScrollPage"])
 
             return "Passed"
@@ -555,10 +647,18 @@ class Main:
             return "Failed"
 
     # Refresh Page
-    def refreshPage(self):
+    def refreshPage(self, **kwargs):
+
         try:
+            # kwargs arguments.
+            save_evidence = kwargs.get('save_evidence')
+            step = kwargs.get('step')
+            step_order = kwargs.get('step_order')
 
             driver.refresh()
+            _ = Main.findElement(self, parameters1='full_screen', color="blue", save_evidence=save_evidence, step=step,
+                                 step_order=step_order)
+
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["RefreshPage"])
 
             return driver, "Passed"
@@ -571,13 +671,17 @@ class Main:
     # Checks whether the element is inactive.
     def isEnable(self, **kwargs):
 
-        # kwargs arguments.
-        parameters1 = kwargs.get('parameters1')
-
-        status_element = None
-
         try:
-            status_element = Main.findElement(self, parameters1=parameters1).is_enabled()
+            # kwargs arguments.
+            parameters1 = kwargs.get('parameters1')
+            save_evidence = kwargs.get('save_evidence')
+            step = kwargs.get('step')
+            step_order = kwargs.get('step_order')
+
+            status_element = None
+
+            status_element = Main.findElement(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
+                                              step_order=step_order).is_enabled()
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsEnable"])
 
@@ -590,13 +694,18 @@ class Main:
     # Checks whether the element is visible.
     def isDisplayed(self, **kwargs):
 
-        # kwargs arguments.
-        parameters1 = kwargs.get('parameters1')
-
-        status_element = None
-
         try:
-            status_element = Main.findElement(self, parameters1=parameters1).is_displayed()
+
+            # kwargs arguments.
+            parameters1 = kwargs.get('parameters1')
+            save_evidence = kwargs.get('save_evidence')
+            step = kwargs.get('step')
+            step_order = kwargs.get('step_order')
+
+            status_element = None
+
+            status_element = Main.findElement(self, parameters1=parameters1, save_evidence=save_evidence,
+                                             step=step, step_order=step_order).is_displayed()
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsDisplayed"])
 
@@ -610,12 +719,15 @@ class Main:
     # Checks whether a checkbox or radio button is selected (returns True or False)
     def isSelected(self, **kwargs):
 
-        # kwargs arguments.
-        parameters1 = kwargs.get('parameters1')
-
         try:
+            # kwargs arguments.
+            parameters1 = kwargs.get('parameters1')
+            save_evidence = kwargs.get('save_evidence')
+            step = kwargs.get('step')
+            step_order = kwargs.get('step_order')
 
-            status_element = Main.findElement(self, parameters1=parameters1).is_selected()
+            status_element = Main.findElement(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
+                                              step_order=step_order).is_selected()
 
             if status_element:
                 Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsSelected"])
@@ -629,11 +741,13 @@ class Main:
 
     # Validate data (With * validate the partial text).
     def validateData(self, **kwargs):
+
         try:
             # kwargs arguments.
             alert = kwargs.get('alert')
             parameters1 = kwargs.get('parameters1')
             parameters2 = kwargs.get('parameters2')
+            save_evidence = kwargs.get('save_evidence')
 
             if alert != 'AlertScreen':
 
@@ -824,11 +938,13 @@ class Main:
 
     # Alter (Verify iFrame or Windows).
     def alter(self, **kwargs):
+
         try:
 
             # kwargs arguments.
             parameters1 = kwargs.get('parameters1')
             parameters2 = kwargs.get('parameters2')
+            save_evidence = kwargs.get('save_evidence')
 
             if parameters1 is None:
                 Main.alterWindow(self)
@@ -861,12 +977,17 @@ class Main:
 
     # Alter IFrame.
     def alterFrame(self, **kwargs):
+
         try:
             # kwargs arguments.
             parameters2 = kwargs.get('parameters2')
+            save_evidence = kwargs.get('save_evidence')
+            step = kwargs.get('step')
+            step_order = kwargs.get('step_order')
 
             # Store iframe web element
-            iframe = Main.findElement(self, parameters1=parameters2)
+            iframe = Main.findElement(self, parameters1=parameters2, save_evidence=save_evidence, step=step,
+                                      step_order=step_order)
 
             # switch to selected iframe
             driver.switch_to.frame(iframe)
@@ -896,6 +1017,7 @@ class Main:
 
     # Return to default.
     def returnDefault(self, **kwargs):
+
         try:
 
             # kwargs arguments.
@@ -931,6 +1053,7 @@ class Main:
 
     # Return to default.
     def returnFrame(self):
+
         try:
 
             driver.switch_to.default_content()
@@ -945,6 +1068,7 @@ class Main:
 
     # Choose an option in a browser alert screen.
     def inform(self, **kwargs):
+
         try:
             # kwargs arguments.
             parameters1 = kwargs.get('parameters1')
@@ -955,7 +1079,7 @@ class Main:
 
             # Validate de Alert content (Text).
             if parameters1 is not None:
-                status = Main.validateData(self, alert='AlertScreen', parameters1=parameters1, parameters2=alert.text)
+                _ = Main.validateData(self, alert='AlertScreen', parameters1=parameters1, parameters2=alert.text)
 
             # Actions inside de Alert.
             if parameters2.upper() in ("OK", "ACEPTAR"):
@@ -985,6 +1109,9 @@ class Main:
             # kwargs arguments.
             parameters1 = kwargs.get('parameters1')
             enable_cookie = kwargs.get('enable_cookie')
+            save_evidence = kwargs.get('save_evidence')
+            step = kwargs.get('step')
+            step_order = kwargs.get('step_order')
 
             global driver
 
@@ -1071,6 +1198,10 @@ class Main:
 
             Lib.Aux.otherConfigs['Browser'] = parameters1
             driver.maximize_window()
+
+            _ = Main.findElement(self, parameters1='full_screen', save_evidence=save_evidence, step=step,
+                                 step_order=step_order)
+
             Main.openPage(self, parameters1=Lib.Aux.otherConfigs["HomePage"])
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["OpenBrowser"])
@@ -1111,6 +1242,7 @@ class Main:
         try:
             # kwargs arguments.
             parameters1 = kwargs.get('parameters1')
+            save_evidence = kwargs.get('save_evidence')
 
             if parameters1 is None:  # If none was informed = Close Windows.
                 driver.close()
@@ -1128,11 +1260,16 @@ class Main:
     # Open page address.
     def openPage(self, **kwargs):
 
-        # kwargs arguments.
-        parameters1 = kwargs.get('parameters1')
-
         try:
+            # kwargs arguments.
+            parameters1 = kwargs.get('parameters1')
+            save_evidence = kwargs.get('save_evidence')
+            step = kwargs.get('step')
+            step_order = kwargs.get('step_order')
+
             driver.get(parameters1)
+            _ = Main.findElement(self, parameters1='full_screen', save_evidence=save_evidence, step=step,
+                                 step_order=step_order)
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["OpenPage"])
 
@@ -1149,17 +1286,49 @@ class Main:
         try:
             # kwargs variables.
             new_element = kwargs.get('new_element')
-            effect_time = kwargs.get('effect_time')
+            # effect_time = kwargs.get('effect_time')
             color = kwargs.get('color')
             border = kwargs.get('border')
+            save_evidence = kwargs.get('save_evidence')
+            step = kwargs.get('step')
+            step_order = kwargs.get('step_order')
 
-            def apply_style(style):
-                driver.execute_script("arguments[0].setAttribute('style', arguments[1]);", new_element, style)
+            if save_evidence and new_element != 'full_screen':
+                def apply_style(style):
+                    driver.execute_script("arguments[0].setAttribute('style', arguments[1]);", new_element, style)
 
-            original_style = new_element.get_attribute('style')
-            apply_style("border: {0}px solid {1};".format(border, color))
-            Lib.time.sleep(effect_time)
-            apply_style(original_style)
+                original_style = new_element.get_attribute('style')
+                apply_style("border: {0}px solid {1};".format(border, color))
+                # Lib.time.sleep(effect_time)
+
+                # Take picture.
+                image_name = Lib.Aux.otherConfigs["EvidenceName"] + str(step_order).zfill(2)
+                # take_picture_status = Lib.Func.Main.takePicture(self, test_set_path=Lib.Aux.directories['TestSetPath'],
+                #                                                 image_name=image_name)
+                take_picture_status = Lib.Func.Main.takePicture(self, image_name=image_name)
+                if not take_picture_status:
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorScreenshot"], value1=step)
+
+                apply_style(original_style)
+
+            if save_evidence and new_element == 'full_screen':
+                highlight_script = """
+                var highlight = document.createElement('div');
+                highlight.setAttribute('id', 'highlight');
+                highlight.setAttribute('style', 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 0, 0.5); z-index: 999999; pointer-events: none;');
+                document.body.appendChild(highlight);
+                """
+                driver.execute_script(highlight_script)
+                driver.execute_script(
+                    "var highlight = document.getElementById('highlight'); if (highlight) highlight.remove();")
+
+                # Take picture.
+                image_name = Lib.Aux.otherConfigs["EvidenceName"] + str(step_order).zfill(2)
+                # take_picture_status = Lib.Func.Main.takePicture(self, test_set_path=Lib.Aux.directories['TestSetPath'],
+                #                                                 image_name=image_name)
+                take_picture_status = Lib.Func.Main.takePicture(self, image_name=image_name)
+                if not take_picture_status:
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorScreenshot"], value1=step)
 
         except Exception as ex:
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorHighLight"], value1=str(ex))
@@ -1167,6 +1336,7 @@ class Main:
     # Configure the save path - Only Edge Legacy.
     @staticmethod
     def _configureSavePath():
+
         try:
             # Keyboard press Alt+x and open the browser Configuration.
             Lib.Aux.pyautogui.keyDown('alt')
@@ -1196,10 +1366,11 @@ class Main:
     # Save the file locally.
     def saveFile(self, **kwargs):
 
-        cont_iteration = kwargs.get("cont_iteration")
-
         try:
+            cont_iteration = kwargs.get("cont_iteration")
+
             Lib.Aux.time.sleep(5)
+
             while True:
                 # The file found means it is still downloading.
                 if Lib.Aux.Main.verifyFile(self, path=Lib.Aux.directories['DownloadFolder'], extension='crdownload',
@@ -1227,23 +1398,22 @@ class Main:
     # Save the screenshots.
     def takePicture(self, **kwargs):
 
-        # kwargs variables:
-        test_set_path = kwargs.get("test_set_path")
-        image_name = kwargs.get("image_name")
-
         try:
+            # kwargs variables:
+            # test_set_path = kwargs.get("test_set_path")
+            image_name = kwargs.get("image_name")
+
             # Alert print screen.
-            # if Lib.ec.alert_is_present()(driver):
             wait = Lib.WebDriverWait(driver, 1)
             if wait.until(lambda driver: driver.switch_to.alert):
-                # Lib.time.sleep(1)
+            # if Lib.ec.alert_is_present()(driver):
                 Lib.shutil.copyfile(Lib.os.path.join(Lib.os.getcwd(), 'Automation', 'images',
                                                      Lib.Aux.directories['UnavailablePrint']),
-                                    test_set_path + "\\" + image_name + ".png")
+                                    Lib.Aux.directories['TestSetPath'] + "\\" + image_name + ".png")
 
         except Lib.NoAlertPresentException:
 
-            driver.save_screenshot(test_set_path + "\\" + image_name + ".png")
+            driver.save_screenshot(Lib.Aux.directories['TestSetPath'] + "\\" + image_name + ".png")
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["TakePicture"])
 
@@ -1264,18 +1434,18 @@ class Main:
 # --------------------------------------------- API Functions ----------------------------------------------------------
     def request_api(self, **kwargs):
 
-        # kwargs variables:
-        parameters1 = kwargs.get("parameters1")
-        api_action = kwargs.get("api_action")
-        num_of_steps = kwargs.get("num_of_steps")
-        actual_step = kwargs.get("actual_step")
-
-        # Variables
-        Lib.Aux.otherConfigs['API_Step'] = True
-        api_status_final = True
-        error_msg_list = {}
-
         try:
+            # kwargs variables:
+            parameters1 = kwargs.get("parameters1")
+            api_action = kwargs.get("api_action")
+            num_of_steps = kwargs.get("num_of_steps")
+            step_order = kwargs.get("step_order")
+
+            # Variables
+            Lib.Aux.otherConfigs['API_Step'] = True
+            api_status_final = True
+            error_msg_list = {}
+
             if parameters1.upper() != 'SUBMIT':
                 tag = parameters1[:parameters1.find(':')]
                 if tag.upper() == 'ENDPOINT':
@@ -1290,7 +1460,7 @@ class Main:
                 elif tag.upper() == 'PARAMS':
                     Lib.Aux.otherConfigs['API_Params'] = parameters1[parameters1.find(':') + 1:].strip()
                 elif tag.upper() == "SCHEMA":
-                    if num_of_steps.__len__() != actual_step:
+                    if num_of_steps.__len__() != step_order:
                         raise Exception(Lib.Aux.logs['ErrorAPISchema']['Msg'])
 
                     if Lib.Aux.otherConfigs['API_Body']:
@@ -1349,15 +1519,16 @@ class Main:
 
     def responseAPI(self, **kwargs):
 
-        # kwargs variables:
-        parameters1 = kwargs.get("parameters1")
-        find_content = None
-        status_code = None
-        schema = None
-
-        Lib.Aux.otherConfigs['API_Step'] = True
 
         try:
+            # kwargs variables:
+            parameters1 = kwargs.get("parameters1")
+            find_content = None
+            status_code = None
+            schema = None
+
+            Lib.Aux.otherConfigs['API_Step'] = True
+
             tag = parameters1[:parameters1.find(':')]
             param = parameters1[parameters1.find(':') + 1:]
 

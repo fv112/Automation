@@ -131,33 +131,34 @@ class Main:
             Main.addLogs(message="General", value=logs["ErrorSaveToken"], value1=str(ex))
 
     # Create the directories.
-    def createDirectory(**kwargs):
+    @staticmethod
+    def createDirectory():
 
         try:
             # kwargs variables.
-            path_folder = kwargs.get("path_folder")
+            # path_folder = kwargs.get("path_folder")
 
-            if not Lib.os.path.exists(path_folder):
-                Lib.os.makedirs(path_folder)
+            if not Lib.os.path.exists(directories['TestSetPath']):
+                Lib.os.makedirs(directories['TestSetPath'])
                 return True
             else:
                 # Clear the old logs and evidences (Older than 30 days).
                 current_time = Lib.time.time()
-                for item in Lib.os.listdir(path_folder):
+                for item in Lib.os.listdir(directories['TestSetPath']):
 
                     # Delete folders or files.
-                    if Lib.os.path.isdir(Lib.os.path.join(path_folder, item)):
-                        creation_time = Lib.os.path.getmtime(Lib.os.path.join(path_folder, item))
+                    if Lib.os.path.isdir(Lib.os.path.join(directories['TestSetPath'], item)):
+                        creation_time = Lib.os.path.getmtime(Lib.os.path.join(directories['TestSetPath'], item))
                         if (current_time - creation_time) // (24 * 3600) >= 30:
-                            Lib.shutil.rmtree(Lib.os.path.join(path_folder, item), ignore_errors=True)
+                            Lib.shutil.rmtree(Lib.os.path.join(directories['TestSetPath'], item), ignore_errors=True)
                             Main.addLogs(message="General", value=logs["DeleteFolder"],
-                                         value1=path_folder, value2=item)
+                                         value1=directories['TestSetPath'], value2=item)
                     else:
-                        creation_time = Lib.os.path.getmtime(Lib.os.path.join(path_folder, item))
+                        creation_time = Lib.os.path.getmtime(Lib.os.path.join(directories['TestSetPath'], item))
                         if (current_time - creation_time) // (24 * 3600) >= 30:
-                            Lib.os.remove(Lib.os.path.join(path_folder, item))
+                            Lib.os.remove(Lib.os.path.join(directories['TestSetPath'], item))
                             Main.addLogs(message="General", value=logs["DeleteFile"],
-                                         value1=Lib.os.path.join(path_folder, item))
+                                         value1=Lib.os.path.join(directories['TestSetPath'], item))
 
             return True
 
@@ -168,13 +169,13 @@ class Main:
             return False
 
     # Delete the directories.
-    def deleteDirectory(self, **kwargs):
+    def deleteDirectory(self):
         try:
             # kwargs variables.
-            path_folder = kwargs.get('directory')
+            # path_folder = kwargs.get('directory')
 
-            if Lib.os.path.exists(path_folder):
-                Lib.shutil.rmtree(path_folder)
+            if Lib.os.path.exists(directories['TestSetPath']):
+                Lib.shutil.rmtree(directories['TestSetPath'])
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorDeleteDirectory']['Msg']}{Textcolor.END}", ex)
@@ -189,10 +190,10 @@ class Main:
             name_testcase = kwargs.get('name_testcase')
             word_path = kwargs.get('word_path')
             steps_list = kwargs['steps_list']
-            test_set_path = kwargs.get('test_set_path')
+            # test_set_path = kwargs.get('test_set_path')
             step_failed = kwargs.get('step_failed')
             executed_by = kwargs.get('executed_by')
-            take_picture_status = kwargs.get('take_picture_status', True)
+            # take_picture_status = kwargs.get('take_picture_status', True)
             completed_date = kwargs.get('completed_date')
             duration = kwargs.get('duration')
 
@@ -235,9 +236,9 @@ class Main:
                                 '"Não"'.replace('"', '')):
 
                     # Last step or take_picture_status is true.
-                    if verb not in ('Fechar', 'Cerrar', 'Close') and take_picture_status:
+                    if verb not in ('Fechar', 'Cerrar', 'Close'):  # and take_picture_status:
                         # Check the image size.
-                        image_path = Lib.os.path.join(test_set_path, otherConfigs["EvidenceName"] +
+                        image_path = Lib.os.path.join(directories['TestSetPath'], otherConfigs["EvidenceName"] +
                                                       str(step_order).zfill(2) + otherConfigs["EvidenceExtension"])
                         image = Lib.ImageGrab.Image.open(image_path)
 
@@ -262,8 +263,8 @@ class Main:
                     #     paragraf = document.add_paragraph(comment)
                     #     run_paragraf = paragraf.add_run()
 
-                    if (verb not in ('Fechar', 'Cerrar', 'Close') and take_picture_status and
-                            otherConfigs['API_Step'] is False):
+                    if (verb not in ('Fechar', 'Cerrar', 'Close') and otherConfigs['API_Step'] is False):
+                        # and take_picture_status and
                         # Resize the image if it is not full screen.
                         run_paragraf.add_break()
                         if image_resize:
@@ -276,7 +277,8 @@ class Main:
                         api_evidence_step = None
                         api_file_name = (otherConfigs["EvidenceNameAPI"] + str(step_order).zfill(2) +
                                          otherConfigs["EvidenceExtensionAPI"])
-                        api_file = Lib.os.path.join(directories['EvidenceFolder'], test_set_path, api_file_name)
+                        api_file = Lib.os.path.join(directories['EvidenceFolder'], Lib.Aux.directories['TestSetPath'],
+                                                    api_file_name)
 
                         with open(api_file, 'r') as api_evidence_file:
                             api_evidence_step = api_evidence_file.readlines()
@@ -302,7 +304,7 @@ class Main:
             else:
                 test_id = otherConfigs["ETSName"] + str(test_case_id)
 
-            path.append(test_set_path)
+            path.append(Lib.Aux.directories['TestSetPath'])
             path.append(test_id)
             path.append(str(name_testcase))
             path.append(otherConfigs["ETSExtension"])
@@ -454,18 +456,19 @@ class Main:
 
         try:
             # kwargs arguments.
-            file_path = kwargs.get('file_path')
+            # file_path = kwargs.get('file_path')
             extension = kwargs.get('extension')
             exact_file = kwargs.get('exact_file')
 
             # Delete all the files in a directory with the specific extension OR all if the extension is '*'.
-            if file_path:
+            # if file_path:
+            if directories['TestSetPath']:
 
-                files = Lib.os.listdir(file_path)
+                files = Lib.os.listdir(Lib.Aux.directories['TestSetPath'])
 
                 for item in files:
                     if item.endswith(extension) or extension == '*':
-                        Lib.os.remove(Lib.os.path.join(file_path, item))
+                        Lib.os.remove(Lib.os.path.join(directories['TestSetPath'], item))
 
             else:
                 Lib.os.remove(exact_file)

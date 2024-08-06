@@ -26,7 +26,7 @@ command = Analysis([
             pathex=[],
             binaries=None,
             datas=[
-			('C:\\QA-Automation\\Automation\\README.md','.'),
+			('C:\\QA-Automation\\Automation\\README.md','Automation'),
             ('C:\\QA-Automation\\Automation\\Automation\\images\\Robot.ico', 'Automation\\images'),
             ('C:\\QA-Automation\\Automation\\Automation\\images\\Robot.png', 'Automation\\images'),
             ('C:\\QA-Automation\\Automation\\Automation\\images\\Unavailable.jpg', 'Automation\\images'),
@@ -36,7 +36,15 @@ command = Analysis([
             ('C:\\QA-Automation\\Automation\\Automation\\configs\\Notepad_Theme_Log_Automation.xml','Automation\\configs'),
             ('C:\\QA-Automation\\Automation\\Automation\\evidence\\ETS - en_US.docx','Automation\\evidence'),
             ('C:\\QA-Automation\\Automation\\Automation\\evidence\\ETS - es.docx','Automation\\evidence'),
-            ('C:\\QA-Automation\\Automation\\Automation\\evidence\\ETS - pt_BR.docx','Automation\\evidence')
+            ('C:\\QA-Automation\\Automation\\Automation\\evidence\\ETS - pt_BR.docx','Automation\\evidence'),
+            ('C:\\QA-Automation\\Automation\\Automation\\modules\\automaticCompareFiles.py','Automation\\modules'),
+            ('C:\\QA-Automation\\Automation\\Automation\\modules\\automationAux.py','Automation\\modules'),
+            ('C:\\QA-Automation\\Automation\\Automation\\modules\\automationCore.py','Automation\\modules'),
+            ('C:\\QA-Automation\\Automation\\Automation\\modules\\automationFunc.py','Automation\\modules'),
+            ('C:\\QA-Automation\\Automation\\Automation\\modules\\common_libs.py','Automation\\modules'),
+            ('C:\\QA-Automation\\Automation\\Automation\\modules\\connections.py','Automation\\modules'),
+            ('C:\\QA-Automation\\Automation\\Automation\\modules\\generateManualEvidence.py','Automation\\modules'),
+            ('C:\\QA-Automation\\Automation\\exec\\AutomationQA.bat','Automation')
             ],
             hiddenimports=[],
             hookspath=[],

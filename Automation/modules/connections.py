@@ -423,7 +423,7 @@ class Connections:
 
         # kwargs variables.
         project_id = kwargs.get("project_id")
-        evidence_folder = kwargs.get("evidence_folder")
+        # evidence_folder = kwargs.get("evidence_folder")
         test_case_id = kwargs.get("test_case_id")
         name_testcase = kwargs.get("name_testcase")
         status = kwargs.get("status")
@@ -440,7 +440,7 @@ class Connections:
             else:
                 status_name_testcase = name_testcase
 
-            file = Lib.os.path.join(evidence_folder, name_testcase, status_name_testcase) + ".pdf"
+            file = Lib.os.path.join(Lib.Aux.directories['TestSetPath'], status_name_testcase) + ".pdf"
 
             files = {'file': open(file, 'rb')}
 
@@ -486,7 +486,7 @@ class Connections:
             else:
                 print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequest']['Msg']}{Lib.Aux.Textcolor.END}\n")
                 Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorRequest'],
-                                 value1='Status code: ' + str(p.status_code) + ' - ' + str(p.text) +
+                                     value1='Status code: ' + str(p.status_code) + ' - ' + str(p.text) +
                                         ' - SaveEvidenceTestCase - Upload File')
 
         except Exception as e:

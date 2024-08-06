@@ -53,6 +53,7 @@ echo 		   				ATTENTION / ATENCAO / AVISO
 echo "(English) This update will be delete your actual version inside the folder C:\ProgramData\QA-Automation. If you DO NOT want to continue close this window."
 echo "(Português) Este update ira apagar a sua versão atual dentro da pasta C:\ProgramData\QA-Automation. Se NAO deseja continuar feche esta janela."
 echo "(Español) Esta actualizacion eliminara su version actual dentro de la carpeta C:\ProgramData\QA-Automation. Si NO desea continuar, cierre esta ventana."
+echo .
 echo ########################################################################################################################
 
 echo Creating the destination folder.
@@ -68,11 +69,11 @@ cd "C:\ProgramData\QA-Automation\Automation\"
 powershell Expand-Archive -path C:\ProgramData\QA-Automation\Automation\Automation.zip -DestinationPath C:\ProgramData\QA-Automation\Automation\ -Force
 
 echo Move the Automation folder to Automation from _internal.
-xcopy "C:\ProgramData\QA-Automation\Automation\Green\Automation\_internal\Automation\*" "C:\ProgramData\QA-Automation\Automation\Green\Automation\" /E /H /C /I /Y
-copy "C:\ProgramData\QA-Automation\Automation\Green\Automation\_internal\README.md" "C:\ProgramData\QA-Automation\Automation\Green\Automation"
+xcopy "C:\ProgramData\QA-Automation\Automation\Green\Automation\_internal\Automation\*" "C:\ProgramData\QA-Automation\Automation\Green\Automation\Automation\" /E /H /C /I /Y
+copy "C:\ProgramData\QA-Automation\Automation\Green\Automation\Automation\README.md" "C:\ProgramData\QA-Automation\Automation\Green\Automation"
 
-echo Move the file AutomationQA.exe to the AutomationCMD folder.
-move "C:\ProgramData\QA-Automation\Automation\Green\Automation\AutomationQA.exe" "C:\ProgramData\QA-Automation\Automation\Green\Automation"
+echo Move the file AutomationQA.bat to the Automation folder.
+move "C:\ProgramData\QA-Automation\Automation\Green\Automation\Automation\AutomationQA.bat" "C:\ProgramData\QA-Automation\Automation\Green\Automation"
 
 echo Delete temporary files.
 rmdir /S /Q "C:\ProgramData\QA-Automation\Automation\Green\Automation\_internal\Automation"

@@ -107,7 +107,7 @@ verbs:
 
         Teclar: {Language: Portuguese, Function: Lib.Func.Main.pressButton, Phrase: "Tecla um botão específico do teclado (Exemplo: CTRL, ALT, RETURN, UP, DOWN, LEFT, RIGHT, TAB, PAGE UP, PAGE DOWN, ESC, DELETE, BACKSPACE).", Syntax: " Teclar \"<Nome da tecla>\" \n Teclar \"<Nome da tecla + Nome da tecla 2>\" -> Exemplo: Teclar \"Ctrl + v\" \n Teclar \"<Nome da tecla>\" \"<Número de vezes>\" vezes."},
         Teclar_: {Language: Spanish, Function: Lib.Func.Main.pressButton, Phrase: "Tecla en un botón específico en el teclado (Ejemplo: CTRL, ALT, RETURN, UP, DOWN, LEFT, RIGHT, TAB, PAGE UP, PAGE DOWN, ESC, DELETE, BACKSPACE).", Syntax: " Teclar \"<Nombre de la tecla>\" \n Teclar \"<Nombre de la tecla + Nombre de la tecla 2>\" -> Ejemplo: Teclar \"Ctrl + v\" \n Teclar  \"<Nombre de la tecla>\" \"<Número de veces>\" veces"},
-        Type: {Language: English, Function: Lib.Func.Main.pressButton, Phrase: "Type an especific button in keyboard (Example: CTRL, ALT, RETURN, UP, DOWN, LEFT, RIGHT, TAB, PAGE UP, PAGE DOWN, ESC, DELETE, BACKSPACE). ", Syntax: " Type \"<Key name>\" \n Type \"<Key name + Key name 2>\" -> Sample: Type \"Ctrl + v\" \n Type \"<Key name>\" the \"<Number of times>\" times."},
+        Type: {Language: English, Function: Lib.Func.Main.pressButton, Phrase: "Type an specific button in keyboard (Example: CTRL, ALT, RETURN, UP, DOWN, LEFT, RIGHT, TAB, PAGE UP, PAGE DOWN, ESC, DELETE, BACKSPACE). ", Syntax: " Type \"<Key name>\" \n Type \"<Key name + Key name 2>\" -> Sample: Type \"Ctrl + v\" \n Type \"<Key name>\" the \"<Number of times>\" times."},
 
         Validar: {Language: Portuguese, Function: Lib.Func.Main.validateData, Phrase: "Valida o conteúdo de um componente com o um texto informado.", Syntax: " Validar no componente \"<Componente>\" o texto \"<Texto que deve validar>\" \n Validar no componente \"<Componente>\" está \"(.)True\" \n Validar no componente \"<Componente>\" está \"(?)\" ativo \n Validar se a URL é igual a \"(url)<Caminho da URL>\" \n Validar se o título da janela é igual a \"(title)<Título da janela>\" \n Validar se o atributo do componente é igual a \"(#value)<Atributo do componente>\" \n Validar se o título do componente é igual a \"(#title)<Título do componente>\" \n Validar se o href do componente é igual a \"(#href)<HREF do componente>\"\n Validar se componente existe \"* <Componente>\""},
         Validar_: {Language: Spanish, Function: Lib.Func.Main.validateData, Phrase: "Obtenga un texto componente y compárelo con el esperado.", Syntax: " Validar en el componente\"<Componente>\" el texto \"<Texto que debe validar>\" \n Validar en el componente\"<Componente>\" es \"(.)Verdadero\ \n Validar en el componente \"<Componente>\" es \"(?)\" activo \n Validar si la URL es igual a \"(url)<Ruta URL>\"\ n Validar si el título de la ventana es igual a \"(título)<Título de la ventana>\" \n Validar si el atributo del componente es igual a \"(# valor)<Atributo del componente>\" \n Validar si el título del componente es igual a \"(# título)<Título del componente>\" \n Validar si el href del componente es igual a \"(# href)<Componente HREF>\" \n Validar si el componente existe \"* <Componente>\""},
@@ -188,7 +188,7 @@ logs:
         ErrorCreatelog: {Type: Error, Msg: Erro na criação do log!, Where: createlog},
         ErrorDeleteDirectory: {Type: Error, Msg: Ocorreu um erro ao excluir o diretório!, Where: deleteDirectory},
         ErrorDeleteDownloadFile: {Type: Error, Msg: Erro ao deletar o arquivo baixado!, Where: DeleteDownloadFile},
-        ErrorDeleteFiles: {Type: Error, Msg: Erro ao deletar os arquivos!, Where: deleteFiles},
+        ErrorDeleteFiles: {Type: Error, Msg: Erro ao deletar os arquivos!, Where: automationAux - deleteFiles},
         ErrorDoubleClick: {Type: Error, Msg: Erro no duplo clique no elemento!, Where: doubleClick},
         ErrorDownloadUpdate: {Type: Error, Msg: Falha ao realizar o download., Where: automationAux - checkNewVersion},
         ErrorDownloadUpdateTitle: {Type: Error, Msg: Falha ao baixar a nova versão, Where: AppAutomation},###
@@ -263,7 +263,7 @@ logs:
         ErrorSelectCombobox: {Type: Error, Msg: Não foi possível selecionar a combobox!, Where: selectCombobox},
         ErrorSaveDownloadFileLocally: {Type: Error, Msg: Erro ao baixar os arquivos do caso de teste!, Where: SaveDownloadFileLocally},
         ErrorSaveEvidenceRun: {Type: Error, Msg: Erro ao salvar a evidência na Run!, Where: SaveEvidenceRun},
-        ErrorSaveEvidenceTestCase: {Type: Error, Msg: Erro ao atualizar o arquivo baixado no caso de teste!, Where: SaveEvidenceTestCase},
+        ErrorSaveEvidenceTestCase: {Type: Error, Msg: Erro ao atualizar o arquivo baixado no caso de teste!, Where: connections - SaveEvidenceTestCase},
         ErrorSaveFile: {Type: Error, Msg: Erro ao salvar o arquivo localmente!, Where: saveFile},
         ErrorScrollPage: {Type: Error, Msg: Erro ao rolar a página!, Where: ScrollPage},
         ErrorSetLanguage: {Type: Error, Msg: Erro ao configurar o idioma!, Where: automationAux - setLanguage},
@@ -297,7 +297,7 @@ logs:
         EvidenceFolder: {Type: Success, Msg: O diretório de evidências foi criado com sucesso., Where: createDirectory},
         Execute: {Type: Success, Msg: O aplicativo foi aberto com sucesso!, Where: Execute},
         ExecuteTestCase: {Type: Success, Msg: Sucesso ao carregar a execução do caso de teste., Where: executeTestCase},
-        FindElement: {Type: Success, Msg: Encontrou o componente na tela., Where: findElement},
+        FindElement: {Type: Success, Msg: Encontrou o componente na tela., Where: automationFunc - findElement},
         FillField: {Type: Success, Msg: O campo foi preenchido com sucesso., Where: fillField},
         ForwardPage: {Type: Success, Msg: A página avançou com sucesso., Where: ForwardPage},
         GetAttribute: {Type: Success, Msg: Sucesso ao obter o atributo do elemento., Where: GetAttribute},
@@ -319,7 +319,7 @@ logs:
         OpenPage: {Type: Success, Msg: Acesso à página realizado com sucesso., Where: openPage},
         OpenBrowser: {Type: Success, Msg: Browser aberto com sucesso., Where: openBrowser},
         OpenNewTab: {Type: Success, Msg: Aba aberta com sucesso., Where: OpenNewTab},
-        Percentage: {Type: Success, Msg: Porcentagem calculada com sucesso., Where: percentage},
+        Percentage: {Type: Success, Msg: Porcentagem calculada com sucesso., Where: startAutomation - percentage},
         PressButton: {Type: Success, Msg: Botão pressionado., Where: pressButton},
         RefreshPage: {Type: Success, Msg: Página atualizada., Where: RefreshPage},
         ReturnDefault: {Type: Success, Msg: O foco foi alterado., Where: returnDefault},
@@ -373,6 +373,7 @@ directories:
         QA-AutomationFolder: C:\ProgramData\QA-Automation,
         SwaggerFolder: C:\ProgramData\QA-Automation-Files\Repository\Swagger,
         Temp: C:\ProgramData\QA-Automation-Files\Repository\Temp\,
+        TestSetPath: '',
         UnavailablePrint: Unavailable.jpg,
         UpdateFolder: C:\ProgramData\QA-Automation-Files\Repository\NewVersion
     }

@@ -12,7 +12,8 @@ class Main:
         save_evidence = 'N'
 
         try:
-            Lib.Aux.Main.deleteDirectory(self, directory=Lib.Aux.directories["Temp"])
+            # Lib.Aux.Main.deleteDirectory(self, directory=Lib.Aux.directories["Temp"])
+            Lib.Aux.Main.deleteDirectory(self)
 
             project_id, project_name = self.connections.getProjects()
 
@@ -86,16 +87,20 @@ class Main:
                 if save_evidence:
                     status = "Not Completed"
                     # Create the TestSet folder.
-                    test_set_path = Lib.os.path.join(Lib.Aux.directories["EvidenceFolder"],
-                                                     Lib.Aux.otherConfigs["ETSName"] +
-                                                     str(test_case_id) + " - " + name_testcase)
+                    # test_set_path = Lib.os.path.join(Lib.Aux.directories["EvidenceFolder"],
+                    #                                  Lib.Aux.otherConfigs["ETSName"] +
+                    #                                  str(test_case_id) + " - " + name_testcase)
+                    Lib.Aux.directories['TestSetPath'] = Lib.os.path.join(Lib.Aux.directories["EvidenceFolder"],
+                                                                          Lib.Aux.otherConfigs["ETSName"] +
+                                                                          str(test_case_id) + " - " + name_testcase)
 
-                    Lib.Aux.Main.createDirectory(path_folder=test_set_path)
-                    Lib.shutil.rmtree(test_set_path)
-                    Lib.os.makedirs(test_set_path)
+                    # Lib.Aux.Main.createDirectory(path_folder=Lib.Aux.directories['TestSetPath'])
+                    Lib.Aux.Main.createDirectory()
+                    Lib.shutil.rmtree(Lib.Aux.directories['TestSetPath'])
+                    Lib.os.makedirs(Lib.Aux.directories['TestSetPath'])
                     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["EvidenceFolder"])
                 else:
-                    test_set_path = None
+                    Lib.Aux.directories['TestSetPath'] = None
                     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningEvidenceFolder"])
 
                 Lib.Aux.Main.addLogs(message="NewSession",
@@ -107,9 +112,10 @@ class Main:
                     continue
 
                 print(f"{Lib.Aux.Textcolor.BOLD}{name_testcase}{Lib.Aux.Textcolor.END}")
-                status, step_failed, take_picture_status =\
+                # status, step_failed, take_picture_status = \
+                status, step_failed = \
                     Main.executeStepByStep(self, order_steps_list=order_steps_list, steps_list=steps_list,
-                                           verbs_list=verbs_list, test_set_path=test_set_path,
+                                           verbs_list=verbs_list, test_set_path=Lib.Aux.directories['TestSetPath'],
                                            save_evidence=save_evidence, parameters1_list=parameters1_list,
                                            parameters2_list=parameters2_list)
 
@@ -152,10 +158,10 @@ class Main:
                                                     name_testcase=name_testcase,
                                                     word_path=word_path,
                                                     steps_list=steps_list,
-                                                    test_set_path=test_set_path,
+                                                    # test_set_path=Lib.Aux.directories['TestSetPath'],
                                                     step_failed=step_failed,
                                                     executed_by=executed_by,
-                                                    take_picture_status=take_picture_status,
+                                                    # take_picture_status=take_picture_status,
                                                     completed_date=str(Lib.datetime.datetime.now().
                                                                        strftime("%d/%m/%Y %H:%M:%S")),
                                                     duration=duration)
@@ -182,13 +188,15 @@ class Main:
 
                         self.connections.SaveEvidenceTestCase(project_id=project_id,
                                                               test_case_id=test_case_id, status=status,
-                                                              evidence_folder=Lib.Aux.directories["EvidenceFolder"],
+                                                              # evidence_folder=Lib.Aux.directories["EvidenceFolder"],
                                                               name_testcase=Lib.Aux.otherConfigs["ETSName"] +
                                                                             str(test_case_id) + " - " + name_testcase)
 
                     # Clear the evidences prints.
-                    Lib.Aux.Main.deleteFiles(file_path=test_set_path, extension="png")
-                    Lib.Aux.Main.deleteFiles(file_path=test_set_path, extension="json")
+                    # Lib.Aux.Main.deleteFiles(file_path=Lib.Aux.directories['TestSetPath'], extension="png")
+                    # Lib.Aux.Main.deleteFiles(file_path=Lib.Aux.directories['TestSetPath'], extension="json")
+                    Lib.Aux.Main.deleteFiles(extension="png")
+                    Lib.Aux.Main.deleteFiles(extension="json")
 
                     # If there is file to download update to GitLab.
                     # if save_evidence and not status == "Aborted":
@@ -247,7 +255,7 @@ class Main:
         # Variables.
         step_failed = None
         status_steps = []
-        take_picture_status = None
+        # take_picture_status = None
 
         try:
             for index_oder, step_order in enumerate(order_steps_list):
@@ -275,8 +283,9 @@ class Main:
                 else:
                     status_step = eval(Lib.Aux.verbs[verb]['Function'])(self, verb=verb, parameters1=parameters1,
                                                                         parameters2=parameters2, step=step,
-                                                                        api_action=verb,  num_of_steps=order_steps_list,
-                                                                        actual_step=step_order)
+                                                                        api_action=verb, num_of_steps=order_steps_list,
+                                                                        step_order=step_order,
+                                                                        save_evidence=save_evidence)
 
                 # Take the first step failed.
                 if status_step == "Failed" and step_failed is None:
@@ -289,21 +298,21 @@ class Main:
                 else:
                     status_steps.append("Passed")
 
-                # Take the screenshot of each step, except to the NoExecute step OR API Step OR Close.
-                if (verb not in ('NoExecute', 'Fechar', 'Cerrar', 'Close') and
-                        Lib.Aux.otherConfigs['API_Step'] is False and
-                        save_evidence):
+                # # Take the screenshot of each step, except to the NoExecute step OR API Step OR Close.
+                # if (verb not in ('NoExecute', 'Fechar', 'Cerrar', 'Close') and
+                #         Lib.Aux.otherConfigs['API_Step'] is False and
+                #         save_evidence):
+                #
+                #     image_name = Lib.Aux.otherConfigs["EvidenceName"] + str(step_order).zfill(2)
+                #
+                #     take_picture_status = Lib.Func.Main.takePicture(self, test_set_path=test_set_path,
+                #                                                     image_name=image_name)
+                #
+                #     if not take_picture_status:
+                #         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorScreenshot"], value1=step)
 
-                    # Image name file.
-                    image_name = Lib.Aux.otherConfigs["EvidenceName"] + str(step_order).zfill(2)
-
-                    take_picture_status = Lib.Func.Main.takePicture(self, test_set_path=test_set_path,
-                                                                    image_name=image_name)
-
-                    if not take_picture_status:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorScreenshot"], value1=step)
-
-                elif Lib.Aux.otherConfigs['API_Step'] and save_evidence:
+                # elif Lib.Aux.otherConfigs['API_Step'] and save_evidence:
+                if Lib.Aux.otherConfigs['API_Step'] and save_evidence:
                     api_file_name = (Lib.Aux.otherConfigs["EvidenceNameAPI"] + str(step_order).zfill(2) +
                                      Lib.Aux.otherConfigs["EvidenceExtensionAPI"])
                     api_file = Lib.os.path.join(Lib.Aux.directories['EvidenceFolder'], test_set_path, api_file_name)
@@ -329,7 +338,7 @@ class Main:
             else:
                 status_ct = "Passed"
 
-            return status_ct, step_failed, take_picture_status
+            return status_ct, step_failed  #, take_picture_status
 
         except Exception as ex:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorExecuteStepByStep']['Msg']}{Lib.Aux.Textcolor.END}", ex)
