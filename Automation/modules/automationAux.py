@@ -131,34 +131,33 @@ class Main:
             Main.addLogs(message="General", value=logs["ErrorSaveToken"], value1=str(ex))
 
     # Create the directories.
-    @staticmethod
-    def createDirectory():
+    def createDirectory(self, **kwargs):
 
         try:
             # kwargs variables.
-            # path_folder = kwargs.get("path_folder")
+            path = kwargs.get("path")
 
-            if not Lib.os.path.exists(directories['TestSetPath']):
-                Lib.os.makedirs(directories['TestSetPath'])
+            if not Lib.os.path.exists(path):
+                Lib.os.makedirs(path)
                 return True
             else:
                 # Clear the old logs and evidences (Older than 30 days).
                 current_time = Lib.time.time()
-                for item in Lib.os.listdir(directories['TestSetPath']):
+                for item in Lib.os.listdir(path):
 
                     # Delete folders or files.
                     if Lib.os.path.isdir(Lib.os.path.join(directories['TestSetPath'], item)):
-                        creation_time = Lib.os.path.getmtime(Lib.os.path.join(directories['TestSetPath'], item))
+                        creation_time = Lib.os.path.getmtime(Lib.os.path.join(path, item))
                         if (current_time - creation_time) // (24 * 3600) >= 30:
-                            Lib.shutil.rmtree(Lib.os.path.join(directories['TestSetPath'], item), ignore_errors=True)
+                            Lib.shutil.rmtree(Lib.os.path.join(path, item), ignore_errors=True)
                             Main.addLogs(message="General", value=logs["DeleteFolder"],
-                                         value1=directories['TestSetPath'], value2=item)
+                                         value1=path, value2=item)
                     else:
-                        creation_time = Lib.os.path.getmtime(Lib.os.path.join(directories['TestSetPath'], item))
+                        creation_time = Lib.os.path.getmtime(Lib.os.path.join(path, item))
                         if (current_time - creation_time) // (24 * 3600) >= 30:
-                            Lib.os.remove(Lib.os.path.join(directories['TestSetPath'], item))
+                            Lib.os.remove(Lib.os.path.join(path, item))
                             Main.addLogs(message="General", value=logs["DeleteFile"],
-                                         value1=Lib.os.path.join(directories['TestSetPath'], item))
+                                         value1=Lib.os.path.join(path, item))
 
             return True
 
@@ -498,7 +497,8 @@ class Main:
             path = Lib.os.path.join(directories["LogFolder"], hostname + " - " + date_log + ".log")
 
             if not Lib.os.path.isdir(directories["LogFolder"]):
-                Main.createDirectory(path_folder=directories["LogFolder"])
+                # Main.createDirectory(path_folder=directories["LogFolder"])
+                Main.createDirectory(self, path=directories["LogFolder"])
 
             # Append the log file.
             with open(path, 'a+', encoding='utf-8') as log_file:
@@ -535,7 +535,6 @@ class Main:
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorAddLog']['Msg']}{Textcolor.END}", str(ex))
             Main.addLogs(message="General", value=logs["ErrorAddLog"]['Msg'], value1=str(ex))
-
 
     # Remove the HTML from the string.
     def removeHTML(**kwargs):
@@ -620,7 +619,7 @@ class Main:
 
                 if install:
                     Lib.shutil.rmtree(directories['DownloadFolder'])
-                    Main.createDirectory(path_folder=directories['DownloadFolder'])
+                    Main.createDirectory(self, path=directories['DownloadFolder'])
 
                     output_file = Lib.os.path.join(directories['DownloadFolder'], 'Green.zip')
 
@@ -709,7 +708,7 @@ class Main:
             Main.addLogs(message="General", value=logs["ErrorReadHash"], value1=str(ex))
 
     # Save the hash in a file.
-    def saveHash(**kwargs):
+    def saveHash(self, **kwargs):
         try:
             # kwargs arguments.
             new_hash = kwargs.get('new_hash')
@@ -719,7 +718,7 @@ class Main:
             hash_file_path = Lib.os.path.join(directories["HashFolder"], path_part + '-hash_dictionary.txt')
 
             if not Lib.os.path.exists(directories['HashFolder']):
-                Main.createDirectory(path_folder=directories['HashFolder'])
+                Main.createDirectory(self, path=directories['HashFolder'])
             with open(hash_file_path, 'w') as hash_file:
                 hash_file.write(new_hash)
 

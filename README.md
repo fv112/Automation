@@ -1,11 +1,21 @@
 Automation QA - Release notes
 ---------
+:bookmark: **Version 1.22.00**  
+
+<em>09/08/2024</em>
+:ok_hand: - Correção da geração da evidência desincronizada.  
+:ok_hand: - Melhoria para captura da tela ao realizar o highlight.  
+:ok_hand: - Configuração da página inicial nas evidências.    
+:ok_hand: - Melhoria na validação de vários componentes na tela.
+:ok_hand: - Melhorando variações das validações.  
+#
+
 :bookmark: **Version 1.21.01**  
 
 <em>06/08/2024</em>
-:ok_hand: - Finalização da atualização da versão automaticamente.
-:bug: - Correção no erro de geração da evidência.
-:construction: - Correção da geração da evidência desincronizada.
+:ok_hand: - Finalização da atualização da versão automaticamente.  
+:bug: - Correção no erro de geração da evidência.  
+:construction: - Correção da geração da evidência desincronizada.  
 #
 
 :bookmark: **Version 1.21.00**  

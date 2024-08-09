@@ -52,7 +52,7 @@ class Main:
             comment = None
             testset_path_manual = Lib.Aux.directories["EvidenceFolderManual"]
             Lib.Aux.Main.deleteDirectory(self, directory=testset_path_manual)
-            Lib.Aux.Main.createDirectory(self, path_folder=testset_path_manual)
+            Lib.Aux.Main.createDirectory(self, path=testset_path_manual)
 
             # Execute the action to get the manual evidences.
             test_case_id_list, n_iterations_list, id_azure_list, n_test_case_list, failed_info_dict, \
@@ -77,8 +77,8 @@ class Main:
                 if Lib.Aux.os.path.exists(test_set_path):
                     Lib.Aux.shutil.rmtree(test_set_path)
                 Lib.Aux.os.makedirs(test_set_path)
-                Lib.Aux.Main.addLogs(self, message="General", value=Lib.Aux.logs["EvidenceFolder"])
-                Lib.Aux.Main.createDirectory(self, path_folder=test_set_path)
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["EvidenceFolder"])
+                Lib.Aux.Main.createDirectory(self, path=test_set_path)
 
                 print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['GeneratingEvidence']['Msg']}"
                       f"{Lib.Aux.Textcolor.END}\n")
@@ -92,7 +92,7 @@ class Main:
                     n_print = 1
                     step_failed = 0
 
-                    Lib.Aux.Main.addLogs(self, message="NewSession", value="\nID: " + str(test_case_id) + " - TEST CASE: " +
+                    Lib.Aux.Main.addLogs( message="NewSession", value="\nID: " + str(test_case_id) + " - TEST CASE: " +
                                      name_testcase + " - ITERATION: " + str(n_iteration + 1) +
                                     "\nPROJECT: " + project_name + " - RUN ID: " + test_run_id + "\n")
 

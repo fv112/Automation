@@ -95,7 +95,7 @@ class Main:
                                                                           str(test_case_id) + " - " + name_testcase)
 
                     # Lib.Aux.Main.createDirectory(path_folder=Lib.Aux.directories['TestSetPath'])
-                    Lib.Aux.Main.createDirectory()
+                    Lib.Aux.Main.createDirectory(self, path=Lib.Aux.directories['TestSetPath'])
                     Lib.shutil.rmtree(Lib.Aux.directories['TestSetPath'])
                     Lib.os.makedirs(Lib.Aux.directories['TestSetPath'])
                     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["EvidenceFolder"])
@@ -115,7 +115,7 @@ class Main:
                 # status, step_failed, take_picture_status = \
                 status, step_failed = \
                     Main.executeStepByStep(self, order_steps_list=order_steps_list, steps_list=steps_list,
-                                           verbs_list=verbs_list, test_set_path=Lib.Aux.directories['TestSetPath'],
+                                           verbs_list=verbs_list, #test_set_path=Lib.Aux.directories['TestSetPath'],
                                            save_evidence=save_evidence, parameters1_list=parameters1_list,
                                            parameters2_list=parameters2_list)
 
@@ -244,7 +244,7 @@ class Main:
     def executeStepByStep(self, **kwargs):
 
         # kwargs variables.
-        test_set_path = kwargs.get('test_set_path')
+        # test_set_path = kwargs.get('test_set_path')
         order_steps_list = kwargs.get('order_steps_list')
         steps_list = kwargs.get('steps_list')
         verbs_list = kwargs.get('verbs_list')
@@ -278,14 +278,14 @@ class Main:
 
                 # Execute the test step.
                 Lib.Aux.otherConfigs['API_Step'] = False
-                if parameters1 is None:
-                    status_step = eval(Lib.Aux.verbs[verb]['Function'])(self)
-                else:
-                    status_step = eval(Lib.Aux.verbs[verb]['Function'])(self, verb=verb, parameters1=parameters1,
-                                                                        parameters2=parameters2, step=step,
-                                                                        api_action=verb, num_of_steps=order_steps_list,
-                                                                        step_order=step_order,
-                                                                        save_evidence=save_evidence)
+                # if parameters1 is None:
+                #     status_step = eval(Lib.Aux.verbs[verb]['Function'])(self, step=step, step_order=step_order,
+                #                                                         save_evidence=save_evidence)
+                # else:
+                status_step = eval(Lib.Aux.verbs[verb]['Function'])(self, verb=verb, parameters1=parameters1,
+                                                                    parameters2=parameters2, step=step,
+                                                                    api_action=verb, num_of_steps=order_steps_list,
+                                                                    step_order=step_order, save_evidence=save_evidence)
 
                 # Take the first step failed.
                 if status_step == "Failed" and step_failed is None:
@@ -315,7 +315,8 @@ class Main:
                 if Lib.Aux.otherConfigs['API_Step'] and save_evidence:
                     api_file_name = (Lib.Aux.otherConfigs["EvidenceNameAPI"] + str(step_order).zfill(2) +
                                      Lib.Aux.otherConfigs["EvidenceExtensionAPI"])
-                    api_file = Lib.os.path.join(Lib.Aux.directories['EvidenceFolder'], test_set_path, api_file_name)
+                    api_file = Lib.os.path.join(Lib.Aux.directories['EvidenceFolder'],
+                                                Lib.Aux.directories['TestSetPath'], api_file_name)
 
                     with open(api_file, 'w') as api_return:
                         tag = parameters1[:parameters1.find(':')]
