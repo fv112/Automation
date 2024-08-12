@@ -94,12 +94,14 @@ class Main:
             step = kwargs.get('step')
             step_order = kwargs.get('step_order')
 
-            element_field = Main.findElement(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
-                                             step_order=step_order)
+            element_field = Main.findElement(self, parameters1=parameters1)
             element_field.clear()
 
             if parameters2.upper() not in ('VAZIO', 'VACÍO', 'EMPTY'):
                 element_field.send_keys(parameters2)
+
+            _ = Main.findElement(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
+                                 step_order=step_order)
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["FillField"])
 
