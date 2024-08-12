@@ -16,9 +16,9 @@ class Main:
         save_evidence = kwargs.get('save_evidence')
         step = kwargs.get('step')
         step_order = kwargs.get('step_order')
-        several = kwargs.get('several')
-
+        several = kwargs.get('several', False)
         color = kwargs.get('color', 'blue')
+
         new_element = None
 
         search_list = [
@@ -33,7 +33,7 @@ class Main:
         ]
 
         if parameters1 == 'full_screen' or parameters1 == 'Alert':
-            Main.highlight(self, new_element=parameters1, color=color, border=3,
+            Main.highlight(self, new_element=parameters1, color=color, border=3, several=several,
                            save_evidence=save_evidence, step=step, step_order=step_order)
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["FindElement"], value1='full_screen')
@@ -46,32 +46,35 @@ class Main:
                     driver.implicitly_wait(3)
 
                     if several:  # Check the quantity of elements.
-                        new_element = driver.find_elements(tag, parameters1)
+                        new_elements = driver.find_elements(tag, parameters1)
+
+                        if new_elements:
+
+                            for element in new_elements:
+                                driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
+
+                                Main.highlight(self, new_element=element, color=color, border=3, several=several,
+                                               save_evidence=save_evidence, step=step, step_order=step_order)
+
+                                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["FindElement"], value1=tag,
+                                                     value2=parameters1)
+
+                            return new_elements
 
                     else:
                         new_element = driver.find_element(tag, parameters1)
 
-                    if new_element is not None and new_element == []:
-                        # Set element focus.
-                        driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", new_element)
+                        if new_element is not None:
+                            # Set element focus.
+                            driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", new_element)
 
-                        Main.highlight(self, new_element=new_element, color=color, border=3,
-                                       save_evidence=save_evidence, step=step, step_order=step_order)
+                            Main.highlight(self, new_element=new_element, color=color, border=3, several=several,
+                                           save_evidence=save_evidence, step=step, step_order=step_order)
 
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["FindElement"], value1=tag,
-                                             value2=parameters1)
+                            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["FindElement"], value1=tag,
+                                                 value2=parameters1)
 
-                        return new_element
-
-                    elif new_element != [] and several: ### Ainda com erro.
-
-                        Main.highlight(self, new_element='full_screen', color=color, border=3,
-                                       save_evidence=save_evidence, step=step, step_order=step_order)
-
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["FindElement"], value1=tag,
-                                             value2=parameters1)
-
-                        return new_element
+                            return new_element
 
                 except Lib.NoSuchElementException:
                     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningFindElement"], value1=tag,
@@ -468,9 +471,10 @@ class Main:
             step = kwargs.get('step')
             step_order = kwargs.get('step_order')
 
+            driver.execute_script("window.open('', '_blank')")
+
             _ = Main.findElement(self, parameters1='full_screen', color="blue", save_evidence=save_evidence, step=step,
                                  step_order=step_order)
-            driver.execute_script("window.open('', '_blank')")
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["OpenNewTab"])
 
@@ -482,12 +486,19 @@ class Main:
             return "Failed"
 
     # Get current url
-    @staticmethod
-    def getURL():
+    def getURL(self, **kwargs):
 
         try:
+            # kwargs arguments.
+            save_evidence = kwargs.get('save_evidence')
+            step = kwargs.get('step')
+            step_order = kwargs.get('step_order')
 
             url = driver.current_url
+
+            _ = Main.findElement(self, parameters1='full_screen', color="blue", save_evidence=save_evidence, step=step,
+                                 step_order=step_order)
+
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetURL"])
 
             return url, "Passed"
@@ -498,12 +509,20 @@ class Main:
             return None, "Failed"
 
     # get Title
-    @staticmethod
-    def getTitle():
+    def getTitle(self, **kwargs):
+
+        # kwargs arguments.
+        save_evidence = kwargs.get('save_evidence')
+        step = kwargs.get('step')
+        step_order = kwargs.get('step_order')
 
         try:
 
             title = driver.title
+
+            _ = Main.findElement(self, parameters1='full_screen', color="blue", save_evidence=save_evidence, step=step,
+                                 step_order=step_order)
+
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetTitle"])
 
             return title, "Passed"
@@ -560,6 +579,8 @@ class Main:
     # Gets the attribute of an element (can be value, title or href).
     def getAttribute(self, **kwargs):
 
+        text_found = None
+
         try:
             # kwargs arguments.
             parameters1 = kwargs.get('parameters1')
@@ -567,9 +588,6 @@ class Main:
             save_evidence = kwargs.get('save_evidence')
             step = kwargs.get('step')
             step_order = kwargs.get('step_order')
-
-            # obtained_attribute = ''
-            text_found = None
 
             if '(#value)' in parameters2:
                 page = Main.findElement(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
@@ -664,12 +682,16 @@ class Main:
 
             driver.execute_script('window.scrollTo(0, ' + parameters1 + ')')
 
-            _ = Main.findElement(self, parameters1='full_screen', color="blue", save_evidence=save_evidence, step=step,
+            status_element = Main.findElement(self, parameters1='full_screen', color="blue", save_evidence=save_evidence, step=step,
                                  step_order=step_order)
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ScrollPage"])
+            # Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ScrollPage"])
 
-            return "Passed"
+            if status_element is not None:
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ScrollPage"])
+                return "Passed"
+            else:
+                return "Failed"
 
         except Exception as ex:
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorScrollPage"], value1=str(ex))
@@ -685,12 +707,18 @@ class Main:
             step_order = kwargs.get('step_order')
 
             driver.refresh()
-            _ = Main.findElement(self, parameters1='full_screen', color="blue", save_evidence=save_evidence, step=step,
+            status_element = Main.findElement(self, parameters1='full_screen', color="blue", save_evidence=save_evidence, step=step,
                                  step_order=step_order)
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["RefreshPage"])
 
-            return driver, "Passed"
+            # return driver, "Passed"
+
+            if status_element is not None:
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["RefreshPage"])
+                return "Passed"
+            else:
+                return "Failed"
 
         except Exception as ex:
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorRefreshPage"], value1=str(ex))
@@ -699,8 +727,6 @@ class Main:
 
     # Checks whether the element is inactive.
     def isEnable(self, **kwargs):
-
-        status_element = None
 
         try:
             # kwargs arguments.
@@ -712,19 +738,21 @@ class Main:
             status_element = Main.findElement(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
                                               step_order=step_order).is_enabled()
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsEnable"])
-
-            return status_element, "Passed"
+            if status_element is not None:
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsEnable"])
+                return "Passed"
+            else:
+                return "Failed"
 
         except Exception as ex:
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsEnable"], value1=str(ex))
 
-            return status_element, "Failed"
+            return "Failed"
 
     # Checks whether the element is visible.
     def isDisplayed(self, **kwargs):
 
-        status_element = None
+        # status_element = None
 
         try:
 
@@ -734,17 +762,19 @@ class Main:
             step = kwargs.get('step')
             step_order = kwargs.get('step_order')
 
-            status_element = Main.findElement(self, parameters1=parameters1, save_evidence=save_evidence,
-                                             step=step, step_order=step_order).is_displayed()
+            status_element = Main.findElement(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
+                                              step_order=step_order).is_displayed()
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsDisplayed"])
-
-            return status_element, "Passed"
+            if status_element is not None:
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsDisplayed"])
+                return "Passed"
+            else:
+                return "Failed"
 
         except Exception as ex:
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsDisplayed"], value1=str(ex))
 
-            return status_element, "Failed"
+            return "Failed"
 
     # Checks whether a checkbox or radio button is selected (returns True or False)
     def isSelected(self, **kwargs):
@@ -759,15 +789,15 @@ class Main:
             status_element = Main.findElement(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
                                               step_order=step_order).is_selected()
 
-            if status_element:
+            if status_element is not None:
                 Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsSelected"])
-                return "True", "Passed"
+                return "Passed"
             else:
-                return "False", "Failed"
+                return "Failed"
 
         except Exception as ex:
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsSelected"], value1=str(ex))
-            return "False", "Failed"
+            return "Failed"
 
     # Validate data (With * validate the partial text).
     def validateData(self, **kwargs):
@@ -785,31 +815,43 @@ class Main:
 
                 # Get the title page.
                 if '(title)' in parameters1:
-                    text_found, status = Main.getTitle()
+                    text_found, status = Main.getTitle(self, save_evidence=save_evidence, step=step,
+                                                       step_order=step_order)
                     parameters2 = parameters1.replace('(title)', '')
 
                     if parameters2 == text_found:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetTitle"])
                         status = "Passed"
 
                     else:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetTitle"])
                         status = "Failed"
+
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataExpected'],
+                                         value1=str(parameters2))
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataObtained'],
+                                         value1=str(text_found))
 
                 # Get the URL from the address bar (getURL).
                 elif '(url)' in parameters1:
-                    text_found, status = Main.getURL()
+                    text_found, status = Main.getURL(self, save_evidence=save_evidence, step=step,
+                                                     step_order=step_order)
                     parameters2 = parameters1.replace('(url)', '')
 
                     if parameters2 == text_found:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetURL"])
 
                         parameters2 = parameters1.replace('(url)', '')
                         status = "Passed"
 
                     else:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetURL"])
                         status = "Failed"
+
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataExpected'],
+                                         value1=str(parameters2))
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataObtained'],
+                                         value1=str(text_found))
 
                 # Check a part of the text was found.
                 elif '*' in parameters2:  # Check part of the text.
@@ -821,53 +863,61 @@ class Main:
                         text_found = text_found.replace("\n", "")
 
                     if parameters2.replace('*', '') in text_found:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetTextPart"])
                         status = "Passed"
 
                     else:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetTextPart"])
                         status = "Failed"
+
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataExpected'],
+                                         value1=str(parameters2))
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataObtained'],
+                                         value1=str(text_found))
 
                 # Checks whether the element is active or inactive.
                 elif '(?)' in parameters2:
-                    text_found, status = Main.isEnable(self, value1=parameters1)
-                    text_found = str(text_found)
-                    parameters2 = parameters2.replace('(?)', '')
+                    status = Main.isEnable(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
+                                           step_order=step_order)
+                    # text_found = str(text_found)
+                    # parameters2 = parameters2.replace('(?)', '')
 
-                    if text_found == parameters2:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ValidateData"])
-                        status = "Passed"
+                    if status == "Passed":
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsEnable"])
+                        # status = "Passed"
 
                     else:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsEnable"])
                         status = "Failed"
 
                 # Checks whether the element is visible to the user.
                 elif '($)' in parameters2:
-                    text_found, status = Main.isDisplayed(self, value1=parameters1)
-                    text_found = str(text_found)
-                    parameters2 = parameters2.replace('($)', '')
+                    status = Main.isDisplayed(self, value1=parameters1, save_evidence=save_evidence, step=step,
+                                              step_order=step_order)
+                    # text_found = str(text_found)
+                    # parameters2 = parameters2.replace('($)', '')
 
-                    if text_found == parameters2:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ValidateData"])
-                        status = "Passed"
+                    if status == "Passed":
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsDisplayed"])
+                        # status = "Passed"
 
                     else:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorValidateData"])
-                        status = "Failed"
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsDisplayed"])
+                        # status = "Failed"
 
                 # Checks whether a checkbox or radio button is selected.
                 elif '(.)' in parameters2:
-                    text_found, status = Main.isSelected(self, parameters1=parameters1, save_evidence=save_evidence,
-                                                         step=step, step_order=step_order)
-                    parameters2 = parameters2.replace('(.)', '')
+                    status = Main.isSelected(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
+                                             step_order=step_order)
 
-                    if str(text_found) == parameters2:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ValidateData"])
-                        status = "Passed"
+                    # parameters2 = parameters2.replace('(.)', '')
+
+                    if status == "Passed":
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsSelected"])
+                        # status = "Passed"
 
                     else:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsSelected"])
                         status = "Failed"
 
                 # Checks if data is not available.
@@ -884,6 +934,11 @@ class Main:
                         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorValidateData"])
                         status = "Failed"
 
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataExpected'],
+                                         value1=str(parameters2))
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataObtained'],
+                                         value1=str(text_found))
+
                 # Checks if the data is available.
                 elif '(!)' in parameters2:
                     text_found, status = Main.getText(self, parameters1=parameters1, save_evidence=save_evidence,
@@ -891,12 +946,17 @@ class Main:
                     parameters2 = parameters2.replace('(!)', '')
 
                     if parameters2 in str(text_found):
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["Available"])
                         status = "Passed"
 
                     else:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAvailable"])
                         status = "Failed"
+
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataExpected'],
+                                         value1=str(parameters2))
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataObtained'],
+                                         value1=str(text_found))
 
                 # Check some attributes.
                 elif ('(#title)' in parameters2 or '(#href)' in parameters2 or '(#value)' in parameters2 or '(#class)'
@@ -910,12 +970,17 @@ class Main:
                     parameters2 = parameters2.replace('(#class)', '')
 
                     if parameters2 == text_found:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetAttribute"])
                         status = "Passed"
 
                     else:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetAttribute"])
                         status = "Failed"
+
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataExpected'],
+                                         value1=str(parameters2))
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataObtained'],
+                                         value1=str(text_found))
 
                 # Get the amount of elements.
                 elif '<' and '>' in parameters2:
@@ -925,14 +990,19 @@ class Main:
                     parameters2 = parameters2.replace('>', '')
 
                     if int(parameters2) == text_found:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetQuantityElements"])
                         status = "Passed"
                         text_found = str(text_found)
 
                     else:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorValidateData"])
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetQuantityElements"])
                         status = "Failed"
                         text_found = str(text_found)
+
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataExpected'],
+                                         value1=str(parameters2))
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataObtained'],
+                                         value1=str(text_found))
 
                 # Validates that the text obtained from the page is the same as the expected text.
                 else:
@@ -951,6 +1021,11 @@ class Main:
                         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorValidateData"])
                         status = "Failed"
 
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataExpected'],
+                                         value1=str(parameters2))
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataObtained'],
+                                         value1=str(text_found))
+
             else:  # If Alert Element.
                 wait = Lib.WebDriverWait(driver, timeout=2)
                 alert = wait.until(lambda driver: driver.switch_to.alert)
@@ -965,10 +1040,10 @@ class Main:
                     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorValidateData"])
                     status = "Failed"
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataExpected'],
-                                 value1=str(parameters2))
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataObtained'],
-                                 value1=str(text_found))
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataExpected'],
+                                     value1=str(parameters2))
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataObtained'],
+                                     value1=str(text_found))
 
             return status
 
@@ -1016,10 +1091,10 @@ class Main:
             for handle in driver.window_handles:
                 driver.switch_to.window(handle)
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["AlterWindow"])
-
             _ = Main.findElement(self, parameters1='full_screen', save_evidence=save_evidence, step=step,
                                  step_order=step_order)
+
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["AlterWindow"])
 
             return "Passed"
 
@@ -1311,13 +1386,19 @@ class Main:
             # kwargs arguments.
             parameters1 = kwargs.get('parameters1')
             save_evidence = kwargs.get('save_evidence')
+            step = kwargs.get('step')
+            step_order = kwargs.get('step_order')
 
             if parameters1 is None:  # If none was informed = Close Windows.
-                driver.close()
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["CloseWindow"])
-            else:  # If something was informed = Close Browser.
                 driver.quit()
                 Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["CloseBrowser"])
+            else:  # If something was informed = Close Browser.
+                driver.close()
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["CloseWindow"])
+                Main.alterWindow(self, save_evidence=save_evidence, step=step, step_order=step_order)
+
+            # _ = Main.findElement(self, parameters1='full_screen', save_evidence=save_evidence, step=step,
+            #                      step_order=step_order)
 
             return "Passed"
 
@@ -1360,6 +1441,7 @@ class Main:
             save_evidence = kwargs.get('save_evidence')
             step = kwargs.get('step')
             step_order = kwargs.get('step_order')
+            several = kwargs.get('several', False)
 
             image_name = Lib.Aux.otherConfigs["EvidenceName"] + str(step_order).zfill(2)
 
@@ -1395,7 +1477,8 @@ class Main:
                 if not take_picture_status:
                     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorScreenshot"], value1=step)
 
-                apply_style(original_style)
+                if several is False:
+                    apply_style(original_style)
 
             elif save_evidence and new_element == 'full_screen':
                 highlight_script = """

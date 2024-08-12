@@ -6,6 +6,7 @@
 function createPopup(title){
 	var popup = open("", title, "width=300,height=200");
 	var txt = popup.document.createElement("TEXTAREA");
+	txt.id = "meuTextareaId";
 
 	popup.document.body.appendChild(txt);
 }

@@ -2,12 +2,15 @@ Automation QA - Release notes
 ---------
 :bookmark: **Version 1.22.00**  
 
-<em>09/08/2024</em>
+<em>12/08/2024</em>
 :ok_hand: - Correção da geração da evidência desincronizada.  
 :ok_hand: - Melhoria para captura da tela ao realizar o highlight.  
 :ok_hand: - Configuração da página inicial nas evidências.    
-:ok_hand: - Melhoria na validação de vários componentes na tela.
-:ok_hand: - Melhorando variações das validações.  
+:ok_hand: - Melhorando variações das validações (Validações como isEnable, getTitle, getURL, getTitle, validar quantidade de componentes na tela).  
+:ok_hand: -Inclusão da evidência do passo fechar.  
+:bug: - Correção de várias mensagens de erro de validação.
+:sparkles: - Adição do passo com bug no resumo da evidência.  
+:bug: - Pop-up não estava ganhando o foco corretamente.  
 #
 
 :bookmark: **Version 1.21.01**  
