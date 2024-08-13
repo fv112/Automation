@@ -352,10 +352,10 @@ logs:
         ValidateData: {Type: Success, Msg: Dados validados com sucesso., Where: validateData},
         ValidateDataExpected: {Type: Log, Msg: Texto esperado., Where: automationFunc - validateDataExpected},
         ValidateDataObtained: {Type: Log, Msg: Texto obtido., Where: automationFunc - validateDataObtained},
-        Wait: {Type: Success, Msg: Aguardou o tempo solicitado com sucesso., Where: wait},
-        WaitTime: {Type: Log, Msg: "Aguardando tempo para realizar novamente esta ação. Segundos: ", Where: _DownloadAttachment},
-        WarningEvidenceFolder: {Type: Warning, Msg: A evidência NÃO foi atualizada., Where: createDirectory},
-        WarningFindElement: {Type: Warning, Msg: NÃO encontrou o componente para informar., Where: findElement}
+        Wait: {Type: Success, Msg: Aguardou o tempo solicitado com sucesso., Where: automationFunc - wait},
+        #WaitTime: {Type: Log, Msg: "Aguardando tempo para realizar novamente esta ação. Segundos: ", Where: _DownloadAttachment},
+        WarningEvidenceFolder: {Type: Warning, Msg: A evidência NÃO foi atualizada., Where: automationCore - createDirectory},
+        WarningFindElement: {Type: Warning, Msg: NÃO encontrou o componente para informar., Where: automationFunc - findElement}
     }
 
 

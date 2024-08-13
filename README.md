@@ -1,5 +1,11 @@
 Automation QA - Release notes
 ---------
+:bookmark: **Version 1.22.03**  
+
+<em>13/08/2024</em>
+:ok_hand: - Aprimoramento de alguns logs.    
+#
+
 :bookmark: **Version 1.22.02**  
 
 <em>13/08/2024</em>

@@ -139,6 +139,8 @@ class Main:
 
             if not Lib.os.path.exists(path):
                 Lib.os.makedirs(path)
+                print(f"{Textcolor.FAIL}{logs['ErrorCreateDirectory']['Msg']}{Textcolor.END}")
+                Main.addLogs(message="General", value=logs["ErrorCreateDirectory"], value1=str(ex))
                 return True
             else:
                 # Clear the old logs and evidences (Older than 30 days).
@@ -159,7 +161,7 @@ class Main:
                             Main.addLogs(message="General", value=logs["DeleteFile"],
                                          value1=Lib.os.path.join(path, item))
 
-            return True
+                return True
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorCreateDirectory']['Msg']}{Textcolor.END}", ex)
@@ -626,7 +628,7 @@ class Main:
 
                 if install:
                     Lib.shutil.rmtree(directories['DownloadFolder'])
-                    Main.createDirectory(None, path=directories['DownloadFolder'])
+                    Main.createDirectory(self, path=directories['DownloadFolder'])
 
                     output_file = Lib.os.path.join(directories['DownloadFolder'], 'Green.zip')
 
