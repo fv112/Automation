@@ -45,14 +45,16 @@ class Main:
 
                 try:
                     if tag == 'Not Found':
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["FindElement"], value1=tag,
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningFindElement"], value1=tag,
                                              value2=parameters1)
 
                         return "Failed"
 
-                    driver.implicitly_wait(3)
+                    #driver.implicitly_wait(3)
+                    wait = Lib.WebDriverWait(driver, 10)
 
                     if several:  # Check the quantity of elements.
+                        waits = wait.until(Lib.ec.visibility_of_element_located((tag, parameters1)))
                         new_elements = driver.find_elements(tag, parameters1)
 
                         if new_elements:
@@ -70,6 +72,7 @@ class Main:
 
                     else:
                         new_element = driver.find_element(tag, parameters1)
+                        waits = wait.until(Lib.ec.visibility_of_element_located((tag, parameters1)))
 
                         if new_element is not None:
                             # Set element focus.
@@ -171,7 +174,7 @@ class Main:
                                              step_order=step_order)
             element_field.click()
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["Click"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["Click"], value1=parameters1)
 
             return "Passed"
 
@@ -193,7 +196,7 @@ class Main:
             element_field.click()
             element_field.click()
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["DoubleClick"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["DoubleClick"], value1=parameters1)
 
             return "Passed"
         except Exception as ex:
@@ -216,7 +219,7 @@ class Main:
             actions.context_click(element_field)
             actions.perform()
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["RightClick"])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["RightClick"], value1=parameters1)
 
             return "Passed"
         except Exception as ex:
@@ -249,7 +252,7 @@ class Main:
             #actions.drag_and_drop_by_offset(element_field, int(positionx) * 10, int(positiony) * 10)
             actions.perform()
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['DragDrop'])
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['DragDrop'], value1=parameters1)
 
             return "Passed"
         except Exception as ex:
@@ -410,30 +413,57 @@ class Main:
 
     def selectDropDownList(self, **kwargs):
 
+        # kwargs arguments.
+        parameters1 = kwargs.get('parameters1')
+        parameters2 = kwargs.get('parameters2')
+        save_evidence = kwargs.get('save_evidence')
+        step = kwargs.get('step')
+        step_order = kwargs.get('step_order')
+
         try:
-            # kwargs arguments.
-            parameters1 = kwargs.get('parameters1')
-            parameters2 = kwargs.get('parameters2')
-            save_evidence = kwargs.get('save_evidence')
-            step = kwargs.get('step')
-            step_order = kwargs.get('step_order')
+
 
             # Only to highlight and take picture.
             # _ = Main.findElement(self, parameters1='parameters1', save_evidence=save_evidence, step=step,
             #                      step_order=step_order)
 
-            element_field = Lib.Select(Main.findElement(self, parameters1=parameters1, save_evidence=save_evidence,
-                                                        step=step, step_order=step_order))
+            element = Main.findElement(self, parameters1=parameters1)
+            element_field = Lib.Select(element)
 
-            element_field.select_by_visible_text(parameters2)
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["SelectDropDownList"], value1=parameters1,
-                                 value2=parameters2)
+            for option in ['value', 'id', 'text']:
+                # method, value = option
+                try:
+                    if option == 'value':
+                        element_field.select_by_value(parameters2)
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["SelectDropDownList"],
+                                             value1=parameters1, value2=parameters2)
+                        return "Passed"
+                    elif option == 'text':
+                        element_field.select_by_visible_text(parameters2)
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["SelectDropDownList"],
+                                             value1=parameters1, value2=parameters2)
+                        return "Passed"
+                    elif option == 'index':
+                        element_field.select_by_index(int(parameters2))
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["SelectDropDownList"],
+                                             value1=parameters1, value2=parameters2)
+                        return "Passed"
+                except Lib.NoSuchElementException:
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["NoSelectDropDownList"])
+
+            # element_field.select_by_visible_text(parameters2)
+            # element_field.select_by_value(parameters2)
+
+            _ = Lib.Select(Main.findElement(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
+                                            step_order=step_order))
+
+            # Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["SelectDropDownList"], value1=parameters1,
+            #                      value2=parameters2)
 
             return "Passed"
 
-        except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorSelectDropDownList"] + " - " + str(ex),
-                                 value1=parameters1, value2=parameters2)
+        except Lib.NoSuchElementException as ex:
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorSelectDropDownList"], value1=str(ex))
 
             return "Failed"
 

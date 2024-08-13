@@ -306,7 +306,7 @@ class Connections:
             else:
                 print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequest']['Msg']}{Lib.Aux.Textcolor.END}\n")
                 Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorRequest'],
-                                 value1='Status code: ' + str(s.status_code) + ' - getTestCases')
+                                     value1='Status code: ' + str(s.status_code) + ' - getTestCases')
 
         except Exception as e:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorGetTestCases']['Msg']}{Lib.Aux.Textcolor.END}", e)

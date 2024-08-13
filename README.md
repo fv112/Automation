@@ -2,8 +2,12 @@ Automation QA - Release notes
 ---------
 :bookmark: **Version 1.22.04**  
 
-<em>13/08/2024</em>
-:construction: - Atualização automática da versão.      
+<em>xx/08/2024</em>
+:construction: - Atualização automática da versão.
+:ok_hand: - Aumento na velocidade da busca dos componentes.   
+:ok_hand: - Aguarda 10 segundos antes de lançar erro de componente não encontrado.     
+:bug: - Correção do bug "unsupported operand type(s) for +: 'dict' and 'str'".  
+:ok_hand: - Melhoria no verbo "Selecionar".  
 #
 
 :bookmark: **Version 1.22.03**  
