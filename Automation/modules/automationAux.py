@@ -626,7 +626,7 @@ class Main:
 
                 if install:
                     Lib.shutil.rmtree(directories['DownloadFolder'])
-                    Main.createDirectory(self, path=directories['DownloadFolder'])
+                    Main.createDirectory(None, path=directories['DownloadFolder'])
 
                     output_file = Lib.os.path.join(directories['DownloadFolder'], 'Green.zip')
 
@@ -644,11 +644,11 @@ class Main:
                                      value1=str(response.status_code))
 
                     print("-" * 30)
-                    print("New version downloaded.")
+                    Main.addLogs(message="General", value=logs["InstallNewVersion"], value1=self.version_distributed)
                     print("-" * 30)
 
         except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['ErrorCheckNewVersion']['Msg']}{Textcolor.END}", ex)
+            print(f"{Textcolor.FAIL}{logs['ErrorCheckNewVersion']['Msg']}{Textcolor.END}", str(ex))
             Main.addLogs(message="General", value=logs["ErrorCheckNewVersion"], value1=str(ex))
 
     # Configure the language for the automation.

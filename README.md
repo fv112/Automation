@@ -1,5 +1,12 @@
 Automation QA - Release notes
 ---------
+:bookmark: **Version 1.22.02**  
+
+<em>13/08/2024</em>
+:ok_hand: - Correção na criação da pasta de download.  
+:ok_hand: - Melhoria nos logs de instalação.  
+#
+
 :bookmark: **Version 1.22.01**  
 
 <em>12/08/2024</em>
