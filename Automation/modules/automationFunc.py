@@ -29,7 +29,8 @@ class Main:
             Lib.By.CLASS_NAME,
             Lib.By.TAG_NAME,
             Lib.By.LINK_TEXT,
-            Lib.By.PARTIAL_LINK_TEXT
+            Lib.By.PARTIAL_LINK_TEXT,
+            'Not Found'
         ]
 
         if parameters1 == 'full_screen' or parameters1 == 'Alert':
@@ -43,6 +44,12 @@ class Main:
             for tag in search_list:
 
                 try:
+                    if tag == 'Not Found':
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["FindElement"], value1=tag,
+                                             value2=parameters1)
+
+                        return "Failed"
+
                     driver.implicitly_wait(3)
 
                     if several:  # Check the quantity of elements.
@@ -79,6 +86,9 @@ class Main:
                 except Lib.NoSuchElementException:
                     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningFindElement"], value1=tag,
                                          value2=parameters1)
+
+                # except Exception as ex:
+                #     return "False"
 
                 # finally:
                 #
@@ -437,8 +447,11 @@ class Main:
             step = kwargs.get('step')
             step_order = kwargs.get('step_order')
 
-            obtained_text = Main.findElement(self, parameters1=parameters1, color="green", save_evidence=save_evidence,
-                                             step=step, step_order=step_order).text
+            obtained_text = Main.findElement(self, parameters1=parameters1, color="green", step=step,
+                                             save_evidence=save_evidence, step_order=step_order).text
+
+            if obtained_text == "Failed":
+                raise Exception
 
             if obtained_text is None:
                 headers = {'User-Agent': Lib.Aux.otherConfigs['Agent']}
@@ -1114,7 +1127,6 @@ class Main:
             step = kwargs.get('step')
             step_order = kwargs.get('step_order')
 
-            # Store iframe web element
             iframe = Main.findElement(self, parameters1=parameters2, save_evidence=save_evidence, step=step,
                                       step_order=step_order)
 
@@ -1260,11 +1272,11 @@ class Main:
                 # Disable the Chrome logs in the .bat file and alter the download folder.
                 preferences = {
                     "download.default_directory": Lib.Aux.directories['DownloadFolder'],
-                    "download.prompt_for_download": False
+                    "download.prompt_for_download": False,
                     # "download.directory_upgrade": True,
                     # "safebrowsing.enabled": True,
-                    # "credentials_enable_service": False,
-                    # "profile.password_manager_enabled": False
+                    "credentials_enable_service": False,
+                    "profile.password_manager_enabled": False
                 }
                 options = Lib.webdriver.ChromeOptions()
 

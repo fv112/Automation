@@ -55,7 +55,7 @@ class Main:
 
         # Variables.
         duration = 0
-        status = None
+        status_ct = None
         testcase_status = None
         status_list = []
 
@@ -85,7 +85,7 @@ class Main:
 
                 # Ask if it needs to save the evidence.
                 if save_evidence:
-                    status = "Not Completed"
+                    status_ct = "Not Completed"
                     # Create the TestSet folder.
                     # test_set_path = Lib.os.path.join(Lib.Aux.directories["EvidenceFolder"],
                     #                                  Lib.Aux.otherConfigs["ETSName"] +
@@ -113,20 +113,20 @@ class Main:
 
                 print(f"{Lib.Aux.Textcolor.BOLD}{name_testcase}{Lib.Aux.Textcolor.END}")
                 # status, step_failed, take_picture_status = \
-                status, step_failed = \
+                status_ct, step_failed = \
                     Main.executeStepByStep(self, order_steps_list=order_steps_list, steps_list=steps_list,
                                            verbs_list=verbs_list, #test_set_path=Lib.Aux.directories['TestSetPath'],
                                            save_evidence=save_evidence, parameters1_list=parameters1_list,
                                            parameters2_list=parameters2_list)
 
                 # Set the list of iteration status for the test case.
-                status_list.append(status)
+                status_list.append(status_ct)
 
                 # If fail / abort in an iteration.
-                if status == "Failed" and save_evidence:
+                if status_ct == "Failed" and save_evidence:
                     Lib.Func.Main.verifyBrowser(self)
 
-                elif status == "Aborted" and save_evidence:
+                elif status_ct == "Aborted" and save_evidence:
                     Lib.Func.Main.verifyBrowser(self)
                     # status_ct_automation = 'Failed'
                 # else:
@@ -139,14 +139,14 @@ class Main:
 
                 # Verify in the list if the iteration status for the test case.
                 if "Failed" in status_list:
-                    status = "Failed"
+                    status_ct = "Failed"
                 elif "Aborted" in status_list:
-                    status = "Aborted"
+                    status_ct = "Aborted"
                 else:
-                    status = "Passed"
+                    status_ct = "Passed"
 
                 # If aborted do not create evidences.
-                if save_evidence and status != 'Aborted':
+                if save_evidence and status_ct != 'Aborted':
 
                     print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.logs['SavingEvidence']['Msg']}{Lib.Aux.Textcolor.END}")
 
@@ -187,7 +187,7 @@ class Main:
                         #                                       cont_iteration=cont_iteration)
 
                         self.connections.SaveEvidenceTestCase(project_id=project_id,
-                                                              test_case_id=test_case_id, status=status,
+                                                              test_case_id=test_case_id, status_ct=status_ct,
                                                               # evidence_folder=Lib.Aux.directories["EvidenceFolder"],
                                                               name_testcase=Lib.Aux.otherConfigs["ETSName"] +
                                                                             str(test_case_id) + " - " + name_testcase)
@@ -291,12 +291,19 @@ class Main:
                 if status_step == "Failed" and step_failed is None:
                     step_failed = step_order
                     status_steps.append("Failed")
+                    # return "Failed", step_failed
                 elif status_step == "Aborted" and step_failed is None:
                     step_failed = step_order
                     status_steps.append("Aborted")
                     return "Aborted", step_failed
                 else:
                     status_steps.append("Passed")
+
+                if status_step != 'Passed':
+                    image_name = Lib.Aux.otherConfigs["EvidenceName"] + str(step_order).zfill(2)
+                    take_picture_status = Lib.Func.Main.takePicture(self, image_name=image_name)
+                    if not take_picture_status:
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorScreenshot"], value1=step)
 
                 # # Take the screenshot of each step, except to the NoExecute step OR API Step OR Close.
                 # if (verb not in ('NoExecute', 'Fechar', 'Cerrar', 'Close') and

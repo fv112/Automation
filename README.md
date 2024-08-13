@@ -3,7 +3,10 @@ Automation QA - Release notes
 :bookmark: **Version 1.22.01**  
 
 <em>12/08/2024</em>
-:ok_hand: - Gravar a evidência após o preenchimento do campo de texto, quando este verbo for usado.  
+:ok_hand: - Gravar a evidência após o preenchimento do campo de texto, quando este verbo for usado.    
+:ok_hand: - Não apresentar mais a tela de gravação de senha no Chrome.  
+:bug: - Correção da frase de log go GetText.  
+:bug: - Correção na criação da evidência após falha de um passo.  
 #
 
 :bookmark: **Version 1.22.00**  

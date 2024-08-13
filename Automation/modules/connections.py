@@ -426,7 +426,7 @@ class Connections:
         # evidence_folder = kwargs.get("evidence_folder")
         test_case_id = kwargs.get("test_case_id")
         name_testcase = kwargs.get("name_testcase")
-        status = kwargs.get("status")
+        status_ct = kwargs.get("status_ct")
 
         file_url = None
 
@@ -435,7 +435,7 @@ class Connections:
             # Get Token.
             new_url = (url + 'projects/' + str(project_id) + '/uploads')
 
-            if status == 'Failed':
+            if status_ct == 'Failed':
                 status_name_testcase = '[BUG] - ' + name_testcase
             else:
                 status_name_testcase = name_testcase
