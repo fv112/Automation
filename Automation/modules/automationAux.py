@@ -631,6 +631,7 @@ class Main:
                     Main.createDirectory(self, path=directories['DownloadFolder'])
 
                     output_file = Lib.os.path.join(directories['DownloadFolder'], 'Green.zip')
+                    print('---> ' + output_file)
 
                     response = Lib.requests.get(otherConfigs['GitLabPackage'] + 'Green.zip', verify=False)
                     if response.status_code == 200:

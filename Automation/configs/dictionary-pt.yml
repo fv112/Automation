@@ -192,7 +192,7 @@ logs:
         ErrorDeleteFiles: {Type: Error, Msg: Erro ao deletar os arquivos!, Where: automationAux - deleteFiles},
         ErrorDoubleClick: {Type: Error, Msg: Erro no duplo clique no elemento!, Where: doubleClick},
         ErrorDownloadUpdate: {Type: Error, Msg: Falha ao realizar o download., Where: automationAux - checkNewVersion},
-        ErrorDownloadUpdateTitle: {Type: Error, Msg: Falha ao baixar a nova versão, Where: AppAutomation},###
+        #ErrorDownloadUpdateTitle: {Type: Error, Msg: Falha ao baixar a nova versão, Where: AppAutomation},
         ErrorDownload: {Type: Warning, Msg: Não foi possível realizar o download!, Where: startAutomation},
         ErrorDownloadAttachment: {Type: Error, Msg: Não foi possível gerar o arquivo .zip!, Where: DownloadAttachment},
         ErrorDragDrop: {Type: Error, Msg: Não foi possível segurar e arrastar o componente!, Where: dragDrop},
@@ -363,9 +363,9 @@ logs:
 directories:
     {
         AutomationPath: C:\ProgramData\QA-Automation\Automation\Blue\Automation,
-        BeyondCompare: C:\Program Files\Beyond Compare 4\BComp.com,
-        BeyondCompareSettings: Automation\configs\Settings.bcpkg,
-        CompareDownloadFolder: C:\QA-Automation-Files\Repository\Compare_Download,
+        #BeyondCompare: C:\Program Files\Beyond Compare 4\BComp.com,
+        #BeyondCompareSettings: Automation\configs\Settings.bcpkg,
+        #CompareDownloadFolder: C:\QA-Automation-Files\Repository\Compare_Download,
         ConfigFolder: Automation\configs,
         DownloadFolder: C:\ProgramData\QA-Automation-Files\Repository\Download,
         ESTFile: Automation\evidence\ETS - ,
@@ -374,7 +374,7 @@ directories:
         GitUrlReadme: https://raw.githubusercontent.com/fv112/Automation/CommandLine/README.md,
         HashFolder: C:\ProgramData\QA-Automation-Files\Repository\Hash,
         LogFolder: C:\ProgramData\QA-Automation-Files\Repository\Logs,
-        QA-AutomationFolder: C:\ProgramData\QA-Automation,
+        #QA-AutomationFolder: C:\ProgramData\QA-Automation,
         SwaggerFolder: C:\ProgramData\QA-Automation-Files\Repository\Swagger,
         Temp: C:\ProgramData\QA-Automation-Files\Repository\Temp\,
         TestSetPath: '',

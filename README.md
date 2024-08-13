@@ -1,5 +1,11 @@
 Automation QA - Release notes
 ---------
+:bookmark: **Version 1.22.04**  
+
+<em>13/08/2024</em>
+:construction: - Atualização automática da versão.      
+#
+
 :bookmark: **Version 1.22.03**  
 
 <em>13/08/2024</em>
