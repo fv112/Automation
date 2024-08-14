@@ -8,6 +8,9 @@ Automation QA - Release notes
 :ok_hand: - Aguarda 10 segundos antes de lançar erro de componente não encontrado.     
 :bug: - Correção do bug "unsupported operand type(s) for +: 'dict' and 'str'".  
 :ok_hand: - Melhoria no verbo "Selecionar".  
+:ok_hand: - Correção do selecionar.  
+:construction: - Melhoria no highlight.  
+
 #
 
 :bookmark: **Version 1.22.03**  
@@ -30,6 +33,7 @@ Automation QA - Release notes
 :ok_hand: - Não apresentar mais a tela de gravação de senha no Chrome.  
 :bug: - Correção da frase de log go GetText.  
 :bug: - Correção na criação da evidência após falha de um passo.  
+:ok_hand: - Organização da tabela.    
 #
 
 :bookmark: **Version 1.22.00**  

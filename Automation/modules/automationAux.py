@@ -140,7 +140,7 @@ class Main:
             if not Lib.os.path.exists(path):
                 Lib.os.makedirs(path)
                 print(f"{Textcolor.FAIL}{logs['ErrorCreateDirectory']['Msg']}{Textcolor.END}")
-                Main.addLogs(message="General", value=logs["ErrorCreateDirectory"], value1=str(path))
+                # Main.addLogs(message="General", value=logs["ErrorCreateDirectory"], value1=str(path))
                 return True
             else:
                 # Clear the old logs and evidences (Older than 30 days).

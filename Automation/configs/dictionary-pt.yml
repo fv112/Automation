@@ -185,7 +185,7 @@ logs:
         ErrorConvertPDF: {Type: Error, Msg: Não foi possível converter o ETS para PDF!, Where: automationCore},
         ErrorCompareFile: {Type: Error, Msg: Não foi possível abrir o Beyond Compare!, Where: compareBeyondCompare},
         ErrorCore: {Type: Error, Msg: Ocorreu um erro na aplicação!, Where: mainFunction},
-        ErrorCreateDirectory: {Type: Error, Msg: Ocorreu um erro na criação do diretório!, Where: createDirectory},
+        ErrorCreateDirectory: {Type: Error, Msg: Ocorreu um erro na criação do diretório!, Where: automationAux - createDirectory},
         ErrorCreatelog: {Type: Error, Msg: Erro na criação do log!, Where: createlog},
         ErrorDeleteDirectory: {Type: Error, Msg: Ocorreu um erro ao excluir o diretório!, Where: deleteDirectory},
         ErrorDeleteDownloadFile: {Type: Error, Msg: Erro ao deletar o arquivo baixado!, Where: DeleteDownloadFile},

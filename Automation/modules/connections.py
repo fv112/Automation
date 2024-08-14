@@ -90,12 +90,13 @@ class Connections:
                 if resp is not []:
 
                     table = Lib.PrettyTable(['PROJECT ID', 'PROJECT'])
+                    table.align['PROJECT'] = 'l'
 
                     for order in range(0, resp.__len__()):
                         table.add_row([str(resp[order]['id']), str(resp[order]['name'])])
                         projects_dic[resp[order]['id']] = str(resp[order]['name'])
 
-                    print(table.get_string(sortby="PROJECT ID"))
+                    print(table.get_string(sortby="PROJECT"))
 
                     project_list = [str(project_id) for project_id in list(projects_dic.keys())]
 
@@ -254,6 +255,7 @@ class Connections:
             if s.status_code == 200:
 
                 table = Lib.PrettyTable(['ORDER', 'TEST CASE ID', 'TEST CASE'])
+                table.align['TEST CASE'] = 'l'
 
                 # Filter some fields.
                 json_str = Lib.json.dumps(s.json())

@@ -18,6 +18,7 @@ class Main:
         step_order = kwargs.get('step_order')
         several = kwargs.get('several', False)
         color = kwargs.get('color', 'blue')
+        element = kwargs.get('element')
 
         new_element = None
 
@@ -50,19 +51,22 @@ class Main:
 
                         return "Failed"
 
-                    #driver.implicitly_wait(3)
-                    wait = Lib.WebDriverWait(driver, 10)
+                    driver.implicitly_wait(5)
+                    # wait = Lib.WebDriverWait(driver, 60)
 
                     if several:  # Check the quantity of elements.
-                        waits = wait.until(Lib.ec.visibility_of_element_located((tag, parameters1)))
                         new_elements = driver.find_elements(tag, parameters1)
+
+                        # new_elements = Lib.WebDriverWait(driver, 60).until(Lib.ec.presence_of_element_located(driver.find_elements(tag, parameters1)))
+
+                        # waits = wait.until(Lib.ec.visibility_of_element_located((tag, parameters1)))
 
                         if new_elements:
 
-                            for element in new_elements:
-                                driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
+                            for new_element in new_elements:
+                                # driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", new_element)
 
-                                Main.highlight(self, new_element=element, color=color, border=3, several=several,
+                                Main.highlight(self, new_element=new_element, color=color, border=3, several=several,
                                                save_evidence=save_evidence, step=step, step_order=step_order)
 
                                 Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["FindElement"], value1=tag,
@@ -71,31 +75,28 @@ class Main:
                             return new_elements
 
                     else:
-                        new_element = driver.find_element(tag, parameters1)
-                        waits = wait.until(Lib.ec.visibility_of_element_located((tag, parameters1)))
+                        # new_element = driver.find_element(tag, parameters1)
+                        # waits = wait.until(Lib.ec.visibility_of_element_located((tag, parameters1)))
 
-                        if new_element is not None:
-                            # Set element focus.
-                            driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", new_element)
-
-                            Main.highlight(self, new_element=new_element, color=color, border=3, several=several,
-                                           save_evidence=save_evidence, step=step, step_order=step_order)
-
-                            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["FindElement"], value1=tag,
-                                                 value2=parameters1)
-
-                            return new_element
+                        if element:  # Don't need to find the component again.
+                            new_element = element
+                        else:
+                            new_element = driver.find_element(tag, parameters1)
+                            if new_element:
+                                break
 
                 except Lib.NoSuchElementException:
                     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningFindElement"], value1=tag,
                                          value2=parameters1)
 
-                # except Exception as ex:
-                #     return "False"
+            # Lib.WebDriverWait(driver, 60).until(Lib.ec.presence_of_element_located(new_element))
+            # if new_element:  # is not None:
+            Main.highlight(self, new_element=new_element, color=color, border=3, several=several, ### Aqui o new_element virou element, pode estar dando erro.
+                           save_evidence=save_evidence, step=step, step_order=step_order)
 
-                # finally:
-                #
-                #     return new_element
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["FindElement"], value1=parameters1)
+
+            return new_element
 
     # -------------------------------------------- Action Elements -----------------------------------------------------
     def fillField(self, **kwargs):
@@ -113,7 +114,7 @@ class Main:
             if parameters2.upper() not in ('VAZIO', 'VACÍO', 'EMPTY'):
                 element_field.send_keys(parameters2)
 
-            _ = Main.findElement(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
+            _ = Main.findElement(self, element=element_field, save_evidence=save_evidence, step=step,
                                  step_order=step_order)
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["FillField"])
@@ -422,7 +423,6 @@ class Main:
 
         try:
 
-
             # Only to highlight and take picture.
             # _ = Main.findElement(self, parameters1='parameters1', save_evidence=save_evidence, step=step,
             #                      step_order=step_order)
@@ -430,32 +430,36 @@ class Main:
             element = Main.findElement(self, parameters1=parameters1)
             element_field = Lib.Select(element)
 
-            for option in ['value', 'id', 'text']:
+            #for option in ['value', 'index', 'text']:
                 # method, value = option
-                try:
-                    if option == 'value':
-                        element_field.select_by_value(parameters2)
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["SelectDropDownList"],
-                                             value1=parameters1, value2=parameters2)
-                        return "Passed"
-                    elif option == 'text':
-                        element_field.select_by_visible_text(parameters2)
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["SelectDropDownList"],
-                                             value1=parameters1, value2=parameters2)
-                        return "Passed"
-                    elif option == 'index':
-                        element_field.select_by_index(int(parameters2))
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["SelectDropDownList"],
-                                             value1=parameters1, value2=parameters2)
-                        return "Passed"
-                except Lib.NoSuchElementException:
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["NoSelectDropDownList"])
+            try:
+                # if option == 'value':
+                #     element_field.select_by_value(parameters2)
+                #     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["SelectDropDownList"],
+                #                          value1=parameters1, value2=parameters2)
+                #     return "Passed"
+                # elif option == 'text':
+                element_field.select_by_visible_text(parameters2)
+
+                # return "Passed"
+                # elif option == 'index':
+                #     element_field.select_by_index(int(parameters2))
+                #     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["SelectDropDownList"],
+                #                          value1=parameters1, value2=parameters2)
+                #     return "Passed"
+
+                _ = Main.findElement(self, element=element, save_evidence=save_evidence, step=step,
+                                     step_order=step_order)
+
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["SelectDropDownList"],
+                                     value1=parameters1, value2=parameters2)
+            except Lib.NoSuchElementException:
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["NoSelectDropDownList"])
 
             # element_field.select_by_visible_text(parameters2)
             # element_field.select_by_value(parameters2)
 
-            _ = Lib.Select(Main.findElement(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
-                                            step_order=step_order))
+
 
             # Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["SelectDropDownList"], value1=parameters1,
             #                      value2=parameters2)
@@ -1506,6 +1510,9 @@ class Main:
             # Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["TakePicture"])
 
             elif save_evidence and new_element != 'full_screen':
+
+                driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", new_element)
+
                 def apply_style(style):
                     driver.execute_script("arguments[0].setAttribute('style', arguments[1]);", new_element, style)
 
@@ -1518,6 +1525,7 @@ class Main:
                 # take_picture_status = Lib.Func.Main.takePicture(self, test_set_path=Lib.Aux.directories['TestSetPath'],
                 #                                                 image_name=image_name)
                 take_picture_status = Lib.Func.Main.takePicture(self, image_name=image_name)
+
                 if not take_picture_status:
                     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorScreenshot"], value1=step)
 
