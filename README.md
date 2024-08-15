@@ -9,8 +9,7 @@ Automation QA - Release notes
 :bug: - Correção do bug "unsupported operand type(s) for +: 'dict' and 'str'".  
 :ok_hand: - Melhoria no verbo "Selecionar".  
 :ok_hand: - Correção do selecionar.  
-:construction: - Melhoria no highlight.  
-
+:ok_hand: - Melhoria no highlight.  
 #
 
 :bookmark: **Version 1.22.03**  
