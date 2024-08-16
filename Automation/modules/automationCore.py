@@ -13,7 +13,7 @@ class Main:
 
         try:
             # Lib.Aux.Main.deleteDirectory(self, directory=Lib.Aux.directories["Temp"])
-            Lib.Aux.Main.deleteDirectory(self)
+            Lib.Aux.Main.deleteDirectory(self, path_folder=Lib.Aux.directories['TestSetPath'])
 
             project_id, project_name = self.connections.getProjects()
 
@@ -93,6 +93,10 @@ class Main:
                     Lib.Aux.directories['TestSetPath'] = Lib.os.path.join(Lib.Aux.directories["EvidenceFolder"],
                                                                           Lib.Aux.otherConfigs["ETSName"] +
                                                                           str(test_case_id) + " - " + name_testcase)
+
+                    # Clear the evidences.
+                    Lib.Aux.Main.deleteFiles(folder_path=Lib.Aux.directories['TestSetPath'], extension="png")
+                    Lib.Aux.Main.deleteFiles(folder_path=Lib.Aux.directories['TestSetPath'], extension="json")
 
                     # Lib.Aux.Main.createDirectory(path_folder=Lib.Aux.directories['TestSetPath'])
                     Lib.Aux.Main.createDirectory(self, path=Lib.Aux.directories['TestSetPath'])
@@ -191,12 +195,13 @@ class Main:
                                                               # evidence_folder=Lib.Aux.directories["EvidenceFolder"],
                                                               name_testcase=Lib.Aux.otherConfigs["ETSName"] +
                                                                             str(test_case_id) + " - " + name_testcase)
+                        Lib.Aux.Main.deleteFiles(folder_path=Lib.Aux.directories['TestSetPath'], extension="png")
+                        Lib.Aux.Main.deleteFiles(folder_path=Lib.Aux.directories['TestSetPath'], extension="json")
 
                     # Clear the evidences prints.
                     # Lib.Aux.Main.deleteFiles(file_path=Lib.Aux.directories['TestSetPath'], extension="png")
                     # Lib.Aux.Main.deleteFiles(file_path=Lib.Aux.directories['TestSetPath'], extension="json")
-                    Lib.Aux.Main.deleteFiles(extension="png")
-                    Lib.Aux.Main.deleteFiles(extension="json")
+
 
                     # If there is file to download update to GitLab.
                     # if save_evidence and not status == "Aborted":
@@ -299,7 +304,7 @@ class Main:
                 else:
                     status_steps.append("Passed")
 
-                if status_step != 'Passed':
+                if Lib.Aux.otherConfigs['API_Step'] is False and status_step != 'Passed':
                     image_name = Lib.Aux.otherConfigs["EvidenceName"] + str(step_order).zfill(2)
                     take_picture_status = Lib.Func.Main.takePicture(self, image_name=image_name)
                     if not take_picture_status:

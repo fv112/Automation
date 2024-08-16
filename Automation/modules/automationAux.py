@@ -170,13 +170,15 @@ class Main:
             return False
 
     # Delete the directories.
-    def deleteDirectory(self):
+    def deleteDirectory(self, **kwargs):
         try:
             # kwargs variables.
-            # path_folder = kwargs.get('directory')
+            path_folder = kwargs.get('path_folder')
 
-            if Lib.os.path.exists(directories['TestSetPath']):
-                Lib.shutil.rmtree(directories['TestSetPath'])
+            # if Lib.os.path.exists(directories['TestSetPath']):
+            #     Lib.shutil.rmtree(directories['TestSetPath'])
+            if Lib.os.path.exists(path_folder):
+                Lib.shutil.rmtree(path_folder)
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorDeleteDirectory']['Msg']}{Textcolor.END}", ex)
@@ -238,7 +240,7 @@ class Main:
                                 '"Não"'.replace('"', '')):
 
                     # Last step or take_picture_status is true.
-                    if verb not in ('Fechar', 'Cerrar', 'Close'):  # and take_picture_status:
+                    if verb not in ('Fechar', 'Cerrar', 'Close') and otherConfigs['API_Step'] is False:  # and take_picture_status:
                         # Check the image size.
                         image_path = Lib.os.path.join(directories['TestSetPath'], otherConfigs["EvidenceName"] +
                                                       str(step_order).zfill(2) + otherConfigs["EvidenceExtension"])
@@ -265,7 +267,7 @@ class Main:
                     #     paragraf = document.add_paragraph(comment)
                     #     run_paragraf = paragraf.add_run()
 
-                    if (verb not in ('Fechar', 'Cerrar', 'Close') and otherConfigs['API_Step'] is False):
+                    if verb not in ('Fechar', 'Cerrar', 'Close') and otherConfigs['API_Step'] is False:
                         # and take_picture_status and
                         # Resize the image if it is not full screen.
                         run_paragraf.add_break()
@@ -464,19 +466,23 @@ class Main:
 
         try:
             # kwargs arguments.
-            # file_path = kwargs.get('file_path')
+            folder_path = kwargs.get('folder_path')
             extension = kwargs.get('extension')
             exact_file = kwargs.get('exact_file')
 
             # Delete all the files in a directory with the specific extension OR all if the extension is '*'.
             # if file_path:
-            if directories['TestSetPath']:
+            # if directories['TestSetPath']:
+            if Lib.os.path.exists(folder_path):
+            # if folder_path:
 
-                files = Lib.os.listdir(Lib.Aux.directories['TestSetPath'])
+                # files = Lib.os.listdir(Lib.Aux.directories['TestSetPath'])
+                files = Lib.os.listdir(folder_path)
 
                 for item in files:
                     if item.endswith(extension) or extension == '*':
-                        Lib.os.remove(Lib.os.path.join(directories['TestSetPath'], item))
+                        # Lib.os.remove(Lib.os.path.join(directories['TestSetPath'], item))
+                        Lib.os.remove(Lib.os.path.join(folder_path, item))
 
             else:
                 Lib.os.remove(exact_file)
@@ -1022,7 +1028,7 @@ class ApiSchema:
 
             swagger_data = ApiSchema.load_swagger(self, Lib.os.path.join(directories['SwaggerFolder'],
                                                                          self.swagger_file))
-
+            # Generate fake data to the data types
             ApiSchema.extract_jsonschema_relevant_data(self, swagger_data)
 
             print(f"{Textcolor.WARNING}{otherConfigs['API_ExtractInfo']['Msg']} {self.swagger_file}{Textcolor.END}")
@@ -1057,12 +1063,12 @@ class ApiSchema:
             #
             #     print("-" * 90)
 
-            Main.deleteFiles(file_path=directories['SwaggerFolder'], extension='*')
+            Main.deleteFiles(folder_path=directories['SwaggerFolder'], extension='*')
 
             return self.json_fake_data
 
         except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['ErrorAPICheck']['Msg']}{Textcolor.END}", ex)
+            print(f"{Textcolor.FAIL}{logs['ErrorAPICheck']['Msg']}{Textcolor.END}", str(ex))
             Main.addLogs(message="General", value=logs["ErrorAPICheck"], value1=str(ex))
 
     def load_swagger(self, file_path):
@@ -1072,7 +1078,7 @@ class ApiSchema:
                 return Lib.json.load(f)
 
         except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['ErrorLoadSwagger']['Msg']}{Textcolor.END}", ex)
+            print(f"{Textcolor.FAIL}{logs['ErrorLoadSwagger']['Msg']}{Textcolor.END}", str(ex))
             Main.addLogs(message="General", value=logs["ErrorLoadSwagger"], value1=str(ex))
 
     def extract_jsonschema_relevant_data(self, swagger_data):
@@ -1089,7 +1095,7 @@ class ApiSchema:
                 Lib.json.dump(relevant_data, f, indent=2)
 
         except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['ErrorExtractJson']['Msg']}{Textcolor.END}", ex)
+            print(f"{Textcolor.FAIL}{logs['ErrorExtractJson']['Msg']}{Textcolor.END}", str(ex))
             Main.addLogs(message="General", value=logs["ErrorExtractJson"], value1=str(ex))
 
     # Generate fake data.

@@ -1,15 +1,20 @@
 Automation QA - Release notes
 ---------
-:bookmark: **Version 1.22.04**  
+:bookmark: **Version 1.23.00**  
 
-<em>xx/08/2024</em>
-:construction: - Atualização automática da versão.
-:ok_hand: - Aumento na velocidade da busca dos componentes.   
-:ok_hand: - Aguarda 10 segundos antes de lançar erro de componente não encontrado.     
+<em>16/08/2024</em>
+:construction: - Atualização automática da versão.  
+:ok_hand: - Aumento na velocidade da busca dos componentes.     
+:ok_hand: - Aguarda 10 segundos antes de lançar erro de componente não encontrado.       
 :bug: - Correção do bug "unsupported operand type(s) for +: 'dict' and 'str'".  
 :ok_hand: - Melhoria no verbo "Selecionar".  
 :ok_hand: - Correção do selecionar.  
 :ok_hand: - Melhoria no highlight.  
+:ok_hand: - Melhoria ao identificar os elementos na página web.   
+:ok_hand: - Novo template para log do Notepad++.  
+:ok_hand: - Só apaga as evidências no início do próximo caso de teste.    
+:ok_hand: - Correção na demora para abrir o browser.  
+:bug: - Correção na geração das evidências de um teste de API.    
 #
 
 :bookmark: **Version 1.22.03**  

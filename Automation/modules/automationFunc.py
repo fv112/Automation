@@ -2,6 +2,9 @@ import common_libs as Lib
 
 driver = None
 
+# class NotFound(Exception):
+#     pass
+
 
 class Main:
 
@@ -52,11 +55,11 @@ class Main:
 
             try:
                 if tag == 'Not Found':
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningFindElement"], value1=tag,
-                                         value2=parameters1)
+                    # Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningFindElement"], value1=tag,
+                    #                      value2=parameters1)
 
-                    return "Failed"
-
+                    return "Failed", "None", "None"
+                    # raise NotFound
                     # driver.implicitly_wait(5)
 
                     # if several is False:
@@ -70,8 +73,12 @@ class Main:
                         return "Passed", tag, elements_fields
 
                 else:
+                    # _ = (Lib.WebDriverWait(driver, 10).until(Lib.ec.
+                    #                                          visibility_of_element_located((tag, parameters1))))
+
                     element_field = driver.find_element(tag, parameters1)
                     if element_field:
+                        # element_field = driver.find_element(tag, parameters1)
                         #         # driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element_field)
                         #         break
                         return "Passed", tag, element_field
@@ -92,6 +99,12 @@ class Main:
             except Lib.NoSuchElementException:
                 Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningFindElement"], value1=tag,
                                      value2=parameters1)
+
+            # except NotFound:
+            #     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningFindElement"], value1=tag,
+            #                          value2=parameters1)
+            #
+            #     return "Failed", "None", "None"
 
             # Lib.WebDriverWait(driver, 60).until(Lib.ec.presence_of_element_located(new_element))
             # if new_element:  # is not None:
@@ -132,7 +145,8 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorFillField"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorFillField"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
 
             return "Failed"
 
@@ -182,7 +196,8 @@ class Main:
             step_order = kwargs.get('step_order')
 
             status, tag, element_field = Main.findElement(self, parameters1=parameters1)
-            Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step, step_order=step_order, tag=tag)
+            Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step, step_order=step_order,
+                           tag=tag)
             element_field.click()
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["Click"], value1=parameters1)
@@ -190,7 +205,8 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorClick"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorClick"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
             return "Failed"
 
     # Double click.
@@ -203,7 +219,8 @@ class Main:
             step_order = kwargs.get('step_order')
 
             status, tag, element_field = Main.findElement(self, parameters1=parameters1)
-            Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step, step_order=step_order, tag=tag)
+            Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step, step_order=step_order,
+                           tag=tag)
             element_field.click()
             element_field.click()
 
@@ -225,7 +242,8 @@ class Main:
 
             actions = Lib.ActionChains(driver)
             status, tag, element_field = Main.findElement(self, parameters1=parameters1)
-            Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step, step_order=step_order, tag=tag)
+            Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step, step_order=step_order,
+                           tag=tag)
 
             actions.context_click(element_field)
             actions.perform()
@@ -302,7 +320,8 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorDragDropToElement"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorDragDropToElement"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
             return "Failed"
 
     # Type keyboard key.
@@ -374,7 +393,8 @@ class Main:
 
         except Exception as ex:
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorPressButton"],
-                                 value1=parameters1 + " - " + str(ex))
+                                 value1=parameters1 + " - " + str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
             return "Failed"
 
     # Mouse Over.
@@ -401,7 +421,8 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorMouseOver"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorMouseOver"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
 
             return "Failed"
 
@@ -426,7 +447,8 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorWait"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorWait"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
 
             return "Failed"
 
@@ -448,6 +470,9 @@ class Main:
             status, tag, element_field = Main.findElement(self, parameters1=parameters1)
             element = Lib.Select(element_field)
 
+            if status == 'Failed':
+                raise Exception
+
             #for option in ['value', 'index', 'text']:
                 # method, value = option
             try:
@@ -463,7 +488,7 @@ class Main:
 
                 element.select_by_visible_text(parameters2)
                 Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
-                    step_order=step_order, tag=tag)
+                               step_order=step_order, tag=tag)
 
                 # return "Passed"
                 # elif option == 'index':
@@ -471,8 +496,6 @@ class Main:
                 #     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["SelectDropDownList"],
                 #                          value1=parameters1, value2=parameters2)
                 #     return "Passed"
-
-
 
                 Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["SelectDropDownList"],
                                      value1=parameters1, value2=parameters2)
@@ -490,7 +513,8 @@ class Main:
             return "Passed"
 
         except Lib.NoSuchElementException as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorSelectDropDownList"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorSelectDropDownList"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
 
             return "Failed"
 
@@ -532,14 +556,15 @@ class Main:
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetText"])
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetText"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetText"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
 
             return Lib.Aux.logs["ErrorGetText"]['Msg'], "Failed"
 
     def openNewTab(self, **kwargs):
         try:
             # kwargs arguments.
-            save_evidence = kwargs.get('save_evidence')
+            # save_evidence = kwargs.get('save_evidence')
             step = kwargs.get('step')
             step_order = kwargs.get('step_order')
 
@@ -554,7 +579,8 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorOpenNewTab"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorOpenNewTab"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
 
             return "Failed"
 
@@ -578,7 +604,8 @@ class Main:
             return url, "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetURL"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetURL"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
 
             return None, "Failed"
 
@@ -586,7 +613,7 @@ class Main:
     def getTitle(self, **kwargs):
 
         # kwargs arguments.
-        save_evidence = kwargs.get('save_evidence')
+        # save_evidence = kwargs.get('save_evidence')
         step = kwargs.get('step')
         step_order = kwargs.get('step_order')
 
@@ -603,7 +630,8 @@ class Main:
             return title, "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetTitle"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetTitle"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
 
             return None, "Failed"
 
@@ -626,7 +654,8 @@ class Main:
             return driver, "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorBackPage"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorBackPage"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
 
             return "Failed"
 
@@ -649,7 +678,8 @@ class Main:
             return driver, "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorForwardPage"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorForwardPage"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
 
             return "Failed"
 
@@ -693,7 +723,8 @@ class Main:
             return text_found, "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetAttribute"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetAttribute"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
 
             return text_found, "Failed"
 
@@ -701,6 +732,7 @@ class Main:
 
         # kwargs arguments.
         parameters1 = kwargs.get('parameters1')
+        parameters2 = kwargs.get('parameters2')
         save_evidence = kwargs.get('save_evidence')
         step = kwargs.get('step')
         step_order = kwargs.get('step_order')
@@ -738,30 +770,39 @@ class Main:
                 #new_element = driver.find_elements(tag, parameters1)
             status, tag, elements_fields = Main.findElement(self, parameters1=parameters1, several=True)
 
-            for _, new_element in enumerate(elements_fields):
-                original_style = new_element.get_attribute('style')
-                Main.highlight(self, parameters1=new_element, step=step, step_order=step_order, tag=tag, several=True,
-                               color='yellow', save_evidence=save_evidence) ### Problema aqui
-                Main.apply_style(new_element, original_style)
-
             # new_elements = len(new_element)
 
+            if status == 'Passed':
+                for _, new_element in enumerate(elements_fields):
+                    original_style = new_element.get_attribute('style')
+                    Main.highlight(self, parameters1=new_element, step=step, step_order=step_order, tag=tag,
+                                   several=True, color='yellow', save_evidence=save_evidence)
 
+                for _, new_element in enumerate(elements_fields):
+                    Main.apply_style(new_element, original_style)
+
+            if int(parameters2) == len(elements_fields):
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetQuantityElements"],
+                                     value1=str(len(elements_fields)), value2=parameters1)
+
+                return len(elements_fields), "Passed"
+            else:
+                raise Exception(len(elements_fields))
 
             # elif x > 8:
             #     return elements, "Passed"
 
-            if new_elements > 0:
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetQuantityElements"],
-                                     value1=str(new_elements), value2=parameters1)
-
-                return new_elements, "Passed"
+            # if new_elements > 0:
+            #     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetQuantityElements"],
+            #                          value1=str(new_elements), value2=parameters1)
+            #
+            #     return len(elements_fields), "Passed"
 
         except Exception as ex:
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetQuantityElements"], value1=str(ex),
                                  value2=parameters1)
 
-            return None, "Failed"
+            return len(elements_fields), "Failed"
 
     # Scroll Page
     def scrollPage(self, **kwargs):
@@ -787,7 +828,8 @@ class Main:
                 return "Failed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorScrollPage"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorScrollPage"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
 
             return "Failed"
 
@@ -814,7 +856,8 @@ class Main:
             #     return "Failed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorRefreshPage"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorRefreshPage"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
 
             return "Failed"
 
@@ -839,7 +882,8 @@ class Main:
                 return "Failed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsEnable"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsEnable"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
 
             return "Failed"
 
@@ -867,7 +911,8 @@ class Main:
                 return "Failed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsDisplayed"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsDisplayed"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
 
             return "Failed"
 
@@ -892,7 +937,8 @@ class Main:
                 return "Failed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsSelected"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsSelected"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
             return "Failed"
 
     # Validate data (With * validate the partial text).
@@ -1003,7 +1049,8 @@ class Main:
 
                 # Checks whether a checkbox or radio button is selected.
                 elif '(.)' in parameters2:
-                    status = Main.isSelected(self, parameters1=parameters1)
+                    status = Main.isSelected(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
+                                             step_order=step_order)
 
                     # parameters2 = parameters2.replace('(.)', '')
 
@@ -1079,25 +1126,27 @@ class Main:
 
                 # Get the amount of elements.
                 elif '<' and '>' in parameters2:
-                    text_found, status = Main.getQuantityElements(self, parameters1=parameters1, step=step,
-                                                                  save_evidence=save_evidence, step_order=step_order)
                     parameters2 = parameters2.replace('<', '')
                     parameters2 = parameters2.replace('>', '')
 
-                    if int(parameters2) == text_found:
+                    n_elements, status = Main.getQuantityElements(self, parameters1=parameters1, step=step,
+                                                                  parameters2=parameters2, step_order=step_order,
+                                                                  save_evidence=save_evidence)
+
+                    if status == 'Passed':
                         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetQuantityElements"])
-                        status = "Passed"
-                        text_found = str(text_found)
+                        # status = "Passed"
+                        # text_found = str(n_elements)
 
                     else:
                         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetQuantityElements"])
-                        status = "Failed"
-                        text_found = str(text_found)
+                        # status = "Failed"
+                        # text_found = str(text_found)
 
                     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataExpected'],
                                          value1=str(parameters2))
                     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataObtained'],
-                                         value1=str(text_found))
+                                         value1=str(n_elements))
 
                 # Validates that the text obtained from the page is the same as the expected text.
                 else:
@@ -1143,7 +1192,8 @@ class Main:
             return status
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorFunctionValidateData"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorFunctionValidateData"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
             return "Failed"
 
     # Alter (Verify iFrame or Windows).
@@ -1171,7 +1221,8 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAlter"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAlter"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
             return "Failed"
 
     # Alter window.
@@ -1179,7 +1230,7 @@ class Main:
 
         try:
             # kwargs arguments.
-            save_evidence = kwargs.get('save_evidence')
+            # save_evidence = kwargs.get('save_evidence')
             step = kwargs.get('step')
             step_order = kwargs.get('step_order')
 
@@ -1195,7 +1246,8 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAlterWindow"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAlterWindow"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
             return "Failed"
 
     # Alter IFrame.
@@ -1208,8 +1260,8 @@ class Main:
             step = kwargs.get('step')
             step_order = kwargs.get('step_order')
 
-            iframe = Main.findElement(self, parameters1=parameters2, save_evidence=save_evidence, step=step,
-                                      step_order=step_order)
+            _, _, iframe = Main.findElement(self, parameters1=parameters2, save_evidence=save_evidence, step=step,
+                                            step_order=step_order)
 
             # switch to selected iframe
             driver.switch_to.frame(iframe)
@@ -1219,7 +1271,8 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAlterIframe"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAlterIframe"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
             return "Failed"
 
     # Alter Alert and Click OK.
@@ -1234,7 +1287,8 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAlterAlert"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAlterAlert"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
             return "Failed"
 
     # Return to default.
@@ -1257,7 +1311,8 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorReturnDefault"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorReturnDefault"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
             return "Failed"
 
     # Return to window.
@@ -1285,7 +1340,8 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorReturnIframe"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorReturnIframe"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
             return "Failed"
 
     # Choose an option in a browser alert screen.
@@ -1307,7 +1363,7 @@ class Main:
                 _ = Main.validateData(self, alert='AlertScreen', parameters1=parameters1, parameters2=alert.text)
                 # status, tag, elements_fields = Main.findElement(self, parameters1='Alert', save_evidence=save_evidence,
                 #                                                 step=step, step_order=step_order)
-                Main.highlight(self, parameters1='Alert', step=step, step_order=step_order)
+                Main.highlight(self, parameters1='Alert', step=step, step_order=step_order, save_evidence=save_evidence)
 
             # Actions inside de Alert.
             if parameters2.upper() in ("OK", "ACEPTAR"):
@@ -1333,7 +1389,8 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorInform"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorInform"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
             return "Failed"
 
     # Function to create the browser object.
@@ -1343,7 +1400,7 @@ class Main:
             # kwargs arguments.
             parameters1 = kwargs.get('parameters1')
             enable_cookie = kwargs.get('enable_cookie')
-            save_evidence = kwargs.get('save_evidence')
+            # save_evidence = kwargs.get('save_evidence')
             step = kwargs.get('step')
             step_order = kwargs.get('step_order')
 
@@ -1448,6 +1505,8 @@ class Main:
             # Set the page load timeout (receive in minutes from interface).
             driver.set_page_load_timeout(int(Lib.Aux.otherConfigs['TimeoutSession']) * 60)
 
+            # Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order)
+
             return "Passed"
 
         except Lib.requests.exceptions.RequestException:
@@ -1458,7 +1517,8 @@ class Main:
 
         except Exception as ex:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorOpenBrowser']['Msg']}{Lib.Aux.Textcolor.END}")
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorOpenBrowser"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorOpenBrowser"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
 
             return "Failed"
 
@@ -1479,13 +1539,13 @@ class Main:
     # Close (windows or the whole browser).
     def close(self, **kwargs):
 
-        try:
-            # kwargs arguments.
-            parameters1 = kwargs.get('parameters1')
-            save_evidence = kwargs.get('save_evidence')
-            step = kwargs.get('step')
-            step_order = kwargs.get('step_order')
+        # kwargs arguments.
+        parameters1 = kwargs.get('parameters1')
+        save_evidence = kwargs.get('save_evidence')
+        step = kwargs.get('step')
+        step_order = kwargs.get('step_order')
 
+        try:
             if parameters1 is None:  # If none was informed = Close Windows.
                 driver.quit()
                 Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["CloseBrowser"])
@@ -1500,7 +1560,8 @@ class Main:
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorClose"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorClose"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
             return "Failed"
 
     # Open page address.
@@ -1509,21 +1570,23 @@ class Main:
         try:
             # kwargs arguments.
             parameters1 = kwargs.get('parameters1')
-            # save_evidence = kwargs.get('save_evidence')
+            save_evidence = kwargs.get('save_evidence')
             step = kwargs.get('step')
             step_order = kwargs.get('step_order')
 
             driver.get(parameters1)
             # _ = Main.findElement(self, parameters1='full_screen', save_evidence=save_evidence, step=step,
             #                      step_order=step_order)
-            Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order)
+            Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order,
+                           save_evidence=save_evidence)
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["OpenPage"])
 
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorOpenPage"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorOpenPage"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
 
             return "Failed"
 
@@ -1566,12 +1629,17 @@ class Main:
 
             elif save_evidence and parameters1 != 'full_screen':
 
-                new_element = Lib.WebDriverWait(driver, 10).until(Lib.ec.visibility_of_element_located
-                                                                  ((tag, parameters1)))
+                if several is False:
+                    new_element = Lib.WebDriverWait(driver, 10).until(Lib.ec.visibility_of_element_located
+                                                                      ((tag, parameters1)))
+                    original_style = new_element.get_attribute('style')
+                else:
+                    new_element = parameters1
+                #     new_element = Lib.WebDriverWait(driver, 10).until(Lib.ec.visibility_of_element_located
+                #                                                       (parameters1))
 
                 driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", new_element)
 
-                # original_style = new_element.get_attribute('style')
                 Main.apply_style(new_element, "border: {0}px solid {1};".format(border, color))
                 Lib.time.sleep(1)
 
@@ -1581,11 +1649,11 @@ class Main:
                 #                                                 image_name=image_name)
                 take_picture_status = Lib.Func.Main.takePicture(self, image_name=image_name)
 
+                if several is False:
+                    Main.apply_style(new_element, original_style)
+
                 if not take_picture_status:
                     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorScreenshot"], value1=step)
-
-                # if several is False:
-                #     apply_style(original_style)
 
             elif parameters1 == 'full_screen':
                 highlight_script = """
@@ -1607,7 +1675,8 @@ class Main:
                     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorScreenshot"], value1=step)
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorHighLight"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorHighLight"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
 
     # Configure the save path - Only Edge Legacy.
     @staticmethod
@@ -1702,8 +1771,9 @@ class Main:
             return False
 
         except Exception as ex:
-            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorTakePicture']['Msg']}{Lib.Aux.Textcolor.END}", ex)
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorTakePicture"], value1=str(ex))
+            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorTakePicture']['Msg']}{Lib.Aux.Textcolor.END}", str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorTakePicture"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
 
             return False
 
@@ -1716,6 +1786,7 @@ class Main:
             api_action = kwargs.get("api_action")
             num_of_steps = kwargs.get("num_of_steps")
             step_order = kwargs.get("step_order")
+            step = kwargs.get('step')
 
             # Variables
             Lib.Aux.otherConfigs['API_Step'] = True
@@ -1789,16 +1860,18 @@ class Main:
 
         except Exception as ex:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequestAPI']['Msg']}{Lib.Aux.Textcolor.END}", str(ex))
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorRequestAPI"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorRequestAPI"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
 
             return "Failed"
 
     def responseAPI(self, **kwargs):
 
-
         try:
             # kwargs variables:
             parameters1 = kwargs.get("parameters1")
+            step = kwargs.get("step")
+            step_order = kwargs.get("step_order")
             find_content = None
             status_code = None
             schema = None
@@ -1825,6 +1898,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorResponseAPI']['Msg']}{Lib.Aux.Textcolor.END}", str(ex))
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorResponseAPI"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorResponseAPI"], value1=str(ex),
+                                 value2=f' Step order: {step_order} / Step: {step}')
 
             return "Failed"

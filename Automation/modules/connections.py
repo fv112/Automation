@@ -518,14 +518,10 @@ class Connections:
                            'Content-Type': 'application/json'}
 
             if api_action.upper() == "GET":
-                api_result = Lib.requests.get(Lib.Aux.otherConfigs['API_Endpoint'],
-                                          params=Lib.Aux.otherConfigs['API_Params'],
-                                          headers=headers,
-                                          data=Lib.json.dumps(body))
+                api_result = Lib.requests.get(Lib.Aux.otherConfigs['API_Endpoint'], data=Lib.json.dumps(body),
+                                              params=Lib.Aux.otherConfigs['API_Params'], headers=headers)
             elif api_action.upper() == "POST":
-                api_result = Lib.requests.post(Lib.Aux.otherConfigs['API_Endpoint'],
-                                               headers=headers,
-                                               data=body)
+                api_result = Lib.requests.post(Lib.Aux.otherConfigs['API_Endpoint'], headers=headers, data=body)
 
                 Lib.Aux.otherConfigs['API_StatusCode'] = api_result.status_code
                 resp = Lib.json.loads(api_result.text)
@@ -538,9 +534,9 @@ class Connections:
                 elif api_result.status_code == 200:
                     return Lib.Aux.otherConfigs['API_Response']
 
-        except Exception as e:
-            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorSendRequest']['Msg']}{Lib.Aux.Textcolor.END}", e)
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorSendRequest'], value1=str(e))
+        except Exception as ex:
+            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorSendRequest']['Msg']}{Lib.Aux.Textcolor.END}", str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorSendRequest'], value1=str(ex))
             # exit(1)
 
     # def UpdateStatusAutomated(self, **kwargs):
