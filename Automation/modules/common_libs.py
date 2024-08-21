@@ -39,7 +39,6 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.alert import Alert
-### from selenium.common.exceptions import NoAlertPresentException
 
 # Chrome
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -58,7 +57,6 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.select import Select
-### from selenium.webdriver.support.ui import Select
 from bs4 import BeautifulSoup
 
 sys.path.insert(0, os.path.abspath('./Automations/modules'))

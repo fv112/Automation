@@ -1,8 +1,17 @@
 Automation QA - Release notes
 ---------
-:bookmark: **Version 1.23.00**  
+:bookmark: **Version 1.23.01**  
 
-<em>16/08/2024</em>
+<em>xx/08/2024</em>  
+:ok_hand: - Apresentar somente os casos de teste que não estão com a label 'Execution::Only Manual'.    
+:ok_hand: - Remoção dos comentários desnecessários.  
+:ok_hand: - Correção da ortografia de frases do log.  
+:ok_hand: - Limpeza do arquivo de dicionário.    
+:sparkles: - Lista dos status dos testes na tabela de listagem.  
+:bug: - Correção de erro na execução sem salvar evidência.    
+#
+
+<em>16/08/2024</em>  
 :construction: - Atualização automática da versão.  
 :ok_hand: - Aumento na velocidade da busca dos componentes.     
 :ok_hand: - Aguarda 10 segundos antes de lançar erro de componente não encontrado.       

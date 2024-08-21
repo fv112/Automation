@@ -44,7 +44,7 @@ class Main:
                 validation_status = True
 
         except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['ErrorTestCaseValidation']['Msg']}{Textcolor.END}", str(ex))
+            print(f"{Textcolor.FAIL}{logs['ErrorTestCaseValidation']['Msg']} - {ex}{Textcolor.END}")
             Main.addLogs(message="General", value=logs["ErrorTestCaseValidation"], value1=str(ex))
             validation_status = False
 
@@ -101,7 +101,7 @@ class Main:
             Main.addLogs(message="General", value=logs["SetLanguage"])
 
         except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['ErrorSetLanguage']['Msg']}{Textcolor.END}", ex)
+            print(f"{Textcolor.FAIL}{logs['ErrorSetLanguage']['Msg']} - {ex}{Textcolor.END}")
             Main.addLogs(message="setLanguage", value=logs["ErrorSetLanguage"]['Msg'], value1=str(ex))
 
     # Ask and save the Token in a file.
@@ -127,7 +127,7 @@ class Main:
             Main.addLogs(message="General", value=logs["SaveToken"])
 
         except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['ErrorSaveToken']['Msg']}{Textcolor.END}", ex)
+            print(f"{Textcolor.FAIL}{logs['ErrorSaveToken']['Msg']} - {ex}{Textcolor.END}")
             Main.addLogs(message="General", value=logs["ErrorSaveToken"], value1=str(ex))
 
     # Create the directories.
@@ -164,7 +164,7 @@ class Main:
                 return True
 
         except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['ErrorCreateDirectory']['Msg']}{Textcolor.END}", ex)
+            print(f"{Textcolor.FAIL}{logs['ErrorCreateDirectory']['Msg']} - {ex}{Textcolor.END}")
             Main.addLogs(message="General", value=logs["ErrorCreateDirectory"], value1=str(ex))
 
             return False
@@ -181,7 +181,7 @@ class Main:
                 Lib.shutil.rmtree(path_folder)
 
         except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['ErrorDeleteDirectory']['Msg']}{Textcolor.END}", ex)
+            print(f"{Textcolor.FAIL}{logs['ErrorDeleteDirectory']['Msg']} - {ex}{Textcolor.END}")
             Main.addLogs(message="General", value=logs["ErrorDeleteDirectory"], value1=str(ex))
 
     # Add the screenshots in the Word file.
@@ -319,7 +319,7 @@ class Main:
             return path
 
         except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['ErrorWordAddSteps']['Msg']}{Textcolor.END}", ex)
+            print(f"{Textcolor.FAIL}{logs['ErrorWordAddSteps']['Msg']} - {ex}{Textcolor.END}")
             Main.addLogs(message="General", value=logs["ErrorWordAddSteps"], value1=str(ex))
 
         return None
@@ -347,7 +347,7 @@ class Main:
             return step
 
         except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['ErrorReplacePasswordEvidence']['Msg']}{Textcolor.END}", ex)
+            print(f"{Textcolor.FAIL}{logs['ErrorReplacePasswordEvidence']['Msg']} - {ex}{Textcolor.END}")
             Main.addLogs(message="General", value=logs["ErrorReplacePasswordEvidence"], value1=str(ex))
 
     # Search the text in the file.
@@ -362,8 +362,8 @@ class Main:
                 if p.text == text:
                     return p
         except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['ErrorWordSeachText']['Msg']}{Textcolor.END}", ex)
-            Main.addLogs(message="General", value=logs["ErrorWordSeachText"], value1=str(ex))
+            print(f"{Textcolor.FAIL}{logs['ErrorWordSearchText']['Msg']} - {ex}{Textcolor.END}")
+            Main.addLogs(message="General", value=logs["ErrorWordSearchText"], value1=str(ex))
 
         return None
 
@@ -428,7 +428,7 @@ class Main:
             return True
 
         except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['ErrorWordAddInfo']['Msg']}{Textcolor.END}", ex)
+            print(f"{Textcolor.FAIL}{logs['ErrorWordAddInfo']['Msg']} - {ex}{Textcolor.END}")
             Main.addLogs(message="General", value=logs["ErrorWordAddInfo"], value1=str(ex))
 
             return False
@@ -457,7 +457,7 @@ class Main:
             return pdf_path
 
         except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['ErrorWordToPDF']['Msg']}{Textcolor.END}", ex)
+            print(f"{Textcolor.FAIL}{logs['ErrorWordToPDF']['Msg']} - {ex}{Textcolor.END}")
             Main.addLogs(message="General", value=logs["ErrorWordToPDF"], value1=str(ex))
             return None
 
@@ -488,7 +488,7 @@ class Main:
                 Lib.os.remove(exact_file)
 
         except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['ErrorDeleteFiles']['Msg']}{Textcolor.END}", ex)
+            print(f"{Textcolor.FAIL}{logs['ErrorDeleteFiles']['Msg']} - {ex}{Textcolor.END}")
             Main.addLogs(message="General", value=logs["ErrorDeleteFiles"], value1=str(ex))
 
     # Add the log in the file.
@@ -569,7 +569,7 @@ class Main:
 
         except Exception as ex:
 
-            print(f"{Textcolor.FAIL}{logs['ErrorRemoveHTML']['Msg']}{Textcolor.END}", ex)
+            print(f"{Textcolor.FAIL}{logs['ErrorRemoveHTML']['Msg']} - {ex}{Textcolor.END}")
             Main.addLogs(message="General", value=logs["ErrorRemoveHTML"]['Msg'], value1=str(ex))
 
     # Translate the messages.
@@ -610,7 +610,7 @@ class Main:
             print(f"{Textcolor.GREEN}{otherConfigs['TranslateMessage']}{Textcolor.END}")
 
         except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['ErrorTranslateMessage']['Msg']}{Textcolor.END}", ex)
+            print(f"{Textcolor.FAIL}{logs['ErrorTranslateMessage']['Msg']} - {ex}{Textcolor.END}")
             Main.addLogs(message="General", value=logs["ErrorTranslateMessage"], value1=str(ex))
 
     def checkNewVersion(self):
@@ -677,7 +677,7 @@ class Main:
             return need_translation, new_hash
 
         except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['ErrorConfigureLanguage']['Msg']}{Textcolor.END}", ex)
+            print(f"{Textcolor.FAIL}{logs['ErrorConfigureLanguage']['Msg']} - {ex}{Textcolor.END}")
             Main.addLogs(message="General", value=logs["ErrorConfigureLanguage"], value1=str(ex))
 
     # Generate the hash for a file.
@@ -697,7 +697,7 @@ class Main:
             return hasher.hexdigest()
 
         except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['ErrorGenerateHash']['Msg']}{Textcolor.END}", ex)
+            print(f"{Textcolor.FAIL}{logs['ErrorGenerateHash']['Msg']} - {ex}{Textcolor.END}")
             Main.addLogs(message="General", value=logs["ErrorGenerateHash"], value1=str(ex))
 
     # Read the hash in a file.
@@ -720,7 +720,7 @@ class Main:
             return content
 
         except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['ErrorReadHash']['Msg']}{Textcolor.END}", ex)
+            print(f"{Textcolor.FAIL}{logs['ErrorReadHash']['Msg']} - {ex}{Textcolor.END}")
             Main.addLogs(message="General", value=logs["ErrorReadHash"], value1=str(ex))
 
     # Save the hash in a file.
@@ -739,7 +739,7 @@ class Main:
                 hash_file.write(new_hash)
 
         except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['ErrorSaveHash']['Msg']}{Textcolor.END}", ex)
+            print(f"{Textcolor.FAIL}{logs['ErrorSaveHash']['Msg']} - {ex}{Textcolor.END}")
             Main.addLogs(message="General", value=logs["ErrorSaveHash"], value1=str(ex))
 
     def read_html_content(self):
@@ -754,7 +754,7 @@ class Main:
             return soup
 
         except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['ErrorReadHTMLContent']['Msg']}{Textcolor.END}", ex)
+            print(f"{Textcolor.FAIL}{logs['ErrorReadHTMLContent']['Msg']} - {ex}{Textcolor.END}")
             Main.addLogs(message="General", value=logs["ErrorReadHTMLContent"], value1=str(ex))
 
     # Load the configuration file.
@@ -783,7 +783,7 @@ class Main:
             searchForComponent = config["searchForComponent"]
 
         except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['ErrorLoadConfigs']['Msg']}{Textcolor.END}", ex)
+            print(f"{Textcolor.FAIL}{logs['ErrorLoadConfigs']['Msg']} - {ex}{Textcolor.END}")
             Main.addLogs(message="General", value=logs["ErrorLoadConfigs"], value1=str(ex))
 
     # Calculate the percentage of execution.
@@ -804,7 +804,7 @@ class Main:
             Main.addLogs(message="General", value=logs["Percentage"])
 
         except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['ErrorPercentage']['Msg']}{Textcolor.END}", ex)
+            print(f"{Textcolor.FAIL}{logs['ErrorPercentage']['Msg']} - {ex}{Textcolor.END}")
             Main.addLogs(message="General", value=logs["ErrorPercentage"], value1=str(ex))
 
     # Verify if the file exist.
@@ -827,7 +827,7 @@ class Main:
                     return False
 
         except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['ErrorVerifyFile']['Msg']}{Textcolor.END}", ex)
+            print(f"{Textcolor.FAIL}{logs['ErrorVerifyFile']['Msg']} - {ex}{Textcolor.END}")
             Main.addLogs(message="General", value=logs["ErrorVerifyFile"], value1=str(ex))
 
     # Compare files using Beyond Compare.
@@ -877,7 +877,7 @@ class Main:
             print(f"{Textcolor.GREEN}{test_name} - {logs['CompareFile']['Msg']}{Textcolor.END}")
 
         except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['ErrorCompareFile']['Msg']}{Textcolor.END}", ex)
+            print(f"{Textcolor.FAIL}{logs['ErrorCompareFile']['Msg']} - {ex}{Textcolor.END}")
             Main.addLogs(message="General", value=logs["ErrorCompareFile"], value1=str(ex))
 
     # Check if the test case is a Desktop test case.
@@ -925,7 +925,7 @@ class Main:
             return version_int, version[0], date_version[0], release_infos
 
         except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['ErrorReleaseNotes']['Msg']}{Textcolor.END}", ex)
+            print(f"{Textcolor.FAIL}{logs['ErrorReleaseNotes']['Msg']} - {ex}{Textcolor.END}")
             Main.addLogs(message="General", value=logs["ErrorReleaseNotes"], value1=str(ex))
 
     # Validate content inside JSON content.
@@ -968,7 +968,7 @@ class Main:
                         return "Failed"
 
         except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['ErrorFindContentAPI']['Msg']}{Textcolor.END}", ex)
+            print(f"{Textcolor.FAIL}{logs['ErrorFindContentAPI']['Msg']} - {ex}{Textcolor.END}")
             Main.addLogs(message="General", value=logs["ErrorFindContentAPI"], value1=str(ex))
 
             return "Failed"
@@ -1140,7 +1140,7 @@ class ApiSchema:
                     ])
 
             except Exception as ex:
-                print(f"{Textcolor.FAIL}{logs['ErrorAddJsonVariation']['Msg']}{Textcolor.END}", ex)
+                print(f"{Textcolor.FAIL}{logs['ErrorAddJsonVariation']['Msg']} - {ex}{Textcolor.END}")
                 Main.addLogs(message="General", value=logs["ErrorAddJsonVariation"], value1=str(ex))
 
         # Generate based on schema info.
@@ -1193,7 +1193,7 @@ class ApiSchema:
                 return schema
 
         except Exception as ex:
-            print(f"{Textcolor.FAIL}{logs['ErrorResolvedReference']['Msg']}{Textcolor.END}", ex)
+            print(f"{Textcolor.FAIL}{logs['ErrorResolvedReference']['Msg']} - {ex}{Textcolor.END}")
             Main.addLogs(message="General", value=logs["ErrorResolvedReference"], value1=str(ex))
 
     def run_validation(self, json_data):  ### (Only to validate the schema response)
