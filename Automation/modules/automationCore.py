@@ -181,9 +181,6 @@ class Main:
                                                               name_testcase=Lib.Aux.otherConfigs["ETSName"] +
                                                                             str(test_case_id) + " - " + name_testcase)
 
-                        self.connections.UpdateLabels(project_id=project_id, test_case_id=test_case_id,
-                                                      status_ct=status_ct)
-
                         Lib.Aux.Main.deleteFiles(folder_path=Lib.Aux.directories['TestSetPath'], extension="png")
                         Lib.Aux.Main.deleteFiles(folder_path=Lib.Aux.directories['TestSetPath'], extension="json")
 
@@ -204,11 +201,14 @@ class Main:
                     #                                                 testcase_status=testcase_status,
                     #                                                 automation_status=status_ct_automation)
 
+                self.connections.UpdateLabels(project_id=project_id, test_case_id=test_case_id,
+                                              status_ct=status_ct)
+
             # Inform the test case percentage already executed (100%).
             Lib.Aux.Main.percentage(actual=len(test_case_id_list), total=len(test_case_id_list))
 
         except Exception as ex:
-            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorStartAutomation']['Msg']} - {ex}"
+            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorStartAutomation']['Msg']}"
                   f"{Lib.Aux.Textcolor.END}")
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorStartAutomation"], value1=str(ex))
 
@@ -254,7 +254,7 @@ class Main:
                 step = steps_list[index_oder]
 
                 # Don't execute the step with 'No' / 'Não'.
-                if verb in ('"No"', '"Não"', '"No"'.replace('"', ''), '"Não"'.replace('"', '')):
+                if verb.upper() in ('"NO"', '"NÃO"', '"NO"'.replace('"', ''), '"NÃO"'.replace('"', '')):
                     verb = 'NoExecute'
 
                 print(f"=+=" * 30)
@@ -317,6 +317,8 @@ class Main:
             return status_ct, step_failed
 
         except Exception as ex:
-            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorExecuteStepByStep']['Msg']} - {ex}"
+            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorExecuteStepByStep']['Msg']}"
                   f"{Lib.Aux.Textcolor.END}")
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorExecuteStepByStep"], value1=str(ex))
+
+            return 'Aborted', step_order

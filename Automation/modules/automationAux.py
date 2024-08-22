@@ -8,7 +8,7 @@ logs = None
 class Textcolor:
     BLUE = '\033[1;34;47m'  # Blue
     HIGHLIGHT = '\033[7m'   # Highlight
-    GREEN = '\033[32m'      # Green (seems yellow)
+    GREEN = '\033[32m'      # Green
     WARNING = '\033[93m'    # Yellow
     FAIL = '\033[91m'       # Red
     END = '\033[00m'        # End of line
@@ -139,8 +139,6 @@ class Main:
 
             if not Lib.os.path.exists(path):
                 Lib.os.makedirs(path)
-                print(f"{Textcolor.FAIL}{logs['ErrorCreateDirectory']['Msg']}{Textcolor.END}")
-                # Main.addLogs(message="General", value=logs["ErrorCreateDirectory"], value1=str(path))
                 return True
             else:
                 # Clear the old logs and evidences (Older than 30 days).
@@ -236,8 +234,8 @@ class Main:
 
                 verb = step.split()[0]
                 # Don't execute the step with No / Não.
-                if verb not in ('"No"', '"Não"', '"No"'.replace('"', ''),
-                                '"Não"'.replace('"', '')):
+                if verb.upper() not in ('"NO"', '"NÃO"', '"NO"'.replace('"', ''),
+                                        '"NÃO"'.replace('"', '')):
 
                     # Last step or take_picture_status is true.
                     if verb not in ('Fechar', 'Cerrar', 'Close') and otherConfigs['API_Step'] is False:  # and take_picture_status:
@@ -484,7 +482,7 @@ class Main:
                         # Lib.os.remove(Lib.os.path.join(directories['TestSetPath'], item))
                         Lib.os.remove(Lib.os.path.join(folder_path, item))
 
-            else:
+            elif exact_file is not None:
                 Lib.os.remove(exact_file)
 
         except Exception as ex:

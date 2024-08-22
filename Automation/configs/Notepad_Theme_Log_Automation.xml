@@ -1,5 +1,5 @@
 <NotepadPlus>
-    <UserLang name="Log_new" ext="" udlVersion="2.1">
+    <UserLang name="Log_A" ext="" udlVersion="2.1">
         <Settings>
             <Global caseIgnored="no" allowFoldOfComments="no" foldCompact="no" forcePureLC="0" decimalSeparator="0" />
             <Prefix Keywords1="no" Keywords2="no" Keywords3="no" Keywords4="no" Keywords5="no" Keywords6="no" Keywords7="no" Keywords8="no" />
@@ -28,7 +28,7 @@
             <Keywords name="Keywords2">Error&#x000D;&#x000A;</Keywords>
             <Keywords name="Keywords3">Log</Keywords>
             <Keywords name="Keywords4">Success</Keywords>
-            <Keywords name="Keywords5">N&#x00C3;O&#x000D;&#x000A;NO</Keywords>
+            <Keywords name="Keywords5">N&#x00C3;O&#x000D;&#x000A;NO&#x000D;&#x000A;ignorado&#x000D;&#x000A;ignored</Keywords>
             <Keywords name="Keywords6">TEST CASE:&#x000D;&#x000A;ID:&#x000D;&#x000A;ITERATION:&#x000D;&#x000A;RUN ID:&#x000D;&#x000A;PROJECT:&#x000D;&#x000A;LOAD INFORMATIONS FROM AZURE&#x000D;&#x000A;TEST PLAN:&#x000D;&#x000A;TEST SUIT:</Keywords>
             <Keywords name="Keywords7">Step order:&#x000D;&#x000A;Step:</Keywords>
             <Keywords name="Keywords8">&quot;Status code:&quot;</Keywords>

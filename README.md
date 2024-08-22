@@ -1,14 +1,22 @@
 Automation QA - Release notes
 ---------
-:bookmark: **Version 1.23.01**  
+:bookmark: **Version 1.23.01**    
 
-<em>xx/08/2024</em>  
-:ok_hand: - Apresentar somente os casos de teste que não estão com a label 'Execution::Only Manual'.    
+<em>22/08/2024</em>  
+:ok_hand: - Apresentação somente dos casos de teste que não estão com a label 'Execution::Only Manual'.   
 :ok_hand: - Remoção dos comentários desnecessários.  
-:ok_hand: - Correção da ortografia de frases do log.  
-:ok_hand: - Limpeza do arquivo de dicionário.    
-:sparkles: - Lista dos status dos testes na tabela de listagem.  
-:bug: - Correção de erro na execução sem salvar evidência.    
+:ok_hand: - Correção da ortografia das frases do log.  
+:ok_hand: - Limpeza do arquivo de dicionário.  
+:ok_hand: - Aceitação do NO ou NÃO em maiúsculo.  
+:ok_hand: - Sublinhando a palavra "ignorado" no log (Novo template do Notepad++).  
+:sparkles: - Listagem dos status dos testes na tabela de listagem.  
+:sparkles: - Apresentação de cores para o status de cada caso de teste.  
+:bug: - Correção do erro, na execução, sem salvamento da evidência.  
+:bug: - Correção do erro 'remove: path should be string, bytes or os.PathLike, not NoneType' quando o teste era executado pela primeira vez.  
+:bug: - Correção do erro de criação do diretório de evidência da primeira execução.  
+:bug: - Correção da geração do print para o verbo alterar.  
+:bug: - Correção da validação do text dentro do Alerta.  
+:bug: - Correção da interrupção da automação ao não encontrar um componente esperado.  
 #
 
 <em>16/08/2024</em>  
@@ -23,7 +31,7 @@ Automation QA - Release notes
 :ok_hand: - Novo template para log do Notepad++.  
 :ok_hand: - Só apaga as evidências no início do próximo caso de teste.    
 :ok_hand: - Correção na demora para abrir o browser.  
-:bug: - Correção na geração das evidências de um teste de API.    
+:bug: - Correção da geração das evidências de um teste de API.  
 #
 
 :bookmark: **Version 1.22.03**  

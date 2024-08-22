@@ -264,10 +264,21 @@ class Connections:
                 if resp.__len__() != 0:
                     for id_test, testCase_id in enumerate(resp):
                         actual_status = [status for status in testCase_id['labels'] if 'Status' in status]
+
                         if not actual_status:
                             status = "Not Run"
                         else:
                             status = actual_status[0].replace('Status::', '')
+
+                        if status == 'Failed':
+                            status = f"{Lib.Aux.Textcolor.FAIL}{status}{Lib.Aux.Textcolor.END}"
+                        elif status == 'Passed':
+                            status = f"{Lib.Aux.Textcolor.GREEN}{status}{Lib.Aux.Textcolor.END}"
+                        elif status == 'Blocked':
+                            status = f"{Lib.Aux.Textcolor.BLUE}{status}{Lib.Aux.Textcolor.END}"
+                        elif status == 'Aborted':
+                            status = f"{Lib.Aux.Textcolor.WARNING}{status}{Lib.Aux.Textcolor.END}"
+
                         table.add_row([id_test + 1, str(testCase_id['iid']), testCase_id['title'], status])
                         test_case_id_list.append(testCase_id['iid'])
 
