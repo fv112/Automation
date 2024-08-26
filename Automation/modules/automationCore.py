@@ -210,7 +210,8 @@ class Main:
         except Exception as ex:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorStartAutomation']['Msg']}"
                   f"{Lib.Aux.Textcolor.END}")
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorStartAutomation"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorStartAutomation"],
+                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
 
             #### SOMENTE APÓS EXISTIR O TEST SUIT.
             # GitLab.AzureConnection.UpdateStatusAutomated(project=project, test_case_id=test_case_id,
@@ -319,6 +320,7 @@ class Main:
         except Exception as ex:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorExecuteStepByStep']['Msg']}"
                   f"{Lib.Aux.Textcolor.END}")
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorExecuteStepByStep"], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorExecuteStepByStep"],
+                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
 
-            return 'Aborted', step_order
+            return status_ct, step_order

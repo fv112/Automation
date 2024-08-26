@@ -47,18 +47,28 @@ class Main:
                     if element_field:
                         return "Passed", tag, element_field
 
-            except Lib.NoSuchElementException:
-                if tag == 'Not found':
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningFindElement"])
-                    return "Failed", "Not Found", "None"
-                else:
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningFindElement"], value1=tag,
-                                         value2=parameters1)
+            # except Lib.NoSuchElementException:
+            #     if tag == 'Not found':
+            #         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningFindElement"])
+            #         return "Failed", "Not Found", "None"
+            #     else:
+            #         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningFindElement"], value1=tag,
+            #                              value2=parameters1)
 
             except Exception as ex:
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningFindElement"],
-                                     value1=tag + ' - ' + parameters1,
-                                     value2=str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
+                if tag == 'Not found':
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningFindElement"])
+                    return "Failed", tag, element_field  ### Quanto retorna dá erro!!!
+                else:
+                    # Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningFindElement"], value1=tag,
+                    #                      value2=parameters1)
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningFindElement"],
+                                         value1=tag + ' - ' + parameters1,
+                                         value2=str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
+
+            # except AttributeError as ex:
+            #     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningFindElement"],
+            #                          value1=tag + ' - ' + parameters1, value2=str(ex))
 
     # -------------------------------------------- Action Elements -----------------------------------------------------
     def fillField(self, **kwargs):
@@ -222,9 +232,9 @@ class Main:
             positiony = positiony[1:]  # Only the numeric number.
 
             Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
-                           step_order=step_order, tag=tag)
+                           step_order=step_order)
 
-            actions.drag_and_drop_by_offset(element_field, int(positionx) * 10, int(positiony) * 10)
+            #actions.drag_and_drop_by_offset(element_field, int(positionx) * 10, int(positiony) * 10)
             actions.perform()
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['DragDrop'], value1=parameters1)
@@ -500,13 +510,14 @@ class Main:
 
         try:
             # kwargs arguments.
-            # save_evidence = kwargs.get('save_evidence')
+            save_evidence = kwargs.get('save_evidence')
             step = kwargs.get('step')
             step_order = kwargs.get('step_order')
 
             url = driver.current_url
 
-            Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order, color='green')
+            Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order, color='green',
+                           save_evidence=save_evidence)
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetURL"])
 
@@ -525,12 +536,14 @@ class Main:
         # kwargs arguments.
         step = kwargs.get('step')
         step_order = kwargs.get('step_order')
+        save_evidence = kwargs.get('save_evidence')
 
         try:
 
             title = driver.title
 
-            Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order, color='green')
+            Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order, color='green',
+                           save_evidence=save_evidence)
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetTitle"])
 
@@ -550,9 +563,11 @@ class Main:
             # kwargs arguments.
             step = kwargs.get('step')
             step_order = kwargs.get('step_order')
+            save_evidence = kwargs.get('save_evidence')
 
             driver.back()
-            Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order)
+            Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order,
+                           save_evidence=save_evidence)
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["BackPage"])
 
@@ -572,9 +587,11 @@ class Main:
             # kwargs arguments.
             step = kwargs.get('step')
             step_order = kwargs.get('step_order')
+            save_evidence = kwargs.get('save_evidence')
 
             driver.forward()
-            Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order)
+            Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order,
+                           save_evidence=save_evidence)
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ForwardPage"])
 
@@ -662,7 +679,13 @@ class Main:
 
                 return len(elements_fields), "Passed"
             else:
-                raise Exception(len(elements_fields))
+                raise AttributeError(str(len(elements_fields)))
+
+        except AttributeError as ex:
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetQuantityElements"],
+                                 value1=str(ex), value2=parameters1)
+
+            return len(elements_fields), "Failed"
 
         except Exception as ex:
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetQuantityElements"],
@@ -671,7 +694,6 @@ class Main:
 
             return len(elements_fields), "Failed"
 
-    # Scroll Page
     def scrollPage(self, **kwargs):
 
         try:
@@ -985,8 +1007,6 @@ class Main:
 
                     if status == 'Passed':
                         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetQuantityElements"])
-                        # status = "Passed"
-                        # text_found = str(n_elements)
 
                     else:
                         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetQuantityElements"])
@@ -1370,18 +1390,11 @@ class Main:
     def verifyBrowser(self):
 
         try:
-            if driver.current_url:
-                driver.close()
+            driver_title = driver.title
+            driver.close()
 
-                return "Passed"
-            else:
-                raise Exception
-
-        except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorVerifyBrowser"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
-
-            return "Failed"
+        except Exception:
+            pass
 
     # Close (windows or the whole browser).
     def close(self, **kwargs):

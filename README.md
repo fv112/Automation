@@ -8,7 +8,7 @@ Automation QA - Release notes
 :ok_hand: - Correção da ortografia das frases do log.  
 :ok_hand: - Limpeza do arquivo de dicionário.  
 :ok_hand: - Aceitação do NO ou NÃO em maiúsculo.  
-:ok_hand: - Sublinhando a palavra "ignorado" no log (Novo template do Notepad++).  
+:ok_hand: - Sublinhando a palavra "ignorado" no log (Novo template do Notepad++).
 :sparkles: - Listagem dos status dos testes na tabela de listagem.  
 :sparkles: - Apresentação de cores para o status de cada caso de teste.  
 :bug: - Correção do erro, na execução, sem salvamento da evidência.  
@@ -16,7 +16,8 @@ Automation QA - Release notes
 :bug: - Correção do erro de criação do diretório de evidência da primeira execução.  
 :bug: - Correção da geração do print para o verbo alterar.  
 :bug: - Correção da validação do text dentro do Alerta.  
-:bug: - Correção da interrupção da automação ao não encontrar um componente esperado.  
+:bug: - Correção da interrupção da automação ao não encontrar um componente esperado.
+:bug: - Correção do fechamento do browser quando ocorrer um erro.  
 #
 
 <em>16/08/2024</em>  

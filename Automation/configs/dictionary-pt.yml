@@ -289,7 +289,7 @@ logs:
         ErrorUploadDownloadFile: {Type: Error, Msg: Error ao realizar o upload do arquivo!, Where: UploadDownloadFile},
         ErrorValidationAPI: {Type: Error, Msg: Não foi possível identificar este valor no retorno da API!, Where: find_content_json},
         ErrorValidateData: {Type: Error, Msg: Resultado obtido diferente do resultado esperado!, Where: validateData},
-        ErrorVerifyBrowser: {Type: Error, Msg: Não foi possível fechar o browser!, Where: automationFunc - verifyBrowser},
+        ###ErrorVerifyBrowser: {Type: Error, Msg: Não foi possível fechar o browser!, Where: automationFunc - verifyBrowser},
         ErrorVerifyFile: {Type: Error, Msg: Falha ao verificar o arquivo no diretório!, Where: verifyFile},
         ErrorWordAddInfo: {Type: Error, Msg: Ocorreu um erro ao adicionar uma informação no Word!, Where: wordAddInfo},
         ErrorWait: {Type: Error, Msg: Ocorreu um erro no Aguardar!, Where: automationFunc - wait},
