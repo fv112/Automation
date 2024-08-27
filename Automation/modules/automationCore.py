@@ -84,7 +84,7 @@ class Main:
 
                 # Ask if it needs to save the evidence.
                 if save_evidence:
-                    status_ct = "Not Completed"
+                    status_ct = "Not Run"
                     Lib.Aux.directories['TestSetPath'] = Lib.os.path.join(Lib.Aux.directories["EvidenceFolder"],
                                                                           Lib.Aux.otherConfigs["ETSName"] +
                                                                           str(test_case_id) + " - " + name_testcase)
@@ -244,6 +244,8 @@ class Main:
         # Variables.
         step_failed = None
         status_steps = []
+        step_order = None
+        status_ct = 'Not Run'
 
         try:
             for index_oder, step_order in enumerate(order_steps_list):
@@ -255,7 +257,8 @@ class Main:
                 step = steps_list[index_oder]
 
                 # Don't execute the step with 'No' / 'Não'.
-                if verb.upper() in ('"NO"', '"NÃO"', '"NO"'.replace('"', ''), '"NÃO"'.replace('"', '')):
+                if verb.upper() in ('"NO"', '"NÃO"', '"NO"'.replace('"', ''),
+                                    '"NÃO"'.replace('"', '')):
                     verb = 'NoExecute'
 
                 print(f"=+=" * 30)
@@ -266,51 +269,55 @@ class Main:
 
                 # Execute the test step.
                 Lib.Aux.otherConfigs['API_Step'] = False
-                status_step = eval(Lib.Aux.verbs[verb]['Function'])(self, verb=verb, parameters1=parameters1,
-                                                                    parameters2=parameters2, step=step,
-                                                                    api_action=verb, num_of_steps=order_steps_list,
-                                                                    step_order=step_order, save_evidence=save_evidence)
 
-                # Take the first step failed.
-                if status_step == "Failed" and step_failed is None:
-                    step_failed = step_order
-                    status_steps.append("Failed")
-                elif status_step == "Aborted" and step_failed is None:
-                    step_failed = step_order
-                    status_steps.append("Aborted")
-                    return "Aborted", step_failed
+                if Lib.Counter(status_steps)['Failed'] != 0:
+                    status_steps.append("Not Run")
                 else:
-                    status_steps.append("Passed")
+                    status_step = (
+                        eval(Lib.Aux.verbs[verb]['Function'])(self, verb=verb, parameters1=parameters1,
+                                                              parameters2=parameters2, step=step, api_action=verb,
+                                                              num_of_steps=order_steps_list, step_order=step_order,
+                                                              save_evidence=save_evidence))
 
-                if Lib.Aux.otherConfigs['API_Step'] is False and status_step != 'Passed':
-                    image_name = Lib.Aux.otherConfigs["EvidenceName"] + str(step_order).zfill(2)
-                    take_picture_status = Lib.Func.Main.takePicture(self, image_name=image_name)
-                    if not take_picture_status:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorScreenshot"], value1=step)
+                    # Take the first step failed.
+                    if status_step == "Failed" and step_failed is None:
+                        step_failed = step_order
+                        status_steps.append("Failed")
+                    elif status_step == "Aborted" and step_failed is None:
+                        step_failed = step_order
+                        status_steps.append("Aborted")
+                        return "Aborted", step_failed
+                    else:
+                        status_steps.append("Passed")
 
-                if Lib.Aux.otherConfigs['API_Step'] and save_evidence:
-                    api_file_name = (Lib.Aux.otherConfigs["EvidenceNameAPI"] + str(step_order).zfill(2) +
-                                     Lib.Aux.otherConfigs["EvidenceExtensionAPI"])
-                    api_file = Lib.os.path.join(Lib.Aux.directories['EvidenceFolder'],
-                                                Lib.Aux.directories['TestSetPath'], api_file_name)
+                    if Lib.Aux.otherConfigs['API_Step'] is False and status_step != 'Passed':
+                        image_name = Lib.Aux.otherConfigs["EvidenceName"] + str(step_order).zfill(2)
+                        take_picture_status = Lib.Func.Main.takePicture(self, image_name=image_name)
+                        if not take_picture_status:
+                            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorScreenshot"], value1=step)
 
-                    with open(api_file, 'w') as api_return:
-                        tag = parameters1[:parameters1.find(':')]
-                        if tag.upper() == "STATUS CODE":
-                            api_return.write(Lib.Aux.otherConfigs['API_StatusCode'].__str__())
-                        else:  # Normal response.
-                            if (type(Lib.Aux.otherConfigs['API_Response']) is dict) and (
-                                    Lib.Aux.otherConfigs['API_Response'].__len__() > 1):
-                                for tag, value in Lib.Aux.otherConfigs['API_Response'].items():
-                                    api_return.writelines(f"\nTAG AND NEW VALUE: {tag}\n")
-                                    api_return.writelines(f"RESULT:{value}\n")
-                                    api_return.writelines(f"-" * 120)
-                            else:
-                                api_return.write(Lib.Aux.otherConfigs['API_Response'].__str__())
+                    if Lib.Aux.otherConfigs['API_Step'] and save_evidence:
+                        api_file_name = (Lib.Aux.otherConfigs["EvidenceNameAPI"] + str(step_order).zfill(2) +
+                                         Lib.Aux.otherConfigs["EvidenceExtensionAPI"])
+                        api_file = Lib.os.path.join(Lib.Aux.directories['EvidenceFolder'],
+                                                    Lib.Aux.directories['TestSetPath'], api_file_name)
+
+                        with open(api_file, 'w') as api_return:
+                            tag = parameters1[:parameters1.find(':')]
+                            if tag.upper() == "STATUS CODE":
+                                api_return.write(Lib.Aux.otherConfigs['API_StatusCode'].__str__())
+                            else:  # Normal response.
+                                if (type(Lib.Aux.otherConfigs['API_Response']) is dict) and (
+                                        Lib.Aux.otherConfigs['API_Response'].__len__() > 1):
+                                    for tag, value in Lib.Aux.otherConfigs['API_Response'].items():
+                                        api_return.writelines(f"\nTAG AND NEW VALUE: {tag}\n")
+                                        api_return.writelines(f"RESULT:{value}\n")
+                                        api_return.writelines(f"-" * 120)
+                                else:
+                                    api_return.write(Lib.Aux.otherConfigs['API_Response'].__str__())
 
             # Set the test case status.
-            status_counter = Lib.Counter(status_steps)
-            if status_counter['Failed'] != 0:
+            if Lib.Counter(status_steps)['Failed'] != 0:
                 status_ct = "Failed"
             else:
                 status_ct = "Passed"

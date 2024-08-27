@@ -47,28 +47,14 @@ class Main:
                     if element_field:
                         return "Passed", tag, element_field
 
-            # except Lib.NoSuchElementException:
-            #     if tag == 'Not found':
-            #         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningFindElement"])
-            #         return "Failed", "Not Found", "None"
-            #     else:
-            #         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningFindElement"], value1=tag,
-            #                              value2=parameters1)
-
             except Exception as ex:
                 if tag == 'Not found':
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningFindElement"])
-                    return "Failed", tag, element_field  ### Quanto retorna dá erro!!!
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorFindElement"])
+                    return "Aborted", tag, element_field
                 else:
-                    # Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningFindElement"], value1=tag,
-                    #                      value2=parameters1)
                     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningFindElement"],
                                          value1=tag + ' - ' + parameters1,
                                          value2=str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
-
-            # except AttributeError as ex:
-            #     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningFindElement"],
-            #                          value1=tag + ' - ' + parameters1, value2=str(ex))
 
     # -------------------------------------------- Action Elements -----------------------------------------------------
     def fillField(self, **kwargs):
@@ -81,6 +67,10 @@ class Main:
             step_order = kwargs.get('step_order')
 
             status, tag, element_field = Main.findElement(self, parameters1=parameters1)
+
+            if element_field is None:
+                return "Aborted"
+
             element_field.clear()
 
             if parameters2.upper() not in ('VAZIO', 'VACÍO', 'EMPTY'):
@@ -146,6 +136,10 @@ class Main:
             step_order = kwargs.get('step_order')
 
             status, tag, element_field = Main.findElement(self, parameters1=parameters1)
+
+            if element_field is None:
+                return "Aborted"
+
             Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step, step_order=step_order,
                            tag=tag)
             element_field.click()
@@ -170,6 +164,10 @@ class Main:
             step_order = kwargs.get('step_order')
 
             status, tag, element_field = Main.findElement(self, parameters1=parameters1)
+
+            if element_field is None:
+                return "Aborted"
+
             Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step, step_order=step_order,
                            tag=tag)
             element_field.click()
@@ -194,6 +192,10 @@ class Main:
 
             actions = Lib.ActionChains(driver)
             status, tag, element_field = Main.findElement(self, parameters1=parameters1)
+
+            if element_field is None:
+                return "Aborted"
+
             Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step, step_order=step_order,
                            tag=tag)
 
@@ -261,9 +263,17 @@ class Main:
 
             actions = Lib.ActionChains(driver)
             _, tag1, element_field1 = Main.findElement(self, parameters1=parameters1)
+
+            if element_field1 is None:
+                return "Aborted"
+
             Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
                            step_order=step_order, tag=tag1)
             _, tag2, element_field2 = Main.findElement(self, parameters1=parameters2)
+
+            if element_field2 is None:
+                return "Aborted"
+
             Main.highlight(self, parameters1=parameters2, step=step, step_order=step_order, tag=tag2)
 
             actions.drag_and_drop(element_field2, element_field1)
@@ -362,6 +372,10 @@ class Main:
 
             actions = Lib.ActionChains(driver)
             status, tag, element_field = Main.findElement(self, parameters1=parameters1)
+
+            if element_field is None:
+                return "Aborted"
+
             Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
                            step_order=step_order, tag=tag)
 
@@ -416,6 +430,10 @@ class Main:
         try:
 
             status, tag, element_field = Main.findElement(self, parameters1=parameters1)
+
+            if element_field is None:
+                return "Aborted"
+
             element = Lib.Select(element_field)
 
             if status == 'Failed':
@@ -451,6 +469,10 @@ class Main:
             step_order = kwargs.get('step_order')
 
             status, tag, element_field = Main.findElement(self, parameters1=parameters1)
+
+            if element_field is None:
+                return "Aborted"
+
             Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
                            step_order=step_order, color="green", tag=tag)
 
@@ -619,18 +641,26 @@ class Main:
 
             if '(#value)' in parameters2:
                 status, tag, elements_fields = Main.findElement(self, parameters1=parameters1)
+                if elements_fields is None:
+                    return "Aborted"
                 text_found = elements_fields.get_attribute('value')
 
             elif '(#title)' in parameters2:
                 status, tag, elements_fields = Main.findElement(self, parameters1=parameters1)
+                if elements_fields is None:
+                    return "Aborted"
                 text_found = elements_fields.get_attribute('title')
 
             elif '(#href)' in parameters2:
                 status, tag, elements_fields = Main.findElement(self, parameters1=parameters1)
+                if elements_fields is None:
+                    return "Aborted"
                 text_found = elements_fields.get_attribute('href')
 
             elif '(#class)' in parameters2:
                 status, tag, elements_fields = Main.findElement(self, parameters1=parameters1)
+                if elements_fields is None:
+                    return "Aborted"
                 text_found = elements_fields.get_attribute('class')
 
             else:
@@ -663,6 +693,8 @@ class Main:
             new_elements = 0
 
             status, tag, elements_fields = Main.findElement(self, parameters1=parameters1, several=True)
+            if elements_fields is None:
+                return "Aborted"
 
             if status == 'Passed':
                 for _, new_element in enumerate(elements_fields):
@@ -704,10 +736,12 @@ class Main:
 
             driver.execute_script('window.scrollTo(0, ' + parameters1 + ')')
 
-            status_element = Main.findElement(self, parameters1=parameters1)
+            element_field = Main.findElement(self, parameters1=parameters1)
+            if element_field is None:
+                return "Aborted"
             Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order)
 
-            if status_element is not None:
+            if element_field is not None:
                 Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ScrollPage"])
                 return "Passed"
             else:
@@ -752,6 +786,10 @@ class Main:
             step_order = kwargs.get('step_order')
 
             status, tag, elements_fields = Main.findElement(self, parameters1=parameters1)
+
+            if elements_fields is None:
+                return "Aborted"
+
             Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
                            step_order=step_order, color='green', tag=tag)
 
@@ -782,6 +820,10 @@ class Main:
             step_order = kwargs.get('step_order')
 
             status, tag, elements_fields = Main.findElement(self, parameters1=parameters1)
+
+            if elements_fields is None:
+                return "Aborted"
+
             Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
                            step_order=step_order, color='green', tag=tag)
 
@@ -809,6 +851,10 @@ class Main:
             step_order = kwargs.get('step_order')
 
             status, tag, elements_fields = Main.findElement(self, parameters1=parameters1)
+
+            if elements_fields is None:
+                return "Aborted"
+
             Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
                            step_order=step_order, color='green', tag=tag)
 
@@ -1533,7 +1579,7 @@ class Main:
 
             # Navigate to the browser download folder.
             Lib.Aux.pyautogui.typewrite(['up', 'Enter', 'tab', 'tab', 'tab', 'tab', 'tab', 'tab', 'tab', 'tab', 'tab',
-                                     'enter', 'tab', 'tab', 'tab', 'tab', 'tab', 'tab', 'Enter'], interval=.2)
+                                         'enter', 'tab', 'tab', 'tab', 'tab', 'tab', 'tab', 'Enter'], interval=.2)
 
             # Type the new path.
             Lib.Aux.time.sleep(2)

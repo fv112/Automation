@@ -510,7 +510,6 @@ class Main:
             path = Lib.os.path.join(directories["LogFolder"], hostname + " - " + date_log + ".log")
 
             if not Lib.os.path.isdir(directories["LogFolder"]):
-                # Main.createDirectory(path_folder=directories["LogFolder"])
                 Main.createDirectory(self, path=directories["LogFolder"])
 
             # Append the log file.

@@ -9,6 +9,7 @@ Automation QA - Release notes
 :ok_hand: - Limpeza do arquivo de dicionário.  
 :ok_hand: - Aceitação do NO ou NÃO em maiúsculo.  
 :ok_hand: - Sublinhando a palavra "ignorado" no log (Novo template do Notepad++).
+:ok_hand: - Finaliza o teste se o passo não encontrar o componente na tela.    
 :sparkles: - Listagem dos status dos testes na tabela de listagem.  
 :sparkles: - Apresentação de cores para o status de cada caso de teste.  
 :bug: - Correção do erro, na execução, sem salvamento da evidência.  
