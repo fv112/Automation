@@ -2,22 +2,22 @@ Automation QA - Release notes
 ---------
 :bookmark: **Version 1.23.01**    
 
-<em>22/08/2024</em>  
+<em>27/08/2024</em>  
 :ok_hand: - Apresentação somente dos casos de teste que não estão com a label 'Execution::Only Manual'.   
 :ok_hand: - Remoção dos comentários desnecessários.  
 :ok_hand: - Correção da ortografia das frases do log.  
 :ok_hand: - Limpeza do arquivo de dicionário.  
 :ok_hand: - Aceitação do NO ou NÃO em maiúsculo.  
-:ok_hand: - Sublinhando a palavra "ignorado" no log (Novo template do Notepad++).
-:ok_hand: - Finaliza o teste se o passo não encontrar o componente na tela.    
+:ok_hand: - Sublinhando a palavra "ignorado" no log (Novo template do Notepad++).  
+:ok_hand: - Finaliza o teste se o passo não encontrar o componente na tela.  
 :sparkles: - Listagem dos status dos testes na tabela de listagem.  
 :sparkles: - Apresentação de cores para o status de cada caso de teste.  
 :bug: - Correção do erro, na execução, sem salvamento da evidência.  
-:bug: - Correção do erro 'remove: path should be string, bytes or os.PathLike, not NoneType' quando o teste era executado pela primeira vez.  
+:bug: - Correção do erro 'remove: path should be string, bytes or os.PathLike, not NoneType' quando o teste era executado pela primeira vez.    
 :bug: - Correção do erro de criação do diretório de evidência da primeira execução.  
 :bug: - Correção da geração do print para o verbo alterar.  
 :bug: - Correção da validação do text dentro do Alerta.  
-:bug: - Correção da interrupção da automação ao não encontrar um componente esperado.
+:bug: - Correção da interrupção da automação ao não encontrar um componente esperado.  
 :bug: - Correção do fechamento do browser quando ocorrer um erro.  
 #
 
