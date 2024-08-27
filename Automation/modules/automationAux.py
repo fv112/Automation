@@ -995,6 +995,16 @@ class Main:
         except ValueError:
             return False
 
+    def validateVariations(self, **kwargs):
+
+        # kwargs variables.
+        variation = kwargs.get('variation')
+
+        if variation in ['(CHECKED)', '(ACTIVE)', '(#VALUE)', '(#TITLE)', '(#HREF)', '(#CLASS)', '(VISIBLE)',
+                         '(ENABLE)']:
+            return True
+        else:
+            return  False
 
 """---------------------------------------------------------------------------------------------------------------------
 CLASS: API Schema

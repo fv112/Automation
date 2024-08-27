@@ -17,6 +17,7 @@ class Main:
         # kwargs variables.
         parameters1 = kwargs.get('parameters1')
         several = kwargs.get('several', False)
+        checked_status = kwargs.get('checked_status', None)     # Only for IsEnable validation.
 
         search_list = [
             Lib.By.ID,
@@ -31,7 +32,7 @@ class Main:
         ]
 
         element_field = None
-        element_fields = None
+        elements_fields = None
 
         for tag in search_list:
 
@@ -48,7 +49,7 @@ class Main:
                         return "Passed", tag, element_field
 
             except Exception as ex:
-                if tag == 'Not found':
+                if tag == 'Not found' and checked_status is None:
                     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorFindElement"])
                     return "Aborted", tag, element_field
                 else:
@@ -639,28 +640,30 @@ class Main:
             step = kwargs.get('step')
             step_order = kwargs.get('step_order')
 
+            # action = Lib.regex.findall(r'\((.*?)\)', parameters2)
+
             if '(#value)' in parameters2:
                 status, tag, elements_fields = Main.findElement(self, parameters1=parameters1)
-                if elements_fields is None:
-                    return "Aborted"
+                # if elements_fields is None:
+                #     return "Aborted"
                 text_found = elements_fields.get_attribute('value')
 
             elif '(#title)' in parameters2:
                 status, tag, elements_fields = Main.findElement(self, parameters1=parameters1)
-                if elements_fields is None:
-                    return "Aborted"
+                # if elements_fields is None:
+                #     return "Aborted"
                 text_found = elements_fields.get_attribute('title')
 
             elif '(#href)' in parameters2:
                 status, tag, elements_fields = Main.findElement(self, parameters1=parameters1)
-                if elements_fields is None:
-                    return "Aborted"
+                # if elements_fields is None:
+                #     return "Aborted"
                 text_found = elements_fields.get_attribute('href')
 
             elif '(#class)' in parameters2:
                 status, tag, elements_fields = Main.findElement(self, parameters1=parameters1)
-                if elements_fields is None:
-                    return "Aborted"
+                # if elements_fields is None:
+                #     return "Aborted"
                 text_found = elements_fields.get_attribute('class')
 
             else:
@@ -784,8 +787,10 @@ class Main:
             save_evidence = kwargs.get('save_evidence')
             step = kwargs.get('step')
             step_order = kwargs.get('step_order')
+            checked_status = kwargs.get('checked_status')
 
-            status, tag, elements_fields = Main.findElement(self, parameters1=parameters1)
+            status, tag, elements_fields = Main.findElement(self, parameters1=parameters1,
+                                                            checked_status=checked_status)
 
             if elements_fields is None:
                 return "Aborted"
@@ -793,7 +798,7 @@ class Main:
             Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
                            step_order=step_order, color='green', tag=tag)
 
-            if elements_fields.is_enabled() is not None:
+            if elements_fields.is_enabled() == checked_status:
                 Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsEnable"])
                 return "Passed"
             else:
@@ -809,8 +814,6 @@ class Main:
     # Checks whether the element is visible.
     def isDisplayed(self, **kwargs):
 
-        # status_element = None
-
         try:
 
             # kwargs arguments.
@@ -818,20 +821,26 @@ class Main:
             save_evidence = kwargs.get('save_evidence')
             step = kwargs.get('step')
             step_order = kwargs.get('step_order')
+            checked_status = kwargs.get('checked_status')
 
-            status, tag, elements_fields = Main.findElement(self, parameters1=parameters1)
+            status, tag, element_field = Main.findElement(self, parameters1=parameters1)
 
-            if elements_fields is None:
-                return "Aborted"
-
-            Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
-                           step_order=step_order, color='green', tag=tag)
-
-            if elements_fields.is_displayed() is not None:
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsDisplayed"])
+            if element_field:
+                Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
+                               step_order=step_order, color='green', tag=tag)
+            elif element_field is None and checked_status:
                 return "Passed"
             else:
                 return "Failed"
+
+            if element_field.is_displayed() == checked_status:
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsDisplayed"])
+                return "Passed"
+            # else:
+            #     return "Failed"
+
+        # except Lib.NoSuchElementException:
+        #     return False
 
         except Exception as ex:
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsDisplayed"],
@@ -849,16 +858,17 @@ class Main:
             save_evidence = kwargs.get('save_evidence')
             step = kwargs.get('step')
             step_order = kwargs.get('step_order')
+            checked_status = kwargs.get('checked_status')
 
-            status, tag, elements_fields = Main.findElement(self, parameters1=parameters1)
+            status, tag, element_field = Main.findElement(self, parameters1=parameters1)
 
-            if elements_fields is None:
+            if element_field is None:
                 return "Aborted"
 
             Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
                            step_order=step_order, color='green', tag=tag)
 
-            if elements_fields.is_selected() is not None:
+            if element_field.is_selected() == checked_status:
                 Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsSelected"])
                 return "Passed"
             else:
@@ -885,7 +895,7 @@ class Main:
             if alert != 'AlertScreen':
 
                 # Get the title page.
-                if '(title)' in parameters1:
+                if '(TITLE)' in parameters1.upper():
                     text_found, status = Main.getTitle(self, save_evidence=save_evidence, step=step,
                                                        step_order=step_order)
                     parameters2 = parameters1.replace('(title)', '')
@@ -904,7 +914,7 @@ class Main:
                                          value1=str(text_found))
 
                 # Get the URL from the address bar (getURL).
-                elif '(url)' in parameters1:
+                elif '(URL)' in parameters1.upper():
                     text_found, status = Main.getURL(self, save_evidence=save_evidence, step=step,
                                                      step_order=step_order)
                     parameters2 = parameters1.replace('(url)', '')
@@ -912,7 +922,7 @@ class Main:
                     if parameters2 == text_found:
                         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetURL"])
 
-                        parameters2 = parameters1.replace('(url)', '')
+                        ### parameters2 = parameters1.replace('(url)', '')
                         status = "Passed"
 
                     else:
@@ -947,9 +957,12 @@ class Main:
                                          value1=str(text_found))
 
                 # Checks whether the element is active or inactive.
-                elif '(?)' in parameters2:
+                elif parameters2.upper() in ['(INACTIVE)', '(ACTIVE)']:
+
+                    checked_status = Lib.Aux.Main.validateVariations(self, variation=parameters2.upper())
+
                     status = Main.isEnable(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
-                                           step_order=step_order)
+                                           step_order=step_order, checked_status=checked_status)
 
                     if status == "Passed":
                         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsEnable"])
@@ -958,9 +971,12 @@ class Main:
                         status = "Failed"
 
                 # Checks whether the element is visible to the user.
-                elif '($)' in parameters2:
-                    status = Main.isDisplayed(self, value1=parameters1, save_evidence=save_evidence, step=step,
-                                              step_order=step_order)
+                elif parameters2.upper() in ['(VISIBLE)', '(INVISIBLE)']:
+
+                    checked_status = Lib.Aux.Main.validateVariations(self, variation=parameters2.upper())
+
+                    status = Main.isDisplayed(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
+                                              step_order=step_order, checked_status=checked_status)
 
                     if status == "Passed":
                         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsDisplayed"])
@@ -969,9 +985,12 @@ class Main:
                         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsDisplayed"])
 
                 # Checks whether a checkbox or radio button is selected.
-                elif '(.)' in parameters2:
+                elif parameters2.upper() in ['(CHECKED)', '(UNCHECKED)']:
+
+                    checked_status = Lib.Aux.Main.validateVariations(self, variation=parameters2.upper())
+
                     status = Main.isSelected(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
-                                             step_order=step_order)
+                                             step_order=step_order, checked_status=checked_status)
 
                     if status == "Passed":
                         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsSelected"])
@@ -981,49 +1000,53 @@ class Main:
                         status = "Failed"
 
                 # Checks if data is not available.
-                elif '(!=)' in parameters2:
-                    text_found, status = Main.getText(self, parameters1=parameters1, save_evidence=save_evidence,
-                                                      step=step, step_order=step_order)
-                    parameters2 = parameters2.replace('(!=)', ' - ')
+                # elif '(!=)' in parameters2:
+                #     text_found, status = Main.getText(self, parameters1=parameters1, save_evidence=save_evidence,
+                #                                       step=step, step_order=step_order)
+                #     parameters2 = parameters2.replace('(!=)', ' - ')
+                #
+                #     if parameters2 not in str(text_found):
+                #         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ValidateData"])
+                #         status = "Passed"
+                #
+                #     else:
+                #         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorValidateData"])
+                #         status = "Failed"
+                #
+                #     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataExpected'],
+                #                          value1=str(parameters2))
+                #     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataObtained'],
+                #                          value1=str(text_found))
 
-                    if parameters2 not in str(text_found):
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ValidateData"])
-                        status = "Passed"
-
-                    else:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorValidateData"])
-                        status = "Failed"
-
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataExpected'],
-                                         value1=str(parameters2))
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataObtained'],
-                                         value1=str(text_found))
-
-                # Checks if the data is available.
-                elif '(!)' in parameters2:
-                    text_found, status = Main.getText(self, parameters1=parameters1, save_evidence=save_evidence,
-                                                      step=step, step_order=step_order)
-                    parameters2 = parameters2.replace('(!)', '')
-
-                    if parameters2 in str(text_found):
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["Available"])
-                        status = "Passed"
-
-                    else:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAvailable"])
-                        status = "Failed"
-
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataExpected'],
-                                         value1=str(parameters2))
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataObtained'],
-                                         value1=str(text_found))
+                # Checks if the data is enabled.
+                # elif parameters2.upper() in ['(ENABLED)', '(DISABLE)']:
+                #
+                #     checked_status = Lib.Aux.Main.validateVariations(self, variation=parameters2.upper())
+                #
+                #     text_found, status = Main.getText(self, parameters1=parameters1, save_evidence=save_evidence,
+                #                                       step=step, step_order=step_order, )
+                #     parameters2 = parameters2.replace('(!)', '')
+                #
+                #     if parameters2 in str(text_found):
+                #         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["Available"])
+                #         status = "Passed"
+                #
+                #     else:
+                #         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAvailable"])
+                #         status = "Failed"
+                #
+                #     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataExpected'],
+                #                          value1=str(parameters2))
+                #     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataObtained'],
+                #                          value1=str(text_found))
 
                 # Check some attributes.
-                elif ('(#title)' in parameters2 or '(#href)' in parameters2 or '(#value)' in parameters2 or '(#class)'
-                      in parameters2):
-                    text_found, status = Main.getAttribute(self, parameters1=parameters1, parameters2=parameters2,
-                                                           save_evidence=save_evidence, step=step,
-                                                           step_order=step_order)
+                # elif parameters2.upper() in ['(#TITLE)', '(#HREF)', '(#VALUE)', '(#CLASS)']:
+                elif any(found in parameters2.upper() for found in ['(#TITLE)', '(#HREF)', '(#VALUE)', '(#CLASS)']):
+
+                    text_found, status = Main.getAttribute(self, parameters1=parameters1, save_evidence=save_evidence,
+                                                           parameters2=parameters2, step=step, step_order=step_order)
+
                     parameters2 = parameters2.replace('(#title)', '')
                     parameters2 = parameters2.replace('(#href)', '')
                     parameters2 = parameters2.replace('(#value)', '')

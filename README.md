@@ -1,5 +1,12 @@
 Automation QA - Release notes
 ---------
+:bookmark: **Version 1.23.02**    
+
+<em>xx/08/2024</em>  
+:bug: - Correção do log de "checkNewVersion".
+:sparkles: - Alteração dos verbos de validação.  
+#
+
 :bookmark: **Version 1.23.01**    
 
 <em>27/08/2024</em>  
