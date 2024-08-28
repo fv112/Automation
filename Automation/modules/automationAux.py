@@ -173,8 +173,6 @@ class Main:
             # kwargs variables.
             path_folder = kwargs.get('path_folder')
 
-            # if Lib.os.path.exists(directories['TestSetPath']):
-            #     Lib.shutil.rmtree(directories['TestSetPath'])
             if Lib.os.path.exists(path_folder):
                 Lib.shutil.rmtree(path_folder)
 
@@ -630,7 +628,7 @@ class Main:
                         break
 
                 if install:
-                    Lib.shutil.rmtree(directories['DownloadFolder'])
+                    Main.deleteDirectory(self, path_folder=directories['DownloadFolder'])
                     Main.createDirectory(self, path=directories['DownloadFolder'])
 
                     output_file = Lib.os.path.join(directories['DownloadFolder'], 'Green.zip')
@@ -650,7 +648,8 @@ class Main:
                                      value1=str(response.status_code))
 
                     print("-" * 30)
-                    Main.addLogs(message="General", value=logs["InstallNewVersion"], value1=self.version_distributed)
+                    Main.addLogs(message="General", value=logs["InstallNewVersion"],
+                                 value1=str(self.version_distributed))
                     print("-" * 30)
 
         except Exception as ex:
