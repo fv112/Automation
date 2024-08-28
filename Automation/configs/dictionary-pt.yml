@@ -309,7 +309,7 @@ logs:
         GetURL: {Type: Success, Msg: Sucesso ao obter a URL da página., Where: automationFunc - GetURL},
         GetVariables: {Type: Success, Msg: Sucesso ao obter a massa de teste., Where: GetVariables},
         Inform: {Type: Success, Msg: A tela de alerta foi encontrada com sucesso., Where: automationFunc - Inform},
-        InstallNewVersion: {Type: Sucess, Msg: Instalação realizada com sucesso!, Where: automationAux},
+        InstallNewVersion: {Type: Success, Msg: Instalação realizada com sucesso!, Where: automationAux},
         IsDisplayed: {Type: Success, Msg: Elemento localizado., Where: automationFunc - IsDisplayed},
         IsDisplayedNo: {Type: Success, Msg: Elemento não foi localizado., Where: automationFunc - IsDisplayed},
         IsEnable: {Type: Success, Msg: Elemento localizado., Where: automationFunc - IsEnable},
