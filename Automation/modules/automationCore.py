@@ -164,10 +164,12 @@ class Main:
                     pdf = Lib.Aux.Main.wordToPDF(path=est)
 
                     if est is None:
+                        status_ct = "Aborted"
                         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorEST"],
                                              value1=name_testcase)
 
                     if pdf is None:
+                        status_ct = "Aborted"
                         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorConvertPDF"],
                                              value1=name_testcase)
 
@@ -183,16 +185,6 @@ class Main:
 
                         Lib.Aux.Main.deleteFiles(folder_path=Lib.Aux.directories['TestSetPath'], extension="png")
                         Lib.Aux.Main.deleteFiles(folder_path=Lib.Aux.directories['TestSetPath'], extension="json")
-
-                    # If there is file to download update to GitLab.
-                    # if save_evidence and not status == "Aborted":
-                    #     file_name = Lib.Aux.os.listdir(Lib.Aux.directories["DownloadFolder"])
-                    #
-                    #     status_ct_automation = "Planned"
-                    #     testcase_status = "Design"
-                    #     status = "Failed"
-                    #     raise Exception
-                    #     Lib.Aux.Main.deleteFiles(file_path=Lib.Aux.directories["DownloadFolder"], extension='*')
 
                     #### SOMENTE APÓS EXISTIR O TEST SUIT.
                     # if save_evidence:

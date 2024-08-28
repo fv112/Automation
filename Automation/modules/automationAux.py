@@ -1004,7 +1004,7 @@ class Main:
                          '(ENABLE)']:
             return True
         else:
-            return  False
+            return False
 
 """---------------------------------------------------------------------------------------------------------------------
 CLASS: API Schema

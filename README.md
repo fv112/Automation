@@ -1,9 +1,10 @@
 Automation QA - Release notes
 ---------
-:bookmark: **Version 1.23.02**    
+:bookmark: **Version 1.23.02**      
 
-<em>xx/08/2024</em>  
-:bug: - Correção do log de "checkNewVersion".
+<em>28/08/2024</em>  
+:bug: - Correção do log de "checkNewVersion".  
+:bug: - Correção da alteração para "Aborted" quando a evidência falhar na sua geração.  
 :sparkles: - Alteração dos verbos de validação.  
 #
 
