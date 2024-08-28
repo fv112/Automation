@@ -54,9 +54,9 @@ class Main:
 
         # Variables.
         duration = 0
-        status_ct = None
-        testcase_status = None
-        status_list = []
+        # status_ct = None
+        # testcase_status = None
+        status_steps = []
 
         try:
             # Complete name (if it is using the VPN).
@@ -70,12 +70,11 @@ class Main:
         try:
 
             for index, test_case_id in enumerate(test_case_id_list):
-                # status_ct_automation = 'Planned'
+                status_ct = 'Not Run'
 
                 # Inform the test case percentage already executed.
                 Lib.Aux.Main.percentage(actual=index, total=len(test_case_id_list))
 
-                # change_download_config: bool
                 order_steps_list, name_testcase, steps_list, verbs_list, parameters1_list, parameters2_list = \
                     self.connections.startSteps(project_id=project_id, test_case_id=test_case_id)
 
@@ -84,7 +83,7 @@ class Main:
 
                 # Ask if it needs to save the evidence.
                 if save_evidence:
-                    status_ct = "Not Run"
+                    # status_ct = "Not Run"
                     Lib.Aux.directories['TestSetPath'] = Lib.os.path.join(Lib.Aux.directories["EvidenceFolder"],
                                                                           Lib.Aux.otherConfigs["ETSName"] +
                                                                           str(test_case_id) + " - " + name_testcase)
@@ -118,7 +117,7 @@ class Main:
                                            parameters2_list=parameters2_list)
 
                 # Set the list of iteration status for the test case.
-                status_list.append(status_ct)
+                status_steps.append(status_ct) ### Deve ser o status do Test Plan não as condicionais.
 
                 # If fail / abort in an iteration.
                 if status_ct == "Failed" and save_evidence:
@@ -136,9 +135,9 @@ class Main:
                         self, time_spent=(Lib.datetime.datetime.now() - initial_time).total_seconds()))
 
                 # Verify in the list if the iteration status for the test case.
-                if "Failed" in status_list:
+                if "Failed" in status_steps:
                     status_ct = "Failed"
-                elif "Aborted" in status_list:
+                elif "Aborted" in status_steps:
                     status_ct = "Aborted"
                 else:
                     status_ct = "Passed"
@@ -195,6 +194,9 @@ class Main:
 
                 self.connections.UpdateLabels(project_id=project_id, test_case_id=test_case_id,
                                               status_ct=status_ct)
+
+                # Clear to the next test.
+                status_steps.clear()
 
             # Inform the test case percentage already executed (100%).
             Lib.Aux.Main.percentage(actual=len(test_case_id_list), total=len(test_case_id_list))
