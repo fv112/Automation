@@ -477,7 +477,7 @@ class Main:
             status, tag, element_field = Main.findElement(self, parameters1=parameters1)
 
             if element_field is None:
-                return "Aborted"
+                return Lib.Aux.logs["ErrorGetText"]['Msg'], "Aborted"
 
             Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
                            step_order=step_order, color="green", tag=tag)

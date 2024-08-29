@@ -1,5 +1,11 @@
 Automation QA - Release notes
 ---------
+:bookmark: **Version 1.23.06**      
+
+<em>29/08/2024</em>  
+:bug: - Correção da validação quando o componente não é encontrado.  
+#
+
 :bookmark: **Version 1.23.05**      
 
 <em>28/08/2024</em>  
