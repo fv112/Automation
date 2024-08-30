@@ -189,13 +189,10 @@ class Main:
             name_testcase = kwargs.get('name_testcase')
             word_path = kwargs.get('word_path')
             steps_list = kwargs['steps_list']
-            # test_set_path = kwargs.get('test_set_path')
-            step_failed = kwargs.get('step_failed')
+            step_failed = kwargs.get('step_failed', 0)
             executed_by = kwargs.get('executed_by')
-            # take_picture_status = kwargs.get('take_picture_status', True)
             completed_date = kwargs.get('completed_date')
             duration = kwargs.get('duration')
-            step_failed = kwargs.get('step_failed', '0')
 
             # Variables.
             tag_paragraf = [
@@ -208,7 +205,7 @@ class Main:
             document = Lib.Document(word_path)
             # Search the correct paragraph.
             paragraf = Main.wordSeachText(document=document, text=tag_paragraf[0][otherConfigs['Language']])
-            # Set the variable.
+
             image_resize = True
 
             if paragraf is None:
@@ -235,8 +232,30 @@ class Main:
                 if verb.upper() not in ('"NO"', '"NÃO"', '"NO"'.replace('"', ''),
                                         '"NÃO"'.replace('"', '')):
 
+                    if step_failed == step_order:
+                        # Add the error message in the document.
+                        paragraf = document.add_paragraph(otherConfigs['StepWithBug']['Msg'])
+                        run_paragraf = paragraf.runs[0]
+                        run_paragraf.font.color.rgb = Lib.RGBColor(*(255, 0, 0))
+                        add_evidence = True
+                    elif step_failed <= step_order:
+                        # Add the error message in the document.
+                        paragraf = document.add_paragraph(
+                            otherConfigs["StepName"] + " " + str(step_order) + " - " + step)
+                        run_paragraf = paragraf.runs[0]
+                        paragraf = document.add_paragraph(otherConfigs['StepWithPrevBug']['Msg'])
+                        run_paragraf = paragraf.runs[0]
+                        run_paragraf.font.color.rgb = Lib.RGBColor(*(255, 0, 0))
+                        add_evidence = False
+                    else:
+                        paragraf = document.add_paragraph(
+                            otherConfigs["StepName"] + " " + str(step_order) + " - " + step)
+
+                        run_paragraf = paragraf.add_run()
+                        add_evidence = True
+
                     # Last step or take_picture_status is true.
-                    if verb not in ('Fechar', 'Cerrar', 'Close') and otherConfigs['API_Step'] is False:  # and take_picture_status:
+                    if verb not in ('Fechar', 'Cerrar', 'Close') and otherConfigs['API_Step'] is False and add_evidence:
                         # Check the image size.
                         image_path = Lib.os.path.join(directories['TestSetPath'], otherConfigs["EvidenceName"] +
                                                       str(step_order).zfill(2) + otherConfigs["EvidenceExtension"])
@@ -246,16 +265,6 @@ class Main:
                             image_resize = False
 
                         step = Main.ReplacePasswordEvidence(step=step)
-
-                    paragraf = document.add_paragraph(otherConfigs["StepName"] + " " + str(step_order) + " - " + step)
-
-                    run_paragraf = paragraf.add_run()
-
-                    if step_failed == step_order:
-                        # Add the error message in the document.
-                        paragraf = document.add_paragraph(otherConfigs["StepNotFound"]['Msg'])
-                        run_paragraf = paragraf.runs[0]
-                        run_paragraf.font.color.rgb = Lib.RGBColor(*(255, 0, 0))
 
                     # Add the comment to the Manual Evidence.
                     # if (comment is not None) and (step_failed == step_order):

@@ -56,7 +56,7 @@ class Main:
         duration = 0
         # status_ct = None
         # testcase_status = None
-        status_steps = []
+        test_list_status = []
 
         try:
             # Complete name (if it is using the VPN).
@@ -83,7 +83,6 @@ class Main:
 
                 # Ask if it needs to save the evidence.
                 if save_evidence:
-                    # status_ct = "Not Run"
                     Lib.Aux.directories['TestSetPath'] = Lib.os.path.join(Lib.Aux.directories["EvidenceFolder"],
                                                                           Lib.Aux.otherConfigs["ETSName"] +
                                                                           str(test_case_id) + " - " + name_testcase)
@@ -117,7 +116,7 @@ class Main:
                                            parameters2_list=parameters2_list)
 
                 # Set the list of iteration status for the test case.
-                status_steps.append(status_ct) ### Deve ser o status do Test Plan não as condicionais.
+                test_list_status.append(status_ct)
 
                 # If fail / abort in an iteration.
                 if status_ct == "Failed" and save_evidence:
@@ -125,22 +124,19 @@ class Main:
 
                 elif status_ct == "Aborted" and save_evidence:
                     Lib.Func.Main.verifyBrowser(self)
-                    # status_ct_automation = 'Failed'
-                # else:
-                    # testcase_status = 'Closed'
 
                 # Set the test case duration.
                 duration = (
                     Lib.Aux.Main.convert_seconds_to_string(
                         self, time_spent=(Lib.datetime.datetime.now() - initial_time).total_seconds()))
 
-                # Verify in the list if the iteration status for the test case.
-                if "Failed" in status_steps:
-                    status_ct = "Failed"
-                elif "Aborted" in status_steps:
-                    status_ct = "Aborted"
+                # Verify test case list and update the test plan list.
+                if "Failed" in test_list_status:
+                    plan_status = "Failed"
+                elif "Aborted" in test_list_status:
+                    plan_status = "Aborted"
                 else:
-                    status_ct = "Passed"
+                    plan_status = "Passed"
 
                 # If aborted do not create evidences.
                 if save_evidence and status_ct != 'Aborted':
@@ -195,9 +191,6 @@ class Main:
                 self.connections.UpdateLabels(project_id=project_id, test_case_id=test_case_id,
                                               status_ct=status_ct)
 
-                # Clear to the next test.
-                status_steps.clear()
-
             # Inform the test case percentage already executed (100%).
             Lib.Aux.Main.percentage(actual=len(test_case_id_list), total=len(test_case_id_list))
 
@@ -223,6 +216,7 @@ class Main:
             Lib.Aux.otherConfigs['API_Response'] = ''
             Lib.Aux.otherConfigs['API_Step'] = False
             Lib.Aux.Main.addLogs(message="EndExecution")
+            test_list_status.clear()
 
     # Execute the test case steps.
     def executeStepByStep(self, **kwargs):
@@ -273,16 +267,20 @@ class Main:
                                                               num_of_steps=order_steps_list, step_order=step_order,
                                                               save_evidence=save_evidence))
 
-                    # Take the first step failed.
                     if status_step == "Failed" and step_failed is None:
                         step_failed = step_order
+                        color_init = Lib.Aux.Textcolor.FAIL
                         status_steps.append("Failed")
                     elif status_step == "Aborted" and step_failed is None:
                         step_failed = step_order
                         status_steps.append("Aborted")
+                        color_init = Lib.Aux.Textcolor.WARNING
                         return "Aborted", step_failed
                     else:
                         status_steps.append("Passed")
+                        color_init = Lib.Aux.Textcolor.GREEN
+
+                    print(f"STEP STATUS: {color_init}{status_step.upper()}{Lib.Aux.Textcolor.END}")
 
                     if Lib.Aux.otherConfigs['API_Step'] is False and status_step != 'Passed':
                         image_name = Lib.Aux.otherConfigs["EvidenceName"] + str(step_order).zfill(2)

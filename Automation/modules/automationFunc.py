@@ -645,30 +645,20 @@ class Main:
             step = kwargs.get('step')
             step_order = kwargs.get('step_order')
 
-            # action = Lib.regex.findall(r'\((.*?)\)', parameters2)
-
             if '(#value)' in parameters2:
                 status, tag, elements_fields = Main.findElement(self, parameters1=parameters1)
-                # if elements_fields is None:
-                #     return "Aborted"
                 text_found = elements_fields.get_attribute('value')
 
             elif '(#title)' in parameters2:
                 status, tag, elements_fields = Main.findElement(self, parameters1=parameters1)
-                # if elements_fields is None:
-                #     return "Aborted"
                 text_found = elements_fields.get_attribute('title')
 
             elif '(#href)' in parameters2:
                 status, tag, elements_fields = Main.findElement(self, parameters1=parameters1)
-                # if elements_fields is None:
-                #     return "Aborted"
                 text_found = elements_fields.get_attribute('href')
 
             elif '(#class)' in parameters2:
                 status, tag, elements_fields = Main.findElement(self, parameters1=parameters1)
-                # if elements_fields is None:
-                #     return "Aborted"
                 text_found = elements_fields.get_attribute('class')
 
             else:
@@ -699,10 +689,11 @@ class Main:
 
         try:
             new_elements = 0
+            original_style = None
 
             status, tag, elements_fields = Main.findElement(self, parameters1=parameters1, several=True)
             if elements_fields is None:
-                return "Aborted"
+                return "0", "Aborted"
 
             if status == 'Passed':
                 for _, new_element in enumerate(elements_fields):
@@ -719,20 +710,23 @@ class Main:
 
                 return len(elements_fields), "Passed"
             else:
+                Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order,
+                               save_evidence=save_evidence)
+
                 raise AttributeError(str(len(elements_fields)))
 
         except AttributeError as ex:
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetQuantityElements"],
                                  value1=str(ex), value2=parameters1)
 
-            return len(elements_fields), "Failed"
+            return str(len(elements_fields)), "Failed"
 
         except Exception as ex:
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetQuantityElements"],
                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
                                  value2=parameters1)
 
-            return len(elements_fields), "Failed"
+            return str(len(elements_fields)), "Failed"
 
     def scrollPage(self, **kwargs):
 
@@ -1422,8 +1416,9 @@ class Main:
     def verifyBrowser(self):
 
         try:
-            driver_title = driver.title
-            driver.close()
+            check_title = None
+            while check_title == driver.title:
+                driver.close()
 
         except Exception:
             pass

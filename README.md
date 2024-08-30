@@ -1,5 +1,13 @@
 Automation QA - Release notes
 ---------
+:bookmark: **Version 1.23.07**      
+
+<em>30/08/2024</em>  
+:bug: - Correção do print ao ocorrer eu na falha da validação da quantidade.  
+:bug: - Correção na validação quando o esperado é zero.    
+:sparkles: - Status do passo durante a execução.      
+#
+
 :bookmark: **Version 1.23.06**      
 
 <em>29/08/2024</em>  
