@@ -620,6 +620,8 @@ class Main:
     def checkNewVersion(self):
 
         try:
+            Main.addLogs(message="General", value=logs["ReleaseNotes"],
+                         value1=f'\nActual version: {self.version_local} \nNew version:    {self.version_distributed}')
             if self.version_distributed > self.version_local:
                 print("#" * 100)
                 print(f"Downloading new version. It could take some minutes.")

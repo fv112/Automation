@@ -17,8 +17,8 @@ class AutomationQA:
         Lib.Aux.Main.setLanguage(language='pt_BR')
 
         # ------ Check the version ----------
+        # Git version.
         self.readme_content = Lib.Aux.Main.read_html_content(self)
-
         self.version_distributed, _, _, _ = Lib.Aux.Main.releaseNotes(readme=self.readme_content)
 
         for root, dirs, files in os.walk(os.getcwd()):
@@ -26,6 +26,7 @@ class AutomationQA:
                 path = os.path.join(os.path.abspath(root), 'README.md')
                 break
 
+        # Local version.
         self.version_local, _, _, _ = Lib.Aux.Main.releaseNotes(path=path)
 
         Lib.os.system('cls')

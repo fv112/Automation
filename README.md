@@ -1,5 +1,11 @@
 Automation QA - Release notes
 ---------
+:bookmark: **Version 1.23.08**  
+
+<em>30/08/2024</em>  
+:bug: - Correção da instalação automática.    
+#
+
 :bookmark: **Version 1.23.07**      
 
 <em>30/08/2024</em>  
