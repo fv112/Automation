@@ -303,6 +303,7 @@ class Main:
         parameters2 = kwargs.get('parameters2')
         step = kwargs.get('step')
         step_order = kwargs.get('step_order')
+        save_evidence = kwargs.get('save_evidence')
 
         try:
             if parameters2 is None:
@@ -350,9 +351,10 @@ class Main:
                     Lib.Aux.time.sleep(.2)
                     actions.key_up(Lib.Keys.ALT)
 
-            Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order)
-
             actions.perform()
+
+            Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order,
+                           save_evidence=save_evidence)
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["PressButton"],
                                  value1=parameters1 + " - " + str(parameters2) + "x")
@@ -1436,10 +1438,10 @@ class Main:
             if parameters1 is None:  # If none was informed = Close Windows.
                 driver.quit()
                 Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["CloseBrowser"])
+                Main.alterWindow(self, save_evidence=save_evidence, step=step, step_order=step_order)
             else:  # If something was informed = Close Browser.
                 driver.close()
                 Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["CloseWindow"])
-                Main.alterWindow(self, save_evidence=save_evidence, step=step, step_order=step_order)
 
             return "Passed"
 

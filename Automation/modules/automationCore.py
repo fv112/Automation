@@ -43,6 +43,8 @@ class Main:
             print(f"{Lib.Aux.Textcolor.BLUE}{Lib.Aux.otherConfigs['MsgFinishedExecution']['Msg']}"
                   f"{Lib.Aux.Textcolor.END}")
 
+            quit(0)
+
     # Execute the test case iterations.
     def startAutomation(self, **kwargs):
 
@@ -54,8 +56,6 @@ class Main:
 
         # Variables.
         duration = 0
-        # status_ct = None
-        # testcase_status = None
         test_list_status = []
 
         try:
@@ -230,7 +230,7 @@ class Main:
         save_evidence = kwargs.get('save_evidence')
 
         # Variables.
-        step_failed = None
+        step_failed = 0
         status_steps = []
         step_order = None
         status_ct = 'Not Run'
@@ -267,11 +267,11 @@ class Main:
                                                               num_of_steps=order_steps_list, step_order=step_order,
                                                               save_evidence=save_evidence))
 
-                    if status_step == "Failed" and step_failed is None:
+                    if status_step.upper() == "FAILED" and step_failed == 0:
                         step_failed = step_order
                         color_init = Lib.Aux.Textcolor.FAIL
                         status_steps.append("Failed")
-                    elif status_step == "Aborted" and step_failed is None:
+                    elif status_step.upper() == "ABORTED" and step_failed == 0:
                         step_failed = step_order
                         status_steps.append("Aborted")
                         color_init = Lib.Aux.Textcolor.WARNING

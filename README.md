@@ -1,5 +1,15 @@
 Automation QA - Release notes
 ---------
+:bookmark: **Version 1.23.09**  
+
+<em>02/09/2024</em>  
+:bug: - Correção do bug que ocorre ao gerar a evidência e não incluir a descrição do passo.  
+:bug: - Correção do log ao usar o verbo "Fechar".  
+:bug: - Correção da cor do status FAILED no passo.  
+:sparkles: - Encerrar os processos do Python quando finalizar a automação.  
+:sparkles: - Alteração da frase na evidência quando não há passo com falha.  
+#
+
 :bookmark: **Version 1.23.08**  
 
 <em>30/08/2024</em>  
@@ -9,9 +19,9 @@ Automation QA - Release notes
 :bookmark: **Version 1.23.07**      
 
 <em>30/08/2024</em>  
-:bug: - Correção do print ao ocorrer eu na falha da validação da quantidade.  
-:bug: - Correção na validação quando o esperado é zero.    
-:sparkles: - Status do passo durante a execução.      
+:bug: - Correção do print ao ocorrer eu na falha da validação da quantidade.      
+:bug: - Correção na validação quando o esperado é zero.  
+:sparkles: - Status do passo durante a execução.  
 #
 
 :bookmark: **Version 1.23.06**      
