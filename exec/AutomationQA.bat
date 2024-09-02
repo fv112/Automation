@@ -66,9 +66,9 @@ REM move "C:\ProgramData\QA-Automation\Automation\Green\Automation\Repository\Ha
 xcopy "C:\ProgramData\QA-Automation\Automation\Green" "C:\ProgramData\QA-Automation\Automation\Blue" /E /H /C /I /Y
 rmdir /S /Q "C:\ProgramData\QA-Automation\Automation\Green"
 
-echo -----------------------------------------------------------------------------------------------------------------------
-echo  New version installed.
-echo -----------------------------------------------------------------------------------------------------------------------
+echo "-----------------------------------------------------------------------------------------------------------------------"
+echo " New version installed."
+echo "-----------------------------------------------------------------------------------------------------------------------"
 
 pause 
 
@@ -121,9 +121,9 @@ REM move "C:\ProgramData\QA-Automation\Automation\Green\Automation\Repository\Ha
 xcopy "C:\ProgramData\QA-Automation\Automation\Green" "C:\ProgramData\QA-Automation\Automation\Blue" /E /H /C /I /Y
 REN "C:\ProgramData\QA-Automation\Automation\Green" Blue
 
-echo -----------------------------------------------------------------------------------------------------------------------
-echo  New version installed.
-echo -----------------------------------------------------------------------------------------------------------------------
+echo "-----------------------------------------------------------------------------------------------------------------------"
+echo " New version installed."
+echo "-----------------------------------------------------------------------------------------------------------------------"
 
 pause
 
@@ -183,9 +183,9 @@ REM move "C:\ProgramData\QA-Automation\Automation\Green\Automation\Repository\Ha
 
 REN "C:\ProgramData\QA-Automation\Automation\Green" Blue
 
-echo -----------------------------------------------------------------------------------------------------------------------
-echo  New version installed.
-echo -----------------------------------------------------------------------------------------------------------------------
+echo "-----------------------------------------------------------------------------------------------------------------------"
+echo " New version installed."
+echo "-----------------------------------------------------------------------------------------------------------------------"
 
 pause
 
