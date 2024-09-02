@@ -435,7 +435,7 @@ otherConfigs:
         Message: {Type: Info, Msg: Mensagem, Where: MDDialogAppTest},
         MsgFinishedCompare: {Type: Info, Msg: Finalizado, Where: ManualEvidence},
         MsgFinishedExecution: {Type: Info, Msg: Finalizado, Where: automationCore - main},
-        NewVersionAvailable: {Type: Info, Msg: "Nova versão disponível. Deseja instalar [Y/S] = SIM ou [N/n/Enter] = Não", Where: automationAux - checkNewVersion},
+        NewVersionAvailable: {Type: Info, Msg: "Nova versão disponível! Ao finalizar será necessário executar a automação novamente para instalar. Deseja realizar o download [Y/S] = SIM ou [N/n/Enter] = Não", Where: automationAux - checkNewVersion},
         NoAction: {Type: Info, Msg: "Não", Where: automationCore},
         NoEvidences: {Type: Info, Msg: Não há imagens para este teste ou algum iteração não foi executada., Where: connections},
         NoExecutions: {Type: Info, Msg: Não há execuções para este teste., Where: azureConnection},

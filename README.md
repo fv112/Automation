@@ -1,5 +1,11 @@
 Automation QA - Release notes
 ---------
+:bookmark: **Version 1.23.10**  
+
+<em>02/09/2024</em>   
+:sparkles: - Nova versão do instalador.  
+#
+
 :bookmark: **Version 1.23.09**  
 
 <em>02/09/2024</em>  
