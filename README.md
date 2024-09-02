@@ -1,6 +1,6 @@
 Automation QA - Release notes
 ---------
-:bookmark: **Version 1.23.13**  
+:bookmark: **Version 1.23.14**  
 
 <em>02/09/2024</em>   
 :bug: - Correção da função Fechar.  
