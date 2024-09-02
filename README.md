@@ -3,6 +3,13 @@ Automation QA - Release notes
 :bookmark: **Version 1.23.13**  
 
 <em>02/09/2024</em>   
+:bug: - Correção da função Fechar.  
+:sparkles: - Melhoria no log de instalação.   
+#
+
+:bookmark: **Version 1.23.13**  
+
+<em>02/09/2024</em>   
 :sparkles: - Melhora das informações durante o proceso de instalação.    
 #
 

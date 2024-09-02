@@ -1436,11 +1436,11 @@ class Main:
 
         try:
             if parameters1 is None:  # If none was informed = Close Windows.
-                driver.quit()
+                driver.close()
                 Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["CloseBrowser"])
                 Main.alterWindow(self, save_evidence=save_evidence, step=step, step_order=step_order)
             else:  # If something was informed = Close Browser.
-                driver.close()
+                driver.quit()
                 Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["CloseWindow"])
 
             return "Passed"
@@ -1626,7 +1626,7 @@ class Main:
             return True
 
         except AttributeError or Lib.requests.exceptions.RequestException or Lib.requests.exceptions.RetryError:
-            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorTakePicture']['Msg']}{Lib.Aux.Textcolor.END}")
+            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorTakePictureErrorTakePicture']['Msg']}{Lib.Aux.Textcolor.END}")
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorTakePicture"])
 
             return False
