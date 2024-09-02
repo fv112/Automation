@@ -43,8 +43,6 @@ class Main:
             print(f"{Lib.Aux.Textcolor.BLUE}{Lib.Aux.otherConfigs['MsgFinishedExecution']['Msg']}"
                   f"{Lib.Aux.Textcolor.END}")
 
-            quit(0)
-
     # Execute the test case iterations.
     def startAutomation(self, **kwargs):
 

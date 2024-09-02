@@ -1,5 +1,12 @@
 Automation QA - Release notes
 ---------
+:bookmark: **Version 1.23.11**  
+
+<em>02/09/2024</em>   
+:sparkles: - Remoção do debug do log de instalação.  
+:bug: - Remoção do quit ao finalizar com erro.  
+#
+
 :bookmark: **Version 1.23.10**  
 
 <em>02/09/2024</em>   

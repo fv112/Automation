@@ -1,4 +1,4 @@
-@echo on
+@echo off
 SETLOCAL 
 
 REM Blue = Versão atual.
