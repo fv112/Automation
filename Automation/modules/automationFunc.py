@@ -1654,6 +1654,7 @@ class Main:
             Lib.Aux.otherConfigs['API_Step'] = True
             api_status_final = True
             error_msg_list = {}
+            step_status = "Not Run"
 
             if parameters1.upper() != 'SUBMIT':
                 tag = parameters1[:parameters1.find(':')]
@@ -1665,7 +1666,7 @@ class Main:
                     Lib.Aux.otherConfigs['API_Headers'] = parameters1[parameters1.find(':') + 1:].strip()
                 elif tag.upper() == 'BODY':
                     Lib.Aux.otherConfigs['API_Body'] = (parameters1[parameters1.find(':') + 1:parameters1.rfind('\"')]
-                                                    .strip())
+                                                        .strip())
                 elif tag.upper() == 'PARAMS':
                     Lib.Aux.otherConfigs['API_Params'] = parameters1[parameters1.find(':') + 1:].strip()
                 elif tag.upper() == "SCHEMA":
@@ -1687,14 +1688,14 @@ class Main:
                             dict_body[tag] = json_fake_data[tag][fake_order]
 
                             # Run the API request.
-                            error_msg = (
+                            error_msg, step_status = (
                                 self.connections.send_request(api_action=api_action,
                                                               headers=Lib.Aux.otherConfigs['API_Headers'],
                                                               body=dict_body))
 
                             error_msg_list[tag + ' -> ' + str(dict_body[tag])] = error_msg
 
-                            if Lib.Aux.otherConfigs['API_StatusCode'] == 400:
+                            if step_status == 'Failed':
                                 api_status = True
                             else:
                                 api_status = False
@@ -1713,12 +1714,16 @@ class Main:
                           f"{Lib.Aux.Textcolor.END}")
                     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAPIMissingInfo"])
                     raise TypeError(Lib.Aux.logs['ErrorAPIMissingInfo']['Msg'])
+                else:
+                    return "Passed"
             else:
                 # Run the API request.
-                Lib.Aux.otherConfigs['API_Response'] = (
+                Lib.Aux.otherConfigs['API_Response'], step_status = (
                     self.connections.send_request(api_action=api_action,
                                                   headers=Lib.Aux.otherConfigs['API_Headers'],
                                                   body=Lib.Aux.otherConfigs['API_Body']))
+
+                return step_status
 
         except Exception as ex:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequestAPI']['Msg']}{Lib.Aux.Textcolor.END}", str(ex))

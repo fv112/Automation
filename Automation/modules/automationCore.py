@@ -69,6 +69,7 @@ class Main:
 
             for index, test_case_id in enumerate(test_case_id_list):
                 status_ct = 'Not Run'
+                Lib.Aux.otherConfigs['API_Step'] = False
 
                 # Inform the test case percentage already executed.
                 Lib.Aux.Main.percentage(actual=index, total=len(test_case_id_list))
@@ -253,8 +254,11 @@ class Main:
                 if parameters2 is not None:
                     print(f"PARAM 2: {parameters2}")
 
-                # Execute the test step.
-                Lib.Aux.otherConfigs['API_Step'] = False
+                # If only step get API True.
+                # if Lib.Aux.otherConfigs['API_Step']:
+                #     Lib.Aux.otherConfigs['API_Step'] = False
+                # else:
+                #     Lib.Aux.otherConfigs['API_Step'] = (Lib.Aux.otherConfigs['API_Step'] or False)
 
                 if Lib.Counter(status_steps)['Failed'] != 0:
                     status_steps.append("Not Run")

@@ -37,6 +37,10 @@ verbs:
         Clicar_: {Language: Spanish, Function: Lib.Func.Main.click},
         Click: {Language: English, Function: Lib.Func.Main.click},
 
+        Delete: {Language: Portuguese, Function: Lib.Func.Main.request_api},
+        Delete_: {Language: Spanish, Function: Lib.Func.Main.request_api},
+        Delete__: {Language: English, Function: Lib.Func.Main.request_api},
+
         Duplo: {Language: Portuguese, Function: Lib.Func.Main.doubleClick},
         DobleClic: {Language: Spanish, Function: Lib.Func.Main.doubleClick},
         Double: {Language: English, Function: Lib.Func.Main.doubleClick},
@@ -72,6 +76,10 @@ verbs:
         Post: {Language: Portuguese, Function: Lib.Func.Main.request_api},
         Post_: {Language: Spanish, Function: Lib.Func.Main.request_api},
         Post__: {Language: English, Function: Lib.Func.Main.request_api},
+
+        Put: {Language: Portuguese, Function: Lib.Func.Main.request_api},
+        Put_: {Language: Spanish, Function: Lib.Func.Main.request_api},
+        Put__: {Language: English, Function: Lib.Func.Main.request_api},
 
         Preencher: {Language: Portuguese, Function: Lib.Func.Main.fillField},
         Llenar: {Language: Spanish, Function: Lib.Func.Main.fillField},

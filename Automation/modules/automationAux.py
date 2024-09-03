@@ -279,7 +279,7 @@ class Main:
                                                      height=eval(otherConfigs["EvidenceHeight"]))
                         else:
                             run_paragraf.add_picture(image_path, width=Lib.Inches(5))
-                    elif otherConfigs['API_Step']:
+                    elif otherConfigs['API_Step'] and add_evidence:
                         api_evidence_step = None
                         api_file_name = (otherConfigs["EvidenceNameAPI"] + str(step_order).zfill(2) +
                                          otherConfigs["EvidenceExtensionAPI"])

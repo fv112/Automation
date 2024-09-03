@@ -1,5 +1,12 @@
 Automation QA - Release notes
 ---------
+:bookmark: **Version 1.23.15**  
+
+<em>03/09/2024</em>   
+:bug: - Correção na geração da evidência quando ocorre erro na API.  
+:sparkles: - Inclusão das demais formas de request da API.     
+#
+
 :bookmark: **Version 1.23.14**  
 
 <em>02/09/2024</em>   

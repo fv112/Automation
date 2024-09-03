@@ -575,12 +575,17 @@ class Connections:
                 headers = {'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["API_Headers"],
                            'Content-Type': 'application/json'}
 
-            if api_action.upper() == "GET":
-                api_result = Lib.requests.get(Lib.Aux.otherConfigs['API_Endpoint'], data=Lib.json.dumps(body),
-                                              params=Lib.Aux.otherConfigs['API_Params'], headers=headers)
+            if api_action.upper() == "DELETE":
+                api_result = Lib.requests.delete(Lib.Aux.otherConfigs['API_Endpoint'], headers=headers)
             elif api_action.upper() == "POST":
                 api_result = Lib.requests.post(Lib.Aux.otherConfigs['API_Endpoint'], headers=headers, data=body)
+            elif api_action.upper() == "PUT":
+                api_result = Lib.requests.put(Lib.Aux.otherConfigs['API_Endpoint'], headers=headers)
+            else:  # api_action.upper() == "GET":
+                api_result = Lib.requests.get(Lib.Aux.otherConfigs['API_Endpoint'], data=Lib.json.dumps(body),
+                                              params=Lib.Aux.otherConfigs['API_Params'], headers=headers)
 
+            if api_action.upper() in ['GET', 'POST', 'DELETE', 'PUT']:
                 Lib.Aux.otherConfigs['API_StatusCode'] = api_result.status_code
                 resp = Lib.json.loads(api_result.text)
                 if resp is not []:
@@ -588,14 +593,15 @@ class Connections:
 
                 if api_result.status_code == 400:
                     return_value = resp['errors']['$'][0]
-                    return return_value
+                    return return_value, "Failed"
                 elif api_result.status_code == 200:
-                    return Lib.Aux.otherConfigs['API_Response']
+                    return Lib.Aux.otherConfigs['API_Response'], "Passed"
 
         except Exception as ex:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorSendRequest']['Msg']} - {ex}{Lib.Aux.Textcolor.END}")
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorSendRequest'], value1=str(ex))
-            # exit(1)
+
+            return None, "Failed"
 
     # def UpdateStatusAutomated(self, **kwargs):
     #
