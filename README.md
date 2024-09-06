@@ -1,5 +1,13 @@
 Automation QA - Release notes
 ---------
+:bookmark: **Version 1.23.16**  
+
+<em>06/09/2024</em>   
+:ok_hand: - Alteração da frase de log caso não tenha casos de teste no projeto.  
+:ok_hand: - Remoção dos logs da interface gráfica.    
+:sparkles: - Tradução automática para o idioma da máquina.  
+#
+
 :bookmark: **Version 1.23.15**  
 
 <em>03/09/2024</em>   
@@ -12,6 +20,7 @@ Automation QA - Release notes
 <em>02/09/2024</em>   
 :bug: - Correção da função Fechar.  
 :sparkles: - Melhoria no log de instalação.   
+:sparkles: - Desativado armazenamento do cache no Google Chrome, Firefox Edge.  
 #
 
 :bookmark: **Version 1.23.13**  

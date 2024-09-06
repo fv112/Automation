@@ -2,6 +2,7 @@ import common_libs as Lib
 
 verbs = None
 logs = None
+directories = None
 
 
 # Colored the text.
@@ -77,8 +78,9 @@ class Main:
             # kwargs variables.
             language = kwargs.get('language')
 
+            Main.loadConfigs(language='pt')  # Change to the Portuguese language.
+
             if language == 'pt_BR':
-                Main.loadConfigs(language='pt')  # Change to the Portuguese language.
                 print(f"{Textcolor.GREEN}{otherConfigs['NoTranslating']}{Textcolor.END}\n")
             elif language == 'en_US':
                 need_translation, new_hash = Main.configureLanguage(language='en')
@@ -471,22 +473,16 @@ class Main:
 
         try:
             # kwargs arguments.
-            folder_path = kwargs.get('folder_path')
+            folder_path = kwargs.get('folder_path', '')
             extension = kwargs.get('extension')
             exact_file = kwargs.get('exact_file')
 
             # Delete all the files in a directory with the specific extension OR all if the extension is '*'.
-            # if file_path:
-            # if directories['TestSetPath']:
             if Lib.os.path.exists(folder_path):
-            # if folder_path:
-
-                # files = Lib.os.listdir(Lib.Aux.directories['TestSetPath'])
                 files = Lib.os.listdir(folder_path)
 
                 for item in files:
                     if item.endswith(extension) or extension == '*':
-                        # Lib.os.remove(Lib.os.path.join(directories['TestSetPath'], item))
                         Lib.os.remove(Lib.os.path.join(folder_path, item))
 
             elif exact_file is not None:
@@ -588,27 +584,32 @@ class Main:
             path_translated_yml = Lib.os.path.join(Lib.os.getcwd(), 'Automation', 'configs', 'dictionary-' +
                                                    language + '.yml')
 
-            Lib.regex_pattern = Lib.regex.compile('(.*?,)(.*?,)(.*)')
-
+            regex_pattern = Lib.regex.compile('(.*?,)(.*?,)(.*)')
             tag = 'Msg:'
+            dots = ""
 
             if Lib.os.path.isfile(path_translated_yml):
                 Main.deleteFiles(exact_file=path_translated_yml)
 
             with open(path_origin_yml, 'r') as yml_file:
+                # print(f'{Textcolor.BLUE}{otherConfigs['WaitTranslate']['Msg']}{Textcolor.END}')
                 lines = yml_file.readlines()
                 for line in lines:
                     if tag in line:
                         with open(path_translated_yml, 'a', encoding='utf-8') as yml_new_file:
                             group_type = Lib.regex.match(regex_pattern, line).group(1)
                             group_msg = Lib.regex.match(regex_pattern, line).group(2)
-                            msg_translated = GoogleTranslator(source='pt', target=language).\
+                            msg_translated = Lib.GoogleTranslator(source='pt', target=language).\
                                 translate((group_msg[len(tag) + 1:len(group_msg) - 1]).strip())
                             group_where = Lib.regex.match(regex_pattern, line).group(3)
                             yml_new_file.write(f'{group_type}{tag} {msg_translated},{group_where}\n')
                     else:
                         with open(path_translated_yml, 'a') as yml_new_file:
                             yml_new_file.write(f'{line}')
+                    dots += "."
+                    Lib.os.system('cls')
+                    Lib.sys.stdout.write(f"\r{Textcolor.BLUE}{otherConfigs['WaitTranslate']['Msg']}{Textcolor.END} {dots}")
+                    Lib.sys.stdout.flush()
 
             Main.saveHash(new_hash=new_hash, path_part=language)
             print(f"{Textcolor.GREEN}{otherConfigs['TranslateMessage']}{Textcolor.END}")
@@ -694,7 +695,7 @@ class Main:
             path_file = kwargs.get('path_file')
 
             BLOCKSIZE = 65536
-            hasher = hashlib.sha1()
+            hasher = Lib.hashlib.sha1()
             with open(path_file, 'rb') as target_file:
                 buffer = target_file.read(BLOCKSIZE)
                 while len(buffer) > 0:
@@ -731,7 +732,7 @@ class Main:
             Main.addLogs(message="General", value=logs["ErrorReadHash"], value1=str(ex))
 
     # Save the hash in a file.
-    def saveHash(self, **kwargs):
+    def saveHash(**kwargs):
         try:
             # kwargs arguments.
             new_hash = kwargs.get('new_hash')
@@ -741,7 +742,7 @@ class Main:
             hash_file_path = Lib.os.path.join(directories["HashFolder"], path_part + '-hash_dictionary.txt')
 
             if not Lib.os.path.exists(directories['HashFolder']):
-                Main.createDirectory(self, path=directories['HashFolder'])
+                Main.createDirectory(path=directories['HashFolder'])
             with open(hash_file_path, 'w') as hash_file:
                 hash_file.write(new_hash)
 

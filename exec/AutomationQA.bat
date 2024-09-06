@@ -24,16 +24,13 @@ IF EXIST "%DIR_BLUE%\" (
 :AmbosExistem
 echo Ambos os diretórios existem.
 
-echo ########################################################################################################################
-echo 		   				ATTENTION / ATENCAO / AVISO
-echo "(English) This update will be delete your actual version inside the folder C:\ProgramData\QA-Automation. If you DO NOT want to continue close this window."
-echo "(Português) Este update ira apagar a sua versão atual dentro da pasta C:\ProgramData\QA-Automation. Se NAO deseja continuar feche esta janela."
-echo "(Español) Esta actualizacion eliminara su version actual dentro de la carpeta C:\ProgramData\QA-Automation. Si NO desea continuar, cierre esta ventana."
-echo "                                                                                                                      "
-echo ########################################################################################################################
-
-REM echo Creating the destination folder.
-REM mkdir "C:\ProgramData\QA-Automation\Automation"
+echo -----------------------------------------------------------------------------------------------------------------------
+echo.
+echo.
+echo.
+echo.
+echo.
+echo -----------------------------------------------------------------------------------------------------------------------
 
 echo Unzip the Automation package and installing the new version.
 powershell Expand-Archive -path "%DIR_GREEN%"\Green.zip -DestinationPath C:\ProgramData\QA-Automation\Automation\ -Force
@@ -53,22 +50,21 @@ move "C:\ProgramData\QA-Automation\Automation\Green\Automation\Automation\Automa
 
 echo Delete temporary files.
 rmdir /S /Q "C:\ProgramData\QA-Automation\Automation\Green\Automation\_internal\Automation"
-del "C:\ProgramData\QA-Automation\Automation\Green\Automation\_internal\README.md"
 del "C:\ProgramData\QA-Automation\Automation\Automation.zip"
 del "C:\ProgramData\QA-Automation\Automation\TestEnvironment.zip"
-rmdir /S /Q "C:\ProgramData\QA-Automation-Files\Repository\Download"
 
 echo Move the hash files used by the translation.
-mkdir "C:\ProgramData\QA-Automation\Automation\Hash"
-REM move "C:\ProgramData\QA-Automation\Automation\Green\Automation\Repository\Hash\en-hash_dictionary.txt" "C:\ProgramData\QA-Automation-Files\Hash"
-REM move "C:\ProgramData\QA-Automation\Automation\Green\Automation\Repository\Hash\es-hash_dictionary.txt" "C:\ProgramData\QA-Automation-Files\Hash"
+rmdir /S /Q "C:\ProgramData\QA-Automation-Files\Repository\Hash"
+mkdir "C:\ProgramData\QA-Automation-Files\Repository\Hash"
+move "C:\ProgramData\QA-Automation\Automation\Green\Automation\Automation\Hash\en-hash_dictionary.txt" "C:\ProgramData\QA-Automation-Files\Repository\Hash"
+move "C:\ProgramData\QA-Automation\Automation\Green\Automation\Automation\Hash\es-hash_dictionary.txt" "C:\ProgramData\QA-Automation-Files\Repository\Hash"
 
 xcopy "C:\ProgramData\QA-Automation\Automation\Green" "C:\ProgramData\QA-Automation\Automation\Blue" /E /H /C /I /Y
 rmdir /S /Q "C:\ProgramData\QA-Automation\Automation\Green"
 
-echo "-----------------------------------------------------------------------------------------------------------------------"
-echo " New version installed."
-echo "-----------------------------------------------------------------------------------------------------------------------"
+echo -----------------------------------------------------------------------------------------------------------------------
+echo New version installed.
+echo -----------------------------------------------------------------------------------------------------------------------
 
 pause 
 
@@ -79,13 +75,13 @@ goto End
 :GreenExiste_Nova
 echo O diretório %DIR_GREEN% existe, mas o diretório %DIR_BLUE% não existe.
 
-echo ########################################################################################################################
-echo 		   				ATTENTION / ATENCAO / AVISO
-echo "(English) This update will be delete your actual version inside the folder C:\ProgramData\QA-Automation. If you DO NOT want to continue close this window."
-echo "(Português) Este update ira apagar a sua versão atual dentro da pasta C:\ProgramData\QA-Automation. Se NAO deseja continuar feche esta janela."
-echo "(Español) Esta actualizacion eliminara su version actual dentro de la carpeta C:\ProgramData\QA-Automation. Si NO desea continuar, cierre esta ventana."
-echo "                                                                                                                      "
-echo ########################################################################################################################
+echo -----------------------------------------------------------------------------------------------------------------------
+echo.
+echo.
+echo.
+echo.
+echo.
+echo -----------------------------------------------------------------------------------------------------------------------
 
 echo Creating the destination folder.
 mkdir "C:\ProgramData\QA-Automation\Automation"
@@ -108,22 +104,21 @@ move "C:\ProgramData\QA-Automation\Automation\Green\Automation\Automation\Automa
 
 echo Delete temporary files.
 rmdir /S /Q "C:\ProgramData\QA-Automation\Automation\Green\Automation\_internal\Automation"
-del "C:\ProgramData\QA-Automation\Automation\Green\Automation\_internal\README.md"
 del "C:\ProgramData\QA-Automation\Automation\Automation.zip"
 del "C:\ProgramData\QA-Automation\Automation\TestEnvironment.zip"
-rmdir /S /Q "C:\ProgramData\QA-Automation-Files\Repository\Download"
 
 echo Move the hash files used by the translation.
-mkdir "C:\ProgramData\QA-Automation\Automation\Hash"
-REM move "C:\ProgramData\QA-Automation\Automation\Green\Automation\Repository\Hash\en-hash_dictionary.txt" "C:\ProgramData\QA-Automation-Files\Hash"
-REM move "C:\ProgramData\QA-Automation\Automation\Green\Automation\Repository\Hash\es-hash_dictionary.txt" "C:\ProgramData\QA-Automation-Files\Hash"
+rmdir /S /Q "C:\ProgramData\QA-Automation-Files\Repository\Hash"
+mkdir "C:\ProgramData\QA-Automation-Files\Repository\Hash"
+move "C:\ProgramData\QA-Automation\Automation\Green\Automation\Automation\Hash\en-hash_dictionary.txt" "C:\ProgramData\QA-Automation-Files\Repository\Hash"
+move "C:\ProgramData\QA-Automation\Automation\Green\Automation\Automation\Hash\es-hash_dictionary.txt" "C:\ProgramData\QA-Automation-Files\Repository\Hash"
 
 xcopy "C:\ProgramData\QA-Automation\Automation\Green" "C:\ProgramData\QA-Automation\Automation\Blue" /E /H /C /I /Y
 REN "C:\ProgramData\QA-Automation\Automation\Green" Blue
 
-echo "-----------------------------------------------------------------------------------------------------------------------"
-echo " New version installed."
-echo "-----------------------------------------------------------------------------------------------------------------------"
+echo -----------------------------------------------------------------------------------------------------------------------
+echo New version installed.
+echo -----------------------------------------------------------------------------------------------------------------------
 
 pause
 
@@ -142,13 +137,13 @@ echo Nenhum existe.
 set "scriptPath=%~dp0"
 set "scriptPath=%scriptPath:~0,-1%"
 
-echo ########################################################################################################################
-echo 		   				ATTENTION / ATENCAO / AVISO
-echo "(English) This update will be delete your actual version inside the folder C:\ProgramData\QA-Automation. If you DO NOT want to continue close this window."
-echo "(Português) Este update ira apagar a sua versão atual dentro da pasta C:\ProgramData\QA-Automation. Se NAO deseja continuar feche esta janela."
-echo "(Español) Esta actualizacion eliminara su version actual dentro de la carpeta C:\ProgramData\QA-Automation. Si NO desea continuar, cierre esta ventana."
-echo "                                                                                                                      "
-echo ########################################################################################################################
+echo -----------------------------------------------------------------------------------------------------------------------
+echo.
+echo.
+echo.
+echo.
+echo.
+echo -----------------------------------------------------------------------------------------------------------------------
 
 echo Creating the destination folder.
 mkdir "C:\ProgramData\QA-Automation\Automation"
@@ -171,21 +166,20 @@ move "C:\ProgramData\QA-Automation\Automation\Green\Automation\Automation\Automa
 
 echo Delete temporary files.
 rmdir /S /Q "C:\ProgramData\QA-Automation\Automation\Green\Automation\_internal\Automation"
-del "C:\ProgramData\QA-Automation\Automation\Green\Automation\_internal\README.md"
 del "C:\ProgramData\QA-Automation\Automation\Automation.zip"
 del "C:\ProgramData\QA-Automation\Automation\TestEnvironment.zip"
-rmdir /S /Q "C:\ProgramData\QA-Automation-Files\Repository\Download"
 
 echo Move the hash files used by the translation.
-mkdir "C:\ProgramData\QA-Automation\Automation\Hash"
-REM move "C:\ProgramData\QA-Automation\Automation\Green\Automation\Repository\Hash\en-hash_dictionary.txt" "C:\ProgramData\QA-Automation-Files\Hash"
-REM move "C:\ProgramData\QA-Automation\Automation\Green\Automation\Repository\Hash\es-hash_dictionary.txt" "C:\ProgramData\QA-Automation-Files\Hash"
+rmdir /S /Q "C:\ProgramData\QA-Automation-Files\Repository\Hash"
+mkdir "C:\ProgramData\QA-Automation-Files\Repository\Hash"
+move "C:\ProgramData\QA-Automation\Automation\Green\Automation\Automation\Hash\en-hash_dictionary.txt" "C:\ProgramData\QA-Automation-Files\Repository\Hash"
+move "C:\ProgramData\QA-Automation\Automation\Green\Automation\Automation\Hash\es-hash_dictionary.txt" "C:\ProgramData\QA-Automation-Files\Repository\Hash"
 
 REN "C:\ProgramData\QA-Automation\Automation\Green" Blue
 
-echo "-----------------------------------------------------------------------------------------------------------------------"
-echo " New version installed."
-echo "-----------------------------------------------------------------------------------------------------------------------"
+echo -----------------------------------------------------------------------------------------------------------------------
+echo  New version installed.
+echo -----------------------------------------------------------------------------------------------------------------------
 
 pause
 

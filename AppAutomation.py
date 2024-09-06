@@ -14,7 +14,23 @@ class AutomationQA:
 
     def __init__(self):
         path = None
-        Lib.Aux.Main.setLanguage(language='pt_BR')
+
+        # Load the Windows DLL's to inform the computer language.
+        windll = Lib.ctypes.windll.kernel32
+        windll.GetUserDefaultUILanguage()
+
+        # Load the correct file according the language.
+        language = Lib.locale.windows_locale[windll.GetUserDefaultUILanguage()]
+
+        if 'es' in language:
+            language = language[:2]  # Any spanish language.
+
+        # For debug.
+        ### language = 'es'     ### For test.
+        language = 'en_US'  ### For test.
+        ### language = 'pt_BR'  ### For test.
+
+        Lib.Aux.Main.setLanguage(language=language)
 
         # ------ Check the version ----------
         # Git version.
