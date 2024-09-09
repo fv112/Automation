@@ -27,7 +27,7 @@ class AutomationQA:
 
         # For debug.
         ### language = 'es'     ### For test.
-        language = 'en_US'  ### For test.
+        ### language = 'en_US'  ### For test.
         ### language = 'pt_BR'  ### For test.
 
         Lib.Aux.Main.setLanguage(language=language)
@@ -72,12 +72,14 @@ class AutomationQA:
     #     self.project = None
     #     self.test_case_id = None
     #     self.isolated_test_case = None
+    #     self.save_evidence = None
     #
     #     # Split the command line parameters.
-    #     options, args = getopt.getopt(argv[1:], "p:i:t:",
+    #     options, args = getopt.getopt(argv[1:], "p:i:t:s:",
     #                                   ["project",
     #                                    "isolated_test_case",
-    #                                    "test_case_id"])
+    #                                    "test_case_id",
+    #                                    "save_evidence"])
     #
     #     print(options)
     #
@@ -88,10 +90,13 @@ class AutomationQA:
     #             self.isolated_test_case = value
     #         elif name in ['-t']:  # Test case id.
     #             self.test_case_id = value
+    #         elif evidence in ['-s']:  # Save evidence.
+    #             self.save_evidence = value
     #
     #     print(f' Project:               {self.project}\n',
     #           f' Isolated Test case:    {self.isolated_test_case}\n',
     #           f' Test Case ID:          {self.test_case_id}\n'
+    #           f' Save evidence:          {self.test_case_id}\n'
     #           )
     #
     #     # Read any language to load the directories and paths.

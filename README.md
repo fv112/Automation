@@ -1,5 +1,13 @@
 Automation QA - Release notes
 ---------
+:bookmark: **Version 1.23.17**  
+
+<em>09/09/2024</em>   
+:bug: - Correção da função de duplo clique do mouse.
+:bug: - Correção da função Voltar e Prosseguir do browser.  
+:bug: - Correção da frase de validação do título.  
+#
+
 :bookmark: **Version 1.23.16**  
 
 <em>06/09/2024</em>   

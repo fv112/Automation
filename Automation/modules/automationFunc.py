@@ -176,8 +176,7 @@ class Main:
 
             Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step, step_order=step_order,
                            tag=tag)
-            element_field.click()
-            element_field.click()
+            Lib.ActionChains(driver).double_click(element_field).perform()
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["DoubleClick"], value1=parameters1)
 
@@ -601,7 +600,7 @@ class Main:
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["BackPage"])
 
-            return driver, "Passed"
+            return "Passed"
 
         except Exception as ex:
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorBackPage"],
@@ -625,7 +624,7 @@ class Main:
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ForwardPage"])
 
-            return driver, "Passed"
+            return "Passed"
 
         except Exception as ex:
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorForwardPage"],
@@ -764,9 +763,11 @@ class Main:
             # kwargs arguments.
             step = kwargs.get('step')
             step_order = kwargs.get('step_order')
+            save_evidence = kwargs.get('save_evidence')
 
             driver.refresh()
-            Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order)
+            Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order,
+                           save_evidence=save_evidence)
 
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["RefreshPage"])
 
