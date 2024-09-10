@@ -1,8 +1,5 @@
 import common_libs as Lib
 
-instance = 'kantarware.visualstudio.com/'
-
-
 class Main:
 
     def __init__(self):
@@ -148,13 +145,13 @@ class Main:
                         # Add the evidence to the Run and the Test case.
                         Lib.Aux.Main.addLogs(self, message="General", value=Lib.Aux.logs["ConvertPDF"],
                                          value1=name_testcase + " - ITERATION " + str(n_iteration + 1))
-                        GitLab.AzureConnection.SaveEvidenceRun(self, project=project, test_run_id=test_run_id,
+                        self.connections.SaveEvidenceRun(self, project=project, test_run_id=test_run_id,
                                                               test_case_id_azure=test_case_id_azure,
                                                               evidence_folder=Lib.Aux.directories["EvidenceFolder"],
                                                               name_testcase=Lib.Aux.otherConfigs["ETSName"] +
                                                               str(test_case_id) + " - " + name_testcase,
                                                               cont_iteration=n_iteration + 1)
-                        GitLab.AzureConnection.SaveEvidenceTestCase(self, project=project, test_case_id=test_case_id,
+                        self.connections.SaveEvidenceTestCase(self, project=project, test_case_id=test_case_id,
                                                                    evidence_folder=Lib.Aux.directories["EvidenceFolder"],
                                                                    name_testcase=Lib.Aux.otherConfigs["ETSName"] +
                                                                    str(test_case_id) + " - " + name_testcase,

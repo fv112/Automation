@@ -234,6 +234,8 @@ class Main:
                 if verb.upper() not in ('"NO"', '"NÃO"', '"NO"'.replace('"', ''),
                                         '"NÃO"'.replace('"', '')):
 
+                    step = Main.ReplacePasswordEvidence(step=step)
+
                     paragraf = document.add_paragraph(
                         otherConfigs["StepName"] + " " + str(step_order) + " - " + step)
                     run_paragraf = paragraf.add_run()
@@ -263,16 +265,7 @@ class Main:
                         if image.size[0] <= 1500:
                             image_resize = False
 
-                        step = Main.ReplacePasswordEvidence(step=step)
-
-                    # Add the comment to the Manual Evidence.
-                    # if (comment is not None) and (step_failed == step_order):
-                    #     # Add the error message in the document.
-                    #     paragraf = document.add_paragraph(comment)
-                    #     run_paragraf = paragraf.add_run()
-
                     if verb not in ('Fechar', 'Cerrar', 'Close') and otherConfigs['API_Step'] is False:
-                        # and take_picture_status and
                         # Resize the image if it is not full screen.
                         run_paragraf.add_break()
                         if image_resize:
@@ -816,9 +809,9 @@ class Main:
             Main.addLogs(message="General", value=logs["ErrorPercentage"], value1=str(ex))
 
     # Verify if the file exist.
-    def verifyFile(self, **kwargs):
-        try:
+    def verifyFile(**kwargs):
 
+        try:
             # kwargs parameters.
             path = kwargs.get('path')
             extension = kwargs.get('extension')

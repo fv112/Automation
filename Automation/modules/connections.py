@@ -481,7 +481,7 @@ class Connections:
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorUpdateLabels'], value1=str(ex))
 
     # Upload the evidence in the TestCase.
-    def SaveEvidenceTestCase(self, **kwargs):
+    def UploadFileGit(self, **kwargs):
 
         # kwargs variables.
         project_id = kwargs.get("project_id")
@@ -493,7 +493,6 @@ class Connections:
 
         try:
 
-            # Get Token.
             new_url = (url + 'projects/' + str(project_id) + '/uploads')
 
             if status_ct == 'Failed':
@@ -511,9 +510,9 @@ class Connections:
                                       files=files, verify=False)
 
             if q.status_code == 201:
-                print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.logs['SaveEvidenceTestCaseUpload']['Msg']}"
+                print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.logs['UploadFileGitUpload']['Msg']}"
                       f"{Lib.Aux.Textcolor.END}\n")
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['SaveEvidenceTestCaseUpload'])
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['UploadFileGitUpload'])
 
                 # Filter some fields.
                 json_str = Lib.json.dumps(q.json())
@@ -524,7 +523,7 @@ class Connections:
                 print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequest']['Msg']}{Lib.Aux.Textcolor.END}\n")
                 Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorRequest'],
                                      value1='Status code: ' + str(q.status_code) + ' - ' + str(q.text) +
-                                            ' - SaveEvidenceTestCase - GetToken')
+                                            ' - UploadFileGit - GetToken')
 
             new_url = (url + 'projects/' + str(project_id) + '/issues/' + str(test_case_id) + '/notes')
 
@@ -539,20 +538,20 @@ class Connections:
                                   data=body, verify=False)
 
             if p.status_code == 201:
-                print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.logs['SaveEvidenceTestCase']['Msg']}"
+                print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.logs['UploadFileGit']['Msg']}"
                       f"{Lib.Aux.Textcolor.END}\n")
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['SaveEvidenceTestCase'])
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['UploadFileGit'])
 
             else:
                 print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequest']['Msg']}{Lib.Aux.Textcolor.END}\n")
                 Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorRequest'],
                                      value1='Status code: ' + str(p.status_code) + ' - ' + str(p.text) +
-                                            ' - SaveEvidenceTestCase - Upload File')
+                                            ' - UploadFileGit - Upload File')
 
         except Exception as ex:
-            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorSaveEvidenceTestCase']['Msg']} - {ex}"
+            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorUploadFileGit']['Msg']} - {ex}"
                   f"{Lib.Aux.Textcolor.END}")
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorSaveEvidenceTestCase'], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorUploadFileGit'], value1=str(ex))
 
     def send_request(self, **kwargs):
 

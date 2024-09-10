@@ -192,7 +192,7 @@ logs:
         ErrorCompareFile: {Type: Error, Msg: Não foi possível abrir o Beyond Compare!, Where: compareBeyondCompare}, ###
         ErrorCore: {Type: Error, Msg: Ocorreu um erro na aplicação!, Where: mainFunction},
         ErrorCreateDirectory: {Type: Error, Msg: Ocorreu um erro na criação do diretório!, Where: automationAux - createDirectory},
-        ErrorCreatelog: {Type: Error, Msg: Erro na criação do log!, Where: createlog},
+        ErrorCreateLog: {Type: Error, Msg: Erro na criação do log!, Where: createlog},
         ErrorDeleteDirectory: {Type: Error, Msg: Ocorreu um erro ao excluir o diretório!, Where: deleteDirectory},
         ErrorDeleteDownloadFile: {Type: Error, Msg: Erro ao deletar o arquivo baixado!, Where: DeleteDownloadFile},
         ErrorDeleteFiles: {Type: Error, Msg: Erro ao deletar os arquivos!, Where: automationAux - deleteFiles},
@@ -270,9 +270,9 @@ logs:
         ErrorScreenshot: {Type: Error, Msg: Não foi possível tirar o screenshot!, Where: mainFunction},
         ErrorSelectDropDownList: {Type: Error, Msg: Não foi possível selecionar o componente DropDownList!, Where: automationFunc - selectDropDownList},
         ErrorSaveDownloadFileLocally: {Type: Error, Msg: Erro ao baixar os arquivos do caso de teste!, Where: SaveDownloadFileLocally}, ###
-        ErrorSaveEvidenceRun: {Type: Error, Msg: Erro ao salvar a evidência na Run!, Where: SaveEvidenceRun},
-        ErrorSaveEvidenceTestCase: {Type: Error, Msg: Erro ao atualizar o arquivo baixado no caso de teste!, Where: connections - SaveEvidenceTestCase},
-        ErrorSaveFile: {Type: Error, Msg: Erro ao salvar o arquivo localmente!, Where: saveFile},
+        ### ErrorSaveEvidenceRun: {Type: Error, Msg: Erro ao salvar a evidência na Run!, Where: SaveEvidenceRun},
+        ErrorUploadFileGit: {Type: Error, Msg: Erro ao atualizar o arquivo baixado no caso de teste!, Where: connections - UploadFileGit},
+        ErrorSaveFile: {Type: Error, Msg: Erro ao salvar o arquivo localmente!, Where: automationFunc - saveFile},
         ErrorScrollPage: {Type: Error, Msg: Erro ao rolar a página!, Where: ScrollPage},
         ErrorSetLanguage: {Type: Error, Msg: Erro ao configurar o idioma!, Where: automationAux - setLanguage},
         ErrorSendRequest: {Type: Error, Msg: Erro ao enviar a 'request' da API., Where: connection - send_request},
@@ -338,11 +338,9 @@ logs:
         RightClick: {Type: Success, Msg: Clique no botão direito realizado com sucesso., Where: automationFunc - rightClick},
         SaveDownloadFileLocally: {Type: Success, Msg: Os arquivos do caso de teste foram baixados com sucesso., Where: SaveDownloadFileLocally}, ###
         SavingEvidence: {Type: Log, Msg: A evidência está sendo gerada..., Where: automationCore - startAutomation},
-        SaveEvidenceTestCase: {Type: Success, Msg: A referência do caso de teste com o arquivo foi criado com sucesso no GitLab., Where: SaveEvidenceTestCase},
-        SaveEvidenceTestCaseUpload: {Type: Success, Msg: O upload do arquivo foi criado com sucesso no GitLab., Where: SaveEvidenceTestCase},
         SaveManualPrintScreen: {Type: Success, Msg: Sucesso ao salvar as evidências deste passo., Where: saveManualPrintScreen},
         SaveToken: {Type: Success, Msg: O Token foi gravado com sucesso., Where: saveToken},
-        SaveFile: {Type: Success, Msg: O arquivo foi salvo com sucesso., Where: saveFile}, ###
+        SaveFile: {Type: Success, Msg: O download foi realizado com sucesso., Where: automationFunc - saveFile},
         ScrollPage: {Type: Success, Msg: O comando para rolar a página foi executado com sucesso., Where: ScrollPage},
         SelectDropDownList: {Type: Success, Msg: Item selecionado na DropDownList., Where: automationFunc - selectDropDownList},
         SetLanguage: {Type: Success, Msg: O idioma foi configurado com sucesso., Where: setLanguage},
@@ -352,6 +350,8 @@ logs:
         TestCaseFinished: {Type: Log, Msg: Caso de teste finalizado., Where: mainFunction},
         UploadDownloadFile: {Type: Success, Msg: Upload do arquivo para o Azure realizado com sucesso., Where: UploadDownloadFile},
         UploadDownloadFileID: {Type: Success, Msg: ID do download capturado com sucesso., Where: UploadDownloadFileID},
+        UploadFileGit: {Type: Success, Msg: A referência do caso de teste com o arquivo foi criado com sucesso no GitLab., Where: connections - UploadFileGit},
+        UploadFileGitUpload: {Type: Success, Msg: O upload do arquivo foi criado com sucesso no GitLab., Where: connections - UploadFileGit},
         UpdateLabels: {Type: Success, Msg: Atualização das labels realizada com sucesso!, Where: connections - UploadDownloadFileID},
         UpdateNoNewVersion: {Type: Log, Msg: Não há nova versão disponível., Where: automationAux},
         UpdateStatusAutomated: {Type: Success, Msg: Sucesso ao atualizar o status no Azure!, Where: UpdateStatusAutomated},

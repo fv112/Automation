@@ -60,7 +60,7 @@ move "C:\ProgramData\QA-Automation\Automation\Green\Automation\Automation\Hash\e
 move "C:\ProgramData\QA-Automation\Automation\Green\Automation\Automation\Hash\es-hash_dictionary.txt" "C:\ProgramData\QA-Automation-Files\Repository\Hash"
 
 xcopy "C:\ProgramData\QA-Automation\Automation\Green" "C:\ProgramData\QA-Automation\Automation\Blue" /E /H /C /I /Y
-rmdir /S /Q "C:\ProgramData\QA-Automation\Automation\Green"
+del "%DIR_GREEN%"\Green.zip
 
 echo -----------------------------------------------------------------------------------------------------------------------
 echo New version installed.
@@ -170,7 +170,6 @@ del "C:\ProgramData\QA-Automation\Automation\Automation.zip"
 del "C:\ProgramData\QA-Automation\Automation\TestEnvironment.zip"
 
 echo Move the hash files used by the translation.
-rmdir /S /Q "C:\ProgramData\QA-Automation-Files\Repository\Hash"
 mkdir "C:\ProgramData\QA-Automation-Files\Repository\Hash"
 move "C:\ProgramData\QA-Automation\Automation\Green\Automation\Automation\Hash\en-hash_dictionary.txt" "C:\ProgramData\QA-Automation-Files\Repository\Hash"
 move "C:\ProgramData\QA-Automation\Automation\Green\Automation\Automation\Hash\es-hash_dictionary.txt" "C:\ProgramData\QA-Automation-Files\Repository\Hash"

@@ -172,10 +172,10 @@ class Main:
                         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ConvertPDF"],
                                              value1=name_testcase)
 
-                        self.connections.SaveEvidenceTestCase(project_id=project_id,
-                                                              test_case_id=test_case_id, status_ct=status_ct,
-                                                              name_testcase=Lib.Aux.otherConfigs["ETSName"] +
-                                                                            str(test_case_id) + " - " + name_testcase)
+                        self.connections.UploadFileGit(project_id=project_id,
+                                                       test_case_id=test_case_id, status_ct=status_ct,
+                                                       name_testcase=Lib.Aux.otherConfigs["ETSName"] +
+                                                                     str(test_case_id) + " - " + name_testcase)
 
                         Lib.Aux.Main.deleteFiles(folder_path=Lib.Aux.directories['TestSetPath'], extension="png")
                         Lib.Aux.Main.deleteFiles(folder_path=Lib.Aux.directories['TestSetPath'], extension="json")
@@ -186,6 +186,8 @@ class Main:
                     #     GitLab.AzureConnection.UpdateStatusAutomated(project=project, test_case_id=test_case_id,
                     #                                                 testcase_status=testcase_status,
                     #                                                 automation_status=status_ct_automation)
+
+                    ###Lib.Aux.Main.deleteFiles(folder_path=Lib.Aux.directories['DownloadFolder'], extension='*')
 
                 self.connections.UpdateLabels(project_id=project_id, test_case_id=test_case_id,
                                               status_ct=status_ct)
@@ -254,14 +256,9 @@ class Main:
                 if parameters2 is not None:
                     print(f"PARAM 2: {parameters2}")
 
-                # If only step get API True.
-                # if Lib.Aux.otherConfigs['API_Step']:
-                #     Lib.Aux.otherConfigs['API_Step'] = False
-                # else:
-                #     Lib.Aux.otherConfigs['API_Step'] = (Lib.Aux.otherConfigs['API_Step'] or False)
-
                 if Lib.Counter(status_steps)['Failed'] != 0:
                     status_steps.append("Not Run")
+                    print(f"STEP STATUS: {Lib.Aux.Textcolor.WARNING}NOT RUN{Lib.Aux.Textcolor.END}")
                 else:
                     status_step = (
                         eval(Lib.Aux.verbs[verb]['Function'])(self, verb=verb, parameters1=parameters1,

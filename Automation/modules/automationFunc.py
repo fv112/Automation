@@ -338,16 +338,16 @@ class Main:
             elif parameters1.upper().__contains__('CTRL'):
                 for _ in range(parameters2):
                     actions.key_down(Lib.Keys.CONTROL)
-                    Lib.Aux.time.sleep(.2)
+                    Lib.time.sleep(.2)
                     actions.send_keys(parameters1.upper().rsplit('+')[1].strip())
-                    Lib.Aux.time.sleep(.2)
+                    Lib.time.sleep(.2)
                     actions.key_up(Lib.Keys.CONTROL)
             elif parameters1.upper().__contains__('ALT'):
                 for _ in range(parameters2):
                     actions.key_down(Lib.Keys.ALT)
-                    Lib.Aux.time.sleep(.2)
+                    Lib.time.sleep(.2)
                     actions.send_keys(parameters1.upper().rsplit('+')[1].strip())
-                    Lib.Aux.time.sleep(.2)
+                    Lib.time.sleep(.2)
                     actions.key_up(Lib.Keys.ALT)
 
             actions.perform()
@@ -1570,9 +1570,9 @@ class Main:
         try:
             # Keyboard press Alt+x and open the browser Configuration.
             Lib.Aux.pyautogui.keyDown('alt')
-            Lib.Aux.time.sleep(.2)
+            Lib.time.sleep(.2)
             Lib.Aux.pyautogui.keyDown('x')
-            Lib.Aux.time.sleep(.2)
+            Lib.time.sleep(.2)
             Lib.Aux.pyautogui.keyUp('alt')
 
             # Navigate to the browser download folder.
@@ -1580,7 +1580,7 @@ class Main:
                                          'enter', 'tab', 'tab', 'tab', 'tab', 'tab', 'tab', 'Enter'], interval=.2)
 
             # Type the new path.
-            Lib.Aux.time.sleep(2)
+            Lib.time.sleep(2)
             Lib.Aux.pyautogui.typewrite(Lib.Aux.directories['DownloadFolder'])
             Lib.Aux.pyautogui.typewrite(['enter', 'tab', 'enter'], interval=.2)
 
@@ -1598,13 +1598,19 @@ class Main:
     def saveFile(self, **kwargs):
 
         try:
-            cont_iteration = kwargs.get("cont_iteration")
+            # kwargs variables:
+            step_order = kwargs.get("step_order")
+            step = kwargs.get('step')
+            save_evidence = kwargs.get('save_evidence')
 
-            Lib.Aux.time.sleep(5)
+            Lib.time.sleep(5)
+            cont = 1
+
+            Lib.Aux.Main.deleteFiles(folder_path=Lib.Aux.directories['DownloadFolder'], extension='*')
 
             while True:
                 # The file found means it is still downloading.
-                if Lib.Aux.Main.verifyFile(self, path=Lib.Aux.directories['DownloadFolder'], extension='crdownload',
+                if Lib.Aux.Main.verifyFile(path=Lib.Aux.directories['DownloadFolder'], extension='crdownload',
                                            msg_not_found=Lib.Aux.otherConfigs['DownloadFinished']['Msg'],
                                            msg_found=Lib.Aux.otherConfigs['DownloadingFile']['Msg']):
                     Lib.time.sleep(1)
@@ -1613,12 +1619,17 @@ class Main:
                     # Rename de file.
                     files = Lib.os.listdir(Lib.Aux.directories['DownloadFolder'])
                     for file in files:
-                        new_name = 'IT' + str(cont_iteration).zfill(2) + ' - ' + file
+                        new_name = file + ' - ' + cont.__str__()
                         Lib.os.rename(Lib.os.path.join(Lib.Aux.directories['DownloadFolder'], file),
                                       Lib.os.path.join(Lib.Aux.directories['DownloadFolder'], new_name))
                         Lib.shutil.move(Lib.os.path.join(Lib.Aux.directories['DownloadFolder'], new_name),
                                         Lib.os.path.join(Lib.Aux.directories['DownloadFolder'], new_name))
                     break
+
+            Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order,
+                           save_evidence=save_evidence)
+
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["SaveFile"])
 
             return "Passed"
 
