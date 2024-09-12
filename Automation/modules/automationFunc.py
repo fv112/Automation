@@ -11,7 +11,6 @@ class Main:
     def __init__(self):
         self.connections = Lib.Con.Connections()
 
-    # Function to search the element using the option above.
     def findElement(self, **kwargs):
 
         # kwargs variables.
@@ -1332,38 +1331,41 @@ class Main:
 
             # Configure before open the browser.
             elif parameters1.upper() in ("MOZILLA", "FIREFOX"):
+
+                options = Lib.webdriver.FirefoxOptions()
+
                 # No cache.
-                profile = Lib.webdriver.FirefoxProfile()
-                profile.set_preference("browser.cache.disk.enable", False)
-                profile.set_preference("browser.cache.memory.enable", False)
-                profile.set_preference("browser.cache.offline.enable", False)
-                profile.set_preference("network.http.use-cache", False)
+                options.set_preference("browser.cache.disk.enable", False)
+                options.set_preference("browser.cache.memory.enable", False)
+                options.set_preference("browser.cache.offline.enable", False)
+                options.set_preference("network.http.use-cache", False)
 
-                profile.set_preference("browser.download.dir", Lib.Aux.directories['DownloadFolder'])
-                profile.set_preference("browser.download.manager.showWhenStarting", False)
-                profile.set_preference("browser.download.folderList", 2)
-                profile.set_preference("browser.download.panel.shown", True)
-                profile.set_preference("marionette.actors.enabled", False)
-                profile.set_preference("browser.startup.homepage", Lib.Aux.otherConfigs['HomePage'])
-                profile.set_preference("browser.startup.page", 1)  # 1 = Home page
-                mime_types = [
-                    'text/plain',
-                    'application/vnd.ms-excel',
-                    'text/csv',
-                    'application/csv',
-                    'text/comma-separated-values',
-                    'application/download',
-                    'application/octet-stream',
-                    'binary/octet-stream',
-                    'application/binary',
-                    'application/x-unknown',
-                    'multipart/x-zip',
-                    'application/zip',
-                    'application/zip-compressed',
-                    'application/x-zip-compressed']
-                profile.set_preference("browser.helperApps.neverAsk.saveToDisk", ",".join(mime_types))
+                options.set_preference("browser.download.folderList", 2)
+                options.set_preference("browser.download.dir", Lib.Aux.directories['DownloadFolder'])
+                options.set_preference("browser.download.manager.showWhenStarting", False)
+                options.set_preference("browser.download.panel.shown", True)
+                options.set_preference("marionette.actors.enabled", False)
+                options.set_preference("browser.startup.homepage", Lib.Aux.otherConfigs['HomePage'])
+                options.set_preference("browser.startup.page", 1)  # 1 = Home page
+                # mime_types = [
+                #     'text/plain',
+                #     'application/vnd.ms-excel',
+                #     'text/csv',
+                #     'application/csv',
+                #     'text/comma-separated-values',
+                #     'application/download',
+                #     'application/octet-stream',
+                #     'binary/octet-stream',
+                #     'application/binary',
+                #     'application/x-unknown',
+                #     'multipart/x-zip',
+                #     'application/zip',
+                #     'application/zip-compressed',
+                #     'application/x-zip-compressed']
+                # profile.set_preference("browser.helperApps.neverAsk.saveToDisk", ",".join(mime_types))
 
-                driver = Lib.webdriver.Firefox(service=Lib.FirefoxService(Lib.GeckoDriverManager().install()))
+                driver = Lib.webdriver.Firefox(service=Lib.FirefoxService(Lib.GeckoDriverManager().install()),
+                                               options=options)
 
             # Configure before open the browser.
             elif parameters1.upper() in "EDGE":  # Edge Chromium.
@@ -1606,7 +1608,7 @@ class Main:
             Lib.time.sleep(5)
             cont = 1
 
-            Lib.Aux.Main.deleteFiles(folder_path=Lib.Aux.directories['DownloadFolder'], extension='*')
+            # Lib.Aux.Main.deleteFiles(folder_path=Lib.Aux.directories['DownloadFolder'], extension='*')
 
             while True:
                 # The file found means it is still downloading.
@@ -1616,14 +1618,14 @@ class Main:
                     Lib.time.sleep(1)
                     continue
                 else:
-                    # Rename de file.
-                    files = Lib.os.listdir(Lib.Aux.directories['DownloadFolder'])
-                    for file in files:
-                        new_name = file + ' - ' + cont.__str__()
-                        Lib.os.rename(Lib.os.path.join(Lib.Aux.directories['DownloadFolder'], file),
-                                      Lib.os.path.join(Lib.Aux.directories['DownloadFolder'], new_name))
-                        Lib.shutil.move(Lib.os.path.join(Lib.Aux.directories['DownloadFolder'], new_name),
-                                        Lib.os.path.join(Lib.Aux.directories['DownloadFolder'], new_name))
+                    #     # Rename de file.
+                    #     files = Lib.os.listdir(Lib.Aux.directories['DownloadFolder'])
+                    #     for file in files:
+                    #         new_name = file + ' - ' + cont.__str__()
+                    #         Lib.os.rename(Lib.os.path.join(Lib.Aux.directories['DownloadFolder'], file),
+                    #                       Lib.os.path.join(Lib.Aux.directories['DownloadFolder'], new_name))
+                    #         Lib.shutil.move(Lib.os.path.join(Lib.Aux.directories['DownloadFolder'], new_name),
+                    #                         Lib.os.path.join(Lib.Aux.directories['DownloadFolder'], new_name))
                     break
 
             Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order,

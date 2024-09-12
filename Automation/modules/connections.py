@@ -481,72 +481,117 @@ class Connections:
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorUpdateLabels'], value1=str(ex))
 
     # Upload the evidence in the TestCase.
-    def UploadFileGit(self, **kwargs):
+    def UploadFileGitToken(self, **kwargs):
 
         # kwargs variables.
         project_id = kwargs.get("project_id")
-        test_case_id = kwargs.get("test_case_id")
         name_testcase = kwargs.get("name_testcase")
         status_ct = kwargs.get("status_ct")
+        file_type = kwargs.get("file_type")
 
-        file_url = None
+        status_name_testcase = None
+        file_path_list = []
+        file_url_list = []
+        files_list = []
 
         try:
 
             new_url = (url + 'projects/' + str(project_id) + '/uploads')
 
-            if status_ct == 'Failed':
-                status_name_testcase = '[BUG] - ' + name_testcase
+            if file_type == 'tc':
+                if status_ct == 'Failed':
+                    status_name_testcase = '[BUG] - ' + name_testcase
+                else:
+                    status_name_testcase = name_testcase
+
+                file_path_list.append(Lib.os.path.join(Lib.Aux.directories['TestSetPath'],
+                                                       status_name_testcase) + ".pdf")
+
+            elif file_type == 'download_file':
+                files_list = Lib.os.listdir(Lib.Aux.directories['DownloadFolder'])
+
+                for cont, file_path in enumerate(files_list):
+                    file_path_list.append(Lib.os.path.join(Lib.Aux.directories['DownloadFolder'], files_list[cont]))
+
+            for file_path in file_path_list:
+
+                file_binary = {'file': open(file_path, 'rb')}
+
+                with open(file_path, 'rb'):
+                    q = Lib.requests.post(new_url, headers={'Authorization': 'Bearer ' +
+                                                                             Lib.Aux.otherConfigs["BearerUpload"]},
+                                          files=file_binary, verify=False)
+
+                if q.status_code == 201:
+                    print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.logs['UploadFileGitToken']['Msg']}"
+                          f"{Lib.Aux.Textcolor.END}\n")
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['UploadFileGitToken'])
+
+                    # Filter some fields.
+                    json_str = Lib.json.dumps(q.json())
+                    resp = Lib.json.loads(json_str)
+                    file_url_list.append(resp['url'])
+
+                else:
+                    print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequest']['Msg']}{Lib.Aux.Textcolor.END}\n")
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorRequest'],
+                                         value1='Status code: ' + str(q.status_code) + ' - ' + str(q.text) +
+                                                ' - UploadFileGitToken')
+
+            return file_url_list, file_path_list, status_name_testcase
+
+        except Exception as ex:
+            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorUploadFileGitToken']['Msg']} - {ex}"
+                  f"{Lib.Aux.Textcolor.END}")
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorUploadFileGitToken'], value1=str(ex))
+
+    def UploadFileGit(self, **kwargs):
+
+        # kwargs variables.
+        project_id = kwargs.get("project_id")
+        test_case_id = kwargs.get("test_case_id")
+        status_name_testcase = kwargs.get('status_name_testcase', None)
+        file_url_list = kwargs.get('file_url_list')
+        file_path_list = kwargs.get('file_path_list')
+
+        try:
+            if file_path_list.__len__() != 0:
+                path = Lib.regex.search(r'^(.*\\)[^\\]+\.\w+$', file_path_list[0]).group(1)
+                if file_path_list.count == Lib.os.listdir(path):
+                    raise Exception(Lib.Aux.logs['ErrorUploadFileAmount']['Msg'])
             else:
-                status_name_testcase = name_testcase
-
-            file = Lib.os.path.join(Lib.Aux.directories['TestSetPath'], status_name_testcase) + ".pdf"
-
-            files = {'file': open(file, 'rb')}
-
-            with open(file, 'rb') as f:
-                q = Lib.requests.post(new_url, headers={'Authorization': 'Bearer ' +
-                                                                         Lib.Aux.otherConfigs["BearerUpload"]},
-                                      files=files, verify=False)
-
-            if q.status_code == 201:
-                print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.logs['UploadFileGitUpload']['Msg']}"
-                      f"{Lib.Aux.Textcolor.END}\n")
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['UploadFileGitUpload'])
-
-                # Filter some fields.
-                json_str = Lib.json.dumps(q.json())
-                resp = Lib.json.loads(json_str)
-                file_url = resp['url']
-
-            else:
-                print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequest']['Msg']}{Lib.Aux.Textcolor.END}\n")
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorRequest'],
-                                     value1='Status code: ' + str(q.status_code) + ' - ' + str(q.text) +
-                                            ' - UploadFileGit - GetToken')
+                raise Exception(Lib.Aux.logs['ErrorUploadFileAmount']['Msg'])
 
             new_url = (url + 'projects/' + str(project_id) + '/issues/' + str(test_case_id) + '/notes')
 
-            # Upload file.
-            file_url = file_url.replace("file", status_name_testcase + ".pdf")
+            for cont, file_path in enumerate(file_path_list):
 
-            body = {
-                "body": "[" + status_name_testcase + "](" + file_url + ")"
-            }
+                if status_name_testcase:
+                    file_url = file_url_list[cont].replace("file", status_name_testcase + ".pdf")
 
-            p = Lib.requests.post(new_url, headers={'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["BearerUpload"]},
-                                  data=body, verify=False)
+                    body = {
+                        "body": "[" + status_name_testcase + "](" + file_url + ")"
+                    }
+                else:
+                    file = Lib.regex.search(r'([^\\]+)\.\w+$', file_path_list[cont]).group(0)
+                    body = {
+                        "body": "[" + file + "](" + file_url_list[cont] + ")"
+                    }
 
-            if p.status_code == 201:
-                print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.logs['UploadFileGit']['Msg']}"
-                      f"{Lib.Aux.Textcolor.END}\n")
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['UploadFileGit'])
+                p = Lib.requests.post(
+                    new_url, headers={'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["BearerUpload"]}, data=body,
+                    verify=False)
 
-            else:
-                print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequest']['Msg']}{Lib.Aux.Textcolor.END}\n")
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorRequest'],
-                                     value1='Status code: ' + str(p.status_code) + ' - ' + str(p.text) +
-                                            ' - UploadFileGit - Upload File')
+                if p.status_code == 201:
+                    print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.logs['UploadFileGit']['Msg']}"
+                          f"{Lib.Aux.Textcolor.END}\n")
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['UploadFileGit'])
+
+                else:
+                    print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequest']['Msg']}{Lib.Aux.Textcolor.END}\n")
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorRequest'],
+                                         value1='Status code: ' + str(p.status_code) + ' - ' + str(p.text) +
+                                                ' - UploadFileGit')
 
         except Exception as ex:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorUploadFileGit']['Msg']} - {ex}"

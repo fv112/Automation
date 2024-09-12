@@ -328,18 +328,9 @@ class Main:
             # kwargs variables.
             step = kwargs.get("step")
 
-            matchers = ['senha', 'contraseña', 'password']
-
-            for match in matchers:
-                if match in step.lower():
-                    pos_password = step.lower().find(match)
-                    next_space = pos_password + len(match) + 1
-                    password_string = step[next_space + 1: -1]
-                    if password_string == '':
-                        print(f"{Textcolor.FAIL}{logs['ErrorReplacePasswordPosition']['Msg']}"
-                              f"{Textcolor.END}")
-                        Main.addLogs(message="General", value=logs["ErrorReplacePasswordPosition"])
-                    step = step.replace(password_string, '*******')
+            if any(word in step.lower() for word in ['senha', 'contraseña', 'password']):
+                password_string = Lib.regex.findall(r'"([^"]*)"', step)[1]
+                step = step.replace(password_string, '*******')
 
             return step
 

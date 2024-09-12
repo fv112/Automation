@@ -1,12 +1,22 @@
 Automation QA - Release notes
 ---------
+:bookmark: **Version 1.24.01**  
+
+<em>11/09/2024</em>   
+:sparkles: - Melhoria na alteração da senha na evidência.    
+:sparkles: - Upload da evidência no Testcase do Git.
+:sparkles: - Atualização do selenium.  
+:bug: - Correção do diretório de download para o Firefox.
+:bug: - Correção no instalador.    
+#
+
 :bookmark: **Version 1.24.00**  
 
 <em>10/09/2024</em>   
 :sparkles: - Implementação do verbo Salvar.  
 :ok_hand: - Informação de NOT RUN no status do passo.  
 :bug: - Correção da substituição da senha por asterisco na evidência.  
-:bug: - Correção do bug que rodava a instalação tora vez que a automação era iniciada.  
+:bug: - Correção do bug que rodava a instalação toda vez que a automação era iniciada.  
 :bug: - Correção de algumas frases do log.  
 #
 

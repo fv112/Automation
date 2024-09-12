@@ -13,6 +13,7 @@ class Main:
 
         try:
             Lib.Aux.Main.deleteDirectory(self, path_folder=Lib.Aux.directories['TestSetPath'])
+            Lib.Aux.Main.deleteFiles(folder_path=Lib.Aux.directories['DownloadFolder'], extension='*')
 
             project_id, project_name = self.connections.getProjects()
 
@@ -168,14 +169,19 @@ class Main:
                                              value1=name_testcase)
 
                     if (est is not None) and (pdf is not None):
-                        # Add the evidence to the Run and the Test case.
+
                         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ConvertPDF"],
                                              value1=name_testcase)
 
-                        self.connections.UploadFileGit(project_id=project_id,
-                                                       test_case_id=test_case_id, status_ct=status_ct,
-                                                       name_testcase=Lib.Aux.otherConfigs["ETSName"] +
-                                                                     str(test_case_id) + " - " + name_testcase)
+                        file_url_list, file_path_list, status_name_testcase = (
+                            self.connections.UploadFileGitToken(project_id=project_id, test_case_id=test_case_id,
+                                                                status_ct=status_ct, file_type='tc',
+                                                                name_testcase=Lib.Aux.otherConfigs["ETSName"] +
+                                                                          str(test_case_id) + " - " + name_testcase))
+
+                        self.connections.UploadFileGit(project_id=project_id, file_url_list=file_url_list,
+                                                       test_case_id=test_case_id, file_path_list=file_path_list,
+                                                       status_name_testcase=status_name_testcase)
 
                         Lib.Aux.Main.deleteFiles(folder_path=Lib.Aux.directories['TestSetPath'], extension="png")
                         Lib.Aux.Main.deleteFiles(folder_path=Lib.Aux.directories['TestSetPath'], extension="json")
@@ -187,7 +193,18 @@ class Main:
                     #                                                 testcase_status=testcase_status,
                     #                                                 automation_status=status_ct_automation)
 
-                    ###Lib.Aux.Main.deleteFiles(folder_path=Lib.Aux.directories['DownloadFolder'], extension='*')
+                    verbs_list = [verb.upper() for verb in verbs_list]
+                    if any(item in verbs_list for item in ['GUARDAR', 'SALVAR', 'SAVE']):
+                        file_url_list, file_path_list, status_name_testcase = (
+                            self.connections.UploadFileGitToken(project_id=project_id, test_case_id=test_case_id,
+                                                                status_ct=status_ct, file_type='download_file',
+                                                                name_testcase=Lib.Aux.otherConfigs["ETSName"] +
+                                                                              str(test_case_id) + " - " + name_testcase)
+                        )
+
+                        self.connections.UploadFileGit(project_id=project_id, file_url_list=file_url_list,
+                                                       test_case_id=test_case_id, file_path_list=file_path_list,
+                                                       status_name_testcase=status_name_testcase)
 
                 self.connections.UpdateLabels(project_id=project_id, test_case_id=test_case_id,
                                               status_ct=status_ct)

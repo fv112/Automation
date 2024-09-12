@@ -47,6 +47,8 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.edge.service import Service as EdgeService
+from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.support.select import Select
 from webdriver_manager.chrome import ChromeDriverManager
