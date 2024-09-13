@@ -607,15 +607,20 @@ class Main:
         try:
             Main.addLogs(message="General", value=logs["ReleaseNotes"],
                          value1=f'\nActual version: {self.version_local} \nNew version:    {self.version_distributed}')
-            if self.version_distributed > self.version_local:
+
+            zip_file = Lib.Aux.Main.verifyFile(path=Lib.Aux.directories['DownloadFolder'], extension='.zip',
+                                               msg_not_found=Lib.Aux.otherConfigs['DownloadFinished']['Msg'],
+                                               msg_found=Lib.Aux.otherConfigs['DownloadingFile']['Msg'])
+
+            if self.version_distributed > self.version_local and not zip_file:
                 print("#" * 100)
-                print(f"{otherConfigs['NewVersionAvailableTitle']['Msg']}")
+                print(f"   {otherConfigs['NewVersionAvailableTitle']['Msg']}")
                 print("#" * 100)
 
                 while True:
                     option = input(f"{Textcolor.BOLD}{Textcolor.HIGHLIGHT}"
-                                   f"{otherConfigs['NewVersionAvailable1']['Msg']}"
-                                   f"{otherConfigs['NewVersionAvailable2']['Msg']}"
+                                   f"{otherConfigs['NewVersionAvailable1']['Msg']}{Textcolor.END}\n"
+                                   f"{Textcolor.BOLD}{Textcolor.HIGHLIGHT}{otherConfigs['NewVersionAvailable2']['Msg']}"
                                    f"{Textcolor.END}{Textcolor.END}")
                     if option.upper() in ['Y', 'S']:
                         install = True
