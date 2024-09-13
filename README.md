@@ -1,5 +1,12 @@
 Automation QA - Release notes
 ---------
+:bookmark: **Version 1.24.03**  
+
+<em>13/09/2024</em>   
+:bug: - Correção no instalador.
+:sparkles: - Melhoria nas mensagens de instalação.
+#
+
 :bookmark: **Version 1.24.02**  
 
 <em>12/09/2024</em>   

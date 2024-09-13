@@ -609,12 +609,13 @@ class Main:
                          value1=f'\nActual version: {self.version_local} \nNew version:    {self.version_distributed}')
             if self.version_distributed > self.version_local:
                 print("#" * 100)
-                print(f"Downloading new version. It could take some minutes.")
+                print(f"{otherConfigs['NewVersionAvailableTitle']['Msg']}")
                 print("#" * 100)
 
                 while True:
                     option = input(f"{Textcolor.BOLD}{Textcolor.HIGHLIGHT}"
-                                   f"{otherConfigs['NewVersionAvailable']['Msg']}"
+                                   f"{otherConfigs['NewVersionAvailable1']['Msg']}"
+                                   f"{otherConfigs['NewVersionAvailable2']['Msg']}"
                                    f"{Textcolor.END}{Textcolor.END}")
                     if option.upper() in ['Y', 'S']:
                         install = True

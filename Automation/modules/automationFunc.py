@@ -1608,7 +1608,7 @@ class Main:
             Lib.time.sleep(5)
             cont = 1
 
-            # Lib.Aux.Main.deleteFiles(folder_path=Lib.Aux.directories['DownloadFolder'], extension='*')
+            Lib.Aux.Main.deleteFiles(folder_path=Lib.Aux.directories['DownloadFolder'], extension='*')
 
             while True:
                 # The file found means it is still downloading.

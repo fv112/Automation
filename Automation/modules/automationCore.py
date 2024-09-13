@@ -13,7 +13,6 @@ class Main:
 
         try:
             Lib.Aux.Main.deleteDirectory(self, path_folder=Lib.Aux.directories['TestSetPath'])
-            Lib.Aux.Main.deleteFiles(folder_path=Lib.Aux.directories['DownloadFolder'], extension='*')
 
             project_id, project_name = self.connections.getProjects()
 
