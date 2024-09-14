@@ -1,5 +1,13 @@
 Automation QA - Release notes
 ---------
+:bookmark: **Version 1.24.04**  
+
+<em>13/09/2024</em>   
+:bug: - Correção no comando Salvar.  
+:bug: - Correção do erro do loop na exceção quando ocorria erro na abertura do browser.  
+:sparkles: - Novo arquivo de configuração do log.
+#
+
 :bookmark: **Version 1.24.03**  
 
 <em>13/09/2024</em>   

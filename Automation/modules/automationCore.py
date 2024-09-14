@@ -253,6 +253,8 @@ class Main:
         status_ct = 'Not Run'
 
         try:
+            Lib.Aux.Main.deleteFiles(folder_path=Lib.Aux.directories['DownloadFolder'], extension='*')
+
             for index_oder, step_order in enumerate(order_steps_list):
 
                 # Initialize the variables.
@@ -271,6 +273,9 @@ class Main:
                 print(f"PARAM 1: {parameters1}")
                 if parameters2 is not None:
                     print(f"PARAM 2: {parameters2}")
+
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["StepBlank"])
+                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["Step"], value1=step_order.__str__())
 
                 if Lib.Counter(status_steps)['Failed'] != 0:
                     status_steps.append("Not Run")

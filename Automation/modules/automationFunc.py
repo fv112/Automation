@@ -45,6 +45,8 @@ class Main:
                 else:
                     element_field = driver.find_element(tag, parameters1)
                     if element_field:
+                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["FindElement"],
+                                             value1=tag + ":" + parameters1)
                         return "Passed", tag, element_field
 
             except Exception as ex:
@@ -1608,8 +1610,6 @@ class Main:
             Lib.time.sleep(5)
             cont = 1
 
-            Lib.Aux.Main.deleteFiles(folder_path=Lib.Aux.directories['DownloadFolder'], extension='*')
-
             while True:
                 # The file found means it is still downloading.
                 if Lib.Aux.Main.verifyFile(path=Lib.Aux.directories['DownloadFolder'], extension='crdownload',
@@ -1654,7 +1654,8 @@ class Main:
             return True
 
         except AttributeError or Lib.requests.exceptions.RequestException or Lib.requests.exceptions.RetryError:
-            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorTakePictureErrorTakePicture']['Msg']}{Lib.Aux.Textcolor.END}")
+            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorTakePicture']['Msg']}"
+                  f"{Lib.Aux.Textcolor.END}")
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorTakePicture"])
 
             return False
