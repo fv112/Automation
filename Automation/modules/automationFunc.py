@@ -449,6 +449,7 @@ class Main:
 
             try:
                 element.select_by_visible_text(parameters2)
+                ### Colocar um for na busca do texto.
                 Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
                                step_order=step_order, tag=tag)
 
@@ -837,15 +838,15 @@ class Main:
                                step_order=step_order, color='green', tag=tag)
 
                 Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsDisplayedNo"])
-                return "Passed"
 
             else:
                 Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsDisplayed"])
-                return "Failed"
 
             if element_field.is_displayed() == checked_status:
                 Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsDisplayed"])
                 return "Passed"
+            else:
+                return "Failed"
 
         except Exception as ex:
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsDisplayed"],
@@ -983,7 +984,6 @@ class Main:
 
                     if status == "Passed":
                         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsDisplayed"])
-
                     else:
                         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsDisplayed"])
 
@@ -997,7 +997,6 @@ class Main:
 
                     if status == "Passed":
                         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsSelected"])
-
                     else:
                         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsSelected"])
                         status = "Failed"
@@ -1037,7 +1036,6 @@ class Main:
 
                     if status == 'Passed':
                         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetQuantityElements"])
-
                     else:
                         Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetQuantityElements"])
 

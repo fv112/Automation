@@ -345,7 +345,6 @@ logs:
         SelectDropDownList: {Type: Success, Msg: Item selecionado na DropDownList., Where: automationFunc - selectDropDownList},
         SetLanguage: {Type: Success, Msg: O idioma foi configurado com sucesso., Where: setLanguage},
         SliceDatas: {Type: Success, Msg: Sucesso ao desmembrar os dados da massa de teste., Where: sliceDatas},
-        ###StatusTestCase: {Type: Success, Msg: Caso de teste consultado com sucesso., Where: createTestRun - TestRun},
         Step: {Type: Log, Msg: Passo de número, Where: automationCore - executeStepByStep},
         StepBlank: {Type: Log, Msg: ' ', Where: ' '},
         TakePicture: {Type: Success, Msg: PrintScreen realizado com sucesso., Where: automationFunc - takePicture},

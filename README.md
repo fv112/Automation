@@ -1,5 +1,12 @@
 Automation QA - Release notes
 ---------
+:bookmark: **Version 1.24.05**  
+
+<em>16/09/2024</em>   
+:bug: - Correção do tratamento de erro que travava a automação.  
+:bug: - Correção da validação de um campo invisível.  
+#
+
 :bookmark: **Version 1.24.04**  
 
 <em>13/09/2024</em>   

@@ -37,7 +37,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorMain']['Msg']} - {ex}{Lib.Aux.Textcolor.END}")
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorMain"]['Msg'], value1=str(ex))
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorMain"], value1=str(ex))
 
         finally:
             print(f"{Lib.Aux.Textcolor.BLUE}{Lib.Aux.otherConfigs['MsgFinishedExecution']['Msg']}"
@@ -212,7 +212,7 @@ class Main:
             Lib.Aux.Main.percentage(actual=len(test_case_id_list), total=len(test_case_id_list))
 
         except Exception as ex:
-            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorStartAutomation']['Msg']}"
+            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorStartAutomation']['Msg']} - {ex.msg[0]}"
                   f"{Lib.Aux.Textcolor.END}")
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorStartAutomation"],
                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
@@ -337,7 +337,7 @@ class Main:
             return status_ct, step_failed
 
         except Exception as ex:
-            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorExecuteStepByStep']['Msg']}"
+            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorExecuteStepByStep']['Msg']} - {ex.msg[0]}"
                   f"{Lib.Aux.Textcolor.END}")
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorExecuteStepByStep"],
                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
