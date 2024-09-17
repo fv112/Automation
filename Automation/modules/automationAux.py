@@ -1007,6 +1007,7 @@ class Main:
         else:
             return False
 
+
 """---------------------------------------------------------------------------------------------------------------------
 CLASS: API Schema
 GOAL: Validate the Schema using the schema from the swagger page and generate other content type for each tag.

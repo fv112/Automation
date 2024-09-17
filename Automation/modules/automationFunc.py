@@ -24,9 +24,9 @@ class Main:
             Lib.By.XPATH,
             Lib.By.CSS_SELECTOR,
             Lib.By.CLASS_NAME,
-            Lib.By.TAG_NAME,
             Lib.By.LINK_TEXT,
             Lib.By.PARTIAL_LINK_TEXT,
+            Lib.By.TAG_NAME,
             'Not found'
         ]
 
@@ -833,19 +833,21 @@ class Main:
                 Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
                                step_order=step_order, color='green', tag=tag)
 
-            elif element_field is None and checked_status is False:
+                if element_field.is_displayed() == checked_status:
+                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsDisplayed"])
+                    return "Passed"
+                else:
+                    return "Failed"
+
+            if element_field is None and checked_status is False:
                 Main.highlight(self, parameters1='full_screen', save_evidence=save_evidence, step=step,
                                step_order=step_order, color='green', tag=tag)
 
                 Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsDisplayedNo"])
+                return "Passed"
 
             else:
                 Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsDisplayed"])
-
-            if element_field.is_displayed() == checked_status:
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsDisplayed"])
-                return "Passed"
-            else:
                 return "Failed"
 
         except Exception as ex:

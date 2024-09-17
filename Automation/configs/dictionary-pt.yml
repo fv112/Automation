@@ -157,7 +157,6 @@ logs:
         Click: {Type: Success, Msg: Clique realizado com sucesso., Where: automationFunc - click},
         ConfigureSavePath: {Type: Success, Msg: Sucesso ao configurar o diretório para download., Where: _configureSavePath},
         ConvertPDF: {Type: Success, Msg: O EST para PDF foi criado., Where: automationCore - startAutomation},
-        CouldNotCheckForUpdates: {Type: Log, Msg: Não foi possível verificar a atualização, Where: AppAutomation},
         CloseBrowser: {Type: Success, Msg: O browser foi fechado com sucesso., Where: automationFunc - close},
         CloseWindow: {Type: Success, Msg: A janela foi fechada com sucesso., Where: automationFunc - close},
         CompareFile: {Type: Success, Msg: O arquivo foi comparado com sucesso., Where: compareBeyondCompare}, ###
@@ -354,7 +353,6 @@ logs:
         UploadFileGit: {Type: Success, Msg: O upload do arquivo foi realizado com sucesso no GitLab., Where: connections - UploadFileGit},
         UploadFileGitToken: {Type: Success, Msg: A referência do arquivo foi gerado com sucesso no GitLab., Where: connections - UploadFileGitToken},
         UpdateLabels: {Type: Success, Msg: Atualização das labels realizada com sucesso!, Where: connections - UploadDownloadFileID},
-        UpdateNoNewVersion: {Type: Log, Msg: Não há nova versão disponível., Where: automationAux},
         UpdateStatusAutomated: {Type: Success, Msg: Sucesso ao atualizar o status no Azure!, Where: UpdateStatusAutomated},
         UpdateTryAgain: {Type: Error, Msg: Tente novamente, Where: AppAutomation},
         ValidateData: {Type: Success, Msg: Dados validados com sucesso., Where: automationFunc - validateData},
