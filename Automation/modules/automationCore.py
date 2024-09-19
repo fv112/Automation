@@ -7,21 +7,27 @@ class Main:
         self.url = url
         self.connections = Lib.Con.Connections()
 
-    def main(self):
-
-        save_evidence = 'N'
+    def main(self, **kwargs):
 
         try:
+            # kwargs variables.
+            project_id = kwargs.get('project_id', None)
+            isolated_tc = kwargs.get('isolated_tc', None)
+            id_test_case = kwargs.get('id_test_case', None)
+            save_evidence = kwargs.get('save_evidence', 'N')
+
+            test_case_id_list = []
+
             Lib.Aux.Main.deleteDirectory(self, path_folder=Lib.Aux.directories['TestSetPath'])
 
-            project_id, project_name = self.connections.getProjects()
+            project_id, project_name = self.connections.getProjects(project_id=project_id)
 
             Lib.os.system('cls')
 
             while True:
                 evidence = input(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['SaveEvidenceMsg']['Msg']}"
                                  f"{Lib.Aux.Textcolor.END}")
-                if evidence.upper() in ['Y', 'S']:
+                if evidence.upper() in ['Y', 'S'] or save_evidence:
                     save_evidence = True
                     break
                 elif evidence.upper() in ['', 'N']:
@@ -30,7 +36,8 @@ class Main:
 
             Lib.os.system('cls')
 
-            test_case_id_list = self.connections.getTestCases(project_id=project_id)
+            test_case_id_list = self.connections.getTestCases(project_id=project_id, isolated_tc=isolated_tc,
+                                                              id_test_case=id_test_case)
 
             Main.startAutomation(self, project_id=project_id, project_name=project_name,
                                  test_case_id_list=test_case_id_list, save_evidence=save_evidence)

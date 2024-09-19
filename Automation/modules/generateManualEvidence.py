@@ -9,7 +9,7 @@ class Main:
         try:
             # Variables.
             project = kwargs.get('project_id')
-            project_name = kwargs.get('project_name') # Only for log.
+            project_name = kwargs.get('project_name')  # Only for log.
             test_run_id = kwargs.get('test_run_id')
             id_test_case = kwargs.get('id_test_case')
 

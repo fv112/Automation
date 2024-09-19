@@ -1309,7 +1309,7 @@ class Main:
 
             # Configure before open the browser.
             if parameters1.upper() in ("CHROME", "GOOGLE", "GOOGLE CHROME"):
-                # Disable the Chrome logs in the .bat file and alter the download folder.
+
                 preferences = {
                     "download.default_directory": Lib.Aux.directories['DownloadFolder'],
                     "download.prompt_for_download": False,
@@ -1349,22 +1349,6 @@ class Main:
                 options.set_preference("marionette.actors.enabled", False)
                 options.set_preference("browser.startup.homepage", Lib.Aux.otherConfigs['HomePage'])
                 options.set_preference("browser.startup.page", 1)  # 1 = Home page
-                # mime_types = [
-                #     'text/plain',
-                #     'application/vnd.ms-excel',
-                #     'text/csv',
-                #     'application/csv',
-                #     'text/comma-separated-values',
-                #     'application/download',
-                #     'application/octet-stream',
-                #     'binary/octet-stream',
-                #     'application/binary',
-                #     'application/x-unknown',
-                #     'multipart/x-zip',
-                #     'application/zip',
-                #     'application/zip-compressed',
-                #     'application/x-zip-compressed']
-                # profile.set_preference("browser.helperApps.neverAsk.saveToDisk", ",".join(mime_types))
 
                 driver = Lib.webdriver.Firefox(service=Lib.FirefoxService(Lib.GeckoDriverManager().install()),
                                                options=options)
@@ -1549,7 +1533,8 @@ class Main:
                 highlight_script = """
                 var highlight = document.createElement('div');
                 highlight.setAttribute('id', 'highlight');
-                highlight.setAttribute('style', 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 0, 0.5); z-index: 999999; pointer-events: none;');
+                highlight.setAttribute('style', 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                background-color: rgba(255, 255, 0, 0.5); z-index: 999999; pointer-events: none;');
                 document.body.appendChild(highlight);
                 """
                 driver.execute_script(highlight_script)
@@ -1566,37 +1551,6 @@ class Main:
             Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorHighLight"],
                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
                                  value2=f' Step order: {step_order} / Step: {step}')
-
-    # Configure the save path - Only Edge Legacy.
-    @staticmethod
-    def _configureSavePath():
-
-        try:
-            # Keyboard press Alt+x and open the browser Configuration.
-            Lib.Aux.pyautogui.keyDown('alt')
-            Lib.time.sleep(.2)
-            Lib.Aux.pyautogui.keyDown('x')
-            Lib.time.sleep(.2)
-            Lib.Aux.pyautogui.keyUp('alt')
-
-            # Navigate to the browser download folder.
-            Lib.Aux.pyautogui.typewrite(['up', 'Enter', 'tab', 'tab', 'tab', 'tab', 'tab', 'tab', 'tab', 'tab', 'tab',
-                                         'enter', 'tab', 'tab', 'tab', 'tab', 'tab', 'tab', 'Enter'], interval=.2)
-
-            # Type the new path.
-            Lib.time.sleep(2)
-            Lib.Aux.pyautogui.typewrite(Lib.Aux.directories['DownloadFolder'])
-            Lib.Aux.pyautogui.typewrite(['enter', 'tab', 'enter'], interval=.2)
-
-            # Do not ask after finish the download.
-            Lib.Aux.pyautogui.typewrite(['tab', 'space', 'esc'], interval=.2)
-
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ConfigureSavePath"])
-
-        except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorConfigureSavePath"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
-            return "Failed"
 
     # Save the file locally.
     def saveFile(self, **kwargs):

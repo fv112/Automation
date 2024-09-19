@@ -72,47 +72,27 @@ class Connections:
     # ===================================== Modules to extract info from GitLab ========================================
     # Load the project list from GitLab.
     @staticmethod
-    def getProjects():
+    def getProjects(**kwargs):
+
+        # Kwargs variables.
+        project_id = kwargs.get('project_id', None)
 
         projects_dic = {}
+        resp = []
 
         try:
-
-            new_url = url + 'projects?topic=QA-Automation'
+            if project_id is None:
+                new_url = url + 'projects?topic=QA-Automation'
+            else:  # command line.
+                new_url = url + 'projects/' + str(project_id) + '?topic=QA-Automation'
 
             t = Lib.requests.get(new_url, headers={'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["Bearer"]},
                                  verify=False)
-            if t.status_code == 200:
 
+            if t.status_code == 200:
                 # Filter some fields.
                 json_str = Lib.json.dumps(t.json())
                 resp = Lib.json.loads(json_str)
-                if resp is not []:
-
-                    table = Lib.PrettyTable(['PROJECT ID', 'PROJECT'])
-                    table.align['PROJECT'] = 'l'
-
-                    for order in range(0, resp.__len__()):
-                        table.add_row([str(resp[order]['id']), str(resp[order]['name'])])
-                        projects_dic[resp[order]['id']] = str(resp[order]['name'])
-
-                    print(table.get_string(sortby="PROJECT"))
-
-                    project_list = [str(project_id) for project_id in list(projects_dic.keys())]
-
-                    while True:
-                        print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['InformProject']['Msg']}"
-                              f"{Lib.Aux.Textcolor.END}\n")
-                        project_selected = input()
-                        if Lib.Aux.Main.validate_selection(input_data=project_selected, search_list=project_list):
-                            break
-
-                    project_name = projects_dic[int(project_selected)]
-                    return project_selected, project_name
-                else:
-                    print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorInstance']['Msg']}{Lib.Aux.Textcolor.END}\n")
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorInstance']['Msg'])
-
             elif t.status_code == 401:
                 print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.otherConfigs['RunAgain']['Msg']}"
                       f"{Lib.Aux.Textcolor.UNDERLINE}\n")
@@ -122,6 +102,42 @@ class Connections:
                 print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequest']['Msg']}{Lib.Aux.Textcolor.UNDERLINE}\n")
                 Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ErrorRequest'],
                                      value1='Status code: ' + str(t.status_code) + ' - getProjects')
+
+            # Menu.
+            if resp is not [] and project_id is None:
+
+                table = Lib.PrettyTable(['PROJECT ID', 'PROJECT'])
+                table.align['PROJECT'] = 'l'
+
+                for order in range(0, resp.__len__()):
+                    table.add_row([str(resp[order]['id']), str(resp[order]['name'])])
+                    projects_dic[resp[order]['id']] = str(resp[order]['name'])
+
+                print(table.get_string(sortby="PROJECT"))
+
+                project_list = [str(project_id) for project_id in list(projects_dic.keys())]
+
+                while True:
+                    print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['InformProject']['Msg']}"
+                          f"{Lib.Aux.Textcolor.END}\n")
+                    project_selected = input()
+                    if Lib.Aux.Main.validate_selection(input_data=project_selected, search_list=project_list):
+                        break
+
+                project_name = projects_dic[int(project_selected)]
+                return project_selected, project_name
+
+            # Command line.
+            elif resp is not [] and project_id is not None:
+
+                # Filter some fields.
+                json_str = Lib.json.dumps(t.json())
+                resp = Lib.json.loads(json_str)
+                if resp is not []:
+                    return project_id, resp['name'],
+
+            else:
+                raise Exception(Lib.Aux.logs['ErrorGetProjects']['Msg'])
 
         except Lib.requests.exceptions.RequestException:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorConnection']['Msg']}{Lib.Aux.Textcolor.END}")
@@ -242,15 +258,15 @@ class Connections:
 
             # kwargs variables.
             project_id = kwargs.get("project_id")
+            isolated_tc = kwargs.get("isolated_tc", 'S')
+            id_testcase = kwargs.get("id_testcase")
 
             # Variables.
             test_case_id_list = []
-            isolated_tc = 'S'
 
             new_url = url + 'projects/' + str(project_id) + ('/issues?labels=Test%20case&per_page=1000&page=1&'
                                                              'not[labels]=Execution::Only%20Manual')
 
-            # Execute the request from Azure.
             s = Lib.requests.get(new_url, headers={'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["Bearer"]},
                                  verify=False)
             if s.status_code == 200:
@@ -300,7 +316,7 @@ class Connections:
 
                     test_case_list = [str(testcase_id) for testcase_id in test_case_id_list]
 
-                    if isolated_tc.upper() in ['Y', 'S', '']:
+                    if isolated_tc.upper() in ['Y', 'S', ''] and id_testcase is None:
                         while True:
                             print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['ChooseTestCase']['Msg']}"
                                   f"{Lib.Aux.Textcolor.END}\n")
@@ -310,6 +326,8 @@ class Connections:
 
                         test_case_id_list.clear()
                         test_case_id_list.append(int(tc_id))
+                    else:
+                        test_case_id_list.append(id_testcase)
 
                 else:
                     print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorGetTestCase']['Msg']}{Lib.Aux.Textcolor.END}\n")

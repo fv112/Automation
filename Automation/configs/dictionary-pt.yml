@@ -155,7 +155,6 @@ logs:
         BackPage: {Type: Success, Msg: Sucesso ao voltar a página., Where: automationFunc - BackPage},
         CheckDownloadFile: {Type: Success, Msg: Verifica se o arquivo "Baseline" e "New" já estão no Workitem!, Where: CheckDownloadFile},
         Click: {Type: Success, Msg: Clique realizado com sucesso., Where: automationFunc - click},
-        ConfigureSavePath: {Type: Success, Msg: Sucesso ao configurar o diretório para download., Where: _configureSavePath},
         ConvertPDF: {Type: Success, Msg: O EST para PDF foi criado., Where: automationCore - startAutomation},
         CloseBrowser: {Type: Success, Msg: O browser foi fechado com sucesso., Where: automationFunc - close},
         CloseWindow: {Type: Success, Msg: A janela foi fechada com sucesso., Where: automationFunc - close},
@@ -185,7 +184,6 @@ logs:
         ErrorClick: {Type: Error, Msg: Erro ao clicar no elemento!, Where: automationFunc - click},
         ErrorClose: {Type: Error, Msg: Erro ao fechar! Se desejar fechar o browser inclua o primeiro parâmetro no passo., Where: automationFunc - close},
         ErrorConfigureLanguage: {Type: Error, Msg: Ocorreu um erro na configuração do idioma!, Where: configureLanguage},
-        ErrorConfigureSavePath: {Type: Error, Msg: Erro ao configurar o diretório para download!, Where: _configureSavePath},
         ErrorConnection: {Type: Error, Msg: Não se trata de falha na automação. O GitLab não está respondendo. Verifique a sua conexão e tente novamente mais tarde!, Where: connections},
         ErrorConvertPDF: {Type: Error, Msg: Não foi possível converter o ETS para PDF!, Where: automationCore},
         ErrorCompareFile: {Type: Error, Msg: Não foi possível abrir o Beyond Compare!, Where: compareBeyondCompare}, ###
@@ -237,7 +235,6 @@ logs:
         ErrorIsEnable: {Type: Error, Msg: Elemento NÃO localizado ou impossível de identificar seu status!, Where: automationFunc - IsEnable},
         ErrorIsSelected: {Type: Error, Msg: Elemento NÃO localizado ou impossível de identificar seu status!, Where: automationFunc - IsSelected},
         ErrorHighLight: {Type: Error, Msg: Não foi possível destacar o componente!, Where: automationFunc - highlight},
-        ErrorInstance: {Type: Warning, Msg: Esta instância não possui projetos!, Where: getProjects},
         ErrorLineEmpty: {Type: Error, Msg: Há uma célula em branco no caso de teste!, Where: sliceDatas},
         ErrorLoadConfigs: {Type: Error, Msg: Erro ao carregar as configurações!, Where: loadConfigs},
         ErrorLoadSwagger: {Type: Error, Msg: Erro na leitura do swagger!, Where: automationAux - load_swagger},
