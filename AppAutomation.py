@@ -77,7 +77,7 @@ class AutomationQA:
             self.save_evidence = None
 
             # Split the command line parameters.
-            options, args = Lib.getopt(sys.argv[1:], "p:i:t:s:",
+            options, args = Lib.getopt(sys.argv[1:], "p:i:t:e:",
                                        ["project", "isolated_test_case", "test_case_id", "save_evidence"])
 
             print(options)
@@ -89,7 +89,7 @@ class AutomationQA:
                     self.isolated_test_case = value
                 elif name in ['-t']:  # Test case id.
                     self.test_case_id = value
-                elif name in ['-s']:  # Save evidence.
+                elif name in ['-e']:  # Save evidence.
                     self.save_evidence = value
 
             print(f'Project:               {self.project}\n'
@@ -108,7 +108,7 @@ class AutomationQA:
     @staticmethod
     def cmdHelp():
 
-        os.system('cls')
+        # os.system('cls')
 
         parser = Lib.argparse.ArgumentParser(prog='AutomationQA', prefix_chars='-+', conflict_handler='resolve',
                                              formatter_class=Lib.argparse.RawDescriptionHelpFormatter,

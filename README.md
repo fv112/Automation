@@ -2,10 +2,10 @@ Automation QA - Release notes
 ---------
 :bookmark: **Version 1.25.00**  
 
-<em>19/09/2024</em>     
+<em>20/09/2024</em>     
 :sparkles: - Implementação da execução por linha de comando.  
-:sparkles: - Remoção de função não mais utilizadas.
-:sparkles: - Atualização de algums bibliotecas.
+:sparkles: - Remoção de função não mais utilizadas.  
+:sparkles: - Atualização de algums bibliotecas.  
 :construction: - Falha com a nova versão do Firefox.  
 #
 

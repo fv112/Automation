@@ -258,8 +258,8 @@ class Connections:
 
             # kwargs variables.
             project_id = kwargs.get("project_id")
-            isolated_tc = kwargs.get("isolated_tc", 'S')
-            id_testcase = kwargs.get("id_testcase")
+            isolated_tc = kwargs.get("isolated_tc", None)
+            id_test_case = kwargs.get("id_test_case")
 
             # Variables.
             test_case_id_list = []
@@ -299,7 +299,7 @@ class Connections:
                         table.add_row([status, id_test + 1, str(testCase_id['iid']),testCase_id['title']])
                         test_case_id_list.append(testCase_id['iid'])
 
-                    while True:
+                    while isolated_tc is None:
                         print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['AskCT']['Msg']}"
                               f"{Lib.Aux.Textcolor.END}\n")
                         isolated_tc = input()
@@ -316,18 +316,26 @@ class Connections:
 
                     test_case_list = [str(testcase_id) for testcase_id in test_case_id_list]
 
-                    if isolated_tc.upper() in ['Y', 'S', ''] and id_testcase is None:
-                        while True:
+                    print(f"project_id {project_id}")
+                    print(f"isolated_tc {isolated_tc}")
+                    print(f"id_testcase {id_test_case}")
+                    Lib.time.sleep(10)
+
+                    if isolated_tc.upper() in ['Y', 'S', '']:
+                        while id_test_case == 0:
                             print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['ChooseTestCase']['Msg']}"
                                   f"{Lib.Aux.Textcolor.END}\n")
-                            tc_id = input()
-                            if Lib.Aux.Main.validate_selection(input_data=tc_id, search_list=test_case_list):
+                            id_test_case = input()
+                            if Lib.Aux.Main.validate_selection(input_data=id_test_case, search_list=test_case_list):
                                 break
 
                         test_case_id_list.clear()
-                        test_case_id_list.append(int(tc_id))
+                        test_case_id_list.append(int(id_test_case))
                     else:
-                        test_case_id_list.append(id_testcase)
+                        test_case_id_list.append(id_test_case)
+
+                        print(f"test_case_id_list {test_case_id_list}")
+                        Lib.time.sleep(10)
 
                 else:
                     print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorGetTestCase']['Msg']}{Lib.Aux.Textcolor.END}\n")

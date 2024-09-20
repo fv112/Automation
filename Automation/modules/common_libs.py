@@ -1,4 +1,3 @@
-# import args
 import argparse
 import ast
 import ctypes

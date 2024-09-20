@@ -1,3 +1,5 @@
+import time
+
 import common_libs as Lib
 
 
@@ -13,8 +15,8 @@ class Main:
             # kwargs variables.
             project_id = kwargs.get('project_id', None)
             isolated_tc = kwargs.get('isolated_tc', None)
-            id_test_case = kwargs.get('id_test_case', None)
-            save_evidence = kwargs.get('save_evidence', 'N')
+            id_test_case = kwargs.get('id_test_case', 0)
+            save_evidence = kwargs.get('save_evidence', None)
 
             test_case_id_list = []
 
@@ -24,7 +26,7 @@ class Main:
 
             Lib.os.system('cls')
 
-            while True:
+            while save_evidence is None:
                 evidence = input(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['SaveEvidenceMsg']['Msg']}"
                                  f"{Lib.Aux.Textcolor.END}")
                 if evidence.upper() in ['Y', 'S'] or save_evidence:
