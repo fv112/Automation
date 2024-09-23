@@ -48,8 +48,8 @@ class Main:
         try:
             comment = None
             testset_path_manual = Lib.Aux.directories["EvidenceFolderManual"]
-            Lib.Aux.Main.deleteDirectory(self, directory=testset_path_manual)
-            Lib.Aux.Main.createDirectory(self, path=testset_path_manual)
+            Lib.Aux.Main.delete_directory(self, directory=testset_path_manual)
+            Lib.Aux.Main.create_directory(self, path=testset_path_manual)
 
             # Execute the action to get the manual evidences.
             test_case_id_list, n_iterations_list, id_azure_list, n_test_case_list, failed_info_dict, \
@@ -59,7 +59,7 @@ class Main:
 
             for test_case_id in test_case_id_list:
                 list_steps, name_testcase, summary, cont_steps, change_download_config = \
-                    GitLab.Connections.startSteps(self, project=project, test_case_id=test_case_id)
+                    GitLab.Connections.start_steps(self, project=project, test_case_id=test_case_id)
 
                 step_initial = 0
                 n_iterations = n_iterations_list.pop(0)  # Get the number of the iterations for the test order.
@@ -74,8 +74,8 @@ class Main:
                 if Lib.Aux.os.path.exists(test_set_path):
                     Lib.Aux.shutil.rmtree(test_set_path)
                 Lib.Aux.os.makedirs(test_set_path)
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["EvidenceFolder"])
-                Lib.Aux.Main.createDirectory(self, path=test_set_path)
+                Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["EvidenceFolder"])
+                Lib.Aux.Main.create_directory(self, path=test_set_path)
 
                 print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['GeneratingEvidence']['Msg']}"
                       f"{Lib.Aux.Textcolor.END}\n")
@@ -89,8 +89,8 @@ class Main:
                     n_print = 1
                     step_failed = 0
 
-                    Lib.Aux.Main.addLogs( message="NewSession", value="\nID: " + str(test_case_id) + " - TEST CASE: " +
-                                     name_testcase + " - ITERATION: " + str(n_iteration + 1) +
+                    Lib.Aux.Main.add_logs(message="NewSession", value="\nID: " + str(test_case_id) + " - TEST CASE: " +
+                                                                      name_testcase + " - ITERATION: " + str(n_iteration + 1) +
                                     "\nPROJECT: " + project_name + " - RUN ID: " + test_run_id + "\n")
 
                     # Verify status failed.
@@ -121,30 +121,30 @@ class Main:
                         n_print += 1
                     n_print = 0
 
-                    est = Lib.Aux.Main.wordAddSteps(self, test_run_id=test_run_id, test_case_id=test_case_id,
-                                                name_testcase=name_testcase + " - ITERATION " + str(n_iteration + 1),
-                                                summary=summary, word_path=word_path, test_set_path=test_set_path,
-                                                list_steps=list_steps[0:step_final],
-                                                completed_date=completed_date, step_failed=step_failed,
-                                                comment=comment, full_name_run_evidence=full_name_run_evidence,
-                                                full_name_run_test=full_name_run_test)
+                    est = Lib.Aux.Main.word_add_steps(self, test_run_id=test_run_id, test_case_id=test_case_id,
+                                                      name_testcase=name_testcase + " - ITERATION " + str(n_iteration + 1),
+                                                      summary=summary, word_path=word_path, test_set_path=test_set_path,
+                                                      list_steps=list_steps[0:step_final],
+                                                      completed_date=completed_date, step_failed=step_failed,
+                                                      comment=comment, full_name_run_evidence=full_name_run_evidence,
+                                                      full_name_run_test=full_name_run_test)
                     if est is None:
-                        Lib.Aux.Main.addLogs(self, message="General", value=Lib.Aux.logs["ErrorEST"],
-                                         value1=name_testcase + " - ITERATION " + str(n_iteration + 1))
+                        Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.logs["ErrorEST"],
+                                              value1=name_testcase + " - ITERATION " + str(n_iteration + 1))
 
                         workitem_status = "Design"
 
-                    pdf = Lib.Aux.Main.wordToPDF(self, path=est)
+                    pdf = Lib.Aux.Main.word_to_pdf(self, path=est)
                     if pdf is None:
-                        Lib.Aux.Main.addLogs(self, message="General", value=Lib.Aux.logs["ErrorConvertPDF"],
-                                         value1=name_testcase + " - ITERATION " + str(n_iteration + 1))
+                        Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.logs["ErrorConvertPDF"],
+                                              value1=name_testcase + " - ITERATION " + str(n_iteration + 1))
 
                         workitem_status = "Design"
 
                     if (est is not None) and (pdf is not None):
                         # Add the evidence to the Run and the Test case.
-                        Lib.Aux.Main.addLogs(self, message="General", value=Lib.Aux.logs["ConvertPDF"],
-                                         value1=name_testcase + " - ITERATION " + str(n_iteration + 1))
+                        Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.logs["ConvertPDF"],
+                                              value1=name_testcase + " - ITERATION " + str(n_iteration + 1))
                         self.connections.SaveEvidenceRun(self, project=project, test_run_id=test_run_id,
                                                               test_case_id_azure=test_case_id_azure,
                                                               evidence_folder=Lib.Aux.directories["EvidenceFolder"],
@@ -163,7 +163,7 @@ class Main:
                         del list_steps[0: step_final]
 
                     # Clear the evidences prints.
-                    Lib.Aux.Main.deleteFiles(self, file_path=test_set_path, extension="png")
+                    Lib.Aux.Main.delete_files(self, file_path=test_set_path, extension="png")
 
                 n_test_case += 1
 
@@ -171,7 +171,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorStartGenerateEvidence']['Msg']}{Lib.Aux.Textcolor.END}", ex)
-            Lib.Aux.Main.addLogs(self, message="General", value=Lib.Aux.logs["ErrorStartGenerateEvidence"], value1=str(ex))
+            Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.logs["ErrorStartGenerateEvidence"], value1=str(ex))
             ####exit(1)
 
         finally:

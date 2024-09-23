@@ -30,7 +30,7 @@ class AutomationQA:
         ### language = 'en_US'  ### For test.
         ### language = 'pt_BR'  ### For test.
 
-        Lib.Aux.Main.setLanguage(language=language)
+        Lib.Aux.Main.set_language(language=language)
 
         # ------ Check the version ----------
         # Git version.
@@ -65,7 +65,7 @@ class AutomationQA:
         # With arguments.
         if sys.argv.__len__() > 1:
 
-            self.cmdHelp()
+            self.cmd_help()
 
             # Minimize the Python screen (command line).
             # minimize = Lib.GetForegroundWindow()
@@ -106,7 +106,7 @@ class AutomationQA:
             app_core.main()
 
     @staticmethod
-    def cmdHelp():
+    def cmd_help():
 
         # os.system('cls')
 

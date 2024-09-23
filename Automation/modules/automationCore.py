@@ -20,9 +20,9 @@ class Main:
 
             test_case_id_list = []
 
-            Lib.Aux.Main.deleteDirectory(self, path_folder=Lib.Aux.directories['TestSetPath'])
+            Lib.Aux.Main.delete_directory(self, path_folder=Lib.Aux.directories['TestSetPath'])
 
-            project_id, project_name = self.connections.getProjects(project_id=project_id)
+            project_id, project_name = self.connections.get_projects(project_id=project_id)
 
             Lib.os.system('cls')
 
@@ -38,22 +38,22 @@ class Main:
 
             Lib.os.system('cls')
 
-            test_case_id_list = self.connections.getTestCases(project_id=project_id, isolated_tc=isolated_tc,
-                                                              id_test_case=id_test_case)
+            test_case_id_list = self.connections.get_test_cases(project_id=project_id, isolated_tc=isolated_tc,
+                                                                id_test_case=id_test_case)
 
-            Main.startAutomation(self, project_id=project_id, project_name=project_name,
-                                 test_case_id_list=test_case_id_list, save_evidence=save_evidence)
+            Main.start_automation(self, project_id=project_id, project_name=project_name,
+                                  test_case_id_list=test_case_id_list, save_evidence=save_evidence)
 
         except Exception as ex:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorMain']['Msg']} - {ex}{Lib.Aux.Textcolor.END}")
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorMain"], value1=str(ex))
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorMain"], value1=str(ex))
 
         finally:
             print(f"{Lib.Aux.Textcolor.BLUE}{Lib.Aux.otherConfigs['MsgFinishedExecution']['Msg']}"
                   f"{Lib.Aux.Textcolor.END}")
 
     # Execute the test case iterations.
-    def startAutomation(self, **kwargs):
+    def start_automation(self, **kwargs):
 
         # kwargs variables.
         project_id = kwargs.get("project_id")
@@ -78,13 +78,13 @@ class Main:
 
             for index, test_case_id in enumerate(test_case_id_list):
                 status_ct = 'Not Run'
-                Lib.Aux.otherConfigs['API_Step'] = False
+                Lib.Aux.otherConfigs['Api_Step'] = False
 
                 # Inform the test case percentage already executed.
                 Lib.Aux.Main.percentage(actual=index, total=len(test_case_id_list))
 
                 order_steps_list, name_testcase, steps_list, verbs_list, parameters1_list, parameters2_list = \
-                    self.connections.startSteps(project_id=project_id, test_case_id=test_case_id)
+                    self.connections.start_steps(project_id=project_id, test_case_id=test_case_id)
 
                 # Execution Initial time.
                 initial_time = Lib.datetime.datetime.now()
@@ -96,42 +96,42 @@ class Main:
                                                                           str(test_case_id) + " - " + name_testcase)
 
                     # Clear the evidences.
-                    Lib.Aux.Main.deleteFiles(folder_path=Lib.Aux.directories['TestSetPath'], extension="png")
-                    Lib.Aux.Main.deleteFiles(folder_path=Lib.Aux.directories['TestSetPath'], extension="json")
+                    Lib.Aux.Main.delete_files(folder_path=Lib.Aux.directories['TestSetPath'], extension="png")
+                    Lib.Aux.Main.delete_files(folder_path=Lib.Aux.directories['TestSetPath'], extension="json")
 
-                    Lib.Aux.Main.createDirectory(self, path=Lib.Aux.directories['TestSetPath'])
+                    Lib.Aux.Main.create_directory(self, path=Lib.Aux.directories['TestSetPath'])
                     Lib.shutil.rmtree(Lib.Aux.directories['TestSetPath'])
                     Lib.os.makedirs(Lib.Aux.directories['TestSetPath'])
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["EvidenceFolder"])
+                    Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["EvidenceFolder"])
                 else:
                     Lib.Aux.directories['TestSetPath'] = None
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningEvidenceFolder"])
+                    Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["WarningEvidenceFolder"])
 
-                Lib.Aux.Main.addLogs(message="NewSession",
-                                     value="\nID: " + str(test_case_id) + " - TEST CASE: " + name_testcase +
-                                           "\nPROJECT: " + project_name + "\n")
+                Lib.Aux.Main.add_logs(message="NewSession",
+                                      value="\nPROJECT: " + project_name + "\n"
+                                            "\nID: " + str(test_case_id) + " - TEST CASE: " + name_testcase + "\n")
 
                 # Validate the testcase name.
-                if Lib.Aux.Main.validateTestName(self, name_testcase=name_testcase):
+                if Lib.Aux.Main.validate_test_name(self, name_testcase=name_testcase):
                     continue
 
                 print(f"{Lib.Aux.Textcolor.BOLD}{name_testcase}{Lib.Aux.Textcolor.END}")
 
                 status_ct, step_failed = \
-                    Main.executeStepByStep(self, order_steps_list=order_steps_list, steps_list=steps_list,
-                                           verbs_list=verbs_list,
-                                           save_evidence=save_evidence, parameters1_list=parameters1_list,
-                                           parameters2_list=parameters2_list)
+                    Main.execute_step_by_step(self, order_steps_list=order_steps_list, steps_list=steps_list,
+                                              verbs_list=verbs_list,
+                                              save_evidence=save_evidence, parameters1_list=parameters1_list,
+                                              parameters2_list=parameters2_list)
 
                 # Set the list of iteration status for the test case.
                 test_list_status.append(status_ct)
 
                 # If fail / abort in an iteration.
                 if status_ct == "Failed" and save_evidence:
-                    Lib.Func.Main.verifyBrowser(self)
+                    Lib.Func.Main.verify_browser(self)
 
                 elif status_ct == "Aborted" and save_evidence:
-                    Lib.Func.Main.verifyBrowser(self)
+                    Lib.Func.Main.verify_browser(self)
 
                 # Set the test case duration.
                 duration = (
@@ -155,44 +155,44 @@ class Main:
                     word_path = (Lib.os.path.join(Lib.os.getcwd(), Lib.Aux.directories["ESTFile"])
                                  + ' ' + Lib.Aux.otherConfigs["Language"] + '.docx')
 
-                    est = Lib.Aux.Main.wordAddSteps(test_case_id=test_case_id,
-                                                    name_testcase=name_testcase,
-                                                    word_path=word_path,
-                                                    steps_list=steps_list,
-                                                    step_failed=step_failed,
-                                                    executed_by=executed_by,
-                                                    completed_date=str(Lib.datetime.datetime.now().
-                                                                       strftime("%d/%m/%Y %H:%M:%S")),
-                                                    duration=duration)
-                    pdf = Lib.Aux.Main.wordToPDF(path=est)
+                    est = Lib.Aux.Main.word_add_steps(test_case_id=test_case_id,
+                                                      name_testcase=name_testcase,
+                                                      word_path=word_path,
+                                                      steps_list=steps_list,
+                                                      step_failed=step_failed,
+                                                      executed_by=executed_by,
+                                                      completed_date=str(Lib.datetime.datetime.now().strftime(
+                                                          "%d/%m/%Y %H:%M:%S")),
+                                                      duration=duration)
+                    pdf = Lib.Aux.Main.word_to_pdf(path=est)
 
                     if est is None:
                         status_ct = "Aborted"
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorEST"],
-                                             value1=name_testcase)
+                        Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorEST"],
+                                              value1=name_testcase)
 
                     if pdf is None:
                         status_ct = "Aborted"
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorConvertPDF"],
-                                             value1=name_testcase)
+                        Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorConvertPDF"],
+                                              value1=name_testcase)
 
                     if (est is not None) and (pdf is not None):
 
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ConvertPDF"],
-                                             value1=name_testcase)
+                        Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ConvertPDF"],
+                                              value1=name_testcase)
 
                         file_url_list, file_path_list, status_name_testcase = (
-                            self.connections.UploadFileGitToken(project_id=project_id, test_case_id=test_case_id,
-                                                                status_ct=status_ct, file_type='tc',
-                                                                name_testcase=Lib.Aux.otherConfigs["ETSName"] +
-                                                                          str(test_case_id) + " - " + name_testcase))
+                            self.connections.upload_file_git_token(project_id=project_id, test_case_id=test_case_id,
+                                                                   status_ct=status_ct, file_type='tc',
+                                                                   name_testcase=Lib.Aux.otherConfigs["ETSName"] + str(
+                                                                       test_case_id) + " - " + name_testcase))
 
-                        self.connections.UploadFileGit(project_id=project_id, file_url_list=file_url_list,
-                                                       test_case_id=test_case_id, file_path_list=file_path_list,
-                                                       status_name_testcase=status_name_testcase)
+                        self.connections.upload_file_git(project_id=project_id, file_url_list=file_url_list,
+                                                         test_case_id=test_case_id, file_path_list=file_path_list,
+                                                         status_name_testcase=status_name_testcase)
 
-                        Lib.Aux.Main.deleteFiles(folder_path=Lib.Aux.directories['TestSetPath'], extension="png")
-                        Lib.Aux.Main.deleteFiles(folder_path=Lib.Aux.directories['TestSetPath'], extension="json")
+                        Lib.Aux.Main.delete_files(folder_path=Lib.Aux.directories['TestSetPath'], extension="png")
+                        Lib.Aux.Main.delete_files(folder_path=Lib.Aux.directories['TestSetPath'], extension="json")
 
                     #### SOMENTE APÓS EXISTIR O TEST SUIT.
                     # if save_evidence:
@@ -204,18 +204,18 @@ class Main:
                     verbs_list = [verb.upper() for verb in verbs_list]
                     if any(item in verbs_list for item in ['GUARDAR', 'SALVAR', 'SAVE']):
                         file_url_list, file_path_list, status_name_testcase = (
-                            self.connections.UploadFileGitToken(project_id=project_id, test_case_id=test_case_id,
-                                                                status_ct=status_ct, file_type='download_file',
-                                                                name_testcase=Lib.Aux.otherConfigs["ETSName"] +
-                                                                              str(test_case_id) + " - " + name_testcase)
+                            self.connections.upload_file_git_token(project_id=project_id, test_case_id=test_case_id,
+                                                                   status_ct=status_ct, file_type='download_file',
+                                                                   name_testcase=Lib.Aux.otherConfigs["ETSName"] + str(
+                                                                       test_case_id) + " - " + name_testcase)
                         )
 
-                        self.connections.UploadFileGit(project_id=project_id, file_url_list=file_url_list,
-                                                       test_case_id=test_case_id, file_path_list=file_path_list,
-                                                       status_name_testcase=status_name_testcase)
+                        self.connections.upload_file_git(project_id=project_id, file_url_list=file_url_list,
+                                                         test_case_id=test_case_id, file_path_list=file_path_list,
+                                                         status_name_testcase=status_name_testcase)
 
-                self.connections.UpdateLabels(project_id=project_id, test_case_id=test_case_id,
-                                              status_ct=status_ct)
+                self.connections.update_labels(project_id=project_id, test_case_id=test_case_id,
+                                               status_ct=status_ct)
 
             # Inform the test case percentage already executed (100%).
             Lib.Aux.Main.percentage(actual=len(test_case_id_list), total=len(test_case_id_list))
@@ -223,8 +223,8 @@ class Main:
         except Exception as ex:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorStartAutomation']['Msg']} - {ex.msg[0]}"
                   f"{Lib.Aux.Textcolor.END}")
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorStartAutomation"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorStartAutomation"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
 
             #### SOMENTE APÓS EXISTIR O TEST SUIT.
             # GitLab.AzureConnection.UpdateStatusAutomated(project=project, test_case_id=test_case_id,
@@ -234,18 +234,18 @@ class Main:
         # Update the Run status.
         finally:
             # Clear the API variables.
-            Lib.Aux.otherConfigs['API_Authorization'] = ''
-            Lib.Aux.otherConfigs['API_Body'] = ''
-            Lib.Aux.otherConfigs['API_Endpoint'] = ''
-            Lib.Aux.otherConfigs['API_Headers'] = ''
-            Lib.Aux.otherConfigs['API_Params'] = ''
-            Lib.Aux.otherConfigs['API_Response'] = ''
-            Lib.Aux.otherConfigs['API_Step'] = False
-            Lib.Aux.Main.addLogs(message="EndExecution")
+            Lib.Aux.otherConfigs['Api_Authorization'] = ''
+            Lib.Aux.otherConfigs['Api_Body'] = ''
+            Lib.Aux.otherConfigs['Api_Endpoint'] = ''
+            Lib.Aux.otherConfigs['Api_Headers'] = ''
+            Lib.Aux.otherConfigs['Api_Params'] = ''
+            Lib.Aux.otherConfigs['Api_Response'] = ''
+            Lib.Aux.otherConfigs['Api_Step'] = False
+            Lib.Aux.Main.add_logs(message="EndExecution")
             test_list_status.clear()
 
     # Execute the test case steps.
-    def executeStepByStep(self, **kwargs):
+    def execute_step_by_step(self, **kwargs):
 
         # kwargs variables.
         order_steps_list = kwargs.get('order_steps_list')
@@ -262,7 +262,7 @@ class Main:
         status_ct = 'Not Run'
 
         try:
-            Lib.Aux.Main.deleteFiles(folder_path=Lib.Aux.directories['DownloadFolder'], extension='*')
+            Lib.Aux.Main.delete_files(folder_path=Lib.Aux.directories['DownloadFolder'], extension='*')
 
             for index_oder, step_order in enumerate(order_steps_list):
 
@@ -283,8 +283,8 @@ class Main:
                 if parameters2 is not None:
                     print(f"PARAM 2: {parameters2}")
 
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["StepBlank"])
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["Step"], value1=step_order.__str__())
+                Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["StepBlank"])
+                Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["Step"], value1=step_order.__str__())
 
                 if Lib.Counter(status_steps)['Failed'] != 0:
                     status_steps.append("Not Run")
@@ -311,31 +311,31 @@ class Main:
 
                     print(f"STEP STATUS: {color_init}{status_step.upper()}{Lib.Aux.Textcolor.END}")
 
-                    if Lib.Aux.otherConfigs['API_Step'] is False and status_step != 'Passed':
+                    if Lib.Aux.otherConfigs['Api_Step'] is False and status_step != 'Passed':
                         image_name = Lib.Aux.otherConfigs["EvidenceName"] + str(step_order).zfill(2)
-                        take_picture_status = Lib.Func.Main.takePicture(self, image_name=image_name)
+                        take_picture_status = Lib.Func.Main.take_picture(self, image_name=image_name)
                         if not take_picture_status:
-                            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorScreenshot"], value1=step)
+                            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorScreenshot"], value1=step)
 
-                    if Lib.Aux.otherConfigs['API_Step'] and save_evidence:
-                        api_file_name = (Lib.Aux.otherConfigs["EvidenceNameAPI"] + str(step_order).zfill(2) +
-                                         Lib.Aux.otherConfigs["EvidenceExtensionAPI"])
+                    if Lib.Aux.otherConfigs['Api_Step'] and save_evidence:
+                        api_file_name = (Lib.Aux.otherConfigs["EvidenceNameApi"] + str(step_order).zfill(2) +
+                                         Lib.Aux.otherConfigs["EvidenceExtensionApi"])
                         api_file = Lib.os.path.join(Lib.Aux.directories['EvidenceFolder'],
                                                     Lib.Aux.directories['TestSetPath'], api_file_name)
 
                         with open(api_file, 'w') as api_return:
                             tag = parameters1[:parameters1.find(':')]
                             if tag.upper() == "STATUS CODE":
-                                api_return.write(Lib.Aux.otherConfigs['API_StatusCode'].__str__())
+                                api_return.write(Lib.Aux.otherConfigs['Api_StatusCode'].__str__())
                             else:  # Normal response.
-                                if (type(Lib.Aux.otherConfigs['API_Response']) is dict) and (
-                                        Lib.Aux.otherConfigs['API_Response'].__len__() > 1):
-                                    for tag, value in Lib.Aux.otherConfigs['API_Response'].items():
+                                if (type(Lib.Aux.otherConfigs['Api_Response']) is dict) and (
+                                        Lib.Aux.otherConfigs['Api_Response'].__len__() > 1):
+                                    for tag, value in Lib.Aux.otherConfigs['Api_Response'].items():
                                         api_return.writelines(f"\nTAG AND NEW VALUE: {tag}\n")
                                         api_return.writelines(f"RESULT:{value}\n")
                                         api_return.writelines(f"-" * 120)
                                 else:
-                                    api_return.write(Lib.Aux.otherConfigs['API_Response'].__str__())
+                                    api_return.write(Lib.Aux.otherConfigs['Api_Response'].__str__())
 
             # Set the test case status.
             if Lib.Counter(status_steps)['Failed'] != 0:
@@ -348,7 +348,7 @@ class Main:
         except Exception as ex:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorExecuteStepByStep']['Msg']} - {ex.msg[0]}"
                   f"{Lib.Aux.Textcolor.END}")
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorExecuteStepByStep"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorExecuteStepByStep"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
 
             return status_ct, step_order

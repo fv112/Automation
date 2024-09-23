@@ -11,7 +11,7 @@ class Main:
     def __init__(self):
         self.connections = Lib.Con.Connections()
 
-    def findElement(self, **kwargs):
+    def find_component(self, **kwargs):
 
         # kwargs variables.
         parameters1 = kwargs.get('parameters1')
@@ -45,26 +45,26 @@ class Main:
                 else:
                     element_field = driver.find_element(tag, parameters1)
                     if element_field:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["FindElement"],
-                                             value1=tag + ":" + parameters1)
+                        Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["FindComponent"],
+                                              value1=tag + ":" + parameters1)
                         return "Passed", tag, element_field
 
             except Exception as ex:
                 if tag == 'Not found' and checked_status is None:
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorFindElement"])
+                    Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorFindComponent"])
                     return "Aborted", tag, element_field
                 elif tag == 'Not found' and checked_status is not None:
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningFindElement"],
-                                         value1=tag + ' - ' + parameters1,
-                                         value2=str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
+                    Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["WarningFindComponent"],
+                                          value1=tag + ' - ' + parameters1,
+                                          value2=str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
                     return "Passed", tag, element_field
                 else:
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["WarningFindElement"],
-                                         value1=tag + ' - ' + parameters1,
-                                         value2=str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
+                    Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["WarningFindComponent"],
+                                          value1=tag + ' - ' + parameters1,
+                                          value2=str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
 
     # -------------------------------------------- Action Elements -----------------------------------------------------
-    def fillField(self, **kwargs):
+    def fill_field(self, **kwargs):
         try:
             # kwargs arguments.
             parameters1 = kwargs.get('parameters1')
@@ -73,7 +73,7 @@ class Main:
             step = kwargs.get('step')
             step_order = kwargs.get('step_order')
 
-            status, tag, element_field = Main.findElement(self, parameters1=parameters1)
+            status, tag, element_field = Main.find_component(self, parameters1=parameters1)
 
             if element_field is None:
                 return "Aborted"
@@ -86,31 +86,31 @@ class Main:
             Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
                            step_order=step_order, tag=tag)
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["FillField"])
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["FillField"])
 
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorFillField"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorFillField"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=f' Step order: {step_order} / Step: {step}')
 
             return "Failed"
 
     # Don't execute the step.
-    def noExecute(self, **kwargs):
+    def no_execute(self, **kwargs):
 
         # kwargs arguments.
         step = kwargs.get('step')
 
         try:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["NoExecute"], value1="'" + step + "'")
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["NoExecute"], value1="'" + step + "'")
 
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorNoExecute"],
-                                 value1="'" + step + "' - " + str(ex))
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorNoExecute"],
+                                  value1="'" + step + "' - " + str(ex))
             return "Failed"
 
     # Execute a MS-DOS command line.
@@ -124,13 +124,13 @@ class Main:
 
             Lib.Aux.os.system('start "" "' + path + '"')
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["Execute"], value1="'" + path + "'")
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["Execute"], value1="'" + path + "'")
 
             return path, "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorExecute"],
-                                 value1="'" + path + "' - " + str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorExecute"],
+                                  value1="'" + path + "' - " + str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
             return "Failed"
 
     # Click in an element.
@@ -142,7 +142,7 @@ class Main:
             step = kwargs.get('step')
             step_order = kwargs.get('step_order')
 
-            status, tag, element_field = Main.findElement(self, parameters1=parameters1)
+            status, tag, element_field = Main.find_component(self, parameters1=parameters1)
 
             if element_field is None:
                 return "Aborted"
@@ -151,18 +151,18 @@ class Main:
                            tag=tag)
             element_field.click()
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["Click"], value1=parameters1)
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["Click"], value1=parameters1)
 
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorClick"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorClick"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=f' Step order: {step_order} / Step: {step}')
             return "Failed"
 
     # Double click.
-    def doubleClick(self, **kwargs):
+    def double_click(self, **kwargs):
         try:
             # kwargs arguments.
             parameters1 = kwargs.get('parameters1')
@@ -170,7 +170,7 @@ class Main:
             step = kwargs.get('step')
             step_order = kwargs.get('step_order')
 
-            status, tag, element_field = Main.findElement(self, parameters1=parameters1)
+            status, tag, element_field = Main.find_component(self, parameters1=parameters1)
 
             if element_field is None:
                 return "Aborted"
@@ -179,16 +179,16 @@ class Main:
                            tag=tag)
             Lib.ActionChains(driver).double_click(element_field).perform()
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["DoubleClick"], value1=parameters1)
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["DoubleClick"], value1=parameters1)
 
             return "Passed"
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorDoubleClick"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorDoubleClick"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
             return "Failed"
 
     # Right click (mouse).
-    def rightClick(self, **kwargs):
+    def right_click(self, **kwargs):
         try:
             # kwargs arguments.
             parameters1 = kwargs.get('parameters1')
@@ -197,7 +197,7 @@ class Main:
             step_order = kwargs.get('step_order')
 
             actions = Lib.ActionChains(driver)
-            status, tag, element_field = Main.findElement(self, parameters1=parameters1)
+            status, tag, element_field = Main.find_component(self, parameters1=parameters1)
 
             if element_field is None:
                 return "Aborted"
@@ -208,12 +208,12 @@ class Main:
             actions.context_click(element_field)
             actions.perform()
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["RightClick"], value1=parameters1)
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["RightClick"], value1=parameters1)
 
             return "Passed"
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorRightClick"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorRightClick"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
             return "Failed"
 
     # Drag and drop.
@@ -222,7 +222,7 @@ class Main:
 
     """
 
-    def dragDrop(self, **kwargs):
+    def drag_drop(self, **kwargs):
         try:
             # kwargs arguments.
             parameters1 = kwargs.get('parameters1')
@@ -245,12 +245,12 @@ class Main:
             #actions.drag_and_drop_by_offset(element_field, int(positionx) * 10, int(positiony) * 10)
             actions.perform()
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['DragDrop'], value1=parameters1)
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs['DragDrop'], value1=parameters1)
 
             return "Passed"
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorDragDrop"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorDragDrop"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
             return "Failed"
 
     # Drag and drop to the other component.
@@ -258,7 +258,7 @@ class Main:
     COMMENT: ERROR IN THE SELENIUM ACTION.
 
     """
-    def dragDropToElement(self, **kwargs):
+    def drag_drop_to_element(self, **kwargs):
         try:
             # kwargs arguments.
             parameters1 = kwargs.get('parameters1')
@@ -268,14 +268,14 @@ class Main:
             step_order = kwargs.get('step_order')
 
             actions = Lib.ActionChains(driver)
-            _, tag1, element_field1 = Main.findElement(self, parameters1=parameters1)
+            _, tag1, element_field1 = Main.find_component(self, parameters1=parameters1)
 
             if element_field1 is None:
                 return "Aborted"
 
             Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
                            step_order=step_order, tag=tag1)
-            _, tag2, element_field2 = Main.findElement(self, parameters1=parameters2)
+            _, tag2, element_field2 = Main.find_component(self, parameters1=parameters2)
 
             if element_field2 is None:
                 return "Aborted"
@@ -285,18 +285,18 @@ class Main:
             actions.drag_and_drop(element_field2, element_field1)
             actions.perform()
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["DragDropToElement"])
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["DragDropToElement"])
 
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorDragDropToElement"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorDragDropToElement"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=f' Step order: {step_order} / Step: {step}')
             return "Failed"
 
     # Type keyboard key.
-    def pressButton(self, **kwargs):
+    def press_button(self, **kwargs):
 
         # kwargs arguments.
         parameters1 = kwargs.get('parameters1')
@@ -356,19 +356,19 @@ class Main:
             Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order,
                            save_evidence=save_evidence)
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["PressButton"],
-                                 value1=parameters1 + " - " + str(parameters2) + "x")
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["PressButton"],
+                                  value1=parameters1 + " - " + str(parameters2) + "x")
 
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorPressButton"],
-                                 value1=parameters1 + " - " + str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorPressButton"],
+                                  value1=parameters1 + " - " + str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=f' Step order: {step_order} / Step: {step}')
             return "Failed"
 
     # Mouse Over.
-    def mouseOver(self, **kwargs):
+    def mouse_over(self, **kwargs):
 
         # kwargs arguments.
         parameters1 = kwargs.get('parameters1')
@@ -379,7 +379,7 @@ class Main:
         try:
 
             actions = Lib.ActionChains(driver)
-            status, tag, element_field = Main.findElement(self, parameters1=parameters1)
+            status, tag, element_field = Main.find_component(self, parameters1=parameters1)
 
             if element_field is None:
                 return "Aborted"
@@ -390,14 +390,14 @@ class Main:
             actions.move_to_element(element_field)  # Worked with XPath.
             actions.perform()
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["MouseOver"])
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["MouseOver"])
 
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorMouseOver"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorMouseOver"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=f' Step order: {step_order} / Step: {step}')
 
             return "Failed"
 
@@ -415,18 +415,18 @@ class Main:
 
             Lib.time.sleep(int(parameters1))
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["Wait"], value1=parameters1)
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["Wait"], value1=parameters1)
 
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorWait"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorWait"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=f' Step order: {step_order} / Step: {step}')
 
             return "Failed"
 
-    def selectDropDownList(self, **kwargs):
+    def select_drop_down_list(self, **kwargs):
 
         # kwargs arguments.
         parameters1 = kwargs.get('parameters1')
@@ -437,7 +437,7 @@ class Main:
 
         try:
 
-            status, tag, element_field = Main.findElement(self, parameters1=parameters1)
+            status, tag, element_field = Main.find_component(self, parameters1=parameters1)
 
             if element_field is None:
                 return "Aborted"
@@ -449,26 +449,26 @@ class Main:
 
             try:
                 element.select_by_visible_text(parameters2)
-                ### Colocar um for na busca do texto.
+
                 Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
                                step_order=step_order, tag=tag)
 
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["SelectDropDownList"],
-                                     value1=parameters1, value2=parameters2)
+                Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["SelectDropDownList"],
+                                      value1=parameters1, value2=parameters2)
             except Lib.NoSuchElementException:
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["NoSelectDropDownList"])
+                Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["NoSelectDropDownList"])
 
             return "Passed"
 
         except Lib.NoSuchElementException as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorSelectDropDownList"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorSelectDropDownList"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=f' Step order: {step_order} / Step: {step}')
 
             return "Failed"
 
     # Get the text from an elements.
-    def getText(self, **kwargs):
+    def get_text(self, **kwargs):
 
         try:
             # kwargs arguments.
@@ -477,7 +477,7 @@ class Main:
             step = kwargs.get('step')
             step_order = kwargs.get('step_order')
 
-            status, tag, element_field = Main.findElement(self, parameters1=parameters1)
+            status, tag, element_field = Main.find_component(self, parameters1=parameters1)
 
             if element_field is None:
                 return Lib.Aux.logs["ErrorGetText"]['Msg'], "Aborted"
@@ -498,24 +498,24 @@ class Main:
                         table = soup.findAll(Lib.Aux.searchForComponent[component],
                                              attrs={Lib.Aux.searchForAttribute[tag]: parameters1})
                         for textFound in table:
-                            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetText"])
-                            Main.findElement(self, parameters1=parameters1, save_evidence=save_evidence, color="green")
+                            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["GetText"])
+                            Main.find_component(self, parameters1=parameters1, save_evidence=save_evidence, color="green")
                             return textFound.contents[0], "Passed"
                         else:
                             return Lib.Aux.logs["ErrorGetText"]["Msg"], "Failed"
             else:
                 return element_field.text, "Passed"
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetText"])
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["GetText"])
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetText"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorGetText"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=f' Step order: {step_order} / Step: {step}')
 
             return Lib.Aux.logs["ErrorGetText"]['Msg'], "Failed"
 
-    def openNewTab(self, **kwargs):
+    def open_new_tab(self, **kwargs):
         try:
             # kwargs arguments.
             step = kwargs.get('step')
@@ -525,19 +525,19 @@ class Main:
 
             Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order)
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["OpenNewTab"])
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["OpenNewTab"])
 
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorOpenNewTab"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorOpenNewTab"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=f' Step order: {step_order} / Step: {step}')
 
             return "Failed"
 
     # Get current url
-    def getURL(self, **kwargs):
+    def get_url(self, **kwargs):
 
         try:
             # kwargs arguments.
@@ -550,19 +550,19 @@ class Main:
             Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order, color='green',
                            save_evidence=save_evidence)
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetURL"])
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["GetURL"])
 
             return url, "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetURL"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorGetURL"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=f' Step order: {step_order} / Step: {step}')
 
             return None, "Failed"
 
     # get Title
-    def getTitle(self, **kwargs):
+    def get_title(self, **kwargs):
 
         # kwargs arguments.
         step = kwargs.get('step')
@@ -576,19 +576,19 @@ class Main:
             Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order, color='green',
                            save_evidence=save_evidence)
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetTitle"])
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["GetTitle"])
 
             return title, "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetTitle"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorGetTitle"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=f' Step order: {step_order} / Step: {step}')
 
             return None, "Failed"
 
     # Back Page
-    def backPage(self, **kwargs):
+    def back_page(self, **kwargs):
 
         try:
             # kwargs arguments.
@@ -600,19 +600,19 @@ class Main:
             Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order,
                            save_evidence=save_evidence)
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["BackPage"])
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["BackPage"])
 
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorBackPage"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorBackPage"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=f' Step order: {step_order} / Step: {step}')
 
             return "Failed"
 
     # Back Page.
-    def forwardPage(self, **kwargs):
+    def forward_page(self, **kwargs):
 
         try:
             # kwargs arguments.
@@ -624,19 +624,19 @@ class Main:
             Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order,
                            save_evidence=save_evidence)
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ForwardPage"])
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ForwardPage"])
 
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorForwardPage"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorForwardPage"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=f' Step order: {step_order} / Step: {step}')
 
             return "Failed"
 
     # Gets the attribute of an element (can be value, title or href).
-    def getAttribute(self, **kwargs):
+    def get_attribute(self, **kwargs):
 
         text_found = None
 
@@ -649,19 +649,19 @@ class Main:
             step_order = kwargs.get('step_order')
 
             if '(#value)' in parameters2:
-                status, tag, elements_fields = Main.findElement(self, parameters1=parameters1)
+                status, tag, elements_fields = Main.find_component(self, parameters1=parameters1)
                 text_found = elements_fields.get_attribute('value')
 
             elif '(#title)' in parameters2:
-                status, tag, elements_fields = Main.findElement(self, parameters1=parameters1)
+                status, tag, elements_fields = Main.find_component(self, parameters1=parameters1)
                 text_found = elements_fields.get_attribute('title')
 
             elif '(#href)' in parameters2:
-                status, tag, elements_fields = Main.findElement(self, parameters1=parameters1)
+                status, tag, elements_fields = Main.find_component(self, parameters1=parameters1)
                 text_found = elements_fields.get_attribute('href')
 
             elif '(#class)' in parameters2:
-                status, tag, elements_fields = Main.findElement(self, parameters1=parameters1)
+                status, tag, elements_fields = Main.find_component(self, parameters1=parameters1)
                 text_found = elements_fields.get_attribute('class')
 
             else:
@@ -670,18 +670,18 @@ class Main:
             Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
                            step_order=step_order, color='green', tag=tag)
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetAttribute"])
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["GetAttribute"])
 
             return text_found, "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetAttribute"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorGetAttribute"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=f' Step order: {step_order} / Step: {step}')
 
             return text_found, "Failed"
 
-    def getQuantityElements(self, **kwargs):
+    def get_quantity_elements(self, **kwargs):
 
         # kwargs arguments.
         parameters1 = kwargs.get('parameters1')
@@ -694,7 +694,7 @@ class Main:
             new_elements = 0
             original_style = None
 
-            status, tag, elements_fields = Main.findElement(self, parameters1=parameters1, several=True)
+            status, tag, elements_fields = Main.find_component(self, parameters1=parameters1, several=True)
             if elements_fields is None:
                 return "0", "Aborted"
 
@@ -708,8 +708,8 @@ class Main:
                     Main.apply_style(new_element, original_style)
 
             if int(parameters2) == len(elements_fields):
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetQuantityElements"],
-                                     value1=str(len(elements_fields)), value2=parameters1)
+                Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["GetQuantityElements"],
+                                      value1=str(len(elements_fields)), value2=parameters1)
 
                 return len(elements_fields), "Passed"
             else:
@@ -719,19 +719,19 @@ class Main:
                 raise AttributeError(str(len(elements_fields)))
 
         except AttributeError as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetQuantityElements"],
-                                 value1=str(ex), value2=parameters1)
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorGetQuantityElements"],
+                                  value1=str(ex), value2=parameters1)
 
             return str(len(elements_fields)), "Failed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetQuantityElements"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=parameters1)
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorGetQuantityElements"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=parameters1)
 
             return str(len(elements_fields)), "Failed"
 
-    def scrollPage(self, **kwargs):
+    def scroll_page(self, **kwargs):
 
         try:
             # kwargs arguments.
@@ -741,25 +741,25 @@ class Main:
 
             driver.execute_script('window.scrollTo(0, ' + parameters1 + ')')
 
-            element_field = Main.findElement(self, parameters1=parameters1)
+            element_field = Main.find_component(self, parameters1=parameters1)
             if element_field is None:
                 return "Aborted"
             Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order)
 
             if element_field is not None:
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ScrollPage"])
+                Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ScrollPage"])
                 return "Passed"
             else:
                 return "Failed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorScrollPage"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorScrollPage"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=f' Step order: {step_order} / Step: {step}')
 
             return "Failed"
 
-    def refreshPage(self, **kwargs):
+    def refresh_page(self, **kwargs):
 
         try:
             # kwargs arguments.
@@ -771,19 +771,19 @@ class Main:
             Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order,
                            save_evidence=save_evidence)
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["RefreshPage"])
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["RefreshPage"])
 
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorRefreshPage"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorRefreshPage"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=f' Step order: {step_order} / Step: {step}')
 
             return "Failed"
 
     # Checks whether the element is inactive.
-    def isEnable(self, **kwargs):
+    def is_enable(self, **kwargs):
 
         try:
             # kwargs arguments.
@@ -794,7 +794,7 @@ class Main:
             checked_status = kwargs.get('checked_status')
 
             status, tag, elements_fields = (
-                Main.findElement(self, parameters1=parameters1, checked_status=checked_status))
+                Main.find_component(self, parameters1=parameters1, checked_status=checked_status))
 
             if elements_fields is None:
                 return "Aborted"
@@ -803,20 +803,20 @@ class Main:
                            step_order=step_order, color='green', tag=tag)
 
             if elements_fields.is_enabled() == checked_status:
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsEnable"])
+                Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["IsEnable"])
                 return "Passed"
             else:
                 return "Failed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsEnable"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorIsEnable"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=f' Step order: {step_order} / Step: {step}')
 
             return "Failed"
 
     # Checks whether the element is visible.
-    def isDisplayed(self, **kwargs):
+    def is_displayed(self, **kwargs):
 
         try:
 
@@ -827,14 +827,14 @@ class Main:
             step_order = kwargs.get('step_order')
             checked_status = kwargs.get('checked_status')
 
-            status, tag, element_field = Main.findElement(self, parameters1=parameters1, checked_status=checked_status)
+            status, tag, element_field = Main.find_component(self, parameters1=parameters1, checked_status=checked_status)
 
             if element_field:
                 Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
                                step_order=step_order, color='green', tag=tag)
 
                 if element_field.is_displayed() == checked_status:
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsDisplayed"])
+                    Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["IsDisplayed"])
                     return "Passed"
                 else:
                     return "Failed"
@@ -843,21 +843,21 @@ class Main:
                 Main.highlight(self, parameters1='full_screen', save_evidence=save_evidence, step=step,
                                step_order=step_order, color='green', tag=tag)
 
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsDisplayedNo"])
+                Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["IsDisplayedNo"])
                 return "Passed"
 
             else:
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsDisplayed"])
+                Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorIsDisplayed"])
                 return "Failed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsDisplayed"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorIsDisplayed"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=f' Step order: {step_order} / Step: {step}')
             return "Failed"
 
     # Checks whether a checkbox or radio button is selected (returns True or False)
-    def isSelected(self, **kwargs):
+    def is_selected(self, **kwargs):
 
         try:
             # kwargs arguments.
@@ -867,7 +867,7 @@ class Main:
             step_order = kwargs.get('step_order')
             checked_status = kwargs.get('checked_status')
 
-            status, tag, element_field = Main.findElement(self, parameters1=parameters1)
+            status, tag, element_field = Main.find_component(self, parameters1=parameters1)
 
             if element_field is None:
                 return "Aborted"
@@ -876,19 +876,19 @@ class Main:
                            step_order=step_order, color='green', tag=tag)
 
             if element_field.is_selected() == checked_status:
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsSelected"])
+                Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["IsSelected"])
                 return "Passed"
             else:
                 return "Failed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsSelected"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorIsSelected"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=f' Step order: {step_order} / Step: {step}')
             return "Failed"
 
     # Validate data (With * validate the partial text).
-    def validateData(self, **kwargs):
+    def validate_data(self, **kwargs):
 
         try:
             # kwargs arguments.
@@ -903,111 +903,111 @@ class Main:
 
                 # Get the title page.
                 if '(TITLE)' in parameters1.upper():
-                    text_found, status = Main.getTitle(self, save_evidence=save_evidence, step=step,
-                                                       step_order=step_order)
+                    text_found, status = Main.get_title(self, save_evidence=save_evidence, step=step,
+                                                        step_order=step_order)
                     parameters2 = parameters1.replace('(title)', '')
 
                     if parameters2 == text_found:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetTitle"])
+                        Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["GetTitle"])
                         status = "Passed"
 
                     else:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetTitle"])
+                        Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorGetTitle"])
                         status = "Failed"
 
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataExpected'],
-                                         value1=str(parameters2))
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataObtained'],
-                                         value1=str(text_found))
+                    Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs['ValidateDataExpected'],
+                                          value1=str(parameters2))
+                    Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs['ValidateDataObtained'],
+                                          value1=str(text_found))
 
-                # Get the URL from the address bar (getURL).
+                # Get the URL from the address bar (get_url).
                 elif '(URL)' in parameters1.upper():
-                    text_found, status = Main.getURL(self, save_evidence=save_evidence, step=step,
-                                                     step_order=step_order)
+                    text_found, status = Main.get_url(self, save_evidence=save_evidence, step=step,
+                                                      step_order=step_order)
                     parameters2 = parameters1.replace('(url)', '')
 
                     if parameters2 == text_found:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetURL"])
+                        Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["GetURL"])
 
                         status = "Passed"
 
                     else:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetURL"])
+                        Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorGetURL"])
                         status = "Failed"
 
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataExpected'],
-                                         value1=str(parameters2))
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataObtained'],
-                                         value1=str(text_found))
+                    Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs['ValidateDataExpected'],
+                                          value1=str(parameters2))
+                    Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs['ValidateDataObtained'],
+                                          value1=str(text_found))
 
                 # Check a part of the text was found.
                 elif '*' in parameters2:  # Check part of the text.
-                    text_found, status = Main.getText(self, parameters1=parameters1, save_evidence=save_evidence,
-                                                      step=step, step_order=step_order)
+                    text_found, status = Main.get_text(self, parameters1=parameters1, save_evidence=save_evidence,
+                                                       step=step, step_order=step_order)
 
                     # Remove new lines.
                     if "\n" in text_found:
                         text_found = text_found.replace("\n", "")
 
                     if parameters2.replace('*', '') in text_found:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetTextPart"])
+                        Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["GetTextPart"])
                         status = "Passed"
 
                     else:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetTextPart"])
+                        Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorGetTextPart"])
                         status = "Failed"
 
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataExpected'],
-                                         value1=str(parameters2))
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataObtained'],
-                                         value1=str(text_found))
+                    Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs['ValidateDataExpected'],
+                                          value1=str(parameters2))
+                    Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs['ValidateDataObtained'],
+                                          value1=str(text_found))
 
                 # Checks whether the element is active or inactive.
                 elif parameters2.upper() in ['(INACTIVE)', '(ACTIVE)']:
 
-                    checked_status = Lib.Aux.Main.validateVariations(self, variation=parameters2.upper())
+                    checked_status = Lib.Aux.Main.validate_variations(self, variation=parameters2.upper())
 
-                    status = Main.isEnable(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
-                                           step_order=step_order, checked_status=checked_status)
+                    status = Main.is_enable(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
+                                            step_order=step_order, checked_status=checked_status)
 
                     if status == "Passed":
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsEnable"])
+                        Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["IsEnable"])
                     else:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsEnable"])
+                        Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorIsEnable"])
                         status = "Failed"
 
                 # Checks whether the element is visible to the user.
                 elif parameters2.upper() in ['(VISIBLE)', '(INVISIBLE)']:
 
-                    checked_status = Lib.Aux.Main.validateVariations(self, variation=parameters2.upper())
+                    checked_status = Lib.Aux.Main.validate_variations(self, variation=parameters2.upper())
 
-                    status = Main.isDisplayed(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
-                                              step_order=step_order, checked_status=checked_status)
+                    status = Main.is_displayed(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
+                                               step_order=step_order, checked_status=checked_status)
 
                     if status == "Passed":
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsDisplayed"])
+                        Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["IsDisplayed"])
                     else:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsDisplayed"])
+                        Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorIsDisplayed"])
 
                 # Checks whether a checkbox or radio button is selected.
                 elif parameters2.upper() in ['(CHECKED)', '(UNCHECKED)']:
 
-                    checked_status = Lib.Aux.Main.validateVariations(self, variation=parameters2.upper())
+                    checked_status = Lib.Aux.Main.validate_variations(self, variation=parameters2.upper())
 
-                    status = Main.isSelected(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
-                                             step_order=step_order, checked_status=checked_status)
+                    status = Main.is_selected(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
+                                              step_order=step_order, checked_status=checked_status)
 
                     if status == "Passed":
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["IsSelected"])
+                        Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["IsSelected"])
                     else:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorIsSelected"])
+                        Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorIsSelected"])
                         status = "Failed"
 
                 # Check some attributes.
                 elif any(found in parameters2.upper() for found in ['(#TITLE)', '(#HREF)', '(#VALUE)', '(#CLASS)']):
 
-                    text_found, status = Main.getAttribute(self, parameters1=parameters1, save_evidence=save_evidence,
-                                                           parameters2=parameters2, step=step, step_order=step_order)
+                    text_found, status = Main.get_attribute(self, parameters1=parameters1, save_evidence=save_evidence,
+                                                            parameters2=parameters2, step=step, step_order=step_order)
 
                     parameters2 = parameters2.replace('(#title)', '')
                     parameters2 = parameters2.replace('(#href)', '')
@@ -1015,58 +1015,58 @@ class Main:
                     parameters2 = parameters2.replace('(#class)', '')
 
                     if parameters2 == text_found:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetAttribute"])
+                        Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["GetAttribute"])
                         status = "Passed"
 
                     else:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetAttribute"])
+                        Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorGetAttribute"])
                         status = "Failed"
 
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataExpected'],
-                                         value1=str(parameters2))
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataObtained'],
-                                         value1=str(text_found))
+                    Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs['ValidateDataExpected'],
+                                          value1=str(parameters2))
+                    Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs['ValidateDataObtained'],
+                                          value1=str(text_found))
 
                 # Get the amount of elements.
                 elif '<' and '>' in parameters2:
                     parameters2 = parameters2.replace('<', '')
                     parameters2 = parameters2.replace('>', '')
 
-                    n_elements, status = Main.getQuantityElements(self, parameters1=parameters1, step=step,
-                                                                  parameters2=parameters2, step_order=step_order,
-                                                                  save_evidence=save_evidence)
+                    n_elements, status = Main.get_quantity_elements(self, parameters1=parameters1, step=step,
+                                                                    parameters2=parameters2, step_order=step_order,
+                                                                    save_evidence=save_evidence)
 
                     if status == 'Passed':
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["GetQuantityElements"])
+                        Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["GetQuantityElements"])
                     else:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorGetQuantityElements"])
+                        Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorGetQuantityElements"])
 
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataExpected'],
-                                         value1=str(parameters2))
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataObtained'],
-                                         value1=str(n_elements))
+                    Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs['ValidateDataExpected'],
+                                          value1=str(parameters2))
+                    Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs['ValidateDataObtained'],
+                                          value1=str(n_elements))
 
                 # Validates that the text obtained from the page is the same as the expected text.
                 else:
-                    text_found, status = Main.getText(self, parameters1=parameters1, save_evidence=save_evidence,
-                                                      step=step, step_order=step_order)
+                    text_found, status = Main.get_text(self, parameters1=parameters1, save_evidence=save_evidence,
+                                                       step=step, step_order=step_order)
 
                     # Remove new lines.
                     if "\n" in text_found:
                         text_found = text_found.replace("\n", "")
 
                     if text_found == parameters2:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ValidateData"])
+                        Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ValidateData"])
                         status = "Passed"
 
                     else:
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorValidateData"])
+                        Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorValidateData"])
                         status = "Failed"
 
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataExpected'],
-                                         value1=str(parameters2))
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataObtained'],
-                                         value1=str(text_found))
+                    Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs['ValidateDataExpected'],
+                                          value1=str(parameters2))
+                    Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs['ValidateDataObtained'],
+                                          value1=str(text_found))
 
             else:  # If Alert Element.
                 wait = Lib.WebDriverWait(driver, timeout=2)
@@ -1075,24 +1075,24 @@ class Main:
                 text_found = alert.text
 
                 if parameters1 == text_found:
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ValidateData"])
+                    Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ValidateData"])
                     status = "Passed"
 
                 else:
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorValidateData"])
+                    Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorValidateData"])
                     status = "Failed"
 
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataExpected'],
-                                     value1=str(parameters1))
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs['ValidateDataObtained'],
-                                     value1=str(text_found))
+                Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs['ValidateDataExpected'],
+                                      value1=str(parameters1))
+                Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs['ValidateDataObtained'],
+                                      value1=str(text_found))
 
             return status
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorFunctionValidateData"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorFunctionValidateData"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=f' Step order: {step_order} / Step: {step}')
             return "Failed"
 
     # Alter (Verify iFrame or Windows).
@@ -1108,25 +1108,25 @@ class Main:
             step_order = kwargs.get('step_order')
 
             if parameters1 is None:
-                Main.alterWindow(self, save_evidence=save_evidence, step=step, step_order=step_order)
+                Main.alter_window(self, save_evidence=save_evidence, step=step, step_order=step_order)
 
             elif parameters1.upper() == 'IFRAME':
-                Main.alterFrame(self, parameters2=parameters2, save_evidence=save_evidence, step=step,
-                                step_order=step_order)
+                Main.alter_frame(self, parameters2=parameters2, save_evidence=save_evidence, step=step,
+                                 step_order=step_order)
 
             elif parameters1.upper() == 'ALERT':
-                Main.alterAlertOK(self, save_evidence=save_evidence)
+                Main.alter_alert_ok(self, save_evidence=save_evidence)
 
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAlter"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorAlter"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=f' Step order: {step_order} / Step: {step}')
             return "Failed"
 
     # Alter window.
-    def alterWindow(self, **kwargs):
+    def alter_window(self, **kwargs):
 
         try:
             # kwargs arguments.
@@ -1140,18 +1140,18 @@ class Main:
             Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order,
                            save_evidence=save_evidence)
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["AlterWindow"])
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["AlterWindow"])
 
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAlterWindow"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorAlterWindow"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=f' Step order: {step_order} / Step: {step}')
             return "Failed"
 
     # Alter IFrame.
-    def alterFrame(self, **kwargs):
+    def alter_frame(self, **kwargs):
 
         try:
             # kwargs arguments.
@@ -1160,24 +1160,24 @@ class Main:
             step = kwargs.get('step')
             step_order = kwargs.get('step_order')
 
-            _, _, iframe = Main.findElement(self, parameters1=parameters2, save_evidence=save_evidence, step=step,
-                                            step_order=step_order)
+            _, _, iframe = Main.find_component(self, parameters1=parameters2, save_evidence=save_evidence, step=step,
+                                               step_order=step_order)
 
             # switch to selected iframe
             driver.switch_to.frame(iframe)
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["AlterIframe"])
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["AlterIframe"])
 
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAlterIframe"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorAlterIframe"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=f' Step order: {step_order} / Step: {step}')
             return "Failed"
 
     # Alter Alert and Click OK.
-    def alterAlertOK(self, **kwargs):
+    def alter_alert_ok(self, **kwargs):
 
         try:
             # kwargs arguments.
@@ -1189,18 +1189,18 @@ class Main:
             Main.highlight(self, parameters1='Alert', step=step, step_order=step_order,
                            save_evidence=save_evidence)
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["AlterAlert"])
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["AlterAlert"])
 
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAlterAlert"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorAlterAlert"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=f' Step order: {step_order} / Step: {step}')
             return "Failed"
 
     # Return to default.
-    def returnDefault(self, **kwargs):
+    def return_default(self, **kwargs):
 
         try:
 
@@ -1208,50 +1208,51 @@ class Main:
             parameters1 = kwargs.get('parameters1')
 
             if parameters1 is None:
-                Main.returnWindow(self)
+                Main.return_window(self)
 
             elif parameters1.upper() == 'IFRAME':
 
-                Main.returnFrame(self)
+                Main.return_frame(self)
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ReturnDefault"])
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ReturnDefault"])
 
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorReturnDefault"], value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorReturnDefault"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=f' Step order: {step_order} / Step: {step}')
             return "Failed"
 
     # Return to window.
-    def returnWindow(self):
+    def return_window(self):
         try:
             driver.switch_to.window(driver.window_handles[0])
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ReturnWindow"])
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ReturnWindow"])
 
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorReturnWindow"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorReturnWindow"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
             return "Failed"
 
     # Return to default.
-    def returnFrame(self):
+    def return_frame(self):
 
         try:
 
             driver.switch_to.default_content()
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ReturnIframe"])
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ReturnIframe"])
 
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorReturnIframe"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorReturnIframe"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=f' Step order: {step_order} / Step: {step}')
             return "Failed"
 
     # Choose an option in a browser alert screen.
@@ -1270,7 +1271,7 @@ class Main:
 
             # Validate de Alert content (Text).
             if parameters1 is not None:
-                status = Main.validateData(self, alert='AlertScreen', parameters1=parameters1, parameters2=alert.text)
+                status = Main.validate_data(self, alert='AlertScreen', parameters1=parameters1, parameters2=alert.text)
                 Main.highlight(self, parameters1='Alert', step=step, step_order=step_order, save_evidence=save_evidence)
 
             # Actions inside de Alert.
@@ -1284,28 +1285,31 @@ class Main:
                 alert.send_keys(parameters2)
                 alert.accept()
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["Inform"])
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["Inform"])
 
             return status
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorInform"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorInform"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=f' Step order: {step_order} / Step: {step}')
             return "Failed"
 
     # Function to create the browser object.
-    def openBrowser(self, **kwargs):
+    def open_browser(self, **kwargs):
 
         try:
             # kwargs arguments.
             parameters1 = kwargs.get('parameters1')
-            enable_cookie = kwargs.get('enable_cookie')
+            parameters2 = kwargs.get('parameters2')
             save_evidence = kwargs.get('save_evidence')
             step = kwargs.get('step')
             step_order = kwargs.get('step_order')
 
             global driver
+
+            if parameters2 is None:
+                parameters2 = ''
 
             # Configure before open the browser.
             if parameters1.upper() in ("CHROME", "GOOGLE", "GOOGLE CHROME"):
@@ -1319,18 +1323,20 @@ class Main:
                 options = Lib.webdriver.ChromeOptions()
 
                 # If cookies are enabled.
-                if enable_cookie:
-                    options.add_argument('--profile-directory=Default')
-                    options.add_argument('--user-data-dir=' + Lib.Aux.directories["Temp"] + 'CHROME')
-                    options.add_argument("--homepage=" + Lib.Aux.otherConfigs['HomePage'])
+                if parameters2.upper() == 'COOKIE':
                     options.add_argument("--disable-cache")
 
+                options.add_argument('--profile-directory=Default')
+                options.add_argument('--user-data-dir=' + Lib.Aux.directories["Temp"] + 'CHROME')
+                options.add_argument("--homepage=" + Lib.Aux.otherConfigs['HomePage'])
                 options.add_experimental_option("excludeSwitches", ["enable-automation"])
                 options.add_experimental_option("prefs", preferences)
 
+                if parameters2.upper() == '(INVISIBLE)':
+                    options.add_argument("--headless")
+
                 driver = Lib.webdriver.Chrome(service=Lib.ChromeService(Lib.ChromeDriverManager().install()),
                                               options=options)
-
             # Configure before open the browser.
             elif parameters1.upper() in ("MOZILLA", "FIREFOX"):
 
@@ -1350,6 +1356,9 @@ class Main:
                 options.set_preference("browser.startup.homepage", Lib.Aux.otherConfigs['HomePage'])
                 options.set_preference("browser.startup.page", 1)  # 1 = Home page
 
+                if parameters2.upper() == '(INVISIBLE)':
+                    options.headless = True
+
                 driver = Lib.webdriver.Firefox(service=Lib.FirefoxService(Lib.GeckoDriverManager().install()),
                                                options=options)
 
@@ -1363,7 +1372,7 @@ class Main:
                 options.add_argument("-inprivate")
 
                 # If Cookies are enabled.
-                if enable_cookie:
+                if parameters2.upper() == 'COOKIE':
                     options.add_argument('--profile-directory=Default')
                     options.add_argument('--user-data-dir=' + Lib.Aux.directories["Temp"] + 'EDGE_CHROMIUM')
                     options.add_argument('--homepage=' + Lib.Aux.directories["HomePage"])
@@ -1373,6 +1382,9 @@ class Main:
                     options.add_argument("--no-sandbox")
                     options.add_argument("--disable-application-cache")
                     options.add_argument("--disk-cache-size=0")
+
+                if parameters2.upper() == '(INVISIBLE)':
+                    options.add_argument("--headless")
 
                 preferences = {
                     "download.default_directory": Lib.Aux.directories['DownloadFolder'],
@@ -1387,16 +1399,16 @@ class Main:
                                             options=options)
 
             else:
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorOpenBrowser"])
+                Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorOpenBrowser"])
                 return "Failed"
 
             Lib.Aux.otherConfigs['Browser'] = parameters1
             driver.maximize_window()
 
-            Main.openPage(self, parameters1=Lib.Aux.otherConfigs["HomePage"], step=step, step_order=step_order,
-                          save_evidence=save_evidence)
+            Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order,
+                           save_evidence=save_evidence)
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["OpenBrowser"])
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["OpenBrowser"])
 
             # Set the page load timeout (receive in minutes from interface).
             driver.set_page_load_timeout(int(Lib.Aux.otherConfigs['TimeoutSession']) * 60)
@@ -1405,20 +1417,20 @@ class Main:
 
         except Lib.requests.exceptions.RequestException:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorFindBrowser']['Msg']}{Lib.Aux.Textcolor.END}")
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorFindBrowser"])
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorFindBrowser"])
 
             return "Failed"
 
         except Exception as ex:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorOpenBrowser']['Msg']}{Lib.Aux.Textcolor.END}")
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorOpenBrowser"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorOpenBrowser"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=f' Step order: {step_order} / Step: {step}')
 
             return "Failed"
 
     # Verify is the browser is still opened.
-    def verifyBrowser(self):
+    def verify_browser(self):
 
         try:
             check_title = None
@@ -1440,22 +1452,22 @@ class Main:
         try:
             if parameters1 is None:  # If none was informed = Close Windows.
                 driver.close()
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["CloseBrowser"])
-                Main.alterWindow(self, save_evidence=save_evidence, step=step, step_order=step_order)
+                Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["CloseBrowser"])
+                Main.alter_window(self, save_evidence=save_evidence, step=step, step_order=step_order)
             else:  # If something was informed = Close Browser.
                 driver.quit()
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["CloseWindow"])
+                Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["CloseWindow"])
 
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorClose"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorClose"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=f' Step order: {step_order} / Step: {step}')
             return "Failed"
 
     # Open page address.
-    def openPage(self, **kwargs):
+    def open_page(self, **kwargs):
 
         try:
             # kwargs arguments.
@@ -1468,14 +1480,14 @@ class Main:
             Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order,
                            save_evidence=save_evidence)
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["OpenPage"])
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["OpenPage"])
 
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorOpenPage"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorOpenPage"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=f' Step order: {step_order} / Step: {step}')
 
             return "Failed"
 
@@ -1521,13 +1533,13 @@ class Main:
                 Main.apply_style(new_element, "border: {0}px solid {1};".format(border, color))
                 Lib.time.sleep(1)
 
-                take_picture_status = Lib.Func.Main.takePicture(self, image_name=image_name)
+                take_picture_status = Lib.Func.Main.take_picture(self, image_name=image_name)
 
                 if several is False:
                     Main.apply_style(new_element, original_style)
 
                 if not take_picture_status:
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorScreenshot"], value1=step)
+                    Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorScreenshot"], value1=step)
 
             elif save_evidence and parameters1 == 'full_screen':
                 highlight_script = "var highlight = document.createElement('div'); highlight.setAttribute('id', 'highlight'); highlight.setAttribute('style', 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 0, 0.5); z-index: 999999; pointer-events: none;'); document.body.appendChild(highlight);"
@@ -1536,17 +1548,17 @@ class Main:
 
                 # Take picture.
                 image_name = Lib.Aux.otherConfigs["EvidenceName"] + str(step_order).zfill(2)
-                take_picture_status = Lib.Func.Main.takePicture(self, image_name=image_name)
+                take_picture_status = Lib.Func.Main.take_picture(self, image_name=image_name)
                 if not take_picture_status:
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorScreenshot"], value1=step)
+                    Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorScreenshot"], value1=step)
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorHighLight"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorHighLight"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
+                                  value2=f' Step order: {step_order} / Step: {step}')
 
     # Save the file locally.
-    def saveFile(self, **kwargs):
+    def save_file(self, **kwargs):
 
         try:
             # kwargs variables:
@@ -1559,9 +1571,9 @@ class Main:
 
             while True:
                 # The file found means it is still downloading.
-                if Lib.Aux.Main.verifyFile(path=Lib.Aux.directories['DownloadFolder'], extension='crdownload',
-                                           msg_not_found=Lib.Aux.otherConfigs['DownloadFinished']['Msg'],
-                                           msg_found=Lib.Aux.otherConfigs['DownloadingFile']['Msg']):
+                if Lib.Aux.Main.verify_file(path=Lib.Aux.directories['DownloadFolder'], extension='crdownload',
+                                            msg_not_found=Lib.Aux.otherConfigs['DownloadFinished']['Msg'],
+                                            msg_found=Lib.Aux.otherConfigs['DownloadingFile']['Msg']):
                     Lib.time.sleep(1)
                     continue
                 else:
@@ -1578,17 +1590,17 @@ class Main:
             Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order,
                            save_evidence=save_evidence)
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["SaveFile"])
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["SaveFile"])
 
             return "Passed"
 
         except Exception as ex:
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorSaveFile"],
-                                 value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorSaveFile"],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
             return "Failed"
 
     # Save the screenshots.
-    def takePicture(self, **kwargs):
+    def take_picture(self, **kwargs):
 
         try:
             # kwargs variables:
@@ -1596,22 +1608,22 @@ class Main:
 
             driver.save_screenshot(Lib.Aux.directories['TestSetPath'] + "\\" + image_name + ".png")
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["TakePicture"])
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["TakePicture"])
 
             return True
 
         except AttributeError or Lib.requests.exceptions.RequestException or Lib.requests.exceptions.RetryError:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorTakePicture']['Msg']}"
                   f"{Lib.Aux.Textcolor.END}")
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorTakePicture"])
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorTakePicture"])
 
             return False
 
         except Exception as ex:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorTakePicture']['Msg']}{Lib.Aux.Textcolor.END}",
                   str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorTakePicture"], value1=str(ex),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorTakePicture"], value1=str(ex),
+                                  value2=f' Step order: {step_order} / Step: {step}')
 
             return False
 
@@ -1627,38 +1639,38 @@ class Main:
             step = kwargs.get('step')
 
             # Variables
-            Lib.Aux.otherConfigs['API_Step'] = True
+            Lib.Aux.otherConfigs['Api_Step'] = True
             api_status_final = True
             error_msg_list = {}
             step_status = "Not Run"
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ApiLog"],
-                                 value1=parameters1.upper())
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ApiLog"],
+                                  value1=parameters1.upper())
 
             if parameters1.upper() != 'SUBMIT':
                 tag = parameters1[:parameters1.find(':')]
                 if tag.upper() == 'ENDPOINT':
-                    Lib.Aux.otherConfigs['API_Endpoint'] = parameters1[parameters1.find(':') + 1:].strip()
+                    Lib.Aux.otherConfigs['Api_Endpoint'] = parameters1[parameters1.find(':') + 1:].strip()
                 elif tag.upper() == 'AUTHORIZATION':
-                    Lib.Aux.otherConfigs['API_Authorization'] = parameters1[parameters1.find(':') + 1:].strip()
+                    Lib.Aux.otherConfigs['Api_Authorization'] = parameters1[parameters1.find(':') + 1:].strip()
                 elif tag.upper() == 'HEADERS':
-                    Lib.Aux.otherConfigs['API_Headers'] = parameters1[parameters1.find(':') + 1:].strip()
+                    Lib.Aux.otherConfigs['Api_Headers'] = parameters1[parameters1.find(':') + 1:].strip()
                 elif tag.upper() == 'BODY':
-                    Lib.Aux.otherConfigs['API_Body'] = (parameters1[parameters1.find(':') + 1:parameters1.rfind('\"')]
+                    Lib.Aux.otherConfigs['Api_Body'] = (parameters1[parameters1.find(':') + 1:parameters1.rfind('\"')]
                                                         .strip())
                 elif tag.upper() == 'PARAMS':
-                    Lib.Aux.otherConfigs['API_Params'] = parameters1[parameters1.find(':') + 1:].strip()
+                    Lib.Aux.otherConfigs['Api_Params'] = parameters1[parameters1.find(':') + 1:].strip()
                 elif tag.upper() == "SCHEMA":
                     if num_of_steps.__len__() != step_order:
-                        raise Exception(Lib.Aux.logs['ErrorAPISchema']['Msg'])
+                        raise Exception(Lib.Aux.logs['ErrorApiSchema']['Msg'])
 
-                    if Lib.Aux.otherConfigs['API_Body']:
-                        dict_body = Lib.ast.literal_eval(Lib.Aux.otherConfigs['API_Body'])
+                    if Lib.Aux.otherConfigs['Api_Body']:
+                        dict_body = Lib.ast.literal_eval(Lib.Aux.otherConfigs['Api_Body'])
                     else:
-                        print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorAPIBodyMissing']['Msg']}"
+                        print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorApiBodyMissing']['Msg']}"
                               f"{Lib.Aux.Textcolor.END}")
-                        Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAPIBodyMissing"])
-                        raise TypeError(Lib.Aux.logs['ErrorAPIBodyMissing']['Msg'])
+                        Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorApiBodyMissing"])
+                        raise TypeError(Lib.Aux.logs['ErrorApiBodyMissing']['Msg'])
                     json_data = Lib.Aux.ApiSchema(parameters1[parameters1.find(':') + 1:].strip())
                     json_fake_data = json_data.api_check()
 
@@ -1669,7 +1681,7 @@ class Main:
                             # Run the API request.
                             error_msg, step_status = (
                                 self.connections.send_request(api_action=api_action,
-                                                              headers=Lib.Aux.otherConfigs['API_Headers'],
+                                                              headers=Lib.Aux.otherConfigs['Api_Headers'],
                                                               body=dict_body))
 
                             error_msg_list[tag + ' -> ' + str(dict_body[tag])] = error_msg
@@ -1681,37 +1693,37 @@ class Main:
 
                             api_status_final = (api_status_final and api_status)
 
-                    Lib.Aux.otherConfigs['API_Response'] = error_msg_list
+                    Lib.Aux.otherConfigs['Api_Response'] = error_msg_list
 
                     if api_status_final:
                         return "Passed"
                     else:
                         return "Failed"
 
-                if Lib.Aux.otherConfigs['API_Endpoint'] is None:
-                    print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorAPIMissingInfo']['Msg']}"
+                if Lib.Aux.otherConfigs['Api_Endpoint'] is None:
+                    print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorApiMissingInfo']['Msg']}"
                           f"{Lib.Aux.Textcolor.END}")
-                    Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorAPIMissingInfo"])
-                    raise TypeError(Lib.Aux.logs['ErrorAPIMissingInfo']['Msg'])
+                    Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorApiMissingInfo"])
+                    raise TypeError(Lib.Aux.logs['ErrorApiMissingInfo']['Msg'])
                 else:
                     return "Passed"
             else:
                 # Run the API request.
-                Lib.Aux.otherConfigs['API_Response'], step_status = (
+                Lib.Aux.otherConfigs['Api_Response'], step_status = (
                     self.connections.send_request(api_action=api_action,
-                                                  headers=Lib.Aux.otherConfigs['API_Headers'],
-                                                  body=Lib.Aux.otherConfigs['API_Body']))
+                                                  headers=Lib.Aux.otherConfigs['Api_Headers'],
+                                                  body=Lib.Aux.otherConfigs['Api_Body']))
 
                 return step_status
 
         except Exception as ex:
-            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequestAPI']['Msg']}{Lib.Aux.Textcolor.END}", str(ex))
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorRequestAPI"], value1=str(ex),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequestApi']['Msg']}{Lib.Aux.Textcolor.END}", str(ex))
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorRequestApi"], value1=str(ex),
+                                  value2=f' Step order: {step_order} / Step: {step}')
 
             return "Failed"
 
-    def responseAPI(self, **kwargs):
+    def response_api(self, **kwargs):
 
         try:
             # kwargs variables:
@@ -1722,32 +1734,32 @@ class Main:
             status_code = None
             schema = None
 
-            Lib.Aux.otherConfigs['API_Step'] = True
+            Lib.Aux.otherConfigs['Api_Step'] = True
 
             tag = parameters1[:parameters1.find(':')]
             param = parameters1[parameters1.find(':') + 1:]
 
             # Status Code.
-            if tag.upper() == "STATUS CODE" and int(param) == Lib.Aux.otherConfigs['API_StatusCode']:
+            if tag.upper() == "STATUS CODE" and int(param) == Lib.Aux.otherConfigs['Api_StatusCode']:
                 status_code = "Passed"
-            elif tag.upper() == "STATUS CODE" and int(param) != Lib.Aux.otherConfigs['API_StatusCode']:
+            elif tag.upper() == "STATUS CODE" and int(param) != Lib.Aux.otherConfigs['Api_StatusCode']:
                 status_code = "Failed"
             else:  # tag.upper() != "STATUS CODE":
                 find_content = Lib.Aux.Main.find_content_json(self, tag=tag, param=param)
 
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ApiLog"],
-                                 value1=f"{tag.upper()} : {param.upper()}")
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ApiLog"],
+                                  value1=f"{tag.upper()} : {param.upper()}")
 
             if status_code == "Passed" or find_content == "Passed" or schema == "Passed":
                 return "Passed"
             else:
-                Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorResponseAPI"],
-                                     value1=f"Expected: {tag} - Result {param}")
+                Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorResponseApi"],
+                                      value1=f"Expected: {tag} - Result {param}")
                 return "Failed"
 
         except Exception as ex:
-            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorResponseAPI']['Msg']}{Lib.Aux.Textcolor.END}", str(ex))
-            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorResponseAPI"], value1=str(ex),
-                                 value2=f' Step order: {step_order} / Step: {step}')
+            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorResponseApi']['Msg']}{Lib.Aux.Textcolor.END}", str(ex))
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorResponseApi"], value1=str(ex),
+                                  value2=f' Step order: {step_order} / Step: {step}')
 
             return "Failed"

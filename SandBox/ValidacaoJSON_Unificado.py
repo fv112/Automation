@@ -38,7 +38,7 @@ def extract_jsonschema_relevant_data(swagger_data, output_file):
 # --- Preparing the file, directory and Swagger file download.
 
 # Aux.Main.createDirectory(path_folder=Aux.directories['SwaggerFolder'])
-Aux.Main.createDirectory(path_folder='C:\\QA-Automation-Files\\Repository\\Automation\\Swagger') ### Atualizar
+Aux.Main.create_directory(path_folder='C:\\QA-Automation-Files\\Repository\\Automation\\Swagger') ### Atualizar
 #if os.path.isfile(Aux.directories['SwaggerFolder']): ### Descomentar
 #    f = open(os.path.join(Aux.directories['SwaggerFolder'],swagger_file), 'w') ### Descomentar
 
@@ -209,4 +209,4 @@ for key, values in data.items():
 #if os.path.isfile(Aux.directories['SwaggerFolder']):
 if os.path.isfile(os.path.join('C:\\QA-Automation-Files\\Repository\\Automation\\Swagger', swagger_file)): ### Atualizar
     #Aux.Main.deleteFiles(file_path=Aux.directories['SwaggerFolder'], extension='*')
-    Aux.Main.deleteFiles(file_path='C:\\QA-Automation-Files\\Repository\\Automation\\Swagger', extension='*')  ### Atualizar
+    Aux.Main.delete_files(file_path='C:\\QA-Automation-Files\\Repository\\Automation\\Swagger', extension='*')  ### Atualizar
