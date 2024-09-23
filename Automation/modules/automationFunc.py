@@ -1530,16 +1530,9 @@ class Main:
                     Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ErrorScreenshot"], value1=step)
 
             elif save_evidence and parameters1 == 'full_screen':
-                highlight_script = """
-                var highlight = document.createElement('div');
-                highlight.setAttribute('id', 'highlight');
-                highlight.setAttribute('style', 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-                background-color: rgba(255, 255, 0, 0.5); z-index: 999999; pointer-events: none;');
-                document.body.appendChild(highlight);
-                """
+                highlight_script = "var highlight = document.createElement('div'); highlight.setAttribute('id', 'highlight'); highlight.setAttribute('style', 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 0, 0.5); z-index: 999999; pointer-events: none;'); document.body.appendChild(highlight);"
                 driver.execute_script(highlight_script)
-                driver.execute_script(
-                    "var highlight = document.getElementById('highlight'); if (highlight) highlight.remove();")
+                driver.execute_script("var highlight = document.getElementById('highlight'); if (highlight) highlight.remove();")
 
                 # Take picture.
                 image_name = Lib.Aux.otherConfigs["EvidenceName"] + str(step_order).zfill(2)
@@ -1638,6 +1631,9 @@ class Main:
             api_status_final = True
             error_msg_list = {}
             step_status = "Not Run"
+
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ApiLog"],
+                                 value1=parameters1.upper())
 
             if parameters1.upper() != 'SUBMIT':
                 tag = parameters1[:parameters1.find(':')]
@@ -1738,6 +1734,9 @@ class Main:
                 status_code = "Failed"
             else:  # tag.upper() != "STATUS CODE":
                 find_content = Lib.Aux.Main.find_content_json(self, tag=tag, param=param)
+
+            Lib.Aux.Main.addLogs(message="General", value=Lib.Aux.logs["ApiLog"],
+                                 value1=f"{tag.upper()} : {param.upper()}")
 
             if status_code == "Passed" or find_content == "Passed" or schema == "Passed":
                 return "Passed"

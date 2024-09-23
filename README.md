@@ -2,18 +2,20 @@ Automation QA - Release notes
 ---------
 :bookmark: **Version 1.25.00**  
 
-<em>20/09/2024</em>     
+<em>23/09/2024</em>     
 :sparkles: - Implementação da execução por linha de comando.  
 :sparkles: - Remoção de função não mais utilizadas.  
 :sparkles: - Atualização de algums bibliotecas.  
 :construction: - Falha com a nova versão do Firefox.  
+:bug: - Correção de algumas frases do log.  
 #
 
 :bookmark: **Version 1.24.06**  
 
 <em>17/09/2024</em>     
 :sparkles: - Remoção de mensagens de log que não estavam mais sendo utilizadas.  
-:bug: - Correção da validação de um campo invisível.  
+:bug: - Correção da validação de um campo invisível. 
+:bug: - Correção nas mensagens de log para API.
 #
 
 :bookmark: **Version 1.24.05**  
@@ -68,7 +70,7 @@ Automation QA - Release notes
 
 <em>09/09/2024</em>     
 :bug: - Correção da função de duplo clique do mouse.  
-:bug: - Correção da função Voltar e Prosseguir do browser.  
+:bug: - Correção da função "Voltar" e "Prosseguir" do browser.  
 :bug: - Correção da frase de validação do título.  
 #
 

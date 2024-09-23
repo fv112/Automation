@@ -130,28 +130,28 @@ verbs:
 #IMPORTANT: Add new lines if necessary.
 searchForAttribute:
     {
-        buscarPorID: id,
-        buscarPorNome: name,
-        buscarPorClass: class,
-        buscarPorHREF: a,
-        buscarPorSize: size
+        searchByID: id,
+        searchByNome: name,
+        searchByClass: class,
+        searchByHREF: a,
+        searchBySize: size
     }
 #List to search the elements to the GetText (Text validation).
 #IMPORTANT: Add new lines if necessary.
 searchForComponent:
     {
-        buscarPorDiv: div,
-        buscarPorTD: td,
-        buscarPorTR: tr,
-        buscarPorSpan: span
+        searchByDiv: div,
+        searchByTD: td,
+        searchByTR: tr,
+        searchBySpan: span
     }
 
 #List of logs.
 logs:
     {
-        ActionStart: {Type: Log, Msg: Inicio da execução da automação., Where: createLog},
         AlterIframe: {Type: Success, Msg: O foco foi alterado para o IFRAME., Where: automationFunc - alterFrame},
         AlterWindow: {Type: Success, Msg: O foco da tela foi alterado., Where: automationFunc - alterWindow},
+        ApiLog: {Type: Log, Msg: Ação da API, Where: automationFunc - request_api},
         BackPage: {Type: Success, Msg: Sucesso ao voltar a página., Where: automationFunc - BackPage},
         CheckDownloadFile: {Type: Success, Msg: Verifica se o arquivo "Baseline" e "New" já estão no Workitem!, Where: CheckDownloadFile},
         Click: {Type: Success, Msg: Clique realizado com sucesso., Where: automationFunc - click},

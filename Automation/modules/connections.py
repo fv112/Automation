@@ -316,11 +316,6 @@ class Connections:
 
                     test_case_list = [str(testcase_id) for testcase_id in test_case_id_list]
 
-                    print(f"project_id {project_id}")
-                    print(f"isolated_tc {isolated_tc}")
-                    print(f"id_testcase {id_test_case}")
-                    Lib.time.sleep(10)
-
                     if isolated_tc.upper() in ['Y', 'S', '']:
                         while id_test_case == 0:
                             print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['ChooseTestCase']['Msg']}"
@@ -333,9 +328,6 @@ class Connections:
                         test_case_id_list.append(int(id_test_case))
                     else:
                         test_case_id_list.append(id_test_case)
-
-                        print(f"test_case_id_list {test_case_id_list}")
-                        Lib.time.sleep(10)
 
                 else:
                     print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorGetTestCase']['Msg']}{Lib.Aux.Textcolor.END}\n")
