@@ -622,12 +622,12 @@ class Connections:
         body = kwargs.get('body')
 
         try:
-            if Lib.Aux.otherConfigs['API_Authorization'] != '':
+            if Lib.Aux.otherConfigs['Api_Authorization'] != '':
                 headers = {'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["Api_Headers"],
                            'Content-Type': 'application/json'
                            }
 
-            if 'Basic' in Lib.Aux.otherConfigs['API_Headers']:
+            if 'Basic' in Lib.Aux.otherConfigs['Api_Headers']:
                 headers = {
                     'Basic': Lib.Aux.otherConfigs['Api_Headers'][Lib.Aux.otherConfigs['Api_Headers'].find(':') + 1:],
                     'Content-Type': 'application/json'

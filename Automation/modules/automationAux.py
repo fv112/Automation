@@ -197,7 +197,7 @@ class Main:
             duration = kwargs.get('duration')
 
             # Variables.
-            tag_paragraf = [
+            tag_paragraph = [
                 {'pt_BR': 'Evidências dos passos', 'en_US': 'Evidence of the steps', 'es': 'Evidencia de los pasos'}
             ]
             image_path = ""
@@ -206,11 +206,11 @@ class Main:
             # Open the document.
             document = Lib.Document(word_path)
             # Search the correct paragraph.
-            paragraf = Main.word_seach_text(document=document, text=tag_paragraf[0][otherConfigs['Language']])
+            paragraph = Main.word_seach_text(document=document, text=tag_paragraph[0][otherConfigs['Language']])
 
             image_resize = True
 
-            if paragraf is None:
+            if paragraph is None:
                 print('\033[31m' + '\n' + logs['ErrorWordFindParagraph']['Msg'] + '\033[0;0m')
                 Main.add_logs(message="General", value=logs["ErrorWordFindParagraph"])
                 return None
@@ -236,21 +236,21 @@ class Main:
 
                     step = Main.replace_password_evidence(step=step)
 
-                    paragraf = document.add_paragraph(
+                    paragraph = document.add_paragraph(
                         otherConfigs["StepName"] + " " + str(step_order) + " - " + step)
-                    run_paragraf = paragraf.add_run()
+                    run_paragraph = paragraph.add_run()
 
                     if step_failed == step_order:
                         # Add the error message in the document.
-                        paragraf = document.add_paragraph(otherConfigs['StepWithBug']['Msg'])
-                        run_paragraf = paragraf.runs[0]
-                        run_paragraf.font.color.rgb = Lib.RGBColor(*(255, 0, 0))
+                        paragraph = document.add_paragraph(otherConfigs['StepWithBug']['Msg'])
+                        run_paragraph = paragraph.runs[0]
+                        run_paragraph.font.color.rgb = Lib.RGBColor(*(255, 0, 0))
                         add_evidence = True
                     elif step_failed <= step_order and step_failed != 0:
                         # Add the error message in the document.
-                        paragraf = document.add_paragraph(otherConfigs['StepWithPrevBug']['Msg'])
-                        run_paragraf = paragraf.runs[0]
-                        run_paragraf.font.color.rgb = Lib.RGBColor(*(255, 0, 0))
+                        paragraph = document.add_paragraph(otherConfigs['StepWithPrevBug']['Msg'])
+                        run_paragraph = paragraph.runs[0]
+                        run_paragraph.font.color.rgb = Lib.RGBColor(*(255, 0, 0))
                         add_evidence = False
                     else:
                         add_evidence = True
@@ -267,13 +267,13 @@ class Main:
 
                     if verb not in ('Fechar', 'Cerrar', 'Close') and otherConfigs['Api_Step'] is False:
                         # Resize the image if it is not full screen.
-                        run_paragraf.add_break()
+                        run_paragraph.add_break()
                         if image_resize:
                             # Change the print size.
-                            run_paragraf.add_picture(image_path, width=eval(otherConfigs["EvidenceWidth"]),
+                            run_paragraph.add_picture(image_path, width=eval(otherConfigs["EvidenceWidth"]),
                                                      height=eval(otherConfigs["EvidenceHeight"]))
                         else:
-                            run_paragraf.add_picture(image_path, width=Lib.Inches(5))
+                            run_paragraph.add_picture(image_path, width=Lib.Inches(5))
                     elif otherConfigs['Api_Step'] and add_evidence:
                         api_evidence_step = None
                         api_file_name = (otherConfigs["EvidenceNameApi"] + str(step_order).zfill(2) +
@@ -285,19 +285,19 @@ class Main:
                             api_evidence_step = api_evidence_file.readlines()
 
                             if api_evidence_step.__len__() == 0:
-                                paragraf = document.add_paragraph(otherConfigs['API_NoResponseNeeded']['Msg'])
-                                run_paragraf = paragraf.runs[0]
-                                run_paragraf.bold = False
+                                paragraph = document.add_paragraph(otherConfigs['Api_NoResponseNeeded']['Msg'])
+                                run_paragraph = paragraph.runs[0]
+                                run_paragraph.bold = False
                             else:
                                 for line in api_evidence_step:
-                                    paragraf = document.add_paragraph(line)
-                                    run_paragraf = paragraf.runs[0]
-                                    run_paragraf.bold = False
+                                    paragraph = document.add_paragraph(line)
+                                    run_paragraph = paragraph.runs[0]
+                                    run_paragraph.bold = False
 
                 else:
-                    paragraf = document.add_paragraph(otherConfigs["StepName"] + " " + str(step_order) + " - " +
-                                                      otherConfigs["DisabledStep"]['Msg'])
-                    run_paragraf = paragraf.add_run()
+                    paragraph = document.add_paragraph(otherConfigs["StepName"] + " " + str(step_order) + " - "
+                                                       + otherConfigs["DisabledStep"]['Msg'])
+                    run_paragraph = paragraph.add_run()
 
             # Save the file.
             if step_failed != 0:
@@ -936,7 +936,7 @@ class Main:
         validation = False
 
         try:
-            response = otherConfigs['API_Response']
+            response = otherConfigs['Api_Response']
 
             if 'message' in response:  # Simple message.
                 param1 = Lib.regex.search(r'(?<=\:\")(.*?)(?=\"})', param)
@@ -944,7 +944,7 @@ class Main:
                     otherConfigs['JsonValidate'] = otherConfigs['JsonValidateSuccess']['Msg']
                     return "Passed"
                 else:
-                    print(f"{Textcolor.FAIL}{logs['ErrorValidationAPI']['Msg']}{Textcolor.END}")
+                    print(f"{Textcolor.FAIL}{logs['ErrorValidationApi']['Msg']}{Textcolor.END}")
                     Main.add_logs(message="General", value=logs["ErrorValidationAPI"])
                     otherConfigs['JsonValidate'] = otherConfigs['JsonValidateFailed']['Msg']
                     return "Failed"
@@ -960,8 +960,8 @@ class Main:
                         otherConfigs['JsonValidate'] = otherConfigs['JsonValidateSuccess']['Msg']
                         return "Passed"
                     else:
-                        print(f"{Textcolor.FAIL}{logs['ErrorValidationAPI']['Msg']}{Textcolor.END}")
-                        Main.add_logs(message="General", value=logs["ErrorValidationAPI"])
+                        print(f"{Textcolor.FAIL}{logs['ErrorValidationApi']['Msg']}{Textcolor.END}")
+                        Main.add_logs(message="General", value=logs["ErrorValidationApi"])
                         otherConfigs['JsonValidate'] = otherConfigs['JsonValidateFailed']['Msg']
                         return "Failed"
 
@@ -1040,7 +1040,7 @@ class ApiSchema:
             # Generate fake data to the data types
             ApiSchema.extract_jsonschema_relevant_data(self, swagger_data)
 
-            print(f"{Textcolor.WARNING}{otherConfigs['API_ExtractInfo']['Msg']} {self.swagger_file}{Textcolor.END}")
+            print(f"{Textcolor.WARNING}{otherConfigs['Api_ExtractInfo']['Msg']} {self.swagger_file}{Textcolor.END}")
 
             with open(Lib.os.path.join(directories['SwaggerFolder'], self.swagger_file), 'r', encoding='utf-8') as file:
                 schema = Lib.json.load(file)

@@ -2,10 +2,11 @@ Automation QA - Release notes
 ---------
 bookmark: **Version 1.26.00**  
 
-<em>23/09/2024</em>     
+<em>24/09/2024</em>     
 :sparkles: - Alteração dos nomes das funções.  
 :sparkles: - Ajustes dos logs.  
 :sparkles: - Alteração no título do caso de teste no log.  
+:sparkles: - Inclusão do log na função verify_browser.    
 :bug: - Correção da validação do ID do caso de teste.  
 #
 
