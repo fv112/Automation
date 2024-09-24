@@ -1,5 +1,17 @@
 Automation QA - Release notes
 ---------
+bookmark: **Version 1.26.01**  
+
+<em>24/09/2024</em>     
+:sparkles: - Alteração dos nomes das funções.  
+:sparkles: - Ajustes dos logs.  
+:sparkles: - Alteração no título do caso de teste no log.  
+:sparkles: - Inclusão do log na função verify_browser.    
+:bug: - Correção da validação do ID do caso de teste.  
+:bug: - Correção do modo invisível no Edge.  
+:bug: - Correção do close browser.    
+#
+
 bookmark: **Version 1.26.00**  
 
 <em>24/09/2024</em>     
@@ -24,8 +36,8 @@ bookmark: **Version 1.26.00**
 
 <em>17/09/2024</em>     
 :sparkles: - Remoção de mensagens de log que não estavam mais sendo utilizadas.  
-:bug: - Correção da validação de um campo invisível. 
-:bug: - Correção nas mensagens de log para API.
+:bug: - Correção da validação de um campo invisível.  
+:bug: - Correção nas mensagens de log para API.  
 #
 
 :bookmark: **Version 1.24.05**  

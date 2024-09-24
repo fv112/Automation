@@ -1143,8 +1143,9 @@ class Main:
 
         try:
 
-            for handle in driver.window_handles:
-                driver.switch_to.window(handle)
+            if driver.window_handles.__len__() > 0:
+                for handle in driver.window_handles:
+                    driver.switch_to.window(handle)
 
             Main.highlight(self, parameters1='full_screen', step=step, step_order=step_order,
                            save_evidence=save_evidence)
@@ -1386,12 +1387,12 @@ class Main:
                 options.use_chromium = True
                 options.ensure_clean_session = True  # Set blank user.
                 options.add_argument("-inprivate")
-                options.add_argument('--homepage=' + Lib.Aux.directories["HomePage"])
+                options.add_argument('--homepage-url=' + Lib.Aux.otherConfigs["HomePage"])
                 options.add_argument('--user-data-dir=' + Lib.Aux.directories["Temp"] + 'EDGE_CHROMIUM')
 
-                # # If Cookies are enabled.
-                # if parameters2.upper() == 'COOKIE':
-                options.add_argument('--profile-directory=Default')
+                # If Cookies are enabled.
+                if parameters2.upper() == 'COOKIE':
+                    options.add_argument('--profile-directory=Default')
 
                 # Cache config.
                 options.add_argument("--disable-cache")
@@ -1401,6 +1402,9 @@ class Main:
 
                 if parameters2.upper() == '(INVISIBLE)':
                     options.add_argument("--headless")
+                    options.add_argument("disable-gpu")
+                    options.add_argument('--allow-running-insecure-content')
+                    options.add_argument('--ignore-certificate-errors')
 
                 preferences = {
                     "download.default_directory": Lib.Aux.directories['DownloadFolder'],
