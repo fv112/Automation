@@ -176,7 +176,16 @@ class Main:
             path_folder = kwargs.get('path_folder')
 
             if Lib.os.path.exists(path_folder):
-                Lib.shutil.rmtree(path_folder)
+                # Lib.shutil.rmtree(path_folder)
+                # Lib.os.rmdir(path_folder)
+
+                for root, dirs, files in Lib.os.walk(path_folder, topdown=False):
+                    for file in files:
+                        file_path = Lib.os.path.join(root, file)
+                        Lib.os.remove(file_path)
+                    for direct in dirs:
+                        dir_path = Lib.os.path.join(root, direct)
+                        Lib.os.rmdir(dir_path)
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorDeleteDirectory']['Msg']} - {ex}{Textcolor.END}")

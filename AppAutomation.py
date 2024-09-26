@@ -98,6 +98,8 @@ class AutomationQA:
                   f'Save evidence:         {self.save_evidence}\n'
                   )
 
+            # Lib.time.sleep(10)
+
             app_core.main(project_id=self.project, isolated_tc=self.isolated_test_case, id_test_case=self.test_case_id,
                           save_evidence=self.save_evidence)
 

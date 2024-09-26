@@ -300,7 +300,7 @@ logs:
         ErrorWordSearchText: {Type: Error, Msg: Ocorreu um erro ao procurar o passo no Word!, Where: automationAux - word_search_text},
         ErrorWordSetCTInfo: {Type: Error, Msg: Ocorreu um erro ao adicionar informações no arquivo word!, Where: automationAux - word_add_steps},
         ErrorWordToPdf: {Type: Error, Msg: Ocorreu um erro ao converter para PDF!, Where: automationAux - word_to_pdf},
-        EvidenceFolder: {Type: Success, Msg: O diretório de evidências foi criado com sucesso., Where: create_directory},
+        EvidenceFolder: {Type: Success, Msg: O diretório de evidências foi criado com sucesso., Where: automationAux - create_directory},
         Execute: {Type: Success, Msg: O aplicativo foi aberto com sucesso!, Where: Execute},
         ExecuteTestCase: {Type: Success, Msg: Sucesso ao carregar a execução do caso de teste., Where: execute_test_case},
         FindComponent: {Type: Success, Msg: "Encontrou o componente -->", Where: automationFunc - find_component},
@@ -343,13 +343,13 @@ logs:
         ScrollPage: {Type: Success, Msg: O comando para rolar a página foi executado com sucesso., Where: scroll_page},
         SelectDropDownList: {Type: Success, Msg: Item selecionado na DropDownList., Where: automationFunc - select_drop_down_list},
         SetLanguage: {Type: Success, Msg: O idioma foi configurado com sucesso., Where: set_language},
-        SliceDatas: {Type: Success, Msg: Sucesso ao desmembrar os dados da massa de teste., Where: slice_datas},
+        SliceDatas: {Type: Success, Msg: Sucesso ao desmembrar os dados do caso de teste., Where: connections - slice_datas},
         Step: {Type: Log, Msg: Passo de número, Where: automationCore - executeStepByStep},
         StepBlank: {Type: Log, Msg: ' ', Where: ' '},
         TakePicture: {Type: Success, Msg: PrintScreen realizado com sucesso., Where: automationFunc - take_picture},
         TestCaseFinished: {Type: Log, Msg: Caso de teste finalizado., Where: main_function},
         UploadDownloadFile: {Type: Success, Msg: Upload do arquivo para o Azure realizado com sucesso., Where: upload_download_file},
-        UploadDownloadFileId: {Type: Success, Msg: ID do download capturado com sucesso., Where: upload_download_file_id},
+        UploadDownloadFileId: {Type: Success, Msg: ID do download capturado com sucesso., Where: upload_download_file_id}, ###
         UploadFileGit: {Type: Success, Msg: O upload do arquivo foi realizado com sucesso no GitLab., Where: connections - upload_file_git},
         UploadFileGitToken: {Type: Success, Msg: A referência do arquivo foi gerado com sucesso no GitLab., Where: connections - upload_file_gitToken},
         UpdateLabels: {Type: Success, Msg: Atualização das labels realizada com sucesso!, Where: connections - upload_download_file_id},
@@ -358,7 +358,7 @@ logs:
         ValidateData: {Type: Success, Msg: Dados validados com sucesso., Where: automationFunc - validate_data},
         ValidateDataExpected: {Type: Log, Msg: Texto esperado., Where: automationFunc - validate_dataExpected},
         ValidateDataObtained: {Type: Log, Msg: Texto obtido., Where: automationFunc - validate_dataObtained},
-        Wait: {Type: Success, Msg: Aguardou o tempo solicitado com sucesso., Where: automationFunc - wait},
+        Wait: {Type: Success, Msg: Tempo aguardado com sucesso., Where: automationFunc - wait},
         WarningEvidenceFolder: {Type: Warning, Msg: A evidência NÃO foi atualizada., Where: automationCore - create_directory},
         WarningFindComponent: {Type: Warning, Msg: NÃO encontrou o componente para interagir., Where: automationFunc - find_component}
     }

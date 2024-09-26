@@ -45,8 +45,9 @@ class Main:
                                   test_case_id_list=test_case_id_list, save_evidence=save_evidence)
 
         except Exception as ex:
-            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorMain']['Msg']} - {ex}{Lib.Aux.Textcolor.END}")
-            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorMain"], value1=str(ex))
+            print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorMain']['Msg']}{Lib.Aux.Textcolor.END}")
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorMain"],
+                                  value1=str(ex))
 
         finally:
             print(f"{Lib.Aux.Textcolor.BLUE}{Lib.Aux.otherConfigs['MsgFinishedExecution']['Msg']}"
@@ -99,10 +100,12 @@ class Main:
                     Lib.Aux.Main.delete_files(folder_path=Lib.Aux.directories['TestSetPath'], extension="png")
                     Lib.Aux.Main.delete_files(folder_path=Lib.Aux.directories['TestSetPath'], extension="json")
 
+                    Lib.Aux.Main.delete_directory(self, path_folder=Lib.Aux.directories['TestSetPath'])
+
                     Lib.Aux.Main.create_directory(self, path=Lib.Aux.directories['TestSetPath'])
-                    Lib.shutil.rmtree(Lib.Aux.directories['TestSetPath'])
-                    Lib.os.makedirs(Lib.Aux.directories['TestSetPath'])
+
                     Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["EvidenceFolder"])
+
                 else:
                     Lib.Aux.directories['TestSetPath'] = None
                     Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["WarningEvidenceFolder"])

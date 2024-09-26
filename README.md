@@ -1,5 +1,11 @@
 Automation QA - Release notes
 ---------
+bookmark: **Version 1.26.02**  
+
+<em>25/09/2024</em>     
+:bug: - Correção na execução por linha de comando.  
+#
+
 bookmark: **Version 1.26.01**  
 
 <em>24/09/2024</em>     

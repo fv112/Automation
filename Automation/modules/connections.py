@@ -258,7 +258,7 @@ class Connections:
 
             # kwargs variables.
             project_id = kwargs.get("project_id")
-            isolated_tc = kwargs.get("isolated_tc", None)
+            isolated_tc = kwargs.get("isolated_tc")
             id_test_case = kwargs.get("id_test_case")
 
             # Variables.
@@ -269,8 +269,8 @@ class Connections:
 
             s = Lib.requests.get(new_url, headers={'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["Bearer"]},
                                  verify=False)
-            if s.status_code == 200:
 
+            if s.status_code == 200:
                 table = Lib.PrettyTable(['STATUS', 'ORDER', 'TEST CASE ID', 'TEST CASE'])
                 table.align['STATUS'] = 'l'
                 table.align['TEST CASE'] = 'l'
@@ -316,7 +316,12 @@ class Connections:
 
                     test_case_list = [str(testcase_id) for testcase_id in test_case_id_list]
 
-                    if isolated_tc.upper() in ['Y', 'S', '']:
+                    # print(f"test_case_id_list: {test_case_id_list}")
+                    # print(f"id_test_case: {id_test_case}")
+                    #
+                    # Lib.time.sleep(5)
+
+                    if isolated_tc.upper() in ['Y', 'S', ''] and id_test_case == 0:
                         while True:
                             print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['ChooseTestCase']['Msg']}"
                                   f"{Lib.Aux.Textcolor.END}\n")
@@ -325,6 +330,12 @@ class Connections:
                                 test_case_id_list.clear()
                                 test_case_id_list.append(int(id_test_case))
                                 break
+                    elif isolated_tc.upper() in ['Y', 'S', ''] and id_test_case != 0:
+                        if Lib.Aux.Main.validate_selection(input_data=id_test_case, search_list=test_case_list):
+                            test_case_id_list.clear()
+                            test_case_id_list.append(int(id_test_case))
+                    elif isolated_tc.upper() in ['N', 'n']:  # Not add a new test case if 'N' is informed.
+                        pass
                     else:
                         test_case_id_list.append(id_test_case)
 
@@ -332,6 +343,8 @@ class Connections:
                     print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorGetTestCase']['Msg']}{Lib.Aux.Textcolor.END}\n")
                     Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs['ErrorGetTestCase'])
 
+                # print(f"id_test_case: {id_test_case}")
+                # print(f"test_case_id_list: {test_case_id_list}")
                 return test_case_id_list
 
             elif s.status_code == 401:
@@ -346,7 +359,8 @@ class Connections:
 
         except Exception as ex:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorGetTestCases']['Msg']} - {ex}{Lib.Aux.Textcolor.END}")
-            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs['ErrorGetTestCases'], value1=str(ex))
+            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs['ErrorGetTestCases'],
+                                  value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
             # exit(1)
 
     # ===================================================== TEST CASE ==================================================
