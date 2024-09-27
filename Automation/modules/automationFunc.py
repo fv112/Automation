@@ -1386,7 +1386,7 @@ class Main:
 
                 options.use_chromium = True
                 options.ensure_clean_session = True  # Set blank user.
-                options.add_argument("-inprivate")
+                #options.add_argument("-inprivate")
                 options.add_argument('--homepage-url=' + Lib.Aux.otherConfigs["HomePage"])
                 options.add_argument('--user-data-dir=' + Lib.Aux.directories["Temp"] + 'EDGE_CHROMIUM')
 

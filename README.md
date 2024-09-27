@@ -1,5 +1,12 @@
 Automation QA - Release notes
 ---------
+bookmark: **Version 1.26.03**  
+
+<em>26/09/2024</em>     
+:bug: - Remoção do modo anônimo do Edge.    
+:bug: - Correção da cor do texto quando executado pela linha de comando no GitLab.      
+#
+
 bookmark: **Version 1.26.02**  
 
 <em>25/09/2024</em>     
