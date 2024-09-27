@@ -2,9 +2,11 @@ Automation QA - Release notes
 ---------
 bookmark: **Version 1.26.03**  
 
-<em>26/09/2024</em>     
-:bug: - Remoção do modo anônimo do Edge.    
+<em>27/09/2024</em>     
+:sparkles: - Armazenamento do cache do browser desabilitado.  
+:sparkles: - Não realiza mais a leitura dos dados de cache locais do Google Chrome.  
 :bug: - Correção da cor do texto quando executado pela linha de comando no GitLab.      
+:bug: - Correção do selecionar para tratar o Value e o Text.      
 #
 
 bookmark: **Version 1.26.02**  

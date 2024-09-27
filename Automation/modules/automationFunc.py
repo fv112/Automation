@@ -449,18 +449,31 @@ class Main:
 
             try:
                 element.select_by_visible_text(parameters2)
-
                 Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
                                step_order=step_order, tag=tag)
-
                 Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["SelectDropDownList"],
                                       value1=parameters1, value2=parameters2)
-            except Lib.NoSuchElementException:
+
+                return "Passed"
+
+            except Exception:
                 Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["NoSelectDropDownList"])
 
-            return "Passed"
+                try:
+                    element.select_by_value(parameters2)
+                    Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
+                                   step_order=step_order, tag=tag)
+                    Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["SelectDropDownList"],
+                                          value1=parameters1, value2=parameters2)
 
-        except Lib.NoSuchElementException as ex:
+                    return "Passed"
+
+                except Exception:
+                    Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["NoSelectDropDownList"])
+
+                    return "Failed"
+
+        except Exception as ex:
             Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorSelectDropDownList"],
                                   value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]),
                                   value2=f' Step order: {step_order} / Step: {step}')
@@ -1171,15 +1184,19 @@ class Main:
 
         try:
 
-            _, _, iframe = Main.find_component(self, parameters1=parameters2, save_evidence=save_evidence, step=step,
-                                               step_order=step_order)
+            status, tag, iframe = Main.find_component(self, parameters1=parameters2, save_evidence=save_evidence,
+                                                      step=step, step_order=step_order)
 
             # switch to selected iframe
-            driver.switch_to.frame(iframe)
+            if status:
+                Main.highlight(self, parameters1=parameters2, save_evidence=save_evidence, step=step,
+                               step_order=step_order, tag=tag)
 
-            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["AlterIframe"])
-
-            return "Passed"
+                driver.switch_to.frame(iframe)
+                Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["AlterIframe"])
+                return "Passed"
+            else:
+                raise Exception(Lib.Aux.logs["ErrorAlterIframe"])
 
         except Exception as ex:
             Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorAlterIframe"],
@@ -1329,6 +1346,8 @@ class Main:
             # Configure before open the browser.
             if parameters1.upper() in ("CHROME", "GOOGLE", "GOOGLE CHROME"):
 
+                options = Lib.webdriver.ChromeOptions()
+
                 preferences = {
                     "download.default_directory": Lib.Aux.directories['DownloadFolder'],
                     "download.prompt_for_download": False,
@@ -1336,17 +1355,19 @@ class Main:
                     "profile.password_manager_enabled": False,
                     "download.directory_upgrade": True
                 }
-                options = Lib.webdriver.ChromeOptions()
 
                 # If cookies are enabled.
-                if parameters2.upper() == 'COOKIE':
-                    options.add_argument("--disable-cache")
+                #if parameters2.upper() == 'COOKIE':
+                # options.add_argument("--disable-cache")
 
                 options.add_argument('--profile-directory=Default')
-                options.add_argument('--user-data-dir=' + Lib.Aux.directories["Temp"] + 'CHROME')
+                # options.add_argument('--user-data-dir=' + Lib.Aux.directories["Temp"] + 'CHROME') # Save the temp profile.
                 options.add_argument("--homepage=" + Lib.Aux.otherConfigs['HomePage'])
                 options.add_experimental_option("excludeSwitches", ["enable-automation"])
                 options.add_experimental_option("prefs", preferences)
+                options.add_argument("--disable-application-cache")
+                options.add_argument("--disk-cache-size=0")
+                options.add_argument("--media-cache-size=0")
 
                 if parameters2.upper() == '(INVISIBLE)':
                     options.add_argument("--headless")
@@ -1373,6 +1394,8 @@ class Main:
                 options.set_preference("browser.startup.homepage", Lib.Aux.otherConfigs['HomePage'])
                 options.set_preference("browser.startup.page", 1)  # 1 = Home page
 
+                options.add_argument("-private")
+
                 if parameters2.upper() == '(INVISIBLE)':
                     options.headless = True
 
@@ -1386,19 +1409,20 @@ class Main:
 
                 options.use_chromium = True
                 options.ensure_clean_session = True  # Set blank user.
-                #options.add_argument("-inprivate")
+                options.add_argument("-inprivate")
                 options.add_argument('--homepage-url=' + Lib.Aux.otherConfigs["HomePage"])
                 options.add_argument('--user-data-dir=' + Lib.Aux.directories["Temp"] + 'EDGE_CHROMIUM')
 
                 # If Cookies are enabled.
-                if parameters2.upper() == 'COOKIE':
-                    options.add_argument('--profile-directory=Default')
+                #if parameters2.upper() == 'COOKIE':
+                options.add_argument('--profile-directory=Default')
 
                 # Cache config.
                 options.add_argument("--disable-cache")
                 options.add_argument("--no-sandbox")
                 options.add_argument("--disable-application-cache")
                 options.add_argument("--disk-cache-size=0")
+                options.add_argument("--clear")
 
                 if parameters2.upper() == '(INVISIBLE)':
                     options.add_argument("--headless")
@@ -1432,8 +1456,6 @@ class Main:
 
             # Set the page load timeout (receive in minutes from interface).
             driver.set_page_load_timeout(int(Lib.Aux.otherConfigs['TimeoutSession']) * 60)
-
-
 
             return "Passed"
 
