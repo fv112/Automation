@@ -220,6 +220,9 @@ class Main:
                 self.connections.update_labels(project_id=project_id, test_case_id=test_case_id,
                                                status_ct=status_ct)
 
+                # Only print the test case list status on the screen.
+                _ = self.connections.get_test_cases(project_id=project_id, isolated_tc='I')
+
             # Inform the test case percentage already executed (100%).
             Lib.Aux.Main.percentage(actual=len(test_case_id_list), total=len(test_case_id_list))
 

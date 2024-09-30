@@ -75,6 +75,7 @@ function fazerCadastro() {
 <body>
 	<center>
 		<div id="mensagem"></div>
+		<iframe id="frame1" src="https://fr.wikipedia.org/wiki/Wikip%C3%A9dia:Accueil_principal" style="border: 0px" height="100" width="40%"></iframe>
 		<form id="elementosForm" name="elementosForm" method="post"
 			enctype="application/x-www-form-urlencoded">
 			<input type="hidden" name="elementosForm" value="elementosForm" />
@@ -84,7 +85,7 @@ function fazerCadastro() {
 			<input type="button" id="buttonPopUpEasy" value="Abrir Popup" onClick="javascript:createPopup('Popup')">
 			<input type="button" id="buttonPopUpHard" value="Abrir Popup do Mal" onClick="javascript:createPopup('')">
 			<input type="button" id="buttonDelay" value="Resposta Demorada" onClick="javascript:timingChange()">
-			<iframe id="frame1" src="frame.html" style="border: 0px" height="20"></iframe>
+			
 			<table bgcolor="FFDEAD">
 				<tbody>
 					<tr>
@@ -288,11 +289,12 @@ function fazerCadastro() {
 		<input type="button" id="alert" value="Alert" onclick="alert('Alert Simples');" />
 		<input type="button" id="confirm" value="Confirm" onclick="if(confirm('Confirm Simples')) alert('Confirmado'); else alert('Negado');" />
 		<input type="button" id="prompt" value="Prompt" onclick="var result = prompt('Digite um numero'); if(confirm('Era '+ result + '?')) alert(':D'); else alert(':(');" />
-	</center>
 		<br />
 		<a href="#" onclick="javascript:voltou()">Voltar</a>
+		<br />
+		<iframe id="frame2" src="https://fr.wikipedia.org/wiki/Wikip%C3%A9dia:Accueil_principal" style="border: 0px" width="20%" height="100"></iframe>
+		<br>
+		Desenvolvido para o <a href="http://bit.ly/CursoSeleniumWcaquino">Curso de Testes Funcionais automatizados com Selenium Webdriver</a>
 	</center>
-	<iframe id="frame2" src="frame.html" style="border: 0px" height="20"></iframe>
-	Desenvolvido para o <a href="http://bit.ly/CursoSeleniumWcaquino">Curso de Testes Funcionais automatizados com Selenium Webdriver</a>
 </body>
 </html>

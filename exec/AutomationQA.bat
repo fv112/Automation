@@ -22,7 +22,7 @@ IF EXIST "%DIR_BLUE%\" (
 )
 
 :AmbosExistem
-echo Ambos os diretórios existem.
+echo Existe a versão nova e a atual.
 
 echo -----------------------------------------------------------------------------------------------------------------------
 echo.
@@ -73,7 +73,7 @@ AutomationQA.exe
 goto End
 
 :GreenExiste_Nova
-echo O diretório %DIR_GREEN% existe, mas o diretório %DIR_BLUE% não existe.
+echo Existe a versão nova (%DIR_GREEN%), mas a atual não (%DIR_BLUE%).
 
 echo -----------------------------------------------------------------------------------------------------------------------
 echo.
@@ -127,13 +127,13 @@ AutomationQA.exe
 goto End
 
 :BlueExiste_Atual
-echo O diretório %DIR_BLUE% existe, mas o diretório %DIR_GREEN% não existe.
+echo Existe a versão atual (%DIR_BLUE%), mas a nova não (%DIR_GREEN%).
 cd "C:\ProgramData\QA-Automation\Automation\Blue\Automation"
 AutomationQA.exe
 goto End
 
 :NenhumExiste
-echo Nenhum existe.
+echo Nenhuma versão presente nesta máquina.
 set "scriptPath=%~dp0"
 set "scriptPath=%scriptPath:~0,-1%"
 

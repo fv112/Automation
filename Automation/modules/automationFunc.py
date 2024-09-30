@@ -1356,18 +1356,19 @@ class Main:
                     "download.directory_upgrade": True
                 }
 
-                # If cookies are enabled.
-                #if parameters2.upper() == 'COOKIE':
-                # options.add_argument("--disable-cache")
-
-                options.add_argument('--profile-directory=Default')
-                # options.add_argument('--user-data-dir=' + Lib.Aux.directories["Temp"] + 'CHROME') # Save the temp profile.
-                options.add_argument("--homepage=" + Lib.Aux.otherConfigs['HomePage'])
-                options.add_experimental_option("excludeSwitches", ["enable-automation"])
-                options.add_experimental_option("prefs", preferences)
-                options.add_argument("--disable-application-cache")
-                options.add_argument("--disk-cache-size=0")
-                options.add_argument("--media-cache-size=0")
+                # Maintain cookie / cache.
+                if parameters2.upper() == 'COOKIE':
+                    options.add_argument("--disable-cache")
+                    # Save the temp profile.
+                    options.add_argument('--user-data-dir=' + Lib.Aux.directories["Temp"] + 'CHROME')
+                else:
+                    options.add_argument('--profile-directory=Default')
+                    options.add_argument("--homepage=" + Lib.Aux.otherConfigs['HomePage'])
+                    options.add_experimental_option("excludeSwitches", ["enable-automation"])
+                    options.add_experimental_option("prefs", preferences)
+                    options.add_argument("--disable-application-cache")
+                    options.add_argument("--disk-cache-size=0")
+                    options.add_argument("--media-cache-size=0")
 
                 if parameters2.upper() == '(INVISIBLE)':
                     options.add_argument("--headless")
@@ -1394,7 +1395,11 @@ class Main:
                 options.set_preference("browser.startup.homepage", Lib.Aux.otherConfigs['HomePage'])
                 options.set_preference("browser.startup.page", 1)  # 1 = Home page
 
-                options.add_argument("-private")
+                # Maintain cookie / cache.
+                if parameters2.upper() != 'COOKIE':
+                    pass
+                else:
+                    options.add_argument("-private")
 
                 if parameters2.upper() == '(INVISIBLE)':
                     options.headless = True
@@ -1413,20 +1418,19 @@ class Main:
                 options.add_argument('--homepage-url=' + Lib.Aux.otherConfigs["HomePage"])
                 options.add_argument('--user-data-dir=' + Lib.Aux.directories["Temp"] + 'EDGE_CHROMIUM')
 
-                # If Cookies are enabled.
-                #if parameters2.upper() == 'COOKIE':
-                options.add_argument('--profile-directory=Default')
-
-                # Cache config.
-                options.add_argument("--disable-cache")
-                options.add_argument("--no-sandbox")
-                options.add_argument("--disable-application-cache")
-                options.add_argument("--disk-cache-size=0")
-                options.add_argument("--clear")
+                # Maintain cookie / cache.
+                if parameters2.upper() == 'COOKIE':
+                    options.add_argument('--profile-directory=Default')
+                else:
+                    options.add_argument("--disable-cache")
+                    options.add_argument("--disable-application-cache")
+                    options.add_argument("--disk-cache-size=0")
+                    options.add_argument("--clear")
 
                 if parameters2.upper() == '(INVISIBLE)':
                     options.add_argument("--headless")
-                    options.add_argument("disable-gpu")
+                    options.add_argument("--disable-gpu")
+                    options.add_argument("--no-sandbox")
                     options.add_argument('--allow-running-insecure-content')
                     options.add_argument('--ignore-certificate-errors')
 
@@ -1439,6 +1443,11 @@ class Main:
 
                 options.add_experimental_option('excludeSwitches', ['enable-logging'])
                 options.add_experimental_option("prefs", preferences)
+
+                print(f"{Lib.Aux.Textcolor.BLUE}{Lib.Aux.Textcolor.UNDERLINE}{Lib.Aux.otherConfigs['EdgeAdmin']['Msg']}"
+                      f"{Lib.Aux.Textcolor.END}{Lib.Aux.Textcolor.END}")
+                Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.otherConfigs["EdgeAdmin"])
+
                 driver = Lib.webdriver.Edge(service=Lib.EdgeService(Lib.EdgeChromiumDriverManager().install()),
                                             options=options)
 

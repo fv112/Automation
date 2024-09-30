@@ -96,7 +96,7 @@ class Connections:
             elif t.status_code == 401:
                 print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.otherConfigs['RunAgain']['Msg']}"
                       f"{Lib.Aux.Textcolor.UNDERLINE}\n")
-                Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.otherConfigs['TokenExpired'])
+                Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs['ErrorTokenExpired'])
 
             else:
                 print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequest']['Msg']}{Lib.Aux.Textcolor.UNDERLINE}\n")
@@ -309,30 +309,31 @@ class Connections:
 
                     Lib.os.system('cls')
 
-                    print(
-                        f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['TestCaseList']['Msg']}"
-                        f"{Lib.Aux.Textcolor.END}")
-                    print(table)
+                    if isolated_tc.upper() != 'I':  # Only info.
+                        print(
+                            f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['TestCaseList']['Msg']}"
+                            f"{Lib.Aux.Textcolor.END}")
+                        print(table)
 
-                    test_case_list = [str(testcase_id) for testcase_id in test_case_id_list]
+                        test_case_list = [str(testcase_id) for testcase_id in test_case_id_list]
 
-                    if isolated_tc.upper() in ['Y', 'S', ''] and id_test_case == 0:
-                        while True:
-                            print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['ChooseTestCase']['Msg']}"
-                                  f"{Lib.Aux.Textcolor.END}\n")
-                            id_test_case = input()
+                        if isolated_tc.upper() in ['Y', 'S', ''] and id_test_case == 0:
+                            while True:
+                                print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['ChooseTestCase']['Msg']}"
+                                      f"{Lib.Aux.Textcolor.END}\n")
+                                id_test_case = input()
+                                if Lib.Aux.Main.validate_selection(input_data=id_test_case, search_list=test_case_list):
+                                    test_case_id_list.clear()
+                                    test_case_id_list.append(int(id_test_case))
+                                    break
+                        elif isolated_tc.upper() in ['Y', 'S', ''] and id_test_case != 0:
                             if Lib.Aux.Main.validate_selection(input_data=id_test_case, search_list=test_case_list):
                                 test_case_id_list.clear()
                                 test_case_id_list.append(int(id_test_case))
-                                break
-                    elif isolated_tc.upper() in ['Y', 'S', ''] and id_test_case != 0:
-                        if Lib.Aux.Main.validate_selection(input_data=id_test_case, search_list=test_case_list):
-                            test_case_id_list.clear()
-                            test_case_id_list.append(int(id_test_case))
-                    elif isolated_tc.upper() in ['N', 'n']:  # Not add a new test case if 'N' is informed.
-                        pass
-                    else:
-                        test_case_id_list.append(id_test_case)
+                        elif isolated_tc.upper() in ['N', 'n']:  # Not add a new test case if 'N' is informed.
+                            pass
+                        else:
+                            test_case_id_list.append(id_test_case)
 
                 else:
                     print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorGetTestCase']['Msg']}{Lib.Aux.Textcolor.END}\n")
