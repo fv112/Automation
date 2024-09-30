@@ -2,7 +2,7 @@ Automation QA - Release notes
 ---------
 bookmark: **Version 1.26.03**  
 
-<em>27/09/2024</em>     
+<em>30/09/2024</em>     
 :sparkles: - Armazenamento do cache do browser desabilitado.  
 :sparkles: - Não realiza mais a leitura dos dados de cache locais do Google Chrome.  
 :bug: - Correção da cor do texto quando executado pela linha de comando no GitLab.      

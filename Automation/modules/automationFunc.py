@@ -448,7 +448,7 @@ class Main:
                 raise Exception
 
             try:
-                element.select_by_visible_text(parameters2)
+                element.select_by_visible_text(parameters2.strip())
                 Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
                                step_order=step_order, tag=tag)
                 Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["SelectDropDownList"],
@@ -460,7 +460,7 @@ class Main:
                 Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["NoSelectDropDownList"])
 
                 try:
-                    element.select_by_value(parameters2)
+                    element.select_by_value(parameters2.strip())
                     Main.highlight(self, parameters1=parameters1, save_evidence=save_evidence, step=step,
                                    step_order=step_order, tag=tag)
                     Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["SelectDropDownList"],
