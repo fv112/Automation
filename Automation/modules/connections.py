@@ -301,7 +301,7 @@ class Connections:
 
                     while isolated_tc is None:
                         print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['AskCt']['Msg']}"
-                              f"{Lib.Aux.Textcolor.END}\n")
+                              f"{Lib.Aux.Textcolor.END} ")
                         isolated_tc = input()
                         if Lib.Aux.Main.validate_selection(input_data=isolated_tc.upper(),
                                                            search_list=['Y', 'S', 'N', '']):
@@ -309,18 +309,19 @@ class Connections:
 
                     Lib.os.system('cls')
 
+                    print(
+                        f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['TestCaseList']['Msg']}"
+                        f"{Lib.Aux.Textcolor.END}")
+                    print(table)
+
                     if isolated_tc.upper() != 'I':  # Only info.
-                        print(
-                            f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['TestCaseList']['Msg']}"
-                            f"{Lib.Aux.Textcolor.END}")
-                        print(table)
 
                         test_case_list = [str(testcase_id) for testcase_id in test_case_id_list]
 
                         if isolated_tc.upper() in ['Y', 'S', ''] and id_test_case == 0:
                             while True:
                                 print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['ChooseTestCase']['Msg']}"
-                                      f"{Lib.Aux.Textcolor.END}\n")
+                                      f"{Lib.Aux.Textcolor.END} ")
                                 id_test_case = input()
                                 if Lib.Aux.Main.validate_selection(input_data=id_test_case, search_list=test_case_list):
                                     test_case_id_list.clear()
@@ -358,7 +359,7 @@ class Connections:
             # exit(1)
 
     # ===================================================== TEST CASE ==================================================
-    # Execute the Test Case from Azure.
+    # Execute the Test Case from GitLab.
     def execute_test_case(self, **kwargs):
         try:
             # kwargs variables.
@@ -643,16 +644,20 @@ class Connections:
             elif 'Bearer' in Lib.Aux.otherConfigs['Api_Headers']:
                 headers = {'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["Api_Headers"],
                            'Content-Type': 'application/json'}
+            else:
+                headers = Lib.json.loads(Lib.regex.search(r'{(.*?)}', headers).group(0))
+                headers['Content-Type'] = 'application/json'
 
             if api_action.upper() == "DELETE":
                 api_result = Lib.requests.delete(Lib.Aux.otherConfigs['Api_Endpoint'], headers=headers)
             elif api_action.upper() == "POST":
-                api_result = Lib.requests.post(Lib.Aux.otherConfigs['Api_Endpoint'], headers=headers, data=body)
+                api_result = Lib.requests.post(Lib.Aux.otherConfigs['Api_Endpoint'], headers=headers, data=body,
+                                               verify=False)
             elif api_action.upper() == "PUT":
                 api_result = Lib.requests.put(Lib.Aux.otherConfigs['Api_Endpoint'], headers=headers)
             else:  # api_action.upper() == "GET":
                 api_result = Lib.requests.get(Lib.Aux.otherConfigs['Api_Endpoint'], data=Lib.json.dumps(body),
-                                              params=Lib.Aux.otherConfigs['Api_Params'], headers=headers)
+                                              params=Lib.Aux.otherConfigs['Api_Params'], headers=headers, verify=False)
 
             if api_action.upper() in ['GET', 'POST', 'DELETE', 'PUT']:
                 Lib.Aux.otherConfigs['Api_StatusCode'] = api_result.status_code

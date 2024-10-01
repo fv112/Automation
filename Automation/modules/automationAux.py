@@ -507,6 +507,7 @@ class Main:
 
             if not Lib.os.path.isdir(directories["LogFolder"]):
                 Main.create_directory(self, path=directories["LogFolder"])
+                Lib.os.chmod(path, 0o777)
 
             # Append the log file.
             with open(path, 'a+', encoding='utf-8') as log_file:
@@ -940,9 +941,25 @@ class Main:
 
         # kwargs variable.
         param = kwargs.get("param")
-        tag = kwargs.get("tag")
 
         validation = False
+
+        def find_tag_and_content(d, find_key, result=None):
+
+            if result is None:
+                result = []
+
+            if isinstance(d, dict):
+                for key, value in d.items():
+                    if key == find_key:
+                        result.append(value)
+                    elif isinstance(value, dict) or isinstance(value, list):
+                        find_tag_and_content(value, find_key, result)
+            elif isinstance(d, list):
+                for item in d:
+                    find_tag_and_content(item, find_key, result)
+
+            return result
 
         try:
             response = otherConfigs['Api_Response']
@@ -957,22 +974,27 @@ class Main:
                     Main.add_logs(message="General", value=logs["ErrorValidationAPI"])
                     otherConfigs['JsonValidate'] = otherConfigs['JsonValidateFailed']['Msg']
                     return "Failed"
-            else:
-                # Tag's validation.
-                for dict_id, _ in enumerate(response):
-                    if str(response[dict_id][tag]) == str(param):
+            else:  # Tag's validation.
+                param = Lib.json.loads(Lib.regex.search(r'{(.*?)}', param).group(0))
+                tag = next(iter(param))
+                results = find_tag_and_content(response, tag)
+
+                for result in results:
+                    if result == param[tag]:
                         validation = (validation or True)
                     else:
                         validation = (validation or False)
 
-                    if validation:
-                        otherConfigs['JsonValidate'] = otherConfigs['JsonValidateSuccess']['Msg']
-                        return "Passed"
-                    else:
-                        print(f"{Textcolor.FAIL}{logs['ErrorValidationApi']['Msg']}{Textcolor.END}")
-                        Main.add_logs(message="General", value=logs["ErrorValidationApi"])
-                        otherConfigs['JsonValidate'] = otherConfigs['JsonValidateFailed']['Msg']
-                        return "Failed"
+                otherConfigs['Api_ResponseTag'] = results
+
+                if validation:
+                    otherConfigs['JsonValidate'] = otherConfigs['JsonValidateSuccess']['Msg']
+                    return "Passed"
+                else:
+                    print(f"{Textcolor.FAIL}{logs['ErrorValidationApi']['Msg']}{Textcolor.END}")
+                    Main.add_logs(message="General", value=logs["ErrorValidationApi"])
+                    otherConfigs['JsonValidate'] = otherConfigs['JsonValidateFailed']['Msg']
+                    return "Failed"
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorFindContentApi']['Msg']} - {ex}{Textcolor.END}")

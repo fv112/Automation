@@ -2,13 +2,15 @@ Automation QA - Release notes
 ---------
 bookmark: **Version 1.27.00**  
 
-<em>30/09/2024</em>     
+<em>01/10/2024</em>     
 :sparkles: - Melhoria da tela de TestEnvironment (SandBox).     
 :sparkles: - Possibilidade de manter o cookie / cache.     
 :sparkles: - Apresenta a listagem com o status de cada caso de teste após cada execução de teste.     
 :sparkles: - Atualizada mensagem informativa da bat de instalação.    
+:sparkles: - Melhoria ao setar permissões no arquivo de log ao ser criado.    
 :bug: - Correção da mensagem de token do GitLab expirado.   
 :bug: - Correção da execução do Edge na pipeline.  
+:bug: - Correção da validação da response da API.  
 #
 
 bookmark: **Version 1.26.03**  

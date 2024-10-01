@@ -1802,7 +1802,7 @@ class Main:
             elif tag.upper() == "STATUS CODE" and int(param) != Lib.Aux.otherConfigs['Api_StatusCode']:
                 status_code = "Failed"
             else:  # tag.upper() != "STATUS CODE":
-                find_content = Lib.Aux.Main.find_content_json(self, tag=tag, param=param)
+                find_content = Lib.Aux.Main.find_content_json(self, param=param)
 
             Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ApiLog"],
                                   value1=f"{tag.upper()} : {param.upper()}")

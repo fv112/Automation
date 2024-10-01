@@ -28,7 +28,7 @@ class Main:
 
             while save_evidence is None:
                 evidence = input(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['SaveEvidenceMsg']['Msg']}"
-                                 f"{Lib.Aux.Textcolor.END}")
+                                 f"{Lib.Aux.Textcolor.END} ")
                 if evidence.upper() in ['Y', 'S'] or save_evidence:
                     save_evidence = True
                     break
@@ -221,7 +221,7 @@ class Main:
                                                status_ct=status_ct)
 
                 # Only print the test case list status on the screen.
-                _ = self.connections.get_test_cases(project_id=project_id, isolated_tc='I')
+                self.connections.get_test_cases(project_id=project_id, isolated_tc='I')
 
             # Inform the test case percentage already executed (100%).
             Lib.Aux.Main.percentage(actual=len(test_case_id_list), total=len(test_case_id_list))
@@ -334,14 +334,28 @@ class Main:
                             if tag.upper() == "STATUS CODE":
                                 api_return.write(Lib.Aux.otherConfigs['Api_StatusCode'].__str__())
                             else:  # Normal response.
-                                if (type(Lib.Aux.otherConfigs['Api_Response']) is dict) and (
-                                        Lib.Aux.otherConfigs['Api_Response'].__len__() > 1):
+                                if parameters1.upper() in 'SCHEMA':
                                     for tag, value in Lib.Aux.otherConfigs['Api_Response'].items():
                                         api_return.writelines(f"\nTAG AND NEW VALUE: {tag}\n")
                                         api_return.writelines(f"RESULT:{value}\n")
                                         api_return.writelines(f"-" * 120)
-                                else:
-                                    api_return.write(Lib.Aux.otherConfigs['Api_Response'].__str__())
+                                elif verb.upper() in 'RESPONSE':
+                                    parameters1 = Lib.json.loads(Lib.regex.search(r'{(.*?)}', parameters1).group(0))
+                                    tag = next(iter(parameters1))
+                                    tag_value = parameters1[tag]
+                                    api_return.write(f"EXPECTED: {tag}:{tag_value}\n")
+                                    validation = False
+                                    for tag_response in Lib.Aux.otherConfigs['Api_ResponseTag']:
+                                        if tag_response == tag_value:
+                                            validation = (validation or True)
+                                            tag_valid = tag_response
+                                        else:
+                                            validation = (validation or False)
+
+                                    if validation:
+                                        api_return.write(f"RETURNED: {tag}:{tag_valid}\n")
+                                    else:
+                                        api_return.write(Lib.Aux.logs['ErrorValidationApi']['Msg'])
 
             # Set the test case status.
             if Lib.Counter(status_steps)['Failed'] != 0:
