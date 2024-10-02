@@ -626,9 +626,10 @@ class Connections:
 
     def send_request(self, **kwargs):
 
-        api_action = kwargs.get('api_action')
-        headers = kwargs.get('headers')
-        body = kwargs.get('body')
+        api_action = kwargs.get("api_action")
+        headers = kwargs.get("headers")
+        body = kwargs.get("body")
+        fake_info = kwargs.get("fake_info")
 
         try:
             if Lib.Aux.otherConfigs['Api_Authorization'] != '':
@@ -665,11 +666,13 @@ class Connections:
                 if resp is not []:
                     Lib.Aux.otherConfigs['Api_Response'] = resp
 
-                if api_result.status_code == 400:
-                    return_value = resp['errors']['$'][0]
-                    return return_value, "Failed"
+                if fake_info and api_result.status_code == 400:
+                    return resp, "Failed"
+                elif api_result.status_code == 400:
+                    # The status code should be verified in the Response command.
+                    return resp, "Not Run"
                 elif api_result.status_code == 200:
-                    return Lib.Aux.otherConfigs['Api_Response'], "Passed"
+                    return resp, "Passed"
 
         except Exception as ex:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorSendRequest']['Msg']} - {ex}{Lib.Aux.Textcolor.END}")

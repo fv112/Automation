@@ -280,7 +280,7 @@ class Main:
                         if image_resize:
                             # Change the print size.
                             run_paragraph.add_picture(image_path, width=eval(otherConfigs["EvidenceWidth"]),
-                                                     height=eval(otherConfigs["EvidenceHeight"]))
+                                                      height=eval(otherConfigs["EvidenceHeight"]))
                         else:
                             run_paragraph.add_picture(image_path, width=Lib.Inches(5))
                     elif otherConfigs['Api_Step'] and add_evidence:
@@ -293,7 +293,7 @@ class Main:
                         with open(api_file, 'r') as api_evidence_file:
                             api_evidence_step = api_evidence_file.readlines()
 
-                            if api_evidence_step.__len__() == 0:
+                            if Lib.os.path.getsize(api_file) == 0:
                                 paragraph = document.add_paragraph(otherConfigs['Api_NoResponseNeeded']['Msg'])
                                 run_paragraph = paragraph.runs[0]
                                 run_paragraph.bold = False
@@ -1068,7 +1068,7 @@ class ApiSchema:
 
             swagger_data = ApiSchema.load_swagger(self, Lib.os.path.join(directories['SwaggerFolder'],
                                                                          self.swagger_file))
-            # Generate fake data to the data types
+            # Generate fake data to the data types.
             ApiSchema.extract_jsonschema_relevant_data(self, swagger_data)
 
             print(f"{Textcolor.WARNING}{otherConfigs['Api_ExtractInfo']['Msg']} {self.swagger_file}{Textcolor.END}")
@@ -1200,7 +1200,7 @@ class ApiSchema:
             add_variations('boolean', value)
         elif schema['type'] == 'array':
             if not (schema.get('nullable', False) and Lib.random.choice([True, False])):
-                array_data = [generate_data(self, schema['items'], definitions) for _ in range(3)]
+                array_data = [ApiSchema.generate_data(self, schema['items'], definitions) for _ in range(3)]
                 if array_data not in data:
                     data.append(array_data)
         elif schema['type'] == 'object':

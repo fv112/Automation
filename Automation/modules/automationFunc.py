@@ -1737,7 +1737,7 @@ class Main:
 
                             # Run the API request.
                             error_msg, step_status = (
-                                self.connections.send_request(api_action=api_action,
+                                self.connections.send_request(api_action=api_action, fake_info=True,
                                                               headers=Lib.Aux.otherConfigs['Api_Headers'],
                                                               body=dict_body))
 

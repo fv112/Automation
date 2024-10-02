@@ -130,10 +130,10 @@ class Main:
                 test_list_status.append(status_ct)
 
                 # If fail / abort in an iteration.
-                if status_ct == "Failed" and save_evidence:
+                if status_ct == "Failed" and save_evidence and Lib.Aux.otherConfigs['Api_Step'] is False:
                     Lib.Func.Main.verify_browser(self)
 
-                elif status_ct == "Aborted" and save_evidence:
+                elif status_ct == "Aborted" and save_evidence and Lib.Aux.otherConfigs['Api_Step'] is False:
                     Lib.Func.Main.verify_browser(self)
 
                 # Set the test case duration.
@@ -334,7 +334,8 @@ class Main:
                             if tag.upper() == "STATUS CODE":
                                 api_return.write(Lib.Aux.otherConfigs['Api_StatusCode'].__str__())
                             else:  # Normal response.
-                                if parameters1.upper() in 'SCHEMA':
+                                schema_word = Lib.regex.compile(r'\bSCHEMA\b', Lib.regex.IGNORECASE)
+                                if schema_word.search(parameters1):
                                     for tag, value in Lib.Aux.otherConfigs['Api_Response'].items():
                                         api_return.writelines(f"\nTAG AND NEW VALUE: {tag}\n")
                                         api_return.writelines(f"RESULT:{value}\n")

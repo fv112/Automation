@@ -1,5 +1,12 @@
 Automation QA - Release notes
 ---------
+bookmark: **Version 1.27.01**  
+
+<em>02/10/2024</em>     
+:bug: - Correção da validação do status code da API.  
+:bug: - Correção do teste do Swagger.  
+#
+
 bookmark: **Version 1.27.00**  
 
 <em>01/10/2024</em>     
