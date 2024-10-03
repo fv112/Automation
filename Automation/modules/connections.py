@@ -18,13 +18,13 @@ class Connections:
         test_case_id = kwargs.get('test_case_id')
 
         # Execute each test case.
-        name_testcase, step_block = self.execute_test_case(project_id=project_id, test_case_id=test_case_id)
+        name_testcase, step_block, web_url = self.execute_test_case(project_id=project_id, test_case_id=test_case_id)
 
         # Load the test case steps.
         steps_list, order_steps_list = self.get_steps(step_block=step_block)
         verbs_list, parameters1_list, parameters2_list = self.slice_datas(steps_list=steps_list)
 
-        return order_steps_list, name_testcase, steps_list, verbs_list, parameters1_list, parameters2_list
+        return order_steps_list, name_testcase, steps_list, verbs_list, parameters1_list, parameters2_list, web_url
 
     # Read the print screen from each step.
     # def manualEvidences(self, **kwargs):
@@ -271,7 +271,7 @@ class Connections:
                                  verify=False)
 
             if s.status_code == 200:
-                table = Lib.PrettyTable(['STATUS', 'ORDER', 'TEST CASE ID', 'TEST CASE'])
+                table = Lib.PrettyTable(['STATUS', 'ORDER', 'TEST CASE ID', 'TEST CASE', 'URL'])
                 table.align['STATUS'] = 'l'
                 table.align['TEST CASE'] = 'l'
 
@@ -296,7 +296,8 @@ class Connections:
                         elif status == 'Aborted':
                             status = f"{Lib.Aux.Textcolor.WARNING}{status}{Lib.Aux.Textcolor.END}"
 
-                        table.add_row([status, id_test + 1, str(testCase_id['iid']),testCase_id['title']])
+                        table.add_row([status, id_test + 1, str(testCase_id['iid']), testCase_id['title'],
+                                       testCase_id['web_url']])
                         test_case_id_list.append(testCase_id['iid'])
 
                     while isolated_tc is None:
@@ -306,8 +307,6 @@ class Connections:
                         if Lib.Aux.Main.validate_selection(input_data=isolated_tc.upper(),
                                                            search_list=['Y', 'S', 'N', '']):
                             break
-
-                    Lib.os.system('cls')
 
                     print(
                         f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['TestCaseList']['Msg']}"
@@ -368,11 +367,13 @@ class Connections:
 
             name_testcase = ''
             step_block = ''
+            web_url = ''
 
             new_url = (url + 'projects/' + str(project_id) + '/issues?iids[]=' + str(test_case_id))
 
             # Execute the request from Azure.
-            q = Lib.requests.get(new_url, headers={'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["Bearer"]}, verify=False)
+            q = Lib.requests.get(new_url, headers={'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["Bearer"]},
+                                 verify=False)
             if q.status_code == 200:
                 print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['RequestOK']['Msg']}{Lib.Aux.Textcolor.END}\n")
                 # Filter some fields.
@@ -380,6 +381,7 @@ class Connections:
                 resp = Lib.json.loads(json_str)
                 name_testcase = resp[0]['title']
                 step_block = resp[0]['description']
+                web_url = resp[0]['web_url']
 
                 Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs['ExecuteTestCase'])
             else:
@@ -387,7 +389,7 @@ class Connections:
                 Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs['ErrorRequest'],
                                       value1='Status code: ' + str(q.status_code) + ' - executeTestCase')
 
-            return name_testcase, step_block
+            return name_testcase, step_block, web_url
 
         except Exception as ex:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorExecuteTestCase']['Msg']}{Lib.Aux.Textcolor.END} - {ex}")
@@ -629,7 +631,7 @@ class Connections:
         api_action = kwargs.get("api_action")
         headers = kwargs.get("headers")
         body = kwargs.get("body")
-        fake_info = kwargs.get("fake_info")
+        fake_info = kwargs.get("fake_info", False)
 
         try:
             if Lib.Aux.otherConfigs['Api_Authorization'] != '':
@@ -670,7 +672,7 @@ class Connections:
                     return resp, "Failed"
                 elif api_result.status_code == 400:
                     # The status code should be verified in the Response command.
-                    return resp, "Not Run"
+                    return resp, "Passed"
                 elif api_result.status_code == 200:
                     return resp, "Passed"
 

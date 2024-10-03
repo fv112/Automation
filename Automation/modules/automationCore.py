@@ -84,7 +84,7 @@ class Main:
                 # Inform the test case percentage already executed.
                 Lib.Aux.Main.percentage(actual=index, total=len(test_case_id_list))
 
-                order_steps_list, name_testcase, steps_list, verbs_list, parameters1_list, parameters2_list = \
+                order_steps_list, name_testcase, steps_list, verbs_list, parameters1_list, parameters2_list, web_url = \
                     self.connections.start_steps(project_id=project_id, test_case_id=test_case_id)
 
                 # Execution Initial time.
@@ -111,8 +111,9 @@ class Main:
                     Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["WarningEvidenceFolder"])
 
                 Lib.Aux.Main.add_logs(message="NewSession",
-                                      value="\nPROJECT: " + project_name + "\n"
-                                            "\nID: " + str(test_case_id) + " - TEST CASE: " + name_testcase + "\n")
+                                      value=f"\nPROJECT: {project_name}\n"
+                                            f"ID: {test_case_id} - TEST CASE: {name_testcase}\n"
+                                            f"GIT LAB LINK: {web_url}\n")
 
                 # Validate the testcase name.
                 if Lib.Aux.Main.validate_test_name(self, name_testcase=name_testcase):
@@ -306,7 +307,7 @@ class Main:
                         step_failed = step_order
                         color_init = Lib.Aux.Textcolor.FAIL
                         status_steps.append("Failed")
-                    elif status_step.upper() == "ABORTED" and step_failed == 0:
+                    elif status_step.upper() == "ABORTED" or status_step.upper() == "NOT RUN" and step_failed == 0:
                         step_failed = step_order
                         status_steps.append("Aborted")
                         color_init = Lib.Aux.Textcolor.WARNING

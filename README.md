@@ -1,5 +1,13 @@
 Automation QA - Release notes
 ---------
+bookmark: **Version 1.27.02**  
+
+<em>03/10/2024</em>     
+:sparkles: - Retirada da limpeza da tela antes de apresentar a lista de status dos testes antes de rodar o próximo teste.  
+:sparkles: - Retirada da linha em branco no log.  
+:bug: - Correção da validação da response da API com dados em uma lista.  
+#
+
 bookmark: **Version 1.27.01**  
 
 <em>02/10/2024</em>     
