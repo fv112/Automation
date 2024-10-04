@@ -1,5 +1,11 @@
 Automation QA - Release notes
 ---------
+bookmark: **Version 1.28.04**  
+
+<em>04/10/2024</em>     
+:bug: - Correção da validação da response quando não é uma mensagem de erro.     
+#
+
 bookmark: **Version 1.28.03**  
 
 <em>04/10/2024</em>     

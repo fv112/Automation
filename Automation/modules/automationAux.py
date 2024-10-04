@@ -951,18 +951,21 @@ class Main:
 
             if isinstance(d, dict):
                 for key, value in d.items():
-                    if isinstance(value, list):
-                        for key_value in value:
-                            # find_tag_and_content(key_value, find_key, result)
-                            result.append(key_value)
-                    else:
-                        if key == find_key:
+                    if key == find_key:
+                        result.append(value)
+
+                    if isinstance(value, (dict, list)):
+                        if find_tag_and_content(value, find_key, result):
                             result.append(value)
-                        elif isinstance(value, dict) or isinstance(value, list):
-                            find_tag_and_content(value, find_key, result)
+
             elif isinstance(d, list):
                 for item in d:
-                    find_tag_and_content(item, find_key, result)
+                    if item == find_key:
+                        result.append(item)
+
+                    if isinstance(item, (dict, list)):
+                        if find_tag_and_content(item, find_key, result):
+                            result.append(item)
 
             return result
 
