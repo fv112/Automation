@@ -1,9 +1,16 @@
 Automation QA - Release notes
 ---------
+bookmark: **Version 1.28.01**  
+
+<em>04/10/2024</em>     
+:sparkles: - Correção do layout das tabelas.     
+#
+
 bookmark: **Version 1.28.00**  
 
 <em>03/10/2024</em>     
 :construction: - Validação do swagger com vários endpoints.  
+:sparkles: - Inclusão do link dos casos de teste.     
 #
 
 bookmark: **Version 1.27.02**  

@@ -39,7 +39,7 @@ from getopt import getopt
 from jsonschema import validate, ValidationError
 from pathlib import Path
 from PIL import ImageGrab
-from prettytable import PrettyTable
+from prettytable import PrettyTable, DOUBLE_BORDER
 from selenium.webdriver.support import expected_conditions as ec
 from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
@@ -54,6 +54,7 @@ from selenium.webdriver.edge.service import Service as EdgeService
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.support.select import Select
+from termcolor import colored
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 from webdriver_manager.microsoft import EdgeChromiumDriverManager

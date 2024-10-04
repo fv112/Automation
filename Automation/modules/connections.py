@@ -113,6 +113,7 @@ class Connections:
                     table.add_row([str(resp[order]['id']), str(resp[order]['name'])])
                     projects_dic[resp[order]['id']] = str(resp[order]['name'])
 
+                table.set_style(Lib.DOUBLE_BORDER)
                 print(table.get_string(sortby="PROJECT"))
 
                 project_list = [str(project_id) for project_id in list(projects_dic.keys())]
@@ -271,8 +272,7 @@ class Connections:
                                  verify=False)
 
             if s.status_code == 200:
-                table = Lib.PrettyTable(['STATUS', 'ORDER', 'TEST CASE ID', 'TEST CASE', 'URL'])
-                table.align['STATUS'] = 'l'
+                table = Lib.PrettyTable(["STATUS","ORDER", "TEST CASE ID","TEST CASE"])
                 table.align['TEST CASE'] = 'l'
 
                 # Filter some fields.
@@ -296,7 +296,7 @@ class Connections:
                         elif status == 'Aborted':
                             status = f"{Lib.Aux.Textcolor.WARNING}{status}{Lib.Aux.Textcolor.END}"
 
-                        table.add_row([status, id_test + 1, str(testCase_id['iid']), testCase_id['title'],
+                        table.add_row([status, id_test + 1, str(testCase_id['iid']), testCase_id['title'] + '\n' +
                                        testCase_id['web_url']])
                         test_case_id_list.append(testCase_id['iid'])
 
@@ -311,6 +311,7 @@ class Connections:
                     print(
                         f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['TestCaseList']['Msg']}"
                         f"{Lib.Aux.Textcolor.END}")
+                    table.set_style(Lib.DOUBLE_BORDER)
                     print(table)
 
                     if isolated_tc.upper() != 'I':  # Only info.

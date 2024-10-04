@@ -53,12 +53,6 @@ rmdir /S /Q "C:\ProgramData\QA-Automation\Automation\Green\Automation\_internal\
 del "C:\ProgramData\QA-Automation\Automation\Automation.zip"
 del "C:\ProgramData\QA-Automation\Automation\TestEnvironment.zip"
 
-REM echo Move the hash files used by the translation.
-REM rmdir /S /Q "C:\ProgramData\QA-Automation-Files\Repository\Hash"
-REM mkdir "C:\ProgramData\QA-Automation-Files\Repository\Hash"
-REM xcopy "C:\ProgramData\QA-Automation\Automation\Green\Automation\Automation\Hash\*" "C:\ProgramData\QA-Automation-Files\Repository\Hash" /E /H /C /I /Y
-REM move "C:\ProgramData\QA-Automation\Automation\Green\Automation\Automation\Hash\es-hash_dictionary.txt" "C:\ProgramData\QA-Automation-Files\Repository\Hash"
-
 xcopy "C:\ProgramData\QA-Automation\Automation\Green" "C:\ProgramData\QA-Automation\Automation\Blue" /E /H /C /I /Y
 del "%DIR_GREEN%"\Green.zip
 
@@ -106,12 +100,6 @@ echo Delete temporary files.
 rmdir /S /Q "C:\ProgramData\QA-Automation\Automation\Green\Automation\_internal\Automation"
 del "C:\ProgramData\QA-Automation\Automation\Automation.zip"
 del "C:\ProgramData\QA-Automation\Automation\TestEnvironment.zip"
-
-REM echo Move the hash files used by the translation.
-REM rmdir /S /Q "C:\ProgramData\QA-Automation-Files\Repository\Hash"
-REM mkdir "C:\ProgramData\QA-Automation-Files\Repository\Hash"
-REM xcopy "C:\ProgramData\QA-Automation\Automation\Green\Automation\Automation\Hash\*" "C:\ProgramData\QA-Automation-Files\Repository\Hash" /E /H /C /I /Y
-REM move "C:\ProgramData\QA-Automation\Automation\Green\Automation\Automation\Hash\es-hash_dictionary.txt" "C:\ProgramData\QA-Automation-Files\Repository\Hash"
 
 xcopy "C:\ProgramData\QA-Automation\Automation\Green" "C:\ProgramData\QA-Automation\Automation\Blue" /E /H /C /I /Y
 REN "C:\ProgramData\QA-Automation\Automation\Green" Blue
@@ -168,12 +156,6 @@ echo Delete temporary files.
 rmdir /S /Q "C:\ProgramData\QA-Automation\Automation\Green\Automation\_internal\Automation"
 del "C:\ProgramData\QA-Automation\Automation\Automation.zip"
 del "C:\ProgramData\QA-Automation\Automation\TestEnvironment.zip"
-
-REM echo Move the hash files used by the translation.
-REM rmdir /S /Q "C:\ProgramData\QA-Automation-Files\Repository\Hash"
-REM mkdir "C:\ProgramData\QA-Automation-Files\Repository\Hash"
-REM xcopy "C:\ProgramData\QA-Automation\Automation\Green\Automation\Automation\Hash\*" "C:\ProgramData\QA-Automation-Files\Repository\Hash" /E /H /C /I /Y
-REM move "C:\ProgramData\QA-Automation\Automation\Green\Automation\Automation\Hash\es-hash_dictionary.txt" "C:\ProgramData\QA-Automation-Files\Repository\Hash"
 
 REN "C:\ProgramData\QA-Automation\Automation\Green" Blue
 
