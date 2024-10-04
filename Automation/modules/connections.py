@@ -297,7 +297,7 @@ class Connections:
                             status = f"{Lib.Aux.Textcolor.WARNING}{status}{Lib.Aux.Textcolor.END}"
 
                         table.add_row([status, id_test + 1, str(testCase_id['iid']), testCase_id['title'] + '\n' +
-                                       testCase_id['web_url']])
+                                       testCase_id['web_url'] + '\n'])
                         test_case_id_list.append(testCase_id['iid'])
 
                     while isolated_tc is None:

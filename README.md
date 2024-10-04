@@ -1,5 +1,11 @@
 Automation QA - Release notes
 ---------
+bookmark: **Version 1.28.02**  
+
+<em>04/10/2024</em>     
+:sparkles: - Alteração do layout das tabelas.     
+#
+
 bookmark: **Version 1.28.01**  
 
 <em>04/10/2024</em>     
