@@ -1,5 +1,11 @@
 Automation QA - Release notes
 ---------
+bookmark: **Version 1.28.00**  
+
+<em>03/10/2024</em>     
+:construction: - Validação do swagger com vários endpoints.  
+#
+
 bookmark: **Version 1.27.02**  
 
 <em>03/10/2024</em>     

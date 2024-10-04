@@ -1082,9 +1082,10 @@ class ApiSchema:
                 schema = Lib.json.load(file)
 
             # Enable the field to be possible validate one by one.
-            for key, value in schema.items():
-                if schema[key]['additionalProperties'] is False:
-                    schema[key]['additionalProperties'] = True
+            # for key, value in schema.items():
+            #     if schema[key]['additionalProperties'] is False:
+            #         ### print(f"{value} - {key}\n")
+            #         schema[key]['additionalProperties'] = True
 
             with open(Lib.os.path.join(directories['SwaggerFolder'], self.swagger_file), 'w', encoding='utf-8') as file:
                 Lib.json.dump(schema, file, ensure_ascii=False, indent=2)
