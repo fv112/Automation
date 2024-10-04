@@ -54,7 +54,6 @@ from selenium.webdriver.edge.service import Service as EdgeService
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.support.select import Select
-from termcolor import colored
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 from webdriver_manager.microsoft import EdgeChromiumDriverManager

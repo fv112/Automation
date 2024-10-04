@@ -272,7 +272,7 @@ class Connections:
                                  verify=False)
 
             if s.status_code == 200:
-                table = Lib.PrettyTable(["STATUS","ORDER", "TEST CASE ID","TEST CASE"])
+                table = Lib.PrettyTable(["STATUS","ORDER", "TEST CASE ID", "TEST CASE"])
                 table.align['TEST CASE'] = 'l'
 
                 # Filter some fields.
@@ -296,8 +296,7 @@ class Connections:
                         elif status == 'Aborted':
                             status = f"{Lib.Aux.Textcolor.WARNING}{status}{Lib.Aux.Textcolor.END}"
 
-                        table.add_row([status, id_test + 1, str(testCase_id['iid']), testCase_id['title'] + '\n' +
-                                       testCase_id['web_url'] + '\n'])
+                        table.add_row([status, id_test + 1, str(testCase_id['iid']), testCase_id['title']])
                         test_case_id_list.append(testCase_id['iid'])
 
                     while isolated_tc is None:

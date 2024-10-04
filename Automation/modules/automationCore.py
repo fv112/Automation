@@ -221,6 +221,8 @@ class Main:
                 self.connections.update_labels(project_id=project_id, test_case_id=test_case_id,
                                                status_ct=status_ct)
 
+                print(f"\nTEST CASE URL: {web_url}\n")
+
                 # Only print the test case list status on the screen.
                 self.connections.get_test_cases(project_id=project_id, isolated_tc='I')
 

@@ -1,5 +1,11 @@
 Automation QA - Release notes
 ---------
+bookmark: **Version 1.28.03**  
+
+<em>04/10/2024</em>     
+:sparkles: - Apresentação do nome do caso de teste no final do teste.     
+#
+
 bookmark: **Version 1.28.02**  
 
 <em>04/10/2024</em>     
