@@ -507,7 +507,12 @@ class Main:
 
             if not Lib.os.path.isdir(directories["LogFolder"]):
                 Main.create_directory(self, path=directories["LogFolder"])
-                Lib.os.chmod(path, 0o777)
+
+            if not Lib.os.path.isfile(path):
+                Main.create_directory(self, path=directories["LogFolder"])
+                with open(path, "w"):
+                    ###Lib.os.chmod(path, 0o777)
+                    Lib.os.system(f'icacls "{path}" /grant {otherConfigs["All"]}:F')
 
             # Append the log file.
             with open(path, 'a+', encoding='utf-8') as log_file:
@@ -1063,6 +1068,7 @@ class ApiSchema:
         self.swagger_link = swagger_link
         self.swagger_file = 'swagger.json'
         self.resolved_schema = None
+        self.paths = []
 
     def api_check(self):
 
@@ -1083,12 +1089,6 @@ class ApiSchema:
 
             with open(Lib.os.path.join(directories['SwaggerFolder'], self.swagger_file), 'r', encoding='utf-8') as file:
                 schema = Lib.json.load(file)
-
-            # Enable the field to be possible validate one by one.
-            # for key, value in schema.items():
-            #     if schema[key]['additionalProperties'] is False:
-            #         ### print(f"{value} - {key}\n")
-            #         schema[key]['additionalProperties'] = True
 
             with open(Lib.os.path.join(directories['SwaggerFolder'], self.swagger_file), 'w', encoding='utf-8') as file:
                 Lib.json.dump(schema, file, ensure_ascii=False, indent=2)
@@ -1114,7 +1114,7 @@ class ApiSchema:
 
             Main.delete_files(folder_path=directories['SwaggerFolder'], extension='*')
 
-            return self.json_fake_data
+            return self.json_fake_data, self.paths
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorApiCheck']['Msg']}{Textcolor.END}", str(ex))
@@ -1142,6 +1142,8 @@ class ApiSchema:
 
             with open(Lib.os.path.join(directories['SwaggerFolder'], self.swagger_file), 'w') as f:
                 Lib.json.dump(relevant_data, f, indent=2)
+
+            self.paths = swagger_data['paths']
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorExtractJson']['Msg']}{Textcolor.END}", str(ex))

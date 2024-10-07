@@ -350,6 +350,8 @@ class Main:
                     actions.send_keys(parameters1.upper().rsplit('+')[1].strip())
                     Lib.time.sleep(.2)
                     actions.key_up(Lib.Keys.ALT)
+            else:
+                actions.send_keys(parameters1)
 
             actions.perform()
 
@@ -1688,6 +1690,7 @@ class Main:
 
         # kwargs variables:
         parameters1 = kwargs.get("parameters1")
+        parameters2 = kwargs.get("parameters2")
         api_action = kwargs.get("api_action")
         num_of_steps = kwargs.get("num_of_steps")
         step_order = kwargs.get("step_order")
@@ -1707,7 +1710,7 @@ class Main:
             if parameters1.upper() != 'SUBMIT':
                 tag = parameters1[:parameters1.find(':')]
                 if tag.upper() == 'ENDPOINT':
-                    Lib.Aux.otherConfigs['Api_Endpoint'] = parameters1[parameters1.find(':') + 1:].strip()
+                    Lib.Aux.otherConfigs['Api_Endpoints'].append(parameters1[parameters1.find(':') + 1:].strip())
                 elif tag.upper() == 'AUTHORIZATION':
                     Lib.Aux.otherConfigs['Api_Authorization'] = parameters1[parameters1.find(':') + 1:].strip()
                 elif tag.upper() == 'HEADERS':
@@ -1729,7 +1732,14 @@ class Main:
                         Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorApiBodyMissing"])
                         raise TypeError(Lib.Aux.logs['ErrorApiBodyMissing']['Msg'])
                     json_data = Lib.Aux.ApiSchema(parameters1[parameters1.find(':') + 1:].strip())
-                    json_fake_data = json_data.api_check()
+                    json_fake_data, endpoints = json_data.api_check()
+
+                    if (parameters2 is not None) and parameters2.upper() == 'ALL':
+                        url = Lib.copy.deepcopy(Lib.Aux.otherConfigs['Api_Endpoints'])
+                        Lib.Aux.otherConfigs['Api_Endpoints'].clear()
+                        for endpoint in endpoints:
+                            Lib.Aux.otherConfigs['Api_Endpoints'].append(
+                                Lib.regex.match(r'^(.*)/[^/]+$', url[0]).group(1) + endpoint) ### Está dando erro?!
 
                     for tag in json_fake_data.keys():
                         for fake_order, _ in enumerate(json_fake_data[tag]):
@@ -1737,9 +1747,8 @@ class Main:
 
                             # Run the API request.
                             error_msg, step_status = (
-                                self.connections.send_request(api_action=api_action, fake_info=True,
-                                                              headers=Lib.Aux.otherConfigs['Api_Headers'],
-                                                              body=dict_body))
+                                self.connections.send_request(api_action=api_action, fake_info=True, body=dict_body,
+                                                              headers=Lib.Aux.otherConfigs['Api_Headers']))
 
                             error_msg_list[tag + ' -> ' + str(dict_body[tag])] = error_msg
 
@@ -1757,7 +1766,7 @@ class Main:
                     else:
                         return "Failed"
 
-                if Lib.Aux.otherConfigs['Api_Endpoint'] is None:
+                if Lib.Aux.otherConfigs['Api_Endpoints'] is []:
                     print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorApiMissingInfo']['Msg']}"
                           f"{Lib.Aux.Textcolor.END}")
                     Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorApiMissingInfo"])

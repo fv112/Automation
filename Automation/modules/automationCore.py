@@ -245,7 +245,7 @@ class Main:
             # Clear the API variables.
             Lib.Aux.otherConfigs['Api_Authorization'] = ''
             Lib.Aux.otherConfigs['Api_Body'] = ''
-            Lib.Aux.otherConfigs['Api_Endpoint'] = ''
+            Lib.Aux.otherConfigs['Api_Endpoints'] = []
             Lib.Aux.otherConfigs['Api_Headers'] = ''
             Lib.Aux.otherConfigs['Api_Params'] = ''
             Lib.Aux.otherConfigs['Api_Response'] = ''

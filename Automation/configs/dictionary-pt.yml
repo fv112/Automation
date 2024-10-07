@@ -387,9 +387,10 @@ directories:
 # List of other configurations.
 otherConfigs:
     {
+        All: {Type: Info, Msg: Todos, Where: automationAux - add_logs},
         Api_Authorization: '',
         Api_Body: '',
-        Api_Endpoint: '',
+        Api_Endpoints: [],
         Api_ExtractInfo: {Type: Info, Msg: Dados relevantes para JSON Schema extraídos e salvos como., Where: automationAux - api_check},
         Api_Headers: '',
         Api_NoResponseNeeded: {Type: Info, Msg: Não há retorno para ser validado neste passo., Where: automationAux - word_add_steps},

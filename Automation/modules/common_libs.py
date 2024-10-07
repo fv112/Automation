@@ -1,5 +1,6 @@
 import argparse
 import ast
+import copy
 import ctypes
 import datetime
 import hashlib

@@ -272,7 +272,8 @@ class Connections:
                                  verify=False)
 
             if s.status_code == 200:
-                table = Lib.PrettyTable(["STATUS","ORDER", "TEST CASE ID", "TEST CASE"])
+                table = Lib.PrettyTable(["STATUS", "ORDER", "TEST CASE ID", "TEST CASE"])
+                table.align['STATUS'] = 'l'
                 table.align['TEST CASE'] = 'l'
 
                 # Filter some fields.
@@ -651,30 +652,31 @@ class Connections:
                 headers = Lib.json.loads(Lib.regex.search(r'{(.*?)}', headers).group(0))
                 headers['Content-Type'] = 'application/json'
 
-            if api_action.upper() == "DELETE":
-                api_result = Lib.requests.delete(Lib.Aux.otherConfigs['Api_Endpoint'], headers=headers)
-            elif api_action.upper() == "POST":
-                api_result = Lib.requests.post(Lib.Aux.otherConfigs['Api_Endpoint'], headers=headers, data=body,
-                                               verify=False)
-            elif api_action.upper() == "PUT":
-                api_result = Lib.requests.put(Lib.Aux.otherConfigs['Api_Endpoint'], headers=headers)
-            else:  # api_action.upper() == "GET":
-                api_result = Lib.requests.get(Lib.Aux.otherConfigs['Api_Endpoint'], data=Lib.json.dumps(body),
-                                              params=Lib.Aux.otherConfigs['Api_Params'], headers=headers, verify=False)
+            for endpoint in Lib.Aux.otherConfigs['Api_Endpoints']:
 
-            if api_action.upper() in ['GET', 'POST', 'DELETE', 'PUT']:
-                Lib.Aux.otherConfigs['Api_StatusCode'] = api_result.status_code
-                resp = Lib.json.loads(api_result.text)
-                if resp is not []:
-                    Lib.Aux.otherConfigs['Api_Response'] = resp
+                if api_action.upper() == "DELETE":
+                    api_result = Lib.requests.delete(endpoint, headers=headers)
+                elif api_action.upper() == "POST":
+                    api_result = Lib.requests.post(endpoint, headers=headers, data=body, verify=False)
+                elif api_action.upper() == "PUT":
+                    api_result = Lib.requests.put(endpoint, headers=headers)
+                else:  # api_action.upper() == "GET":
+                    api_result = Lib.requests.get(endpoint, data=Lib.json.dumps(body), verify=False,
+                                                  params=Lib.Aux.otherConfigs['Api_Params'], headers=headers)
 
-                if fake_info and api_result.status_code == 400:
-                    return resp, "Failed"
-                elif api_result.status_code == 400:
-                    # The status code should be verified in the Response command.
-                    return resp, "Passed"
-                elif api_result.status_code == 200:
-                    return resp, "Passed"
+                if api_action.upper() in ['GET', 'POST', 'DELETE', 'PUT']:
+                    Lib.Aux.otherConfigs['Api_StatusCode'] = api_result.status_code
+                    resp = Lib.json.loads(api_result.text)
+                    if resp is not []:
+                        Lib.Aux.otherConfigs['Api_Response'] = resp
+
+                    if fake_info and api_result.status_code == 400:
+                        return resp, "Failed"
+                    elif api_result.status_code == 400:
+                        # The status code should be verified in the Response command.
+                        return resp, "Passed"
+                    elif api_result.status_code == 200:
+                        return resp, "Passed"
 
         except Exception as ex:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorSendRequest']['Msg']} - {ex}{Lib.Aux.Textcolor.END}")

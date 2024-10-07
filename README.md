@@ -1,5 +1,13 @@
 Automation QA - Release notes
 ---------
+bookmark: **Version 1.28.05**  
+
+<em>08/10/2024</em>  
+:bug: - Alteração da permissão do arquivo, quando executado pela primeira vez na pipeline.  
+:sparkles: - Possibilidade de rodar os dados fake em todos os endpoint do swagger.   
+:sparkles: - Possibilidade de informar qualquer texto no comando TECLAR.  
+#
+
 bookmark: **Version 1.28.04**  
 
 <em>04/10/2024</em>     
