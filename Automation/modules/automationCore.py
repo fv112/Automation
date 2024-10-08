@@ -46,8 +46,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorMain']['Msg']}{Lib.Aux.Textcolor.END}")
-            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorMain"],
-                                  value1=str(ex))
+            Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.logs["ErrorMain"], value1=str(ex))
 
         finally:
             print(f"{Lib.Aux.Textcolor.BLUE}{Lib.Aux.otherConfigs['MsgFinishedExecution']['Msg']}"
@@ -82,7 +81,7 @@ class Main:
                 Lib.Aux.otherConfigs['Api_Step'] = False
 
                 # Inform the test case percentage already executed.
-                Lib.Aux.Main.percentage(actual=index, total=len(test_case_id_list))
+                Lib.Aux.Main.percentage(self, actual=index, total=len(test_case_id_list))
 
                 order_steps_list, name_testcase, steps_list, verbs_list, parameters1_list, parameters2_list, web_url = \
                     self.connections.start_steps(project_id=project_id, test_case_id=test_case_id)
@@ -104,13 +103,13 @@ class Main:
 
                     Lib.Aux.Main.create_directory(self, path=Lib.Aux.directories['TestSetPath'])
 
-                    Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["EvidenceFolder"])
+                    Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.logs["EvidenceFolder"])
 
                 else:
                     Lib.Aux.directories['TestSetPath'] = None
-                    Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["WarningEvidenceFolder"])
+                    Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.logs["WarningEvidenceFolder"])
 
-                Lib.Aux.Main.add_logs(message="NewSession",
+                Lib.Aux.Main.add_logs(self, message="NewSession",
                                       value=f"\nPROJECT: {project_name}\n"
                                             f"ID: {test_case_id} - TEST CASE: {name_testcase}\n"
                                             f"GIT LAB LINK: {web_url}\n")
@@ -172,17 +171,17 @@ class Main:
 
                     if est is None:
                         status_ct = "Aborted"
-                        Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorEST"],
+                        Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.logs["ErrorEST"],
                                               value1=name_testcase)
 
                     if pdf is None:
                         status_ct = "Aborted"
-                        Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorConvertPDF"],
+                        Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.logs["ErrorConvertPDF"],
                                               value1=name_testcase)
 
                     if (est is not None) and (pdf is not None):
 
-                        Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ConvertPDF"],
+                        Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.logs["ConvertPDF"],
                                               value1=name_testcase)
 
                         file_url_list, file_path_list, status_name_testcase = (
@@ -227,12 +226,12 @@ class Main:
                 self.connections.get_test_cases(project_id=project_id, isolated_tc='I')
 
             # Inform the test case percentage already executed (100%).
-            Lib.Aux.Main.percentage(actual=len(test_case_id_list), total=len(test_case_id_list))
+            Lib.Aux.Main.percentage(self, actual=len(test_case_id_list), total=len(test_case_id_list))
 
         except Exception as ex:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorStartAutomation']['Msg']} - {ex.msg[0]}"
                   f"{Lib.Aux.Textcolor.END}")
-            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorStartAutomation"],
+            Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.logs["ErrorStartAutomation"],
                                   value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
 
             #### SOMENTE APÓS EXISTIR O TEST SUIT.
@@ -250,7 +249,7 @@ class Main:
             Lib.Aux.otherConfigs['Api_Params'] = ''
             Lib.Aux.otherConfigs['Api_Response'] = ''
             Lib.Aux.otherConfigs['Api_Step'] = False
-            Lib.Aux.Main.add_logs(message="EndExecution")
+            Lib.Aux.Main.add_logs(self, message="EndExecution")
             test_list_status.clear()
 
     # Execute the test case steps.
@@ -292,8 +291,8 @@ class Main:
                 if parameters2 is not None:
                     print(f"PARAM 2: {parameters2}")
 
-                Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["StepBlank"])
-                Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["Step"], value1=step_order.__str__())
+                Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.logs["StepBlank"])
+                Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.logs["Step"], value1=step_order.__str__())
 
                 if Lib.Counter(status_steps)['Failed'] != 0:
                     status_steps.append("Not Run")
@@ -324,7 +323,7 @@ class Main:
                         image_name = Lib.Aux.otherConfigs["EvidenceName"] + str(step_order).zfill(2)
                         take_picture_status = Lib.Func.Main.take_picture(self, image_name=image_name)
                         if not take_picture_status:
-                            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorScreenshot"], value1=step)
+                            Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.logs["ErrorScreenshot"], value1=step)
 
                     if Lib.Aux.otherConfigs['Api_Step'] and save_evidence:
                         api_file_name = (Lib.Aux.otherConfigs["EvidenceNameApi"] + str(step_order).zfill(2) +
@@ -338,28 +337,30 @@ class Main:
                                 api_return.write(Lib.Aux.otherConfigs['Api_StatusCode'].__str__())
                             else:  # Normal response.
                                 schema_word = Lib.regex.compile(r'\bSCHEMA\b', Lib.regex.IGNORECASE)
-                                if schema_word.search(parameters1):
-                                    for tag, value in Lib.Aux.otherConfigs['Api_Response'].items():
-                                        api_return.writelines(f"\nTAG AND NEW VALUE: {tag}\n")
-                                        api_return.writelines(f"RESULT:{value}\n")
-                                        api_return.writelines(f"-" * 120)
-                                elif verb.upper() in 'RESPONSE':
-                                    parameters1 = Lib.json.loads(Lib.regex.search(r'{(.*?)}', parameters1).group(0))
-                                    tag = next(iter(parameters1))
-                                    tag_value = parameters1[tag]
-                                    api_return.write(f"EXPECTED: {tag}:{tag_value}\n")
-                                    validation = False
-                                    for tag_response in Lib.Aux.otherConfigs['Api_ResponseTag']:
-                                        if tag_response == tag_value:
-                                            validation = (validation or True)
-                                            tag_valid = tag_response
-                                        else:
-                                            validation = (validation or False)
+                                for endpoint in Lib.Aux.otherConfigs['DictAllSchema']:
+                                    if schema_word.search(parameters1):
+                                        for tag, value in Lib.Aux.otherConfigs['Api_Response'].items():
+                                            api_return.writelines(f"ENDPOINT: {endpoint}\n")
+                                            api_return.writelines(f"TAG AND NEW VALUE: {tag}\n")
+                                            api_return.writelines(f"RESULT:{value}\n")
+                                            api_return.writelines(f"-" * 120)
+                                    elif verb.upper() in 'RESPONSE':
+                                        parameters1 = Lib.json.loads(Lib.regex.search(r'{(.*?)}', parameters1).group(0))
+                                        tag = next(iter(parameters1))
+                                        tag_value = parameters1[tag]
+                                        api_return.write(f"EXPECTED: {tag}:{tag_value}\n")
+                                        validation = False
+                                        for tag_response in Lib.Aux.otherConfigs['Api_ResponseTag']:
+                                            if tag_response == tag_value:
+                                                validation = (validation or True)
+                                                tag_valid = tag_response
+                                            else:
+                                                validation = (validation or False)
 
-                                    if validation:
-                                        api_return.write(f"RETURNED: {tag}:{tag_valid}\n")
-                                    else:
-                                        api_return.write(Lib.Aux.logs['ErrorValidationApi']['Msg'])
+                                        if validation:
+                                            api_return.write(f"RETURNED: {tag}:{tag_valid}\n")
+                                        else:
+                                            api_return.write(Lib.Aux.logs['ErrorValidationApi']['Msg'])
 
             # Set the test case status.
             if Lib.Counter(status_steps)['Failed'] != 0:
@@ -372,7 +373,7 @@ class Main:
         except Exception as ex:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorExecuteStepByStep']['Msg']} - {ex.msg[0]}"
                   f"{Lib.Aux.Textcolor.END}")
-            Lib.Aux.Main.add_logs(message="General", value=Lib.Aux.logs["ErrorExecuteStepByStep"],
+            Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.logs["ErrorExecuteStepByStep"],
                                   value1=str(Lib.regex.split(r'\.|\n', ex.msg)[0]))
 
             return status_ct, step_order

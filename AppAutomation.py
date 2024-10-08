@@ -30,7 +30,7 @@ class AutomationQA:
         ### language = 'en_US'  ### For test.
         ### language = 'pt_BR'  ### For test.
 
-        Lib.Aux.Main.set_language(language=language)
+        Lib.Aux.Main.set_language(self, language=language)
 
         # ------ Check the version ----------
         # Git version.

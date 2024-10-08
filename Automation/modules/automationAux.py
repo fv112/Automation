@@ -35,18 +35,18 @@ class Main:
             if validation:
                 print(f"{Textcolor.FAIL}{logs['ErrorSpecialCharacter']['Msg']} "
                       f"{otherConfigs['InvalidCharacter']} {Textcolor.END}")
-                Main.add_logs(message="General", value=logs["ErrorSpecialCharacter"],
+                Main.add_logs(self, message="General", value=logs["ErrorSpecialCharacter"],
                               value1=f"{otherConfigs['InvalidCharacter']}")
                 validation_status = True
 
             if len(name_testcase) >= 104:
                 print(f"{Textcolor.FAIL}{logs['ErrorSizeName']['Msg']}{Textcolor.END}")
-                Main.add_logs(message="General", value=logs["ErrorSizeName"])
+                Main.add_logs(self, message="General", value=logs["ErrorSizeName"])
                 validation_status = True
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorTestCaseValidation']['Msg']} - {ex}{Textcolor.END}")
-            Main.add_logs(message="General", value=logs["ErrorTestCaseValidation"], value1=str(ex))
+            Main.add_logs(self, message="General", value=logs["ErrorTestCaseValidation"], value1=str(ex))
             validation_status = False
 
         finally:
@@ -73,7 +73,7 @@ class Main:
         return name_buffer.value
 
     # Set language.
-    def set_language(**kwargs):
+    def set_language(self, **kwargs):
         try:
             # kwargs variables.
             language = kwargs.get('language')
@@ -100,11 +100,11 @@ class Main:
             # Variables.
             otherConfigs['Language'] = language
 
-            Main.add_logs(message="General", value=logs["SetLanguage"])
+            Main.add_logs(self, message="General", value=logs["SetLanguage"])
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorSetLanguage']['Msg']} - {ex}{Textcolor.END}")
-            Main.add_logs(message="setLanguage", value=logs["ErrorSetLanguage"]['Msg'], value1=str(ex))
+            Main.add_logs(self, message="setLanguage", value=logs["ErrorSetLanguage"]['Msg'], value1=str(ex))
 
     # Ask and save the Token in a file.
     def save_token(**kwargs):
@@ -126,11 +126,11 @@ class Main:
             token_file = open(file_path, 'a')
             token_file.write(str(name) + ',' + otherConfigs['Token'] + ',\n')
             token_file.close()
-            Main.add_logs(message="General", value=logs["SaveToken"])
+            Main.add_logs(self, message="General", value=logs["SaveToken"])
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorSaveToken']['Msg']} - {ex}{Textcolor.END}")
-            Main.add_logs(message="General", value=logs["ErrorSaveToken"], value1=str(ex))
+            Main.add_logs(self, message="General", value=logs["ErrorSaveToken"], value1=str(ex))
 
     # Create the directories.
     def create_directory(self, **kwargs):
@@ -152,20 +152,20 @@ class Main:
                         creation_time = Lib.os.path.getmtime(Lib.os.path.join(path, item))
                         if (current_time - creation_time) // (24 * 3600) >= 30:
                             Lib.shutil.rmtree(Lib.os.path.join(path, item), ignore_errors=True)
-                            Main.add_logs(message="General", value=logs["DeleteFolder"],
+                            Main.add_logs(self, message="General", value=logs["DeleteFolder"],
                                           value1=path, value2=item)
                     else:
                         creation_time = Lib.os.path.getmtime(Lib.os.path.join(path, item))
                         if (current_time - creation_time) // (24 * 3600) >= 30:
                             Lib.os.remove(Lib.os.path.join(path, item))
-                            Main.add_logs(message="General", value=logs["DeleteFile"],
+                            Main.add_logs(self, message="General", value=logs["DeleteFile"],
                                           value1=Lib.os.path.join(path, item))
 
                 return True
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorCreateDirectory']['Msg']} - {ex}{Textcolor.END}")
-            Main.add_logs(message="General", value=logs["ErrorCreateDirectory"], value1=str(ex))
+            Main.add_logs(self, message="General", value=logs["ErrorCreateDirectory"], value1=str(ex))
 
             return False
 
@@ -189,7 +189,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorDeleteDirectory']['Msg']} - {ex}{Textcolor.END}")
-            Main.add_logs(message="General", value=logs["ErrorDeleteDirectory"], value1=str(ex))
+            Main.add_logs(self, message="General", value=logs["ErrorDeleteDirectory"], value1=str(ex))
 
     # Add the screenshots in the Word file.
     def word_add_steps(**kwargs):
@@ -221,15 +221,15 @@ class Main:
 
             if paragraph is None:
                 print('\033[31m' + '\n' + logs['ErrorWordFindParagraph']['Msg'] + '\033[0;0m')
-                Main.add_logs(message="General", value=logs["ErrorWordFindParagraph"])
+                Main.add_logs(self, message="General", value=Lib.Aux.logs["ErrorWordFindParagraph"])
                 return None
 
             # Add the info in the file.
             if not Main.word_add_info(document=document, test_case_id=test_case_id,
                                       name_testcase=name_testcase, step_number=len(steps_list), step_failed=step_failed,
                                       completed_date=completed_date, executed_by=executed_by, duration=duration):
-                print('\033[31m' + '\n' + logs['ErrorWordSetCTInfo']['Msg'] + '\033[0;0m')
-                Main.add_logs(message="General", value=logs["ErrorWordSetCTInfo"])
+                print('\033[31m' + '\n' + Lib.Aux.logs['ErrorWordSetCTInfo']['Msg'] + '\033[0;0m')
+                Main.add_logs(self, message="General", value=Lib.Aux.logs["ErrorWordSetCTInfo"])
 
                 return None
 
@@ -267,7 +267,7 @@ class Main:
                     # Last step or take_picture_status is true.
                     if verb not in ('Fechar', 'Cerrar', 'Close') and otherConfigs['Api_Step'] is False and add_evidence:
                         # Check the image size.
-                        image_path = Lib.os.path.join(directories['TestSetPath'], otherConfigs["EvidenceName"] +
+                        image_path = Lib.os.path.join(Lib.Aux.directories['TestSetPath'], otherConfigs["EvidenceName"] +
                                                       str(step_order).zfill(2) + otherConfigs["EvidenceExtension"])
                         image = Lib.ImageGrab.Image.open(image_path)
 
@@ -287,8 +287,8 @@ class Main:
                         api_evidence_step = None
                         api_file_name = (otherConfigs["EvidenceNameApi"] + str(step_order).zfill(2) +
                                          otherConfigs["EvidenceExtensionApi"])
-                        api_file = Lib.os.path.join(directories['EvidenceFolder'], Lib.Aux.directories['TestSetPath'],
-                                                    api_file_name)
+                        api_file = Lib.os.path.join(Lib.Aux.directories['EvidenceFolder'],
+                                                    Lib.Aux.directories['TestSetPath'], api_file_name)
 
                         with open(api_file, 'r') as api_evidence_file:
                             api_evidence_step = api_evidence_file.readlines()
@@ -326,7 +326,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorWordAddSteps']['Msg']} - {ex}{Textcolor.END}")
-            Main.add_logs(message="General", value=logs["ErrorWordAddSteps"], value1=str(ex))
+            Main.add_logs(self, message="General", value=logs["ErrorWordAddSteps"], value1=str(ex))
 
         return None
 
@@ -345,7 +345,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorReplacePasswordEvidence']['Msg']} - {ex}{Textcolor.END}")
-            Main.add_logs(message="General", value=logs["ErrorReplacePasswordEvidence"], value1=str(ex))
+            Main.add_logs(self, message="General", value=logs["ErrorReplacePasswordEvidence"], value1=str(ex))
 
     # Search the text in the file.
     def word_seach_text(**kwargs):
@@ -360,7 +360,7 @@ class Main:
                     return p
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorWordSearchText']['Msg']} - {ex}{Textcolor.END}")
-            Main.add_logs(message="General", value=logs["ErrorWordSearchText"], value1=str(ex))
+            Main.add_logs(self, message="General", value=logs["ErrorWordSearchText"], value1=str(ex))
 
         return None
 
@@ -429,7 +429,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorWordAddInfo']['Msg']} - {ex}{Textcolor.END}")
-            Main.add_logs(message="General", value=logs["ErrorWordAddInfo"], value1=str(ex))
+            Main.add_logs(self, message="General", value=logs["ErrorWordAddInfo"], value1=str(ex))
 
             return False
 
@@ -458,7 +458,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorWordToPdf']['Msg']} - {ex}{Textcolor.END}")
-            Main.add_logs(message="General", value=logs["ErrorWordToPdf"], value1=str(ex))
+            Main.add_logs(self, message="General", value=logs["ErrorWordToPdf"], value1=str(ex))
             return None
 
     # Delete files.
@@ -483,10 +483,10 @@ class Main:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorDeleteFiles']['Msg']} - {ex}{Textcolor.END}")
-            Main.add_logs(message="General", value=logs["ErrorDeleteFiles"], value1=str(ex))
+            Main.add_logs(self, message="General", value=logs["ErrorDeleteFiles"], value1=str(ex))
 
     # Add the log in the file.
-    def add_logs(**kwargs):
+    def add_logs(self, **kwargs):
 
         try:
             # kwargs variables.
@@ -505,14 +505,13 @@ class Main:
             # Set the file name.
             path = Lib.os.path.join(directories["LogFolder"], hostname + " - " + date_log + ".log")
 
-            if not Lib.os.path.isdir(directories["LogFolder"]):
-                Main.create_directory(self, path=directories["LogFolder"])
+            Main.create_directory(self, path=directories["LogFolder"])
 
             if not Lib.os.path.isfile(path):
-                Main.create_directory(self, path=directories["LogFolder"])
                 with open(path, "w"):
-                    ###Lib.os.chmod(path, 0o777)
-                    Lib.os.system(f'icacls "{path}" /grant {otherConfigs["All"]}:F')
+                    Lib.os.system(f'icacls "{path}" /grant {otherConfigs["All"]['Msg']}:F')
+                    Lib.os.system('cls')
+
 
             # Append the log file.
             with open(path, 'a+', encoding='utf-8') as log_file:
@@ -548,7 +547,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorAddLog']['Msg']}{Textcolor.END}", str(ex))
-            Main.add_logs(message="General", value=logs["ErrorAddLog"]['Msg'], value1=str(ex))
+            Main.add_logs(self, message="General", value=logs["ErrorAddLog"]['Msg'], value1=str(ex))
 
     # Remove the HTML from the string.
     def remove_html(**kwargs):
@@ -569,7 +568,7 @@ class Main:
         except Exception as ex:
 
             print(f"{Textcolor.FAIL}{logs['ErrorRemoveHtml']['Msg']} - {ex}{Textcolor.END}")
-            Main.add_logs(message="General", value=logs["ErrorRemoveHtml"]['Msg'], value1=str(ex))
+            Main.add_logs(self, message="General", value=logs["ErrorRemoveHtml"]['Msg'], value1=str(ex))
 
     # Translate the messages.
     def translate_msg(**kwargs):
@@ -615,12 +614,12 @@ class Main:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorTranslateMessage']['Msg']} - {ex}{Textcolor.END}")
-            Main.add_logs(message="General", value=logs["ErrorTranslateMessage"], value1=str(ex))
+            Main.add_logs(self, message="General", value=logs["ErrorTranslateMessage"], value1=str(ex))
 
     def checkNewVersion(self):
 
         try:
-            Main.add_logs(message="General", value=logs["ReleaseNotes"],
+            Main.add_logs(self, message="General", value=logs["ReleaseNotes"],
                           value1=f'\nActual version: {self.version_local} \nNew version:    {self.version_distributed}')
 
             zip_file = Lib.Aux.Main.verify_file(path=Lib.Aux.directories['DownloadFolder'], extension='.zip',
@@ -656,22 +655,22 @@ class Main:
                         with open(output_file, 'wb') as file:
                             file.write(response.content)
                         print(f"{logs['DownloadPackageCompleted']['Msg']}: {output_file}")
-                        Main.add_logs(message="General", value=logs["DownloadPackageCompleted"],
+                        Main.add_logs(self, message="General", value=logs["DownloadPackageCompleted"],
                                       value1=str(output_file))
 
                     else:
                         print(f"{logs['ErrorDownloadUpdate']['Msg']}: {response.status_code}")
-                        Main.add_logs(message="General", value=logs["ErrorDownloadUpdate"],
+                        Main.add_logs(self, message="General", value=logs["ErrorDownloadUpdate"],
                                       value1=str(response.status_code))
 
                     print("-" * 30)
-                    Main.add_logs(message="General", value=logs["InstallNewVersion"],
+                    Main.add_logs(self, message="General", value=logs["InstallNewVersion"],
                                   value1=str(self.version_distributed))
                     print("-" * 30)
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorCheckNewVersion']['Msg']}{Textcolor.END}", str(ex))
-            Main.add_logs(message="General", value=logs["ErrorCheckNewVersion"], value1=str(ex))
+            Main.add_logs(self, message="General", value=logs["ErrorCheckNewVersion"], value1=str(ex))
 
     # Configure the language for the automation.
     def configure_language(**kwargs):
@@ -691,7 +690,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorConfigureLanguage']['Msg']} - {ex}{Textcolor.END}")
-            Main.add_logs(message="General", value=logs["ErrorConfigureLanguage"], value1=str(ex))
+            Main.add_logs(self, message="General", value=logs["ErrorConfigureLanguage"], value1=str(ex))
 
     # Generate the hash for a file.
     def generate_hash(**kwargs):
@@ -711,7 +710,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorGenerateHash']['Msg']} - {ex}{Textcolor.END}")
-            Main.add_logs(message="General", value=logs["ErrorGenerateHash"], value1=str(ex))
+            Main.add_logs(self, message="General", value=logs["ErrorGenerateHash"], value1=str(ex))
 
     # Read the hash in a file.
     def read_hash(**kwargs):
@@ -734,7 +733,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorReadHash']['Msg']} - {ex}{Textcolor.END}")
-            Main.add_logs(message="General", value=logs["ErrorReadHash"], value1=str(ex))
+            Main.add_logs(self, message="General", value=logs["ErrorReadHash"], value1=str(ex))
 
     # Save the hash in a file.
     def save_hash(**kwargs):
@@ -753,7 +752,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorSaveHash']['Msg']} - {ex}{Textcolor.END}")
-            Main.add_logs(message="General", value=logs["ErrorSaveHash"], value1=str(ex))
+            Main.add_logs(self, message="General", value=logs["ErrorSaveHash"], value1=str(ex))
 
     def read_html_content(self):
 
@@ -768,7 +767,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorReadHTMLContent']['Msg']} - {ex}{Textcolor.END}")
-            Main.add_logs(message="General", value=logs["ErrorReadHTMLContent"], value1=str(ex))
+            Main.add_logs(self, message="General", value=logs["ErrorReadHTMLContent"], value1=str(ex))
 
     # Load the configuration file.
     def load_configs(**kwargs):
@@ -797,10 +796,10 @@ class Main:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorLoadConfigs']['Msg']} - {ex}{Textcolor.END}")
-            Main.add_logs(message="General", value=logs["ErrorLoadConfigs"], value1=str(ex))
+            Main.add_logs(self, message="General", value=logs["ErrorLoadConfigs"], value1=str(ex))
 
     # Calculate the percentage of execution.
-    def percentage(**kwargs):
+    def percentage(self, **kwargs):
         try:
             # kwargs parameters.
             actual_number = kwargs.get('actual')
@@ -814,11 +813,11 @@ class Main:
                   f"{' '}{Textcolor.UNDERLINE}{percentage}{'%'}{' '}{Textcolor.END}"
                   f"{Textcolor.BLUE}{Textcolor.END}\n")
 
-            Main.add_logs(message="General", value=logs["Percentage"])
+            Main.add_logs(self, message="General", value=logs["Percentage"])
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorPercentage']['Msg']} - {ex}{Textcolor.END}")
-            Main.add_logs(message="General", value=logs["ErrorPercentage"], value1=str(ex))
+            Main.add_logs(self, message="General", value=logs["ErrorPercentage"], value1=str(ex))
 
     # Verify if the file exist.
     def verify_file(**kwargs):
@@ -841,7 +840,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorVerifyFile']['Msg']} - {ex}{Textcolor.END}")
-            Main.add_logs(message="General", value=logs["ErrorVerifyFile"], value1=str(ex))
+            Main.add_logs(self, message="General", value=logs["ErrorVerifyFile"], value1=str(ex))
 
     # Compare files using Beyond Compare.
     def compare_beyond_compare(**kwargs):
@@ -891,7 +890,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorCompareFile']['Msg']} - {ex}{Textcolor.END}")
-            Main.add_logs(message="General", value=logs["ErrorCompareFile"], value1=str(ex))
+            Main.add_logs(self, message="General", value=logs["ErrorCompareFile"], value1=str(ex))
 
     # Check if the test case is a Desktop test case.
     def _check_desktop_tc(**kwargs):
@@ -939,7 +938,7 @@ class Main:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorReleaseNotes']['Msg']} - {ex}{Textcolor.END}")
-            Main.add_logs(message="General", value=logs["ErrorReleaseNotes"], value1=str(ex))
+            Main.add_logs(self, message="General", value=logs["ErrorReleaseNotes"], value1=str(ex))
 
     # Validate content inside JSON content.
     def find_content_json(self, **kwargs):
@@ -984,7 +983,7 @@ class Main:
                     return "Passed"
                 else:
                     print(f"{Textcolor.FAIL}{logs['ErrorValidationApi']['Msg']}{Textcolor.END}")
-                    Main.add_logs(message="General", value=logs["ErrorValidationAPI"])
+                    Main.add_logs(self, message="General", value=logs["ErrorValidationAPI"])
                     otherConfigs['JsonValidate'] = otherConfigs['JsonValidateFailed']['Msg']
                     return "Failed"
             else:  # Tag's validation.
@@ -1005,13 +1004,13 @@ class Main:
                     return "Passed"
                 else:
                     print(f"{Textcolor.FAIL}{logs['ErrorValidationApi']['Msg']}{Textcolor.END}")
-                    Main.add_logs(message="General", value=logs["ErrorValidationApi"])
+                    Main.add_logs(self, message="General", value=logs["ErrorValidationApi"])
                     otherConfigs['JsonValidate'] = otherConfigs['JsonValidateFailed']['Msg']
                     return "Failed"
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorFindContentApi']['Msg']} - {ex}{Textcolor.END}")
-            Main.add_logs(message="General", value=logs["ErrorFindContentApi"], value1=str(ex))
+            Main.add_logs(self, message="General", value=logs["ErrorFindContentApi"], value1=str(ex))
 
             return "Failed"
 
@@ -1070,7 +1069,10 @@ class ApiSchema:
         self.resolved_schema = None
         self.paths = []
 
-    def api_check(self):
+    def api_check(self, **kwargs):
+
+        # kwargs variables.
+        parameters1 = kwargs.get("parameters1")
 
         try:
 
@@ -1083,7 +1085,7 @@ class ApiSchema:
             swagger_data = ApiSchema.load_swagger(self, Lib.os.path.join(directories['SwaggerFolder'],
                                                                          self.swagger_file))
             # Generate fake data to the data types.
-            ApiSchema.extract_jsonschema_relevant_data(self, swagger_data)
+            ApiSchema.extract_jsonschema_relevant_data(self, swagger_data=swagger_data, parameters1=parameters1)
 
             print(f"{Textcolor.WARNING}{otherConfigs['Api_ExtractInfo']['Msg']} {self.swagger_file}{Textcolor.END}")
 
@@ -1118,7 +1120,7 @@ class ApiSchema:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorApiCheck']['Msg']}{Textcolor.END}", str(ex))
-            Main.add_logs(message="General", value=logs["ErrorApiCheck"], value1=str(ex))
+            Main.add_logs(self, message="General", value=logs["ErrorApiCheck"], value1=str(ex))
 
     def load_swagger(self, file_path):
 
@@ -1128,9 +1130,13 @@ class ApiSchema:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorLoadSwagger']['Msg']}{Textcolor.END}", str(ex))
-            Main.add_logs(message="General", value=logs["ErrorLoadSwagger"], value1=str(ex))
+            Main.add_logs(self, message="General", value=logs["ErrorLoadSwagger"], value1=str(ex))
 
-    def extract_jsonschema_relevant_data(self, swagger_data):
+    def extract_jsonschema_relevant_data(self, **kwargs):
+
+        # kwargs variables.
+        swagger_data = kwargs.get("swagger_data")
+        parameters1 = kwargs.get("parameters1")
 
         try:
             if 'definitions' in swagger_data:
@@ -1143,11 +1149,21 @@ class ApiSchema:
             with open(Lib.os.path.join(directories['SwaggerFolder'], self.swagger_file), 'w') as f:
                 Lib.json.dump(relevant_data, f, indent=2)
 
-            self.paths = swagger_data['paths']
+            self.paths = list(swagger_data['paths'].keys())
+
+            # Body field per endpoint.
+            for order_path, _ in enumerate(self.paths):
+                for endpoint in swagger_data['components']['schemas']:
+
+                    url = Lib.regex.match(r'(.*?)(?=/v1)', parameters1).group(1) + self.paths[order_path]
+
+                    Lib.Aux.otherConfigs['DictAllSchema'][url] = {
+                        'n_requests': swagger_data['components']['schemas'][endpoint]['properties'].__len__()
+                    }
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorExtractJson']['Msg']}{Textcolor.END}", str(ex))
-            Main.add_logs(message="General", value=logs["ErrorExtractJson"], value1=str(ex))
+            Main.add_logs(self, message="General", value=logs["ErrorExtractJson"], value1=str(ex))
 
     # Generate fake data.
     def generate_data(self, schema, definitions):
@@ -1192,7 +1208,7 @@ class ApiSchema:
 
             except Exception as ex:
                 print(f"{Textcolor.FAIL}{logs['ErrorAddJsonVariation']['Msg']} - {ex}{Textcolor.END}")
-                Main.add_logs(message="General", value=logs["ErrorAddJsonVariation"], value1=str(ex))
+                Main.add_logs(self, message="General", value=logs["ErrorAddJsonVariation"], value1=str(ex))
 
         # Generate based on schema info.
         if schema['type'] == 'string':
@@ -1245,7 +1261,7 @@ class ApiSchema:
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorResolvedReference']['Msg']} - {ex}{Textcolor.END}")
-            Main.add_logs(message="General", value=logs["ErrorResolvedReference"], value1=str(ex))
+            Main.add_logs(self, message="General", value=logs["ErrorResolvedReference"], value1=str(ex))
 
     def run_validation(self, json_data):  ### (Only to validate the schema response)
         errors = []

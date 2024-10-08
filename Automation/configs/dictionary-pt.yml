@@ -412,6 +412,7 @@ otherConfigs:
         CloseBrowser: {Type: Success, Msg: Fechar o navegador., Where: close},
         CloseTokenMenu: {Type: Info, Msg: "SALVAR", Where: automationAux},
         DesktopFunctions: ['Execute', 'Ejecute'],
+        DictAllSchema: {},
         DisabledStep: {Type: Info, Msg: "Passo desabilitado devido as necessidades do teste", Where: word_add_steps},
         DownloadingFile: {Type: Info, Msg: "Baixando arquivo ...", Where: automationFunc - save_file},
         DownloadFinished: {Type: Info, Msg: "O arquivo foi baixado", Where: automationFunc - save_file},
