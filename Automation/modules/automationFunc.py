@@ -1732,8 +1732,9 @@ class Main:
                         Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.logs["ErrorApiBodyMissing"])
                         raise TypeError(Lib.Aux.logs['ErrorApiBodyMissing']['Msg'])
                     json_data = Lib.Aux.ApiSchema(parameters1[parameters1.find(':') + 1:].strip())
-                    json_fake_data, endpoints = json_data.api_check(parameters1=
-                                                                    parameters1[parameters1.find(':') + 1:].strip())
+                    json_fake_data, endpoints, schema = json_data.api_check(parameters1=
+                                                                            parameters1[parameters1.find(':') + 1:]
+                                                                            .strip())
 
                     if (parameters2 is not None) and parameters2.upper() == 'ALL':
                         url = Lib.copy.deepcopy(Lib.Aux.otherConfigs['Api_Endpoints'])

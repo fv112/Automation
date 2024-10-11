@@ -1068,6 +1068,7 @@ class ApiSchema:
         self.swagger_file = 'swagger.json'
         self.resolved_schema = None
         self.paths = []
+        self.schema = {}
 
     def api_check(self, **kwargs):
 
@@ -1084,24 +1085,32 @@ class ApiSchema:
 
             swagger_data = ApiSchema.load_swagger(self, Lib.os.path.join(directories['SwaggerFolder'],
                                                                          self.swagger_file))
-            # Generate fake data to the data types.
-            ApiSchema.extract_jsonschema_relevant_data(self, swagger_data=swagger_data, parameters1=parameters1)
+            # Extract data type field to generate fake data.
+            ApiSchema.extract_jsonschema_relevant_data(self, swagger_data=swagger_data)
+            # , parameters1=parameters1)
 
             print(f"{Textcolor.WARNING}{otherConfigs['Api_ExtractInfo']['Msg']} {self.swagger_file}{Textcolor.END}")
 
-            with open(Lib.os.path.join(directories['SwaggerFolder'], self.swagger_file), 'r', encoding='utf-8') as file:
-                schema = Lib.json.load(file)
+            # with open(Lib.os.path.join(directories['SwaggerFolder'], self.swagger_file), 'r', encoding='utf-8') as file:
+            #     self.schema = Lib.json.load(file)
 
-            with open(Lib.os.path.join(directories['SwaggerFolder'], self.swagger_file), 'w', encoding='utf-8') as file:
-                Lib.json.dump(schema, file, ensure_ascii=False, indent=2)
+            # with open(Lib.os.path.join(directories['SwaggerFolder'], self.swagger_file), 'w', encoding='utf-8') as file:
+                # Lib.json.dump(self.schema, file, ensure_ascii=False, indent=2)
+                # file.write(Lib.Aux.otherConfigs['DictAllSchema'])
 
             # Generate and print the fake data.
-            for definition_name, definition_schema in schema.items():
-                data_list = ApiSchema.generate_data(self, definition_schema, schema)
-                print(f"Data for '{definition_name}' tag:")
-                for self.json_fake_data in data_list:
-                    print(Lib.json.dumps(self.json_fake_data, indent=2))
-                print("-" * 80)
+            count = 0####
+            # schema = Lib.Aux.otherConfigs['DictAllSchema']
+            for endpoint, definition_schema in Lib.Aux.otherConfigs['DictAllSchema'].items():
+                ApiSchema.generate_data(self, definition_schema, self.schema, endpoint)
+                print(f"Data for endpoint: '{endpoint}':")
+                # for self.json_fake_data in data_list:
+                #     print(Lib.json.dumps(self.json_fake_data, indent=2))
+
+                if count == 5: ####
+                    break###
+                else:###
+                    count += 1###
 
             # Link between each fake info and the right tag. (Only to validate the schema response)
             # self.resolved_schema = {k: ApiSchema.resolve_refs(self, v, schema) for k, v in schema.items()}
@@ -1116,7 +1125,7 @@ class ApiSchema:
 
             Main.delete_files(folder_path=directories['SwaggerFolder'], extension='*')
 
-            return self.json_fake_data, self.paths
+            return self.json_fake_data, self.paths, self.schema
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorApiCheck']['Msg']}{Textcolor.END}", str(ex))
@@ -1136,40 +1145,75 @@ class ApiSchema:
 
         # kwargs variables.
         swagger_data = kwargs.get("swagger_data")
-        parameters1 = kwargs.get("parameters1")
+        # parameters1 = kwargs.get("parameters1")
 
         try:
-            if 'definitions' in swagger_data:
-                relevant_data = swagger_data['definitions']
-            elif 'components' in swagger_data and 'schemas' in swagger_data['components']:
-                relevant_data = swagger_data['components']['schemas']
-            else:
-                relevant_data = {}
+            # relevant_data = {}
+            parameters = {}
+            list_param = []
+            # name = ''
 
-            with open(Lib.os.path.join(directories['SwaggerFolder'], self.swagger_file), 'w') as f:
-                Lib.json.dump(relevant_data, f, indent=2)
+            for endpoint in swagger_data['paths']:
 
-            self.paths = list(swagger_data['paths'].keys())
+                Lib.Aux.otherConfigs['DictAllSchema'][endpoint] = {}
 
-            # Body field per endpoint.
-            for order_path, _ in enumerate(self.paths):
-                for endpoint in swagger_data['components']['schemas']:
+                for action in swagger_data['paths'][endpoint]:
 
-                    url = Lib.regex.match(r'(.*?)(?=/v1)', parameters1).group(1) + self.paths[order_path]
+                    Lib.Aux.otherConfigs['DictAllSchema'][endpoint]['action'] = action
 
-                    Lib.Aux.otherConfigs['DictAllSchema'][url] = {
-                        'n_requests': swagger_data['components']['schemas'][endpoint]['properties'].__len__()
-                    }
+                    for order, tag in enumerate(swagger_data['paths'][endpoint][action]['parameters']):
+
+                        parameters = {
+                            'name': swagger_data['paths'][endpoint][action]['parameters'][order]['name'],
+                            'type': swagger_data['paths'][endpoint][action]['parameters'][order]['schema']['type'],
+                        }
+
+                        list_param.append(parameters)
+                        Lib.Aux.otherConfigs['DictAllSchema'][endpoint]['parameters'] = list_param
+
+            # with open(Lib.os.path.join(directories['SwaggerFolder'], self.swagger_file), 'w') as f:
+            #     Lib.json.dump(relevant_data, f, indent=2)
+            #
+            #
+            # relevant_data = {}
+            #
+            # if 'definitions' in swagger_data:
+            #     relevant_data = swagger_data['definitions']
+            # if 'components' in swagger_data and 'schemas' in swagger_data['components']:
+            #     relevant_data = swagger_data['components']['schemas']
+            # if 'paths' in swagger_data:
+            #     relevant_data = swagger_data['paths']
+            # ###else:
+            # ###    relevant_data = {}
+            #
+            # with open(Lib.os.path.join(directories['SwaggerFolder'], self.swagger_file), 'w') as f:
+            #     Lib.json.dump(relevant_data, f, indent=2)
+            #
+            # self.paths = list(swagger_data['paths'].keys())
+            #
+            # # Body field per endpoint.
+            # for order_path, _ in enumerate(self.paths):
+            #     for endpoint in swagger_data['components']['schemas']:
+            #
+            #         url = Lib.regex.match(r'(.*?)(?=/v1)', parameters1).group(1) + self.paths[order_path]
+            #
+            #         if 'properties' in swagger_data['components']['schemas'][endpoint]:
+            #             Lib.Aux.otherConfigs['DictAllSchema'][url] = {
+            #                 'paths': swagger_data[endpoint],
+            #                 'n_requests': swagger_data['components']['schemas'][endpoint]['properties'].__len__()
+            #             }
+
+            # print(f"{Lib.Aux.otherConfigs['DictAllSchema']}\n") ###
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorExtractJson']['Msg']}{Textcolor.END}", str(ex))
             Main.add_logs(self, message="General", value=logs["ErrorExtractJson"], value1=str(ex))
 
     # Generate fake data.
-    def generate_data(self, schema, definitions):
-        if 'type' not in schema:
-            return None
-        data = []
+    def generate_data(self, schema, definitions, endpoint):
+        # if 'type' not in schema:
+        #     return None
+        # data = []
 
         fake = Lib.Faker()
 
@@ -1211,40 +1255,56 @@ class ApiSchema:
                 Main.add_logs(self, message="General", value=logs["ErrorAddJsonVariation"], value1=str(ex))
 
         # Generate based on schema info.
-        if schema['type'] == 'string':
-            value = fake.word() if not (schema.get('nullable', False) and Lib.random.choice([True, False])) else None
-            add_variations('string', value)
-        elif schema['type'] == 'number':
-            value = fake.pyfloat(left_digits=5, right_digits=2) if not (schema.get('nullable', False) and
-                                                                        Lib.random.choice([True, False])) else None
-            add_variations('number', value)
-        elif schema['type'] == 'integer':
-            value = fake.random_int() if not (schema.get('nullable', False) and Lib.random.choice([True, False])) \
-                else None
-            add_variations('integer', value)
-        elif schema['type'] == 'boolean':
-            value = fake.boolean() if not (schema.get('nullable', False) and Lib.random.choice([True, False])) else None
-            add_variations('boolean', value)
-        elif schema['type'] == 'array':
-            if not (schema.get('nullable', False) and Lib.random.choice([True, False])):
-                array_data = [ApiSchema.generate_data(self, schema['items'], definitions) for _ in range(3)]
-                if array_data not in data:
-                    data.append(array_data)
-        elif schema['type'] == 'object':
-            if not (schema.get('nullable', False) and Lib.random.choice([True, False])):
-                obj = {}
-                for prop, prop_schema in schema.get('properties', {}).items():
-                    if '$ref' in prop_schema:
-                        ref = prop_schema['$ref'].split('/')[-1]
-                        obj[prop] = ApiSchema.generate_data(self, definitions[ref], definitions)
-                    else:
-                        obj[prop] = ApiSchema.generate_data(self, prop_schema, definitions)
-                if obj not in data:
-                    data.append(obj)
-        return data
+        for order, _ in enumerate(schema['parameters']):
+            data = []
+            if schema['parameters'][order]['type'] == 'string':
+                value = fake.word() if not (schema.get('nullable', False) and Lib.random.choice([True, False])) \
+                    else None
+                add_variations('string', value)
+
+            elif schema['parameters'][order]['type'] == 'number':
+                value = fake.pyfloat(left_digits=5, right_digits=2) if not (schema.get('nullable', False) and
+                                                                            Lib.random.choice([True, False])) else None
+                add_variations('number', value)
+
+            elif schema['parameters'][order]['type'] == 'integer':
+                value = fake.random_int() if not (schema.get('nullable', False) and Lib.random.choice([True, False])) \
+                    else None
+                add_variations('integer', value)
+
+            elif schema['parameters'][order]['type'] == 'boolean':
+                value = fake.boolean() if not (schema.get('nullable', False) and Lib.random.choice([True, False])) \
+                    else None
+                add_variations('boolean', value)
+
+            elif schema['parameters'][order]['type'] == 'array':
+                if not (schema.get('nullable', False) and Lib.random.choice([True, False])):
+                    array_data = [ApiSchema.generate_data(self, schema['items'], definitions) for _ in range(3)]
+                    if array_data not in data:
+                        data.append(array_data)
+
+            elif schema['parameters'][order]['type'] == 'object':
+                if not (schema.get('nullable', False) and Lib.random.choice([True, False])):
+                    obj = {}
+                    for prop, prop_schema in schema.get('properties', {}).items():
+                        if '$ref' in prop_schema:
+                            ref = prop_schema['$ref'].split('/')[-1]
+                            obj[prop] = ApiSchema.generate_data(self, definitions[ref], definitions, 'None')
+                        else:
+                            obj[prop] = ApiSchema.generate_data(self, prop_schema, definitions, 'None')
+                    if obj not in data:
+                        data.append(obj)
+
+            otherConfigs['DictAllSchema'][endpoint]['parameters'][order]['type_fake'] = data
+
+            for name, type, type_fake in otherConfigs['DictAllSchema'][endpoint]['parameters'][order]: ### Parei aqui!!!!
+                print(info['type'])
+                print(into['type_fake'])
+            print("-" * 80)
+            # return data
 
     # Read the schema references.
-    def resolve_refs(self, schema, definitions):
+    def resolve_refs(self, schema, definitions): ### (Only to validate the schema response)
 
         try:
 

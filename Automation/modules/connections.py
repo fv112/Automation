@@ -578,7 +578,7 @@ class Connections:
         # kwargs variables.
         project_id = kwargs.get("project_id")
         test_case_id = kwargs.get("test_case_id")
-        status_name_testcase = kwargs.get('status_name_testcase', None)
+        status_name_testcase = kwargs.get('status_name_testcase', '')
         file_url_list = kwargs.get('file_url_list')
         file_path_list = kwargs.get('file_path_list')
 
@@ -594,7 +594,7 @@ class Connections:
 
             for cont, file_path in enumerate(file_path_list):
 
-                if status_name_testcase:
+                if status_name_testcase == '':
                     file_url = file_url_list[cont].replace("file", status_name_testcase + ".pdf")
 
                     body = {

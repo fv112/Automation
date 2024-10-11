@@ -1,5 +1,11 @@
 Automation QA - Release notes
 ---------
+bookmark: **Version 1.28.06**  
+
+<em>11/10/2024</em>  
+:construction: - Correção do geração de dados fake para API.  
+#
+
 bookmark: **Version 1.28.05**  
 
 <em>09/10/2024</em>  
