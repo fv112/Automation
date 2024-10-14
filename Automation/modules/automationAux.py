@@ -1067,13 +1067,13 @@ class ApiSchema:
         self.swagger_link = swagger_link
         self.swagger_file = 'swagger.json'
         self.resolved_schema = None
-        self.paths = []
+        # self.paths = []
         self.schema = {}
 
-    def api_check(self, **kwargs):
+    def api_check(self): #, **kwargs):
 
         # kwargs variables.
-        parameters1 = kwargs.get("parameters1")
+        # parameters1 = kwargs.get("parameters1")
 
         try:
 
@@ -1103,7 +1103,7 @@ class ApiSchema:
             # schema = Lib.Aux.otherConfigs['DictAllSchema']
             for endpoint, definition_schema in Lib.Aux.otherConfigs['DictAllSchema'].items():
                 ApiSchema.generate_data(self, definition_schema, self.schema, endpoint)
-                print(f"Data for endpoint: '{endpoint}':")
+                # print(f"Data for endpoint: '{endpoint}':")
                 # for self.json_fake_data in data_list:
                 #     print(Lib.json.dumps(self.json_fake_data, indent=2))
 
@@ -1156,6 +1156,7 @@ class ApiSchema:
             for endpoint in swagger_data['paths']:
 
                 Lib.Aux.otherConfigs['DictAllSchema'][endpoint] = {}
+                list_param = []
 
                 for action in swagger_data['paths'][endpoint]:
 
@@ -1211,9 +1212,6 @@ class ApiSchema:
 
     # Generate fake data.
     def generate_data(self, schema, definitions, endpoint):
-        # if 'type' not in schema:
-        #     return None
-        # data = []
 
         fake = Lib.Faker()
 
@@ -1255,51 +1253,52 @@ class ApiSchema:
                 Main.add_logs(self, message="General", value=logs["ErrorAddJsonVariation"], value1=str(ex))
 
         # Generate based on schema info.
-        for order, _ in enumerate(schema['parameters']):
+        for _, tag_type in enumerate(otherConfigs['DictAllSchema'][endpoint]['parameters']):
             data = []
-            if schema['parameters'][order]['type'] == 'string':
+            if tag_type['type'] == 'string':
                 value = fake.word() if not (schema.get('nullable', False) and Lib.random.choice([True, False])) \
                     else None
                 add_variations('string', value)
 
-            elif schema['parameters'][order]['type'] == 'number':
+            elif tag_type['type'] == 'number':
                 value = fake.pyfloat(left_digits=5, right_digits=2) if not (schema.get('nullable', False) and
                                                                             Lib.random.choice([True, False])) else None
                 add_variations('number', value)
 
-            elif schema['parameters'][order]['type'] == 'integer':
+            elif tag_type['type'] == 'integer':
                 value = fake.random_int() if not (schema.get('nullable', False) and Lib.random.choice([True, False])) \
                     else None
                 add_variations('integer', value)
 
-            elif schema['parameters'][order]['type'] == 'boolean':
+            elif tag_type['type'] == 'boolean':
                 value = fake.boolean() if not (schema.get('nullable', False) and Lib.random.choice([True, False])) \
                     else None
                 add_variations('boolean', value)
 
-            elif schema['parameters'][order]['type'] == 'array':
+            elif tag_type['type'] == 'array':
                 if not (schema.get('nullable', False) and Lib.random.choice([True, False])):
-                    array_data = [ApiSchema.generate_data(self, schema['items'], definitions) for _ in range(3)]
+                    array_data = [ApiSchema.generate_data(self, schema['items'], definitions, None) for _ in range(3)]
                     if array_data not in data:
                         data.append(array_data)
 
-            elif schema['parameters'][order]['type'] == 'object':
+            elif tag_type['type'] == 'object':
                 if not (schema.get('nullable', False) and Lib.random.choice([True, False])):
                     obj = {}
                     for prop, prop_schema in schema.get('properties', {}).items():
                         if '$ref' in prop_schema:
                             ref = prop_schema['$ref'].split('/')[-1]
-                            obj[prop] = ApiSchema.generate_data(self, definitions[ref], definitions, 'None')
+                            obj[prop] = ApiSchema.generate_data(self, definitions[ref], definitions, None)
                         else:
-                            obj[prop] = ApiSchema.generate_data(self, prop_schema, definitions, 'None')
+                            obj[prop] = ApiSchema.generate_data(self, prop_schema, definitions, None)
                     if obj not in data:
                         data.append(obj)
 
-            otherConfigs['DictAllSchema'][endpoint]['parameters'][order]['type_fake'] = data
+            otherConfigs['DictAllSchema'][endpoint]['parameters'][order]['fake'] = data ### Parei aqui
 
-            for name, type, type_fake in otherConfigs['DictAllSchema'][endpoint]['parameters'][order]: ### Parei aqui!!!!
-                print(info['type'])
-                print(into['type_fake'])
+            # print(otherConfigs['DictAllSchema'][endpoint])
+            print(f"Data for endpoint: '{endpoint}':")
+            for tag, info in enumerate(otherConfigs['DictAllSchema'][endpoint]['parameters']):
+                print(f"Tag: {tag} - Info: {info}")
             print("-" * 80)
             # return data
 
