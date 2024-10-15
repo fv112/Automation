@@ -1253,7 +1253,7 @@ class ApiSchema:
                 Main.add_logs(self, message="General", value=logs["ErrorAddJsonVariation"], value1=str(ex))
 
         # Generate based on schema info.
-        for _, tag_type in enumerate(otherConfigs['DictAllSchema'][endpoint]['parameters']):
+        for order, tag_type in enumerate(otherConfigs['DictAllSchema'][endpoint]['parameters']):
             data = []
             if tag_type['type'] == 'string':
                 value = fake.word() if not (schema.get('nullable', False) and Lib.random.choice([True, False])) \
@@ -1293,12 +1293,14 @@ class ApiSchema:
                     if obj not in data:
                         data.append(obj)
 
-            otherConfigs['DictAllSchema'][endpoint]['parameters'][order]['fake'] = data ### Parei aqui
+            otherConfigs['DictAllSchema'][endpoint]['parameters'][order]['fake'] = data
 
             # print(otherConfigs['DictAllSchema'][endpoint])
             print(f"Data for endpoint: '{endpoint}':")
-            for tag, info in enumerate(otherConfigs['DictAllSchema'][endpoint]['parameters']):
-                print(f"Tag: {tag} - Info: {info}")
+            for _, info_fake in enumerate(otherConfigs['DictAllSchema'][endpoint]['parameters']):
+                print(f"Tag: {info_fake['name']}")
+                for count, fake in enumerate(info_fake['fake']): ### Deu erro. Parei aqui.
+                    print(f"   Info fake: {info_fake['fake'][count]} - Type: {type(info_fake['fake'][count])}")
             print("-" * 80)
             # return data
 
