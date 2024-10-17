@@ -41,8 +41,8 @@ if response_project.status_code == 200:
         page = 1
         while True:
             url2 = ('https://sbs.t-systems.com.br/gitlab/api/v4/projects/' + str(project_id['id']) +
-                    '/issues?label=[%27bug::Code%20Review%27,%27bug::QA%27,%27bug::'
-                    'UAT%27,%27bug::Production%20Issue%27]&per_page=1000&page=' + str(page))
+                    '/issues?label=[%27phase::Code%20Review%27,%27phase::QA%27,%27phase::'
+                    'UAT%27,%27phase::Production%20Issue%27]&per_page=1000&page=' + str(page))
 
             response_ct = _connection(url=url2, headers=headers)
 

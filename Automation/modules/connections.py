@@ -263,93 +263,101 @@ class Connections:
 
             # Variables.
             test_case_id_list = []
+            page = 1
 
-            new_url = url + 'projects/' + str(project_id) + ('/issues?labels=Test%20case&per_page=1000&page=1&'
-                                                             'not[labels]=Execution::Only%20Manual')
+            new_url = url + 'projects/' + str(project_id) + ('/issues?labels=Test%20case&per_page=100&page=' + str(page)
+                                                             + '&not[labels]=Execution::Only%20Manual')
 
             s = Lib.requests.get(new_url, headers={'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["Bearer"]},
                                  verify=False)
 
-            if s.status_code == 200:
-                table = Lib.PrettyTable(["STATUS", "ORDER", "TEST CASE ID", "TEST CASE"])
-                table.align['STATUS'] = 'l'
-                table.align['TEST CASE'] = 'l'
+            while True:
+                if s.status_code == 200:
+                    # Filter some fields.
+                    json_str = Lib.json.dumps(s.json())
+                    resp = Lib.json.loads(json_str)
+                    page += 1
+                    if 'next' not in resp or resp['next'] is None:
+                        break
+                elif s.status_code == 401:
+                    print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.otherConfigs['RunAgain']['Msg']}"
+                          f"{Lib.Aux.Textcolor.UNDERLINE}\n")
+                    Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.otherConfigs['TokenExpired'])
+                    raise Exception
 
-                # Filter some fields.
-                json_str = Lib.json.dumps(s.json())
-                resp = Lib.json.loads(json_str)
-                if resp.__len__() != 0:
-                    for id_test, testCase_id in enumerate(resp):
-                        actual_status = [status for status in testCase_id['labels'] if 'Status' in status]
+                else:
+                    print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequest']['Msg']}{Lib.Aux.Textcolor.END}\n")
+                    Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.logs['ErrorRequest'],
+                                          value1='Status code: ' + str(s.status_code) + ' - getTestCases')
+                    raise Exception
 
-                        if not actual_status:
-                            status = "Not Run"
-                        else:
-                            status = actual_status[0].replace('Status::', '')
+            table = Lib.PrettyTable(["STATUS", "ORDER", "TEST CASE ID", "TEST CASE"])
+            table.align['STATUS'] = 'l'
+            table.align['TEST CASE'] = 'l'
 
-                        if status == 'Failed':
-                            status = f"{Lib.Aux.Textcolor.FAIL}{status}{Lib.Aux.Textcolor.END}"
-                        elif status == 'Passed':
-                            status = f"{Lib.Aux.Textcolor.GREEN}{status}{Lib.Aux.Textcolor.END}"
-                        elif status == 'Blocked':
-                            status = f"{Lib.Aux.Textcolor.BLUE}{status}{Lib.Aux.Textcolor.END}"
-                        elif status == 'Aborted':
-                            status = f"{Lib.Aux.Textcolor.WARNING}{status}{Lib.Aux.Textcolor.END}"
+            if resp.__len__() != 0:
+                for id_test, testCase_id in enumerate(resp):
+                    actual_status = [status for status in testCase_id['labels'] if 'Status' in status]
 
-                        table.add_row([status, id_test + 1, str(testCase_id['iid']), testCase_id['title']])
-                        test_case_id_list.append(testCase_id['iid'])
+                    if not actual_status:
+                        status = "Not Run"
+                    else:
+                        status = actual_status[0].replace('Status::', '')
 
-                    while isolated_tc is None:
-                        print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['AskCt']['Msg']}"
-                              f"{Lib.Aux.Textcolor.END} ")
-                        isolated_tc = input()
-                        if Lib.Aux.Main.validate_selection(input_data=isolated_tc.upper(),
-                                                           search_list=['Y', 'S', 'N', '']):
-                            break
+                    if status == 'Failed':
+                        status = f"{Lib.Aux.Textcolor.FAIL}{status}{Lib.Aux.Textcolor.END}"
+                    elif status == 'Passed':
+                        status = f"{Lib.Aux.Textcolor.GREEN}{status}{Lib.Aux.Textcolor.END}"
+                    elif status == 'Blocked':
+                        status = f"{Lib.Aux.Textcolor.BLUE}{status}{Lib.Aux.Textcolor.END}"
+                    elif status == 'Aborted':
+                        status = f"{Lib.Aux.Textcolor.WARNING}{status}{Lib.Aux.Textcolor.END}"
 
-                    print(
-                        f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['TestCaseList']['Msg']}"
-                        f"{Lib.Aux.Textcolor.END}")
-                    table.set_style(Lib.DOUBLE_BORDER)
-                    print(table)
+                    table.add_row([status, id_test + 1, str(testCase_id['iid']), testCase_id['title']])
+                    test_case_id_list.append(testCase_id['iid'])
 
-                    if isolated_tc.upper() != 'I':  # Only info.
+                while isolated_tc is None:
+                    print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['AskCt']['Msg']}"
+                          f"{Lib.Aux.Textcolor.END} ")
+                    isolated_tc = input()
+                    if Lib.Aux.Main.validate_selection(input_data=isolated_tc.upper(),
+                                                       search_list=['Y', 'S', 'N', '']):
+                        break
 
-                        test_case_list = [str(testcase_id) for testcase_id in test_case_id_list]
+                print(
+                    f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['TestCaseList']['Msg']}"
+                    f"{Lib.Aux.Textcolor.END}")
+                table.set_style(Lib.DOUBLE_BORDER)
+                print(table)
 
-                        if isolated_tc.upper() in ['Y', 'S', ''] and id_test_case == 0:
-                            while True:
-                                print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['ChooseTestCase']['Msg']}"
-                                      f"{Lib.Aux.Textcolor.END} ")
-                                id_test_case = input()
-                                if Lib.Aux.Main.validate_selection(input_data=id_test_case, search_list=test_case_list):
-                                    test_case_id_list.clear()
-                                    test_case_id_list.append(int(id_test_case))
-                                    break
-                        elif isolated_tc.upper() in ['Y', 'S', ''] and id_test_case != 0:
+                if isolated_tc.upper() != 'I':  # Only info.
+
+                    test_case_list = [str(testcase_id) for testcase_id in test_case_id_list]
+
+                    if isolated_tc.upper() in ['Y', 'S', ''] and id_test_case == 0:
+                        while True:
+                            print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['ChooseTestCase']['Msg']}"
+                                  f"{Lib.Aux.Textcolor.END} ")
+                            id_test_case = input()
                             if Lib.Aux.Main.validate_selection(input_data=id_test_case, search_list=test_case_list):
                                 test_case_id_list.clear()
                                 test_case_id_list.append(int(id_test_case))
-                        elif isolated_tc.upper() in ['N', 'n']:  # Not add a new test case if 'N' is informed.
-                            pass
-                        else:
-                            test_case_id_list.append(id_test_case)
-
-                else:
-                    print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorGetTestCase']['Msg']}{Lib.Aux.Textcolor.END}\n")
-                    Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.logs['ErrorGetTestCase'])
-
-                return test_case_id_list
-
-            elif s.status_code == 401:
-                print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.otherConfigs['RunAgain']['Msg']}"
-                      f"{Lib.Aux.Textcolor.UNDERLINE}\n")
-                Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.otherConfigs['TokenExpired'])
+                                break
+                    elif isolated_tc.upper() in ['Y', 'S', ''] and id_test_case != 0:
+                        if Lib.Aux.Main.validate_selection(input_data=id_test_case, search_list=test_case_list):
+                            test_case_id_list.clear()
+                            test_case_id_list.append(int(id_test_case))
+                    elif isolated_tc.upper() in ['N', 'n']:  # Not add a new test case if 'N' is informed.
+                        pass
+                    else:
+                        test_case_id_list.append(id_test_case)
 
             else:
-                print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorRequest']['Msg']}{Lib.Aux.Textcolor.END}\n")
-                Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.logs['ErrorRequest'],
-                                      value1='Status code: ' + str(s.status_code) + ' - getTestCases')
+                print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorGetTestCase']['Msg']}{Lib.Aux.Textcolor.END}\n")
+                Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.logs['ErrorGetTestCase'])
+                raise Exception
+
+            return test_case_id_list
 
         except Exception as ex:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorGetTestCases']['Msg']} - {ex}{Lib.Aux.Textcolor.END}")
