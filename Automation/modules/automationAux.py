@@ -1125,7 +1125,7 @@ class ApiSchema:
 
             Main.delete_files(folder_path=directories['SwaggerFolder'], extension='*')
 
-            return self.json_fake_data, self.paths, self.schema
+            return self.json_fake_data, self.paths, self.schema ### Parei aqui
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorApiCheck']['Msg']}{Textcolor.END}", str(ex))
@@ -1214,6 +1214,7 @@ class ApiSchema:
     def generate_data(self, schema, definitions, endpoint):
 
         fake = Lib.Faker()
+        order = 0
 
         # Generate different content type.
         def add_variations(base_type, value):
@@ -1253,7 +1254,7 @@ class ApiSchema:
                 Main.add_logs(self, message="General", value=logs["ErrorAddJsonVariation"], value1=str(ex))
 
         # Generate based on schema info.
-        for order, tag_type in enumerate(otherConfigs['DictAllSchema'][endpoint]['parameters']):
+        for tag_type in otherConfigs['DictAllSchema'][endpoint]['parameters']:
             data = []
             if tag_type['type'] == 'string':
                 value = fake.word() if not (schema.get('nullable', False) and Lib.random.choice([True, False])) \
@@ -1294,15 +1295,18 @@ class ApiSchema:
                         data.append(obj)
 
             otherConfigs['DictAllSchema'][endpoint]['parameters'][order]['fake'] = data
+            order += 1
 
-            # print(otherConfigs['DictAllSchema'][endpoint])
-            print(f"Data for endpoint: '{endpoint}':")
-            for _, info_fake in enumerate(otherConfigs['DictAllSchema'][endpoint]['parameters']): ### não está trazendo o fake.
-                print(f"Tag: {info_fake['name']}")
-                for count, fake in enumerate(info_fake['fake']): ### Deu erro. Parei aqui.
-                    print(f"   Info fake: {info_fake['fake'][count]} - Type: {type(info_fake['fake'][count])}")
-            print("-" * 80)
-            # return data
+        # print(otherConfigs['DictAllSchema'][endpoint])
+        print(f"Data for endpoint: '{endpoint}':")
+        for _, info_fake in enumerate(otherConfigs['DictAllSchema'][endpoint]['parameters']):
+            print(f"Tag: {info_fake['name']}")
+            for count, fake in enumerate(info_fake['fake']):
+                print(f"   Info fake: {info_fake['fake'][count]} - Type: {type(info_fake['fake'][count])}")
+        print("-" * 80)
+        # return data
+
+
 
     # Read the schema references.
     def resolve_refs(self, schema, definitions): ### (Only to validate the schema response)
