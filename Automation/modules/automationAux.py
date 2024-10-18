@@ -1297,7 +1297,7 @@ class ApiSchema:
 
             # print(otherConfigs['DictAllSchema'][endpoint])
             print(f"Data for endpoint: '{endpoint}':")
-            for _, info_fake in enumerate(otherConfigs['DictAllSchema'][endpoint]['parameters']):
+            for _, info_fake in enumerate(otherConfigs['DictAllSchema'][endpoint]['parameters']): ### não está trazendo o fake.
                 print(f"Tag: {info_fake['name']}")
                 for count, fake in enumerate(info_fake['fake']): ### Deu erro. Parei aqui.
                     print(f"   Info fake: {info_fake['fake'][count]} - Type: {type(info_fake['fake'][count])}")

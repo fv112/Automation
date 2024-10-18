@@ -323,7 +323,7 @@ logs:
         IsEnable: {Type: Success, Msg: Elemento localizado., Where: automationFunc - is_enable},
         IsSelected: {Type: Success, Msg: Elemento localizado., Where: automationFunc - is_selected},
         NoExecute: {Type: Success, Msg: Este passo foi ignorado com sucesso., Where: noExecute},
-        NoSelectDropDownList: {Type: Error, Msg: Nenhuma valor correspondente foi encontrado dentro deste DropDownList!, Where: automationFunc - select_drop_down_list},
+        NoSelectDropDownList: {Type: Error, Msg: Nenhum valor correspondente foi encontrado dentro deste DropDownList!, Where: automationFunc - select_drop_down_list},
         MouseOver: {Type: Success, Msg: O mouse foi movimentado com sucesso., Where: automationFunc - mouse_over},
         OpenPage: {Type: Success, Msg: Acesso à página realizado com sucesso., Where: automationFunc - open_page},
         OpenBrowser: {Type: Success, Msg: Browser aberto com sucesso., Where: automationFunc - open_browser},

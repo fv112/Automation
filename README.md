@@ -6,6 +6,7 @@ bookmark: **Version 1.28.06**
 :construction: - Correção do geração de dados fake para API.  
 :sparkles: - Sandbox para conexão da API no PowerBI.  
 :bug: - Apresentação de mais de 100 casos de teste na lista.  
+:bug: - Correção da falha do highlight em um componente ainda não carregado.    
 #
 
 bookmark: **Version 1.28.05**  

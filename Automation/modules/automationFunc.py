@@ -455,7 +455,6 @@ class Main:
                                step_order=step_order, tag=tag)
                 Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.logs["SelectDropDownList"],
                                       value1=parameters1, value2=parameters2)
-
                 return "Passed"
 
             except Exception:
@@ -723,7 +722,7 @@ class Main:
                                    several=True, color='yellow', save_evidence=save_evidence)
 
                 for _, new_element in enumerate(elements_fields):
-                    Main.apply_style(new_element, original_style)
+                    Main.apply_style(self, new_element=new_element, original_style=original_style)
 
             if int(parameters2) == len(elements_fields):
                 Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.logs["GetQuantityElements"],
@@ -1549,8 +1548,12 @@ class Main:
 
             return "Failed"
 
-    def apply_style(new_element, style):
-        driver.execute_script("arguments[0].setAttribute('style', arguments[1]);", new_element, style)
+    def apply_style(self, **kwargs):
+
+        new_element = kwargs.get('new_element')
+        original_style = kwargs.get('original_style')
+
+        driver.execute_script("arguments[0].setAttribute('style', arguments[1]);", new_element, original_style)
 
     # Highlight the component during the execution.
     def highlight(self, **kwargs):
@@ -1567,6 +1570,7 @@ class Main:
             several = kwargs.get('several', False)
 
             image_name = Lib.Aux.otherConfigs["EvidenceName"] + str(step_order).zfill(2)
+            original_style = ''
 
             if save_evidence and parameters1 == 'Alert':
                 # Alert print screen.
@@ -1588,13 +1592,17 @@ class Main:
 
                 driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", new_element)
 
-                Main.apply_style(new_element, "border: {0}px solid {1};".format(border, color))
+                Main.apply_style(self, new_element=new_element,
+                                 original_style="border: {0}px solid {1};".format(border, color))
                 Lib.time.sleep(1)
-
                 take_picture_status = Lib.Func.Main.take_picture(self, image_name=image_name)
 
                 if several is False:
-                    Main.apply_style(new_element, original_style)
+                    new_element = Lib.WebDriverWait(driver, 59).until(Lib.ec.visibility_of_element_located
+                                                                      ((tag, parameters1)))
+
+                    Main.apply_style(self, new_element=new_element, original_style=original_style)
+                    print('11')
 
                 if not take_picture_status:
                     Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.logs["ErrorScreenshot"], value1=step)
