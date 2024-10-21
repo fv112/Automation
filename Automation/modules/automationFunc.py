@@ -1602,7 +1602,6 @@ class Main:
                                                                       ((tag, parameters1)))
 
                     Main.apply_style(self, new_element=new_element, original_style=original_style)
-                    print('11')
 
                 if not take_picture_status:
                     Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.logs["ErrorScreenshot"], value1=step)
@@ -1711,9 +1710,10 @@ class Main:
             api_status_final = True
             error_msg_list = {}
             step_status = "Not Run"
+            tags = []
 
             Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.logs["ApiLog"],
-                                  value1=parameters1.upper())
+                                  value1=parameters1)
 
             if parameters1.upper() != 'SUBMIT':
                 tag = parameters1[:parameters1.find(':')]
@@ -1739,27 +1739,35 @@ class Main:
                               f"{Lib.Aux.Textcolor.END}")
                         Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.logs["ErrorApiBodyMissing"])
                         raise TypeError(Lib.Aux.logs['ErrorApiBodyMissing']['Msg'])
+
                     json_data = Lib.Aux.ApiSchema(parameters1[parameters1.find(':') + 1:].strip())
-                    # json_fake_data, endpoints, schema = json_data.api_check(parameters1=
-                    #                                                         parameters1[parameters1.find(':') + 1:]
-                    #                                                         .strip())
+                    # Generate the fake data informed in the schema.
                     json_data.api_check()
 
+                    Lib.Aux.otherConfigs['Api_Endpoints'].clear()
                     if (parameters2 is not None) and parameters2.upper() == 'ALL':
-                        url = Lib.copy.deepcopy(Lib.Aux.otherConfigs['Api_Endpoints'])
-                        Lib.Aux.otherConfigs['Api_Endpoints'].clear()
-                        for endpoint in endpoints:
-                            Lib.Aux.otherConfigs['Api_Endpoints'].append(
-                                Lib.regex.match(r'(.*?)(?=/v1)', url[0]).group(1) + endpoint)
+                        for endpoint in Lib.Aux.otherConfigs['DictAllSchema']:
+                            endpoint_full = Lib.regex.search(r'https?://.*?(?=/swagger)', parameters1)[0] + endpoint
+                            Lib.Aux.otherConfigs['Api_Endpoints'].append(endpoint_full)
 
-                    for tag in json_fake_data.keys():
-                        for fake_order, _ in enumerate(json_fake_data[tag]):
-                            dict_body[tag] = json_fake_data[tag][fake_order]
+                    # Read all the endpoints.
+                    for endpoint_order, endpoint in enumerate(Lib.Aux.otherConfigs['DictAllSchema']):
+                        tags = []
+                        # List the endpoint tags in a list.
+                        for order, _ in enumerate(Lib.Aux.otherConfigs['DictAllSchema'][endpoint]['parameters']):
+                            tags.append(Lib.Aux.otherConfigs['DictAllSchema'][endpoint]['parameters'][order]['name'])
+
+                        # Create a dictionary with all the tags and the 4 (four) types of data.
+                        for order_fake in range(0, 3):
+                            for order_tag, tag in enumerate(tags):
+                                dict_body[tag] = Lib.Aux.otherConfigs['DictAllSchema'][endpoint]['parameters'][order_tag]['fake'][order_fake]
 
                             # Run the API request.
+                            endpoint_full = Lib.Aux.otherConfigs['Api_Endpoints'][endpoint_order]
                             error_msg, step_status = (
                                 self.connections.send_request(api_action=api_action, fake_info=True, body=dict_body,
-                                                              headers=Lib.Aux.otherConfigs['Api_Headers']))
+                                                              headers=Lib.Aux.otherConfigs['Api_Headers'],
+                                                              endpoint=endpoint_full))
 
                             error_msg_list[tag + ' -> ' + str(dict_body[tag])] = error_msg
 
@@ -1770,7 +1778,7 @@ class Main:
 
                             api_status_final = (api_status_final and api_status)
 
-                    Lib.Aux.otherConfigs['Api_Response'] = error_msg_list
+                        Lib.Aux.otherConfigs['Api_Response'] = error_msg_list
 
                     if api_status_final:
                         return "Passed"
@@ -1786,8 +1794,9 @@ class Main:
                     return "Passed"
             else:
                 # Run the API request.
+                endpoint = Lib.Aux.otherConfigs['Api_Endpoints'][0]
                 Lib.Aux.otherConfigs['Api_Response'], step_status = (
-                    self.connections.send_request(api_action=api_action,
+                    self.connections.send_request(api_action=api_action, endpoint=endpoint,
                                                   headers=Lib.Aux.otherConfigs['Api_Headers'],
                                                   body=Lib.Aux.otherConfigs['Api_Body']))
 
@@ -1824,8 +1833,7 @@ class Main:
             else:  # tag.upper() != "STATUS CODE":
                 find_content = Lib.Aux.Main.find_content_json(self, param=param)
 
-            Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.logs["ApiLog"],
-                                  value1=f"{tag.upper()} : {param.upper()}")
+            Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.logs["ApiLog"],value1=f"{tag} : {param}")
 
             if status_code == "Passed" or find_content == "Passed" or schema == "Passed":
                 return "Passed"

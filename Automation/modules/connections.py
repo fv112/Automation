@@ -347,8 +347,8 @@ class Connections:
                         if Lib.Aux.Main.validate_selection(input_data=id_test_case, search_list=test_case_list):
                             test_case_id_list.clear()
                             test_case_id_list.append(int(id_test_case))
-                    elif isolated_tc.upper() in ['N', 'n']:  # Not add a new test case if 'N' is informed.
-                        pass
+                    # elif isolated_tc.upper() in ['N', 'n']:  # Not add a new test case if 'N' is informed.
+                    #     pass
                     else:
                         test_case_id_list.append(id_test_case)
 
@@ -640,8 +640,11 @@ class Connections:
         headers = kwargs.get("headers")
         body = kwargs.get("body")
         fake_info = kwargs.get("fake_info", False)
+        endpoint = kwargs.get("endpoint")
 
         try:
+            resp = []
+
             if Lib.Aux.otherConfigs['Api_Authorization'] != '':
                 headers = {'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["Api_Headers"],
                            'Content-Type': 'application/json'
@@ -659,31 +662,38 @@ class Connections:
                 headers = Lib.json.loads(Lib.regex.search(r'{(.*?)}', headers).group(0))
                 headers['Content-Type'] = 'application/json'
 
-            for endpoint in Lib.Aux.otherConfigs['Api_Endpoints']:
+            # for endpoint in Lib.Aux.otherConfigs['Api_Endpoints']:
 
-                if api_action.upper() == "DELETE":
-                    api_result = Lib.requests.delete(endpoint, headers=headers)
-                elif api_action.upper() == "POST":
-                    api_result = Lib.requests.post(endpoint, headers=headers, data=body, verify=False)
-                elif api_action.upper() == "PUT":
-                    api_result = Lib.requests.put(endpoint, headers=headers)
-                else:  # api_action.upper() == "GET":
-                    api_result = Lib.requests.get(endpoint, data=Lib.json.dumps(body), verify=False,
-                                                  params=Lib.Aux.otherConfigs['Api_Params'], headers=headers)
+            print(f"endpoint: {endpoint} \n")
 
-                if api_action.upper() in ['GET', 'POST', 'DELETE', 'PUT']:
-                    Lib.Aux.otherConfigs['Api_StatusCode'] = api_result.status_code
+            if api_action.upper() == "DELETE":
+                api_result = Lib.requests.delete(endpoint, headers=headers, verify=False)
+            elif api_action.upper() == "POST":
+                api_result = Lib.requests.post(endpoint, headers=headers, data=body, verify=False)
+            elif api_action.upper() == "PUT":
+                api_result = Lib.requests.put(endpoint, headers=headers, verify=False)
+            else:  # api_action.upper() == "GET":
+                api_result = Lib.requests.get(endpoint, data=Lib.json.dumps(body), verify=False,
+                                              params=Lib.Aux.otherConfigs['Api_Params'], headers=headers)
+
+            if api_action.upper() in ['GET', 'POST', 'DELETE', 'PUT']:
+                Lib.Aux.otherConfigs['Api_StatusCode'] = api_result.status_code
+
+                if api_result.text != '':
                     resp = Lib.json.loads(api_result.text)
-                    if resp is not []:
-                        Lib.Aux.otherConfigs['Api_Response'] = resp
 
-                    if fake_info and api_result.status_code == 400:
-                        return resp, "Failed"
-                    elif api_result.status_code == 400:
-                        # The status code should be verified in the Response command.
-                        return resp, "Passed"
-                    elif api_result.status_code == 200:
-                        return resp, "Passed"
+                if resp.__len__() != 0:
+                    Lib.Aux.otherConfigs['Api_Response'] = resp
+
+                if fake_info and api_result.status_code == 400:
+                    return resp, "Failed"
+                elif api_result.status_code == 400:
+                    # The status code should be verified in the Response command.
+                    return resp, "Passed"
+                elif api_result.status_code == 200:
+                    return resp, "Passed"
+                else:
+                    return resp, "Failed"
 
         except Exception as ex:
             print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.logs['ErrorSendRequest']['Msg']} - {ex}{Lib.Aux.Textcolor.END}")

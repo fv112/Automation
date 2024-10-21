@@ -512,7 +512,6 @@ class Main:
                     Lib.os.system(f'icacls "{path}" /grant {otherConfigs["All"]['Msg']}:F')
                     Lib.os.system('cls')
 
-
             # Append the log file.
             with open(path, 'a+', encoding='utf-8') as log_file:
                 if message == 'NewConfig':  # Set the first line.
@@ -1070,10 +1069,7 @@ class ApiSchema:
         # self.paths = []
         self.schema = {}
 
-    def api_check(self): #, **kwargs):
-
-        # kwargs variables.
-        # parameters1 = kwargs.get("parameters1")
+    def api_check(self):
 
         try:
 
@@ -1087,45 +1083,14 @@ class ApiSchema:
                                                                          self.swagger_file))
             # Extract data type field to generate fake data.
             ApiSchema.extract_jsonschema_relevant_data(self, swagger_data=swagger_data)
-            # , parameters1=parameters1)
 
             print(f"{Textcolor.WARNING}{otherConfigs['Api_ExtractInfo']['Msg']} {self.swagger_file}{Textcolor.END}")
 
-            # with open(Lib.os.path.join(directories['SwaggerFolder'], self.swagger_file), 'r', encoding='utf-8') as file:
-            #     self.schema = Lib.json.load(file)
-
-            # with open(Lib.os.path.join(directories['SwaggerFolder'], self.swagger_file), 'w', encoding='utf-8') as file:
-                # Lib.json.dump(self.schema, file, ensure_ascii=False, indent=2)
-                # file.write(Lib.Aux.otherConfigs['DictAllSchema'])
-
             # Generate and print the fake data.
-            count = 0####
-            # schema = Lib.Aux.otherConfigs['DictAllSchema']
             for endpoint, definition_schema in Lib.Aux.otherConfigs['DictAllSchema'].items():
                 ApiSchema.generate_data(self, definition_schema, self.schema, endpoint)
-                # print(f"Data for endpoint: '{endpoint}':")
-                # for self.json_fake_data in data_list:
-                #     print(Lib.json.dumps(self.json_fake_data, indent=2))
-
-                if count == 5: ####
-                    break###
-                else:###
-                    count += 1###
-
-            # Link between each fake info and the right tag. (Only to validate the schema response)
-            # self.resolved_schema = {k: ApiSchema.resolve_refs(self, v, schema) for k, v in schema.items()}
-            #
-            # for key, values in data.items():
-            #     for value in values:
-            #         print(f"TAG: {key} / VALUE: {value} \n")
-            #         json_fake_data = {key: value}
-            #         ApiSchema.run_validation(self, json_data)
-            #
-            #     print("-" * 90)
 
             Main.delete_files(folder_path=directories['SwaggerFolder'], extension='*')
-
-            return self.json_fake_data, self.paths, self.schema ### Parei aqui
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorApiCheck']['Msg']}{Textcolor.END}", str(ex))
@@ -1145,13 +1110,10 @@ class ApiSchema:
 
         # kwargs variables.
         swagger_data = kwargs.get("swagger_data")
-        # parameters1 = kwargs.get("parameters1")
 
         try:
-            # relevant_data = {}
             parameters = {}
             list_param = []
-            # name = ''
 
             for endpoint in swagger_data['paths']:
 
@@ -1171,40 +1133,6 @@ class ApiSchema:
 
                         list_param.append(parameters)
                         Lib.Aux.otherConfigs['DictAllSchema'][endpoint]['parameters'] = list_param
-
-            # with open(Lib.os.path.join(directories['SwaggerFolder'], self.swagger_file), 'w') as f:
-            #     Lib.json.dump(relevant_data, f, indent=2)
-            #
-            #
-            # relevant_data = {}
-            #
-            # if 'definitions' in swagger_data:
-            #     relevant_data = swagger_data['definitions']
-            # if 'components' in swagger_data and 'schemas' in swagger_data['components']:
-            #     relevant_data = swagger_data['components']['schemas']
-            # if 'paths' in swagger_data:
-            #     relevant_data = swagger_data['paths']
-            # ###else:
-            # ###    relevant_data = {}
-            #
-            # with open(Lib.os.path.join(directories['SwaggerFolder'], self.swagger_file), 'w') as f:
-            #     Lib.json.dump(relevant_data, f, indent=2)
-            #
-            # self.paths = list(swagger_data['paths'].keys())
-            #
-            # # Body field per endpoint.
-            # for order_path, _ in enumerate(self.paths):
-            #     for endpoint in swagger_data['components']['schemas']:
-            #
-            #         url = Lib.regex.match(r'(.*?)(?=/v1)', parameters1).group(1) + self.paths[order_path]
-            #
-            #         if 'properties' in swagger_data['components']['schemas'][endpoint]:
-            #             Lib.Aux.otherConfigs['DictAllSchema'][url] = {
-            #                 'paths': swagger_data[endpoint],
-            #                 'n_requests': swagger_data['components']['schemas'][endpoint]['properties'].__len__()
-            #             }
-
-            # print(f"{Lib.Aux.otherConfigs['DictAllSchema']}\n") ###
 
         except Exception as ex:
             print(f"{Textcolor.FAIL}{logs['ErrorExtractJson']['Msg']}{Textcolor.END}", str(ex))
@@ -1227,7 +1155,7 @@ class ApiSchema:
                         fake.pyfloat(left_digits=5, right_digits=2),  # Float variation
                         fake.boolean()  # Boolean variation
                     ])
-                elif base_type == 'integer':
+                elif base_type == 'int':
                     data.extend([
                         value,  # Original value
                         fake.word(),  # String variation
@@ -1266,10 +1194,10 @@ class ApiSchema:
                                                                             Lib.random.choice([True, False])) else None
                 add_variations('number', value)
 
-            elif tag_type['type'] == 'integer':
+            elif tag_type['type'] == 'int':
                 value = fake.random_int() if not (schema.get('nullable', False) and Lib.random.choice([True, False])) \
                     else None
-                add_variations('integer', value)
+                add_variations('int', value)
 
             elif tag_type['type'] == 'boolean':
                 value = fake.boolean() if not (schema.get('nullable', False) and Lib.random.choice([True, False])) \
@@ -1278,7 +1206,8 @@ class ApiSchema:
 
             elif tag_type['type'] == 'array':
                 if not (schema.get('nullable', False) and Lib.random.choice([True, False])):
-                    array_data = [ApiSchema.generate_data(self, schema['items'], definitions, None) for _ in range(3)]
+                    array_data = [ApiSchema.generate_data(self, schema['items'], definitions, None)
+                                  for _ in range(3)]
                     if array_data not in data:
                         data.append(array_data)
 
@@ -1297,16 +1226,12 @@ class ApiSchema:
             otherConfigs['DictAllSchema'][endpoint]['parameters'][order]['fake'] = data
             order += 1
 
-        # print(otherConfigs['DictAllSchema'][endpoint])
         print(f"Data for endpoint: '{endpoint}':")
         for _, info_fake in enumerate(otherConfigs['DictAllSchema'][endpoint]['parameters']):
             print(f"Tag: {info_fake['name']}")
             for count, fake in enumerate(info_fake['fake']):
                 print(f"   Info fake: {info_fake['fake'][count]} - Type: {type(info_fake['fake'][count])}")
         print("-" * 80)
-        # return data
-
-
 
     # Read the schema references.
     def resolve_refs(self, schema, definitions): ### (Only to validate the schema response)
