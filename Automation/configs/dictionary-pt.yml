@@ -399,7 +399,7 @@ otherConfigs:
         Api_ResponseTag: '',
         Api_StatusCode: ,
         Api_Step: False,
-        AskCt: {Type: Info, Msg: "Executar um caso de teste isolado? Tecle ENTER (padrão) para SIM ou tecle [Y/y/S/s] = Sim ou [N/n] = Não: ", Where: connections - getTestCases},
+        AskCt: {Type: Info, Msg: "Executar casos de teste específicos? Tecle ENTER (padrão) para SIM ou tecle [Y/y/S/s] = Sim ou [N/n] = Não: ", Where: connections - getTestCases},
         Bearer: 'rrkae8z2EMv_kfxXdCD-',
         BearerUpload: 'FUAsSU4p9GMLTVk_hLvv',
         Browser: '',

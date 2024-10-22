@@ -1,5 +1,11 @@
 Automation QA - Release notes
 ---------
+bookmark: **Version 1.28.08**  
+
+<em>22/10/2024</em>  
+:sparkles: - Possibilidade de executar vários casos de teste somente separando por vírgula.  
+#
+
 bookmark: **Version 1.28.07**  
 
 <em>22/10/2024</em>  

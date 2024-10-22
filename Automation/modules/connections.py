@@ -121,7 +121,10 @@ class Connections:
                     print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['InformProject']['Msg']}"
                           f"{Lib.Aux.Textcolor.END}\n")
                     project_selected = input()
-                    if Lib.Aux.Main.validate_selection(input_data=project_selected, search_list=project_list):
+                    # validate_status, _ = Lib.Aux.Main.validate_selection(input_data=project_selected,
+                    #                                                      search_list=project_list)
+                    if Lib.Aux.Main.validate_selection(input_data=project_selected.upper(),
+                                                       search_list=['Y', 'S', 'N', '']):
                         break
 
                 project_name = projects_dic[int(project_selected)]
@@ -324,6 +327,8 @@ class Connections:
                     print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['AskCt']['Msg']}"
                           f"{Lib.Aux.Textcolor.END} ")
                     isolated_tc = input()
+                    # validate_status, _ = Lib.Aux.Main.validate_selection(input_data=isolated_tc.upper(),
+                    #                                                      search_list=['Y', 'S', 'N', ''])
                     if Lib.Aux.Main.validate_selection(input_data=isolated_tc.upper(),
                                                        search_list=['Y', 'S', 'N', '']):
                         break
@@ -343,10 +348,22 @@ class Connections:
                             print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['ChooseTestCase']['Msg']}"
                                   f"{Lib.Aux.Textcolor.END} ")
                             id_test_case = input()
-                            if Lib.Aux.Main.validate_selection(input_data=id_test_case, search_list=test_case_list):
-                                test_case_id_list.clear()
+
+                            # Select the isolate test case.
+                            test_case_id_list.clear()
+                            if (Lib.Aux.Main.validate_selection(input_data=id_test_case, search_list=test_case_list)
+                                    and not id_test_case.split(',')):
                                 test_case_id_list.append(int(id_test_case))
                                 break
+
+                            # Select the list of test cases segregated per comma.
+                            elif id_test_case.split(','):
+                                for test_case_id in id_test_case.split(','):
+                                    Lib.Aux.Main.validate_selection(input_data=test_case_id,
+                                                                    search_list=test_case_list)
+                                    test_case_id_list.append(int(test_case_id))
+                                break
+
                     elif isolated_tc.upper() in ['Y', 'S', ''] and id_test_case != 0:
                         if Lib.Aux.Main.validate_selection(input_data=id_test_case, search_list=test_case_list):
                             test_case_id_list.clear()
