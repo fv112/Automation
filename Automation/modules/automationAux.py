@@ -1029,16 +1029,14 @@ class Main:
         input_data = kwargs.get("input_data")
         search_list = kwargs.get("search_list")
 
-        # testcase_list = []
-
         try:
             if input_data in search_list:
-                return True #, input_data
+                return True
             else:
                 raise ValueError
 
         except ValueError:
-            return False, None
+            return False
 
     def validate_variations(self, **kwargs):
 

@@ -1,5 +1,12 @@
 Automation QA - Release notes
 ---------
+
+bookmark: **Version 1.28.09**  
+
+<em>22/10/2024</em>  
+:sparkles: - Correção na digitação de projeto e número do caso de teste inválido.  
+#
+
 bookmark: **Version 1.28.08**  
 
 <em>22/10/2024</em>  

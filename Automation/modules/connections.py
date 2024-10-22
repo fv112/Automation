@@ -78,6 +78,7 @@ class Connections:
 
         projects_dic = {}
         resp = []
+        project_selected = None
 
         try:
             if project_id is None:
@@ -121,10 +122,7 @@ class Connections:
                     print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['InformProject']['Msg']}"
                           f"{Lib.Aux.Textcolor.END}\n")
                     project_selected = input()
-                    # validate_status, _ = Lib.Aux.Main.validate_selection(input_data=project_selected,
-                    #                                                      search_list=project_list)
-                    if Lib.Aux.Main.validate_selection(input_data=project_selected.upper(),
-                                                       search_list=['Y', 'S', 'N', '']):
+                    if Lib.Aux.Main.validate_selection(input_data=project_selected, search_list=project_list):
                         break
 
                 project_name = projects_dic[int(project_selected)]
@@ -327,8 +325,7 @@ class Connections:
                     print(f"{Lib.Aux.Textcolor.WARNING}{Lib.Aux.otherConfigs['AskCt']['Msg']}"
                           f"{Lib.Aux.Textcolor.END} ")
                     isolated_tc = input()
-                    # validate_status, _ = Lib.Aux.Main.validate_selection(input_data=isolated_tc.upper(),
-                    #                                                      search_list=['Y', 'S', 'N', ''])
+
                     if Lib.Aux.Main.validate_selection(input_data=isolated_tc.upper(),
                                                        search_list=['Y', 'S', 'N', '']):
                         break
@@ -352,12 +349,12 @@ class Connections:
                             # Select the isolate test case.
                             test_case_id_list.clear()
                             if (Lib.Aux.Main.validate_selection(input_data=id_test_case, search_list=test_case_list)
-                                    and not id_test_case.split(',')):
+                                    and not id_test_case.find(',') > 0):
                                 test_case_id_list.append(int(id_test_case))
                                 break
 
                             # Select the list of test cases segregated per comma.
-                            elif id_test_case.split(','):
+                            elif id_test_case.find(',') > 0:
                                 for test_case_id in id_test_case.split(','):
                                     Lib.Aux.Main.validate_selection(input_data=test_case_id,
                                                                     search_list=test_case_list)
