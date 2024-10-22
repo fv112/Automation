@@ -2,7 +2,7 @@ Automation QA - Release notes
 ---------
 bookmark: **Version 1.28.06**  
 
-<em>21/10/2024</em>  
+<em>22/10/2024</em>  
 :construction: - Correção do geração de dados fake para API.  
 :sparkles: - Sandbox para conexão da API no PowerBI.  
 :sparkles: - Alteração do texto em maiúscula para o log da API.    
