@@ -32,8 +32,6 @@ response_project = _connection(url=url1, headers=headers)
 
 if response_project.status_code == 200:
 
-    # page = 1
-
     data_project = response_project.json()
 
     for _, project_id in enumerate(data_project):

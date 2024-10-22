@@ -264,21 +264,25 @@ class Connections:
             # Variables.
             test_case_id_list = []
             page = 1
-
-            new_url = url + 'projects/' + str(project_id) + ('/issues?labels=Test%20case&per_page=100&page=' + str(page)
-                                                             + '&not[labels]=Execution::Only%20Manual')
-
-            s = Lib.requests.get(new_url, headers={'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["Bearer"]},
-                                 verify=False)
+            resp_full = []
 
             while True:
+                new_url = url + 'projects/' + str(project_id) + ('/issues?labels=Test%20case&per_page=100&page=' + str(page)
+                                                                 + '&not[labels]=Execution::Only%20Manual')
+
+                s = Lib.requests.get(new_url, headers={'Authorization': 'Bearer ' + Lib.Aux.otherConfigs["Bearer"]},
+                                     verify=False)
+
                 if s.status_code == 200:
                     # Filter some fields.
                     json_str = Lib.json.dumps(s.json())
                     resp = Lib.json.loads(json_str)
                     page += 1
-                    if 'next' not in resp or resp['next'] is None:
+                    if resp.__len__() == 0:
                         break
+                    else:
+                        for item in resp:
+                            resp_full.append(item)
                 elif s.status_code == 401:
                     print(f"{Lib.Aux.Textcolor.FAIL}{Lib.Aux.otherConfigs['RunAgain']['Msg']}"
                           f"{Lib.Aux.Textcolor.UNDERLINE}\n")
@@ -295,8 +299,8 @@ class Connections:
             table.align['STATUS'] = 'l'
             table.align['TEST CASE'] = 'l'
 
-            if resp.__len__() != 0:
-                for id_test, testCase_id in enumerate(resp):
+            if resp_full.__len__() != 0:
+                for id_test, testCase_id in enumerate(resp_full):
                     actual_status = [status for status in testCase_id['labels'] if 'Status' in status]
 
                     if not actual_status:
@@ -347,8 +351,8 @@ class Connections:
                         if Lib.Aux.Main.validate_selection(input_data=id_test_case, search_list=test_case_list):
                             test_case_id_list.clear()
                             test_case_id_list.append(int(id_test_case))
-                    # elif isolated_tc.upper() in ['N', 'n']:  # Not add a new test case if 'N' is informed.
-                    #     pass
+                    elif isolated_tc.upper() in ['N', 'n']:  # Not add a new test case if 'N' is informed.
+                        pass
                     else:
                         test_case_id_list.append(id_test_case)
 
