@@ -1,5 +1,4 @@
-import time
-
+# import time
 import common_libs as Lib
 
 
@@ -106,7 +105,6 @@ class Main:
                     Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.logs["EvidenceFolder"])
 
                 else:
-                    Lib.Aux.directories['TestSetPath'] = None
                     Lib.Aux.Main.add_logs(self, message="General", value=Lib.Aux.logs["WarningEvidenceFolder"])
 
                 Lib.Aux.Main.add_logs(self, message="NewSession",

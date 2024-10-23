@@ -1,5 +1,10 @@
 Automation QA - Release notes
 ---------
+bookmark: **Version 1.28.10**  
+
+<em>23/10/2024</em>  
+:bug: - Correção da seleção do "N" quando não se deseja gerar a evidência.  
+#
 
 bookmark: **Version 1.28.09**  
 
